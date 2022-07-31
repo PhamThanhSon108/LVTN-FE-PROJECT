@@ -1,5 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
+import morgan from 'morgan';
+import YAML from 'yamljs';
+import swaggerUiExpress from 'swagger-ui-express';
 import connectDatabase from './config/db.config.js';
 import ImportData from './DataImport.js';
 import productRouter from './routes/product.route.js';
@@ -12,12 +16,26 @@ import categoryRouter from './routes/category.route.js';
 import multer from 'multer';
 import path from 'path';
 import Upload from './Routes/Upload.js';
+import { appendFileSync } from 'fs';
 
 dotenv.config();
 connectDatabase();
 const app = express();
 app.use(express.json());
+app.use(cors());
+app.use(morgan('dev'));
 
+//swagger
+const swaggerDocument = YAML.load('./config/swagger.config.yaml');
+app.use(
+    '/fashionshopswagger',
+    swaggerUiExpress.serve,
+    swaggerUiExpress.setup(swaggerDocument, {
+        swaggerOptions: {
+            docExpansion: 'none',
+        },
+    }),
+);
 // API
 app.use('/api/carts', cartRouter);
 app.use('/api/sliders', sliderRouter);
