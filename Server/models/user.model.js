@@ -27,12 +27,29 @@ const userSchema = mongoose.Schema(
         },
         address: {
             type: String,
+            required: false,
         },
         city: {
             type: String,
+            required: false,
         },
         country: {
             type: String,
+            required: false,
+        },
+        role: {
+            type: String,
+            required: true,
+            default: 'user',
+        },
+        emailVerificationToken: {
+            type: String,
+            required: false,
+        },
+        isVerified: {
+            type: Boolean,
+            required: false,
+            default: false,
         },
     },
     {

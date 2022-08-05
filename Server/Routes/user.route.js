@@ -12,8 +12,9 @@ userRouter.post('/login', asyncHandler(userController.login));
 userRouter.get('/profile', protect, asyncHandler(userController.getProfile));
 // UPDATE PROFILE
 userRouter.put('/profile', protect, asyncHandler(userController.updateProfile));
+userRouter.get('/auth/verify-email', asyncHandler(userController.verifyEmail));
 // REGISTER
-userRouter.post('/', asyncHandler(userController.register));
+userRouter.post('/register', asyncHandler(userController.register));
 // GET ALL USER ADMIN
 userRouter.get('/', protect, admin, asyncHandler(userController.getUsersByAdmin));
 

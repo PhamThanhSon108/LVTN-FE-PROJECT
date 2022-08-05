@@ -13,10 +13,13 @@ import orderRouter from './routes/order.route.js';
 import sliderRouter from './routes/slider.route.js';
 import cartRouter from './routes/cart.route.js';
 import categoryRouter from './routes/category.route.js';
+import testRouter from './routes/test.route.js';
 import multer from 'multer';
 import path from 'path';
 import Upload from './Routes/Upload.js';
 import { appendFileSync } from 'fs';
+import { sendMail } from './utils/nodemailler.js';
+import asyncHandler from 'express-async-handler';
 
 dotenv.config();
 connectDatabase();
@@ -37,16 +40,18 @@ app.use(
     }),
 );
 // API
-app.use('/api/carts', cartRouter);
-app.use('/api/sliders', sliderRouter);
+app.use('/api/cart', cartRouter);
+app.use('/api/slider', sliderRouter);
 app.use('/api/import', ImportData);
-app.use('/api/products', productRouter);
-app.use('/api/users', userRouter);
-app.use('/api/orders', orderRouter);
-app.use('/api/categories', categoryRouter);
+app.use('/api/product', productRouter);
+app.use('/api/user', userRouter);
+app.use('/api/order', orderRouter);
+app.use('/api/categorie', categoryRouter);
+app.use('/api/test', testRouter);
 app.get('/api/config/paypal', (req, res) => {
     res.send(process.env.PAYPAL_CLIENT_ID);
 });
+
 app.use('/api/upload-profile-pic', Upload);
 
 // ERROR HANDLER
@@ -55,4 +60,4 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 1000;
 
-app.listen(PORT, console.log(`server run in port ${PORT}`));
+app.listen(PORT, console.log(`Server run in port ${PORT}`));

@@ -10,13 +10,15 @@ externalDocs:
     description: Find out more about Swagger
     url: http://swagger.io
 servers:
-    - url: https://localhost:5000/api
+    - url: http://localhost:5000/api
 tags:
     - name: pet
       description: Everything about your Pets
       externalDocs:
           description: Find out more
           url: http://swagger.io
+    - name: User
+      description: Everything about your Users
 paths:
     /pet:
         put:
@@ -288,6 +290,63 @@ paths:
                 - petstore_auth:
                       - write:pets
                       - read:pets
+    /user/register:
+        post:
+            tags:
+                - User
+            summary: Register
+            requestBody:
+                description: User object that needs to be added
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                                    nullable: false
+                                email:
+                                    type: string
+                                    nullable: false
+                                password:
+                                    type: string
+                                    nullable: false
+                                phone:
+                                    type: string
+                                    nullable: false
+            responses:
+                '200':
+                    description: Success
+                    content: {}
+                '400':
+                    description: Bad Request
+                    content: {}
+                '500':
+                    description: Internal Server Error
+                    content: {}
+    /user/auth/verify-email:
+        get:
+            tags:
+                - User
+            summary: Verify email
+            parameters:
+                - in: query
+                  name: token
+                  required: true
+                  schema:
+                      type: string
+                  description: Email Verification token
+            responses:
+                '200':
+                    description: Success
+                    content: {}
+                '400':
+                    description: Bad Request
+                    content: {}
+                '500':
+                    description: Internal Server Error
+                    content: {}
+
 components:
     schemas:
         Order:
@@ -408,6 +467,16 @@ components:
                     type: string
                 message:
                     type: string
+        Error:
+            type: object
+            properties:
+                message:
+                    type: string
+                    description: error message
+                stack:
+                    type: string
+                    description: error message description
+
     securitySchemes:
         bearerAuth:
             type: apiKey

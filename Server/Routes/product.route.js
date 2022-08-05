@@ -1,6 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import { admin, protect } from '../middlewares/auth.middleware.js';
+import { admin, protect, auth } from '../middlewares/auth.middleware.js';
 import productController from '../controllers/product.controller.js';
 const productRouter = express.Router();
 
@@ -19,5 +19,5 @@ productRouter.put('/:id', protect, admin, asyncHandler(productController.updateP
 // CREATE PRODUCT
 productRouter.post('/', protect, admin, asyncHandler(productController.createProductByAdmin));
 // GET PRODUCT
-productRouter.get('/', asyncHandler(productController.getProducts));
+productRouter.get('/', auth('user'), asyncHandler(productController.getProducts));
 export default productRouter;

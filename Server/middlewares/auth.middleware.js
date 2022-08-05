@@ -33,4 +33,16 @@ const admin = (req, res, next) => {
         throw new Error('Not authorized as an Admin');
     }
 };
-export { protect, admin };
+
+const auth =
+    (...acceptedRoles) =>
+    (req, res, next) => {
+        const index = acceptedRoles.indexOf(req.user.role);
+        if (index != -1) {
+            next();
+        } else {
+            res.status(401);
+            throw new Error(`${req.user.role} is not allowed to access this resources`);
+        }
+    };
+export { protect, admin, auth };
