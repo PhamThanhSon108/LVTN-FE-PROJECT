@@ -19,5 +19,5 @@ productRouter.put('/:id', protect, admin, asyncHandler(productController.updateP
 // CREATE PRODUCT
 productRouter.post('/', protect, admin, asyncHandler(productController.createProductByAdmin));
 // GET PRODUCT
-productRouter.get('/', auth('user'), asyncHandler(productController.getProducts));
+productRouter.get('/', asyncHandler(productController.getProducts));
 export default productRouter;

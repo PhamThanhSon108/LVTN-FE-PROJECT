@@ -41,7 +41,7 @@ paths:
                     description: Invalid ID supplied
                     content: {}
                 404:
-                    description: Pet not found
+                    description: Pet Not Found
                     content: {}
                 405:
                     description: Validation exception
@@ -189,7 +189,7 @@ paths:
                     description: Invalid ID supplied
                     content: {}
                 404:
-                    description: Pet not found
+                    description: Pet Not Found
                     content: {}
             security:
                 - api_key: []
@@ -247,7 +247,7 @@ paths:
                     description: Invalid ID supplied
                     content: {}
                 404:
-                    description: Pet not found
+                    description: Pet Not Found
                     content: {}
             security:
                 - petstore_auth:
@@ -290,6 +290,43 @@ paths:
                 - petstore_auth:
                       - write:pets
                       - read:pets
+    /user/login:
+        post:
+            tags:
+                - User
+            summary: Login
+            requestBody:
+                description: User credentials
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                    nullable: false
+                                password:
+                                    type: string
+                                    nullable: false
+            responses:
+                '200':
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserResponseWithAccessToken'
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '500':
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
     /user/register:
         post:
             tags:
@@ -317,21 +354,30 @@ paths:
             responses:
                 '200':
                     description: Success
-                    content: {}
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
                 '400':
                     description: Bad Request
-                    content: {}
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
                 '500':
                     description: Internal Server Error
-                    content: {}
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
     /user/auth/verify-email:
-        get:
+        patch:
             tags:
                 - User
             summary: Verify email
             parameters:
                 - in: query
-                  name: token
+                  name: emailVerificationToken
                   required: true
                   schema:
                       type: string
@@ -339,14 +385,339 @@ paths:
             responses:
                 '200':
                     description: Success
-                    content: {}
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
                 '400':
                     description: Bad Request
-                    content: {}
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
                 '500':
                     description: Internal Server Error
-                    content: {}
-
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /user/auth/cancel-verify-email:
+        patch:
+            tags:
+                - User
+            summary: Cancel verify email
+            parameters:
+                - in: query
+                  name: emailVerificationToken
+                  required: true
+                  schema:
+                      type: string
+                  description: Email Verification token
+            responses:
+                '200':
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '500':
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /user/auth/forgot-password:
+        patch:
+            tags:
+                - User
+            summary: Forgot password
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                    description: Email need to be reset
+                                    nullable: false
+            responses:
+                '200':
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '500':
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /user/auth/reset-password:
+        patch:
+            tags:
+                - User
+            summary: Reset password
+            parameters:
+                - in: query
+                  name: resetPasswordToken
+                  required: true
+                  schema:
+                      type: string
+                  description: Reset password token
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                newPassword:
+                                    type: string
+                                    nullable: false
+            responses:
+                '200':
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '500':
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /user/auth/cancel-reset-password:
+        patch:
+            tags:
+                - User
+            summary: Cancel reset password
+            parameters:
+                - in: query
+                  name: resetPasswordToken
+                  required: true
+                  schema:
+                      type: string
+                  description: Reset password token
+            responses:
+                '200':
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '500':
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /user/auth/change-password:
+        patch:
+            tags:
+                - User
+            security:
+                - bearerAuth: []
+            summary: Change password
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                currentPassword:
+                                    type: string
+                                    nullable: false
+                                newPassword:
+                                    type: string
+                                    nullable: false
+            responses:
+                '200':
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    accessToken:
+                                        type: string
+                                        nullable: false
+                '400':
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '500':
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /user/profile:
+        get:
+            tags:
+                - User
+            security:
+                - bearerAuth: []
+            summary: User get profile
+            responses:
+                '200':
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserResponse'
+                '400':
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '404':
+                    description: Not Found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '500':
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+        put:
+            tags:
+                - User
+            security:
+                - bearerAuth: []
+            summary: User update profile
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                                    nullable: false
+                                email:
+                                    type: string
+                                    nullable: false
+                                phone:
+                                    type: string
+                                    nullable: false
+                                address:
+                                    type: string
+                                    nullable: false
+                                city:
+                                    type: string
+                                    nullable: false
+                                country:
+                                    type: string
+                                    nullable: false
+            responses:
+                '200':
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserResponse'
+                '400':
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '404':
+                    description: Not Found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '500':
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /user:
+        get:
+            tags:
+                - User
+            security:
+                - bearerAuth: []
+            summary: Admin get all user profiles
+            responses:
+                '200':
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/User'
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '403':
+                    description: Forbidden
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '500':
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
 components:
     schemas:
         Order:
@@ -386,7 +757,7 @@ components:
                     type: string
             xml:
                 name: Category
-        User:
+        UserSample:
             type: object
             properties:
                 id:
@@ -476,6 +847,66 @@ components:
                 stack:
                     type: string
                     description: error message description
+        Timestamps:
+            type: object
+            properties:
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+        UserResponse:
+            type: object
+            allOf:
+                - $ref: '#/components/schemas/Timestamps'
+                - type: object
+                  properties:
+                      _id:
+                          type: string
+                      name:
+                          type: string
+                      email:
+                          type: string
+                      isAdmin:
+                          type: boolean
+                      role:
+                          type: string
+                      phone:
+                          type: string
+                      address:
+                          type: string
+                      city:
+                          type: string
+                      country:
+                          type: string
+        UserResponseWithAccessToken:
+            type: object
+            allOf:
+                - $ref: '#/components/schemas/UserResponse'
+                - type: object
+                  properties:
+                      accessToken:
+                          type: string
+        User:
+            type: object
+            allOf:
+                - $ref: '#/components/schemas/UserResponseWithAccessToken'
+                - type: object
+                  properties:
+                      password:
+                          type: string
+                      isVerified:
+                          type: boolean
+                      emailVerificationToken:
+                          type: string
+                      resetPasswordToken:
+                          type: string
+                      resetPasswordTokenExpiryTime:
+                          type: integer
+        Message:
+            type: object
+            properties:
+                message:
+                    type: string
 
     securitySchemes:
         bearerAuth:

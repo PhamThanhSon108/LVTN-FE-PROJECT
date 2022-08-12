@@ -1,8 +1,9 @@
 import dotenv from 'dotenv';
 import schedule, { scheduleJob } from 'node-schedule';
-import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 import User from '../models/user.model.js';
 import { sendMail } from '../utils/nodemailler.js';
+import generateAuthToken from '../utils/generateToken.js';
 
 dotenv.config();
 
@@ -11,17 +12,20 @@ const login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
+        res.status(200);
         res.json({
             _id: user._id,
             name: user.name,
             email: user.email,
-            phone: user.phone,
             isAdmin: user.isAdmin,
-            token: generateToken(user._id),
-            createdAt: user.createdAt,
+            role: user.role,
+            accessToken: generateAuthToken({ _id: user._id }),
+            phone: user.phone,
             address: user.address,
             city: user.city,
             country: user.country,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
         });
     } else {
         res.status(401);
@@ -31,22 +35,20 @@ const login = async (req, res) => {
 
 const register = async (req, res, next) => {
     const { name, email, phone, password } = req.body;
-
     const userExists = await User.findOne({ email });
-
     if (userExists) {
         res.status(400);
         throw new Error('User already exists');
     }
-    const emailVerificationToken = uuidv4();
     const user = await User.create({
         name,
         email,
         phone,
         password,
-        emailVerificationToken,
     });
-    const url = `http://localhost:${process.env.PORT}/api/user/auth/verify-email/?token=${emailVerificationToken}`;
+    const emailVerificationToken = user.getEmailVerificationToken();
+    await user.save();
+    const url = `http://localhost:${process.env.PORT}/api/user/auth/verify-email/?emailVerificationToken=${emailVerificationToken}`;
     const html = `<a href="${url}" target="_blank"><b>Click đi đừng ngại</b></a>`;
     //start cron-job
     let scheduledJob = schedule.scheduleJob(`*/${process.env.EMAIL_VERIFY_EXPIED_TIME_IN_MINUTE} * * * *`, async () => {
@@ -65,66 +67,130 @@ const register = async (req, res, next) => {
     try {
         await sendMail(messageOptions);
         res.status(200);
-        res.json('Sending mail successfully');
+        res.json({ message: 'Sending verification mail successfully' });
     } catch (error) {
         next(error);
     }
-    /* if (user) {
-        res.status(201).json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            phone: user.phone,
-            isAdmin: user.isAdmin,
-            address: user.address,
-            city: user.city,
-            country: user.country,
-            token: generateToken(user._id),
-        });
-    } else {
-        res.status(400);
-        throw new Error('Invalid User Data');
-    } */
 };
 
 const verifyEmail = async (req, res) => {
-    const emailVerificationToken = req.query.token;
-    const user = await User.findOne({ emailVerificationToken: emailVerificationToken });
+    const emailVerificationToken = req.query.emailVerificationToken || null;
+    const hashedToken = crypto.createHash('sha256').update(emailVerificationToken).digest('hex');
+    const user = await User.findOne({ emailVerificationToken: hashedToken });
     if (!user) {
         res.status(400);
         throw new Error('Email verification token is not valid');
     }
-    const verifiedUser = await User.findOneAndUpdate(
-        { _id: user._id },
-        { emailVerificationToken: null, isVerified: true },
-    );
-    if (!verifiedUser) {
-        res.status(500);
-        throw new Error('Failed to validate email verification token');
-    }
+    user.isVerified = true;
+    user.emailVerificationToken = null;
+    await user.save();
     res.status(200);
     res.json('Your email has been verified');
 };
 
-const getProfile = async (req, res) => {
-    const user = await User.findById(req.user._id);
+const cancelVerifyEmail = async (req, res) => {
+    const emailVerificationToken = req.query.emailVerificationToken || null;
+    const hashedToken = crypto.createHash('sha256').update(emailVerificationToken).digest('hex');
+    const user = await User.findOneAndDelete({ emailVerificationToken: hashedToken });
+    if (!user) {
+        res.status(400);
+        throw new Error('Email verification token is not valid');
+    }
+    res.status(200);
+    res.json('Canceling email verification succeed');
+};
 
-    if (user) {
-        res.json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            phone: user.phone,
-            isAdmin: user.isAdmin,
-            createdAt: user.createdAt,
-            address: user.address,
-            city: user.city,
-            country: user.country,
-        });
-    } else {
+const forgotPassword = async (req, res) => {
+    const email = req.body.email || null;
+    const user = await User.findOne({ email: email });
+    if (!user) {
+        res.status(400);
+        throw new Error('Email not found');
+    }
+    //reset password
+    const resetPasswordToken = user.getResetPasswordToken();
+    await user.save();
+    //send reset password email
+    const url = `http://localhost:${process.env.PORT}/api/user/auth/reset-password/?resetPasswordToken=${resetPasswordToken}`;
+    const html = `<a href="${url}" target="_blank"><b>Click đi đừng ngại</b></a>`;
+    //set up message options
+    const messageOptions = {
+        recipient: user.email,
+        subject: 'Reset Password',
+        html: html,
+    };
+    //send verify email
+    try {
+        await sendMail(messageOptions);
+        res.status(200);
+        res.json('Sending reset password mail successfully');
+    } catch (error) {
+        next(error);
+    }
+};
+
+const resetPassword = async (req, res) => {
+    const resetPasswordToken = req.query.resetPasswordToken || null;
+    const newPassword = req.body.newPassword || null;
+    if (!newPassword) {
+        res.status(400);
+        throw new Error('Your new password is not valid');
+    }
+    const hashedToken = crypto.createHash('sha256').update(resetPasswordToken).digest('hex');
+    const user = await User.findOne({
+        resetPasswordToken: hashedToken,
+        resetPasswordTokenExpiryTime: {
+            $gte: Date.now() * process.env.RESET_PASSWORD_EXPIRY_TIME_IN_MINUTE * 60 * 1000,
+        },
+    });
+    if (!user) {
+        res.status(400);
+        throw new Error('Reset password token is not valid');
+    }
+    user.password = newPassword;
+    user.resetPasswordToken = null;
+    user.resetPasswordTokenExpiryTime = null;
+    await user.save();
+    res.status(200);
+    res.json('Your password has been reset');
+};
+
+const cancelResetPassword = async (req, res) => {
+    const resetPasswordToken = req.query.resetPasswordToken || null;
+    const hashedToken = crypto.createHash('sha256').update(resetPasswordToken).digest('hex');
+    const user = await User.findOneAndUpdate(
+        {
+            resetPasswordToken: hashedToken,
+            resetPasswordTokenExpiryTime: {
+                $gte: Date.now() * process.env.RESET_PASSWORD_EXPIRY_TIME_IN_MINUTE * 60 * 1000,
+            },
+        },
+        {
+            resetPasswordToken: null,
+            resetPasswordTokenExpiryTime: null,
+        },
+    );
+    if (!user) {
+        res.status(400);
+        throw new Error('Reset password token is not found');
+    }
+    res.status(200);
+    res.json('Canceling reset password succeed');
+};
+
+const getProfile = async (req, res) => {
+    const user = await User.findById(req.user._id).select({
+        password: 0,
+        isVerified: 0,
+        emailVerificationToken: 0,
+        resetPasswordToken: 0,
+        resetPasswordTokenExpiryTime: 0,
+    });
+    if (!user) {
         res.status(404);
         throw new Error('User not found');
     }
+    res.json(user);
 };
 
 const updateProfile = async (req, res) => {
@@ -137,27 +203,19 @@ const updateProfile = async (req, res) => {
         user.address = req.body.address || user.address;
         user.city = req.body.city || user.city;
         user.country = req.body.country || user.country;
-
-        if (req.body.password) {
-            if (await user.matchPassword(req.body.oldPassword)) {
-                user.password = req.body.password;
-            } else {
-                res.status(404);
-                throw new Error('Old Password is not correct!');
-            }
-        }
         const updatedUser = await user.save();
         res.json({
             _id: updatedUser._id,
             name: updatedUser.name,
             email: updatedUser.email,
-            phone: updatedUser.phone,
             isAdmin: updatedUser.isAdmin,
+            role: updatedUser.role,
+            phone: updatedUser.phone,
+            address: updatedUser.address,
+            city: updatedUser.city,
+            country: updatedUser.country,
             createdAt: updatedUser.createdAt,
-            token: generateToken(updatedUser._id),
-            address: user.address,
-            city: user.city,
-            country: user.country,
+            updatedAt: updatedUser.updatedAt,
         });
     } else {
         res.status(404);
@@ -165,9 +223,49 @@ const updateProfile = async (req, res) => {
     }
 };
 
+const changePassword = async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword && currentPassword.length() <= 0) {
+        res.status(400);
+        throw new Error('Current password is not valid');
+    }
+    if (!newPassword && newPassword.length() <= 0) {
+        res.status(400);
+        throw new Error('New password is not valid');
+    }
+    const user = await User.findById(req.user._id);
+    if (!user) {
+        res.status(404);
+        throw new Error('User not found');
+    }
+    if (await user.matchPassword(req.body.currentPassword)) {
+        user.password = newPassword;
+        await user.save();
+        res.status(200);
+        res.json({
+            token: generateAuthToken({ _id: user._id }),
+        });
+    } else {
+        res.status(400);
+        throw new Error('Current password is not correct!');
+    }
+};
+
 const getUsersByAdmin = async (req, res) => {
-    const users = await User.find({});
+    const users = await User.find();
     res.json(users);
 };
-const userController = { login, register, getProfile, updateProfile, getUsersByAdmin, verifyEmail };
+const userController = {
+    login,
+    register,
+    getProfile,
+    updateProfile,
+    changePassword,
+    getUsersByAdmin,
+    verifyEmail,
+    forgotPassword,
+    resetPassword,
+    cancelVerifyEmail,
+    cancelResetPassword,
+};
 export default userController;
