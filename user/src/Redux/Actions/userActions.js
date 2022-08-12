@@ -31,7 +31,7 @@ export const login = (email, password) => async (dispatch) => {
             },
         };
 
-        const { data } = await axios.post(`/api/users/login`, { email, password }, config);
+        const { data } = await axios.post(`/api/user/login`, { email, password }, config);
         dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
         // dispatch(listCart());
         localStorage.setItem('userInfo', JSON.stringify(data));
@@ -63,7 +63,7 @@ export const register = (name, email, phone, password) => async (dispatch) => {
             },
         };
 
-        const { data } = await axios.post(`/api/users`, { name, email, phone, password }, config);
+        const { data } = await axios.post(`/api/user`, { name, email, phone, password }, config);
         dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
         dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
 
@@ -86,11 +86,11 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
 
-        const { data } = await axios.get(`/api/users/${id}`, config);
+        const { data } = await axios.get(`/api/user/${id}`, config);
         dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -116,11 +116,11 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
         const config = {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
 
-        const { data } = await axios.put(`/api/users/profile`, user, config);
+        const { data } = await axios.put(`/api/user/profile`, user, config);
         dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: data });
         dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
 
@@ -148,11 +148,11 @@ export const updateUserPassword = (user) => async (dispatch, getState) => {
         const config = {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
 
-        const { data } = await axios.put(`/api/users/profile`, user, config);
+        const { data } = await axios.put(`/api/user/profile`, user, config);
         dispatch({ type: USER_UPDATE_PASSWORD_SUCCESS, payload: data });
         dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
 

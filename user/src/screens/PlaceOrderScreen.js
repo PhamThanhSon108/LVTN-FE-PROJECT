@@ -155,7 +155,7 @@ const PlaceOrderScreen = ({ history }) => {
                                                 <img src={item.product.image} alt={item.name} />
                                             </div>
                                             <div className="col-md-5 col-6 d-flex align-items-center">
-                                                <Link to={`/products/${item.product}`}>
+                                                <Link to={`/product/${item.product}`}>
                                                     <h6>{item.product.name}</h6>
                                                 </Link>
                                             </div>

@@ -30,7 +30,7 @@ const Sidebar = () => {
                             </NavLink>
                         </li>
                         <li className="menu-item">
-                            <NavLink activeClassName="active" className="menu-link" to="/products">
+                            <NavLink activeClassName="active" className="menu-link" to="/product">
                                 <i className="icon fas fa-shopping-bag"></i>
                                 <span className="text">Products</span>
                             </NavLink>
@@ -42,7 +42,7 @@ const Sidebar = () => {
                             </NavLink>
                         </li>
                         <li className="menu-item">
-                            <NavLink activeClassName="active" className="menu-link" to="/category">
+                            <NavLink activeClassName="active" className="menu-link" to="/categorie">
                                 <i className="icon fas fa-list"></i>
                                 <span className="text">Categories</span>
                             </NavLink>

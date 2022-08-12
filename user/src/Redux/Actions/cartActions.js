@@ -18,7 +18,7 @@ import { logout } from './userActions';
 
 // ADD TO CART OLD
 // export const addToCart = (id, qty) => async (dispatch, getState) => {
-//   const { data } = await axios.get(`/api/products/${id}`);
+//   const { data } = await axios.get(`/api/product/${id}`);
 
 //   dispatch({
 //     type: CART_ADD_ITEM,
@@ -44,7 +44,7 @@ export const listCart = () => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
 
@@ -74,7 +74,7 @@ export const addToCart = (productId, qty) => async (dispatch, getState) => {
         const { _id } = userInfo;
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
 
@@ -103,7 +103,7 @@ export const removefromcart = (pr) => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
         const user = userInfo._id;
@@ -142,7 +142,7 @@ export const clearFromCart = () => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
         const user = userInfo._id;

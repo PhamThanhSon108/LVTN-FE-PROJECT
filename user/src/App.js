@@ -26,7 +26,7 @@ const App = () => {
                 <Route path="/page/:pageNumber" component={HomeScreen} exact />
                 <Route path="/search/:keyword/page/:pageNumber" component={HomeScreen} exact />
                 <Route path="/category/:category/page/:pageNumber" component={HomeScreen} exact />
-                <Route path="/products/:id" component={SingleProduct} />
+                <Route path="/product/:id" component={SingleProduct} />
                 <Route path="/login" component={Login} />
                 <Route path="/register" component={Register} />
                 <PrivateRouter path="/profile" component={ProfileScreen} />

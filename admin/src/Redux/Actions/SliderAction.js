@@ -36,7 +36,7 @@ export const deleteSlider = (id) => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
 
@@ -65,7 +65,7 @@ export const createSlider = (url, id) => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
 

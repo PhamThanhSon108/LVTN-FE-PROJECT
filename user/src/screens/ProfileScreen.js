@@ -48,10 +48,10 @@ const ProfileScreen = () => {
                                 </div>
                                 <div className="col-md-8">
                                     <h5 className="author-card-name mb-2">
-                                        <strong>{userInfo.name}</strong>
+                                        <strong>{userInfo?.name || 'alias'}</strong>
                                     </h5>
                                     <span className="author-card-position">
-                                        <>Joined {moment(userInfo.createdAt).format('LL')}</>
+                                        <>Joined {moment(userInfo?.createdAt).format('LL')}</>
                                     </span>
                                 </div>
                             </div>

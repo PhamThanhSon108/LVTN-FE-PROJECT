@@ -39,13 +39,17 @@ function App() {
             <Router>
                 <Switch>
                     <PrivateRouter path="/" component={HomeScreen} exact />
-                    <PrivateRouter path="/products" component={ProductScreen} exact />
-                    <PrivateRouter path="/products/page/:pageNumber" component={ProductScreen} exact />
-                    <PrivateRouter path="/products/search/:keyword" component={ProductScreen} exact />
-                    <PrivateRouter path="/products/category/:category" component={ProductScreen} exact />
-                    <PrivateRouter path="/products/search/:keyword/page/:pageNumber" component={ProductScreen} exact />
-                    <PrivateRouter path="/products/category/:category/page/:pageNumber" component={ProductScreen}exact />
-                    <PrivateRouter path="/category" component={CategoriesScreen} />
+                    <PrivateRouter path="/product" component={ProductScreen} exact />
+                    <PrivateRouter path="/product/page/:pageNumber" component={ProductScreen} exact />
+                    <PrivateRouter path="/product/search/:keyword" component={ProductScreen} exact />
+                    <PrivateRouter path="/product/categorie/:category" component={ProductScreen} exact />
+                    <PrivateRouter path="/product/search/:keyword/page/:pageNumber" component={ProductScreen} exact />
+                    <PrivateRouter
+                        path="/product/categorie/:category/page/:pageNumber"
+                        component={ProductScreen}
+                        exact
+                    />
+                    <PrivateRouter path="/categorie" component={CategoriesScreen} />
                     <PrivateRouter path="/orders" component={OrderScreen} />
                     <PrivateRouter path="/order/:id" component={OrderDetailScreen} />
                     <PrivateRouter path="/addproduct" component={AddProduct} />

@@ -15,10 +15,10 @@ const Pagination = (props) => {
                     <Link
                         to={
                             keyword
-                                ? `/products/search/${keyword}/page/${page > 1 ? page - 1 : page}`
+                                ? `/product/search/${keyword}/page/${page > 1 ? page - 1 : page}`
                                 : category
-                                ? `/products/category/${category}/page/${page > 1 ? page - 1 : page}`
-                                : `/products/page/${page > 1 ? page - 1 : page}`
+                                ? `/product/categorie/${category}/page/${page > 1 ? page - 1 : page}`
+                                : `/product/page/${page > 1 ? page - 1 : page}`
                         }
                     >
                         <i class="fas fa-angle-double-left"></i>
@@ -31,10 +31,10 @@ const Pagination = (props) => {
                                 className="page-link"
                                 to={
                                     keyword
-                                        ? `/products/search/${keyword}/page/${x + 1}`
+                                        ? `/product/search/${keyword}/page/${x + 1}`
                                         : category
-                                        ? `/products/category/${category}/page/${x + 1}`
-                                        : `/products/page/${x + 1}`
+                                        ? `/product/categorie/${category}/page/${x + 1}`
+                                        : `/product/page/${x + 1}`
                                 }
                             >
                                 {x + 1}
@@ -46,10 +46,10 @@ const Pagination = (props) => {
                     <Link
                         to={
                             keyword
-                                ? `/products/search/${keyword}/page/${page < pages ? page + 1 : pages}`
+                                ? `/product/search/${keyword}/page/${page < pages ? page + 1 : pages}`
                                 : category
-                                ? `/products/category/${category}/page/${page < pages ? page + 1 : pages}`
-                                : `/products/page/${page < pages ? page + 1 : pages}`
+                                ? `/product/categorie/${category}/page/${page < pages ? page + 1 : pages}`
+                                : `/product/page/${page < pages ? page + 1 : pages}`
                         }
                     >
                         <i class="fas fa-angle-double-right"></i>

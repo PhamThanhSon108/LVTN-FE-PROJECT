@@ -1,4 +1,4 @@
-import {React, useEffect} from 'react';
+import { React, useEffect } from 'react';
 import TopTotal from './TopTotal';
 import LatestOrder from './LatestOrder';
 import SaleStatistics from './SalesStatistics';
@@ -25,7 +25,7 @@ const Main = () => {
                     <h2 className="content-title"> Dashboard </h2>
                 </div>
                 {/* Top Total */}
-                <TopTotal orders={orders} countProducts={countProducts} countUsers={users?users.length:0} />
+                <TopTotal orders={orders} countProducts={countProducts} countUsers={users ? users.length : 0} />
 
                 <div className="row">
                     {/* STATICS */}

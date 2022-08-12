@@ -24,10 +24,10 @@ export const ListCategory = () => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
-        const { data } = await axios.get(`/api/category`, config);
+        const { data } = await axios.get(`/api/categorie`, config);
         dispatch({ type: CATEGORY_SUCCESS, payload: data });
     } catch (error) {
         dispatch({
@@ -46,10 +46,10 @@ export const DeleteCategory = (i) => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
-        const { data } = await axios.delete(`/api/category/${i}`, config);
+        const { data } = await axios.delete(`/api/categorie/${i}`, config);
         dispatch({ type: CATEGORY_DELETE_SUCCESS, payload: data });
     } catch (error) {
         dispatch({
@@ -68,10 +68,10 @@ export const addCategory = (name, description) => async (dispatch, getState) => 
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
-        const { data } = await axios.post(`/api/category`, { name, description }, config);
+        const { data } = await axios.post(`/api/categorie`, { name, description }, config);
         dispatch({ type: CATEGORY_ADD_SUCCESS, payload: data });
     } catch (error) {
         dispatch({
@@ -89,10 +89,10 @@ export const UpdateCurrentCategory = (idCategory, name, description) => async (d
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
-        const { data } = await axios.put(`/api/category`, { idCategory, name, description }, config);
+        const { data } = await axios.put(`/api/categorie`, { idCategory, name, description }, config);
         dispatch({ type: CATEGORY_UPDATE_SUCCESS, payload: data });
     } catch (error) {
         dispatch({

@@ -27,9 +27,9 @@ const MainProducts = (props) => {
         e.preventDefault();
         if (kewywordSearch !== undefined) {
             if (kewywordSearch.trim() && kewywordSearch) {
-                history.push(`/products/search/${kewywordSearch}`);
+                history.push(`/product/search/${kewywordSearch}`);
             } else {
-                history.push(`/products`);
+                history.push(`/product`);
             }
         }
     };
@@ -37,9 +37,9 @@ const MainProducts = (props) => {
         e.preventDefault();
         if (e.target.value !== undefined) {
             if (e.target.value.trim() && e.target.value) {
-                history.push(`/products/category/${e.target.value}`);
+                history.push(`/product/categorie/${e.target.value}`);
             } else {
-                history.push(`/products`);
+                history.push(`/product`);
             }
         }
     };

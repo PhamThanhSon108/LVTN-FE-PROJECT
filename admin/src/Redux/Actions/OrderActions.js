@@ -28,11 +28,11 @@ export const listOrders = () => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
 
-        const { data } = await axios.get(`/api/orders/all`, config);
+        const { data } = await axios.get(`/api/order/all`, config);
 
         dispatch({ type: ORDER_LIST_SUCCESS, payload: data });
     } catch (error) {
@@ -58,11 +58,11 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
 
-        const { data } = await axios.get(`/api/orders/${id}`, config);
+        const { data } = await axios.get(`/api/order/${id}`, config);
         dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -87,11 +87,11 @@ export const deliverOrder = (order) => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
 
-        const { data } = await axios.put(`/api/orders/${order._id}/delivered`, {}, config);
+        const { data } = await axios.put(`/api/order/${order._id}/delivered`, {}, config);
         dispatch({ type: ORDER_DELIVERED_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -116,11 +116,11 @@ export const paidOrder = (order) => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
 
-        const { data } = await axios.put(`/api/orders/${order._id}/paid`, {}, config);
+        const { data } = await axios.put(`/api/order/${order._id}/paid`, {}, config);
         dispatch({ type: ORDER_PAID_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -144,11 +144,11 @@ export const cancelOrder = (order) => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
 
-        const { data } = await axios.delete(`/api/orders/${order._id}/cancel`, config);
+        const { data } = await axios.delete(`/api/order/${order._id}/cancel`, config);
         dispatch({ type: ORDER_CANCEL_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;

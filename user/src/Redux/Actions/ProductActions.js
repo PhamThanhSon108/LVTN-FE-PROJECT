@@ -19,7 +19,7 @@ import { logout } from './userActions';
 export const ListProductAll = () => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_LIST_ALL_REQUEST });
-        const { data } = await axios.get(`/api/products/ProductAll`);
+        const { data } = await axios.get(`/api/product/ProductAll`);
         dispatch({ type: PRODUCT_LIST_ALL_SUCCESS, payload: data });
     } catch (error) {
         dispatch({
@@ -36,7 +36,7 @@ export const listProduct =
         try {
             dispatch({ type: PRODUCT_LIST_REQUEST });
             const { data } = await axios.get(
-                `/api/products?&category=${category}&keyword=${keyword}&pageNumber=${pageNumber}&rating=${rating}
+                `/api/product?&category=${category}&keyword=${keyword}&pageNumber=${pageNumber}&rating=${rating}
         &minPrice=${minPrice}&maxPrice=${maxPrice}&sortProducts=${sortProducts}`,
             );
             dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
@@ -52,7 +52,7 @@ export const listProduct =
 export const listProductDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_DETAILS_REQUEST });
-        const { data } = await axios.get(`/api/products/${id}`);
+        const { data } = await axios.get(`/api/product/${id}`);
         dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
     } catch (error) {
         dispatch({
@@ -74,11 +74,11 @@ export const createProductReview = (productId, review) => async (dispatch, getSt
         const config = {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
             },
         };
 
-        await axios.post(`/api/products/${productId}/review`, review, config);
+        await axios.post(`/api/product/${productId}/review`, review, config);
         dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;

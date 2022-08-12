@@ -19,7 +19,7 @@ export default function NavBar({ onRemove }) {
 
             <div className="navbar-menu">
                 <ul className="navbar-list">
-                    {categories.map((category) => (
+                    {categories?.map((category) => (
                         <li className="navbar-list__li">
                             <Link to={`/category/${category._id}`}>{category.name}</Link>
                         </li>
