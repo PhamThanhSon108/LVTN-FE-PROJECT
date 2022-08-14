@@ -19,7 +19,14 @@ import axios from 'axios';
 import { ORDER_LIST_MY_RESET } from '../Constants/OrderConstants';
 import { addToCart, listCart } from './cartActions';
 import { CART_LIST_MY_RESET } from '../Constants/CartConstants';
+import { toast } from 'react-toastify';
 
+const Toastobjects = {
+    pauseOnFocusLoss: false,
+    draggable: false,
+    pauseOnHover: false,
+    autoClose: 2000,
+};
 // LOGIN
 export const login = (email, password) => async (dispatch) => {
     try {
@@ -32,6 +39,7 @@ export const login = (email, password) => async (dispatch) => {
         };
 
         const { data } = await axios.post(`/api/user/login`, { email, password }, config);
+        console.log(data, 'login');
         dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
         // dispatch(listCart());
         localStorage.setItem('userInfo', JSON.stringify(data));
@@ -121,10 +129,11 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
         };
 
         const { data } = await axios.put(`/api/user/profile`, user, config);
-        dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: data });
-        dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
-
-        localStorage.setItem('userInfo', JSON.stringify(data));
+        console.log(data, 'updateprofile');
+        dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: { ...data, accessToken: userInfo.accessToken } });
+        dispatch({ type: USER_LOGIN_SUCCESS, payload: { ...data, accessToken: userInfo.accessToken } });
+        toast.success('Profile Updated', Toastobjects);
+        localStorage.setItem('userInfo', JSON.stringify({ ...data, accessToken: userInfo.accessToken }));
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         if (message === 'Not authorized, token failed') {
@@ -134,6 +143,7 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
             type: USER_UPDATE_PROFILE_FAIL,
             payload: message,
         });
+        toast.error(message, Toastobjects);
     }
 };
 
@@ -152,13 +162,14 @@ export const updateUserPassword = (user) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.put(`/api/user/profile`, user, config);
-        dispatch({ type: USER_UPDATE_PASSWORD_SUCCESS, payload: data });
-        dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
-
-        localStorage.setItem('userInfo', JSON.stringify(data));
+        const { data } = await axios.patch(`/api/user/auth/change-password`, user, config);
+        dispatch({ type: USER_UPDATE_PASSWORD_SUCCESS, payload: { ...userInfo, accessToken: userInfo.accessToken } });
+        // dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+        toast.success('Update password success', Toastobjects);
+        localStorage.setItem('userInfo', JSON.stringify({ ...userInfo, accessToken: data.token }));
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+
         if (message === 'Not authorized, token failed') {
             dispatch(logout());
         }
@@ -166,5 +177,6 @@ export const updateUserPassword = (user) => async (dispatch, getState) => {
             type: USER_UPDATE_PROFILE_FAIL,
             payload: message,
         });
+        toast.error(message, Toastobjects);
     }
 };

@@ -24,12 +24,6 @@ const ProfileTabs = () => {
     const toastId = React.useRef(null);
     const refProfile = useRef(); /// ghi chú
     const refSetPassword = useRef(); /// ghi chú
-    const Toastobjects = {
-        pauseOnFocusLoss: false,
-        draggable: false,
-        pauseOnHover: false,
-        autoClose: 2000,
-    };
 
     const dispatch = useDispatch();
 
@@ -43,18 +37,6 @@ const ProfileTabs = () => {
         loading: updateLoading,
         error: errorUpdate,
     } = userUpdateProfile;
-
-    // xư lý phần cập nhật mật khẩu
-    // function removeProfile() {
-    //   refProfile.current.style.display("none")
-    //   refSetPassword.current.style.display("block")
-
-    // }
-    // function setProfile() {
-    //   refProfile.current.style.display("block")
-    //   refSetPassword.current.style.display("none")
-
-    // }
 
     function checkProfile() {
         let x = Number(checkbox);
@@ -136,14 +118,14 @@ const ProfileTabs = () => {
         if (Object.keys(passObj).length > 0) return false;
         return true;
     }
-    useEffect(() => {
-        dispatch(listCart());
-        if (!toast.isActive(toastId.current)) {
-            if (updatesuccessPass === true) {
-                toastId.current = toast.success('Password Updated', Toastobjects);
-            }
-        }
-    }, [updatesuccessPass]);
+    // useEffect(() => {
+    //     dispatch(listCart());
+    //     if (!toast.isActive(toastId.current)) {
+    //         if (updatesuccessPass === true) {
+    //             toastId.current = toast.success('Password Updated', Toastobjects);
+    //         }
+    //     }
+    // }, [updatesuccessPass]);
     useEffect(() => {
         if (user) {
             setName(user.name);
@@ -153,9 +135,9 @@ const ProfileTabs = () => {
             setCity(user.city);
             setCountry(user.country);
         }
-        if (errorUpdate) {
-            toastId.current = toast.error(error, Toastobjects);
-        }
+        // if (errorUpdate) {
+        //     toastId.current = toast.error(error, Toastobjects);
+        // }
     }, [dispatch, user]);
 
     // useEffect(() => {
@@ -166,9 +148,9 @@ const ProfileTabs = () => {
         if (!checkObjProfile()) return;
         dispatch(updateUserProfile({ id: user._id, name, email, phone, country, city, address }));
 
-        if (!toast.isActive(toastId.current)) {
-            toastId.current = toast.success('Profile Updated', Toastobjects);
-        }
+        // if (!toast.isActive(toastId.current)) {
+        //     toastId.current = toast.success('Profile Updated', Toastobjects);
+        // }
     };
 
     const submitUpdatePassword = (e) => {
@@ -188,8 +170,7 @@ const ProfileTabs = () => {
         //     }
         //   }
         // }
-        dispatch(updateUserPassword({ id: user._id, oldPassword, password }));
-
+        dispatch(updateUserPassword({ currentPassword: oldPassword, newPassword: password }));
         setOldPassword('');
         setPassword('');
         setConfirmPassword('');
@@ -197,7 +178,7 @@ const ProfileTabs = () => {
     return (
         <>
             <Toast />
-            {error && <Message variant="alert-danger">{error}</Message>}
+            {/* {error && <Message variant="alert-danger">{error}</Message>} */}
             {loading && <Loading />}
             {updateLoading && <Loading />}
             <div className="row form-container">
@@ -334,7 +315,7 @@ const ProfileTabs = () => {
                     style={{ display: uploadPassword ? 'block' : 'none' }}
                 >
                     {/* dòng này sơn nó in ra thống báo lỗi sơn nhớ sửa lại nhá */}
-                    {errorUpdate && <Message variant="alert-danger">{errorUpdate}</Message>}
+                    {/* {errorUpdate && <Message variant="alert-danger">{errorUpdate}</Message>} */}
                     <form className="row  form-container" onSubmit={submitUpdatePassword}>
                         <div className="col-md-12">
                             <div className="form">
