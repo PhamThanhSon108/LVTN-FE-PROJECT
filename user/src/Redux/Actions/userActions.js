@@ -10,16 +10,16 @@ import {
     USER_REGISTER_FAIL,
     USER_REGISTER_REQUEST,
     USER_REGISTER_SUCCESS,
+    USER_REGISTER_VERIFY,
     USER_UPDATE_PASSWORD_SUCCESS,
     USER_UPDATE_PROFILE_FAIL,
     USER_UPDATE_PROFILE_REQUEST,
     USER_UPDATE_PROFILE_SUCCESS,
 } from '../Constants/UserContants';
-import axios from 'axios';
 import { ORDER_LIST_MY_RESET } from '../Constants/OrderConstants';
-import { addToCart, listCart } from './cartActions';
 import { CART_LIST_MY_RESET } from '../Constants/CartConstants';
 import { toast } from 'react-toastify';
+import request from '../../utils/request';
 
 const Toastobjects = {
     pauseOnFocusLoss: false,
@@ -38,30 +38,43 @@ export const login = (email, password) => async (dispatch) => {
             },
         };
 
-        const { data } = await axios.post(`/api/user/login`, { email, password }, config);
-        console.log(data, 'login');
+        const { data } = await request.post(`/api/user/login`, { email, password }, config);
         dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
         // dispatch(listCart());
         localStorage.setItem('userInfo', JSON.stringify(data));
     } catch (error) {
+        const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         dispatch({
             type: USER_LOGIN_FAIL,
-            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+            payload: message,
         });
+        toast.error(message, Toastobjects);
     }
 };
 
 // LOGOUT
 export const logout = () => (dispatch) => {
-    localStorage.removeItem('userInfo');
-    dispatch({ type: USER_LOGOUT });
-    dispatch({ type: USER_DETAILS_RESET });
-    dispatch({ type: ORDER_LIST_MY_RESET });
-    dispatch({ type: CART_LIST_MY_RESET });
+    try {
+        setTimeout(() => {
+            dispatch({ type: USER_LOGIN_REQUEST });
+        }, 2000);
+        setTimeout(() => {
+            localStorage.removeItem('userInfo');
+            dispatch({ type: USER_LOGOUT });
+            dispatch({ type: USER_DETAILS_RESET });
+            dispatch({ type: ORDER_LIST_MY_RESET });
+            dispatch({ type: CART_LIST_MY_RESET });
+        }, 3000);
+    } catch (error) {
+        toast.error(
+            error.response && error.response.data.message ? error.response.data.message : error.message,
+            Toastobjects,
+        );
+    }
 };
 
 // REGISTER
-export const register = (name, email, phone, password) => async (dispatch) => {
+export const register = (history, name, email, phone, password) => async (dispatch) => {
     try {
         dispatch({ type: USER_REGISTER_REQUEST });
 
@@ -71,11 +84,17 @@ export const register = (name, email, phone, password) => async (dispatch) => {
             },
         };
 
-        const { data } = await axios.post(`/api/user`, { name, email, phone, password }, config);
-        dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
-        dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+        const { data } = await request.post(`/api/user/register`, { name, email, password, phone }, config);
+        dispatch({ type: USER_REGISTER_VERIFY });
+        // dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+        toast.warn('Verification message has been sent to your gmail, please check it', Toastobjects);
+        setTimeout(() => {
+            if (data) {
+                window.location.href = 'https://mail.google.com/mail/u/0/?tab=rm#spam';
+            }
+        }, 2000);
 
-        localStorage.setItem('userInfo', JSON.stringify(data));
+        // localStorage.setItem('userInfo', JSON.stringify(data));
     } catch (error) {
         dispatch({
             type: USER_REGISTER_FAIL,
@@ -84,6 +103,69 @@ export const register = (name, email, phone, password) => async (dispatch) => {
     }
 };
 
+export const confirmRegister = (verifyEmail, history) => async (dispatch) => {
+    try {
+        // dispatch({ type: USER_REGISTER_REQUEST });
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+
+        const { data } = await request.patch(
+            `/api/user/auth/verify-email?emailVerificationToken=${verifyEmail}`,
+            config,
+        );
+        toast.success('Register success', Toastobjects);
+        // dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
+        // dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+        setTimeout(() => {
+            history.push('/login');
+        }, 2000);
+        // localStorage.setItem('userInfo', JSON.stringify(data));
+    } catch (error) {
+        const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+
+        // dispatch({
+        //     type: USER_REGISTER_FAIL,
+        //     payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        // });
+        toast.error(message, Toastobjects);
+        setTimeout(() => {
+            history.push('/login');
+        }, 2000);
+    }
+};
+
+export const cancelRegister = (verifyEmail, history) => async (dispatch) => {
+    try {
+        // dispatch({ type: USER_REGISTER_REQUEST });
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+
+        const { data } = await request.patch(
+            `/api/user/auth/cancel-verify-email?emailVerificationToken=${verifyEmail}`,
+            config,
+        );
+        history.push('/login');
+    } catch (error) {
+        const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+
+        // dispatch({
+        //     type: USER_REGISTER_FAIL,
+        //     payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        // });
+        toast.error(message, Toastobjects);
+        setTimeout(() => {
+            history.push('/login');
+        }, 2000);
+    }
+};
 // USER DETAILS
 export const getUserDetails = (id) => async (dispatch, getState) => {
     try {
@@ -98,7 +180,7 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.get(`/api/user/${id}`, config);
+        const { data } = await request.get(`/api/user/${id}`, config);
         dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -128,7 +210,7 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.put(`/api/user/profile`, user, config);
+        const { data } = await request.put(`/api/user/profile`, user, config);
         console.log(data, 'updateprofile');
         dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: { ...data, accessToken: userInfo.accessToken } });
         dispatch({ type: USER_LOGIN_SUCCESS, payload: { ...data, accessToken: userInfo.accessToken } });
@@ -162,7 +244,7 @@ export const updateUserPassword = (user) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.patch(`/api/user/auth/change-password`, user, config);
+        const { data } = await request.patch(`/api/user/auth/change-password`, user, config);
         dispatch({ type: USER_UPDATE_PASSWORD_SUCCESS, payload: { ...userInfo, accessToken: userInfo.accessToken } });
         // dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
         toast.success('Update password success', Toastobjects);

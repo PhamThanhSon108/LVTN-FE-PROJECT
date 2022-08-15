@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import isEmpty from 'validator/lib/isEmpty';
+import Footer from '../components/Footer';
 import Message from '../components/LoadingError/Error';
-import Loading from '../components/LoadingError/Loading';
+import Loading, { FormLoading } from '../components/LoadingError/Loading';
+import Toast from '../components/LoadingError/Toast';
 import Header from './../components/Header';
 import { login } from './../Redux/Actions/userActions';
 
@@ -64,10 +66,12 @@ const Login = ({ location, history }) => {
     return (
         <>
             <Header />
+            <Toast />
             <div className="container d-flex flex-column justify-content-center align-items-center login-center">
-                {error && <Message variant="alert-danger">{error}</Message>}
-                {loading && <Loading />}
+                {/* {error && <Message variant="alert-danger">{error}</Message>} */}
                 <form className="Login col-md-6 col-lg-4 col-10" onSubmit={submitHandler}>
+                    {loading && <FormLoading />}
+
                     <div className="Login-from from-login">
                         <input
                             type="email"
@@ -112,10 +116,19 @@ const Login = ({ location, history }) => {
                             Password
                         </p>
                     </div>
-                    <button type="submit">Login</button>
-                    <p>
-                        <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>Create Account</Link>
+                    <button type="submit" className="btn btn-outline-danger btn__login">
+                        Login
+                    </button>
+                    <p className="d-flex justify-content-end btn__fogot-pass">
+                        <Link to={'/reset'}>Fogot password</Link>
                     </p>
+                    <div class="form-login__line-center-register">
+                        <p>New to Fashionshop?</p>
+                    </div>
+
+                    <div className="btn btn-outline-primary btn__register">
+                        <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>Create Account</Link>
+                    </div>
                 </form>
             </div>
         </>

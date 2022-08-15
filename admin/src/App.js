@@ -50,8 +50,8 @@ function App() {
                         exact
                     />
                     <PrivateRouter path="/categorie" component={CategoriesScreen} />
-                    <PrivateRouter path="/orders" component={OrderScreen} />
-                    <PrivateRouter path="/order/:id" component={OrderDetailScreen} />
+                    <PrivateRouter path="/orders" component={OrderScreen} exact />
+                    <PrivateRouter path="/order/:id" component={OrderDetailScreen} exact />
                     <PrivateRouter path="/addproduct" component={AddProduct} />
                     <PrivateRouter path="/users" component={UsersScreen} />
                     <PrivateRouter path="/slider" component={SliderScreen} />

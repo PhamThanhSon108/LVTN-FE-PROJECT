@@ -1,7 +1,7 @@
 import React from 'react';
 
 const TopTotal = (props) => {
-    const { orders, countProducts,countUsers } = props;
+    const { orders, countProducts, countUsers } = props;
     let totalSale = 0;
     if (orders) {
         orders.map((order) => (order.isPaid === true ? (totalSale = totalSale + order.totalPrice) : null));
@@ -15,7 +15,13 @@ const TopTotal = (props) => {
                             <i className="text-primary fas fa-usd-circle"></i>
                         </span>
                         <div className="text">
-                            <h6 className="mb-1">Total Sales</h6> <span>${totalSale.toFixed(0)}</span>
+                            <h6 className="mb-1">Total Sales</h6>{' '}
+                            <span>
+                                {totalSale.toLocaleString('en-US', {
+                                    style: 'currency',
+                                    currency: 'USD',
+                                })}
+                            </span>
                         </div>
                     </article>
                 </div>

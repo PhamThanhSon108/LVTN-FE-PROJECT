@@ -4,6 +4,7 @@ import { Link, useRouteMatch } from 'react-router-dom';
 import isEmpty from 'validator/lib/isEmpty';
 import Message from '../components/LoadingError/Error';
 import Loading from '../components/LoadingError/Loading';
+import Toast from '../components/LoadingError/Toast';
 import { register } from '../Redux/Actions/userActions';
 import Header from './../components/Header';
 
@@ -100,12 +101,13 @@ const Register = ({ location, history }) => {
         e.preventDefault();
         const isValid = validateAll();
         if (!isValid) return;
-        dispatch(register(name, email, phone, password));
+        dispatch(register(history, name, email, phone, password));
     };
 
     return (
         <>
             <Header />
+            <Toast />
             <div className="container d-flex flex-column justify-content-center align-items-center login-center">
                 {error && <Message variant="alert-danger">{error}</Message>}
                 {loading && <Loading />}

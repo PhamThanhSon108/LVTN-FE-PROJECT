@@ -1,4 +1,4 @@
-import axios from 'axios';
+import request from '../../utils/request';
 import {
     CART_CLEAR_SUCCESS,
     CART_CREATE_FAIL,
@@ -18,7 +18,7 @@ import { logout } from './userActions';
 
 // ADD TO CART OLD
 // export const addToCart = (id, qty) => async (dispatch, getState) => {
-//   const { data } = await axios.get(`/api/product/${id}`);
+//   const { data } = await request.get(`/api/product/${id}`);
 
 //   dispatch({
 //     type: CART_ADD_ITEM,
@@ -48,7 +48,7 @@ export const listCart = () => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.get(`/api/cart/${userInfo._id}`, config);
+        const { data } = await request.get(`/api/cart/${userInfo._id}`, config);
         localStorage.setItem('cartItems', JSON.stringify(data));
 
         dispatch({ type: CART_LIST_SUCCESS, payload: data });
@@ -78,7 +78,7 @@ export const addToCart = (productId, qty) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.post(`/api/cart/`, { productId, qty, _id }, config);
+        const { data } = await request.post(`/api/cart/`, { productId, qty, _id }, config);
         dispatch({ type: CART_CREATE_SUCCESS });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -107,7 +107,7 @@ export const removefromcart = (pr) => async (dispatch, getState) => {
             },
         };
         const user = userInfo._id;
-        await axios.post(
+        await request.post(
             `/api/cart/delete`,
             {
                 user,
@@ -146,7 +146,7 @@ export const clearFromCart = () => async (dispatch, getState) => {
             },
         };
         const user = userInfo._id;
-        await axios.delete(`/api/cart/${user}`, config);
+        await request.delete(`/api/cart/${user}`, config);
 
         dispatch({ type: CART_CLEAR_SUCCESS });
     } catch (error) {

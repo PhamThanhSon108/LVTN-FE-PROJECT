@@ -15,6 +15,8 @@ import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
 import NotFound from './screens/NotFound';
 import PrivateRouter from './PrivateRouter';
+import ResetScreen from './screens/ResetScreen';
+import ConfirmRegister from './screens/ConfirmRegister';
 
 const App = () => {
     return (
@@ -28,13 +30,16 @@ const App = () => {
                 <Route path="/category/:category/page/:pageNumber" component={HomeScreen} exact />
                 <Route path="/product/:id" component={SingleProduct} />
                 <Route path="/login" component={Login} />
-                <Route path="/register" component={Register} />
+                <Route path="/register" component={Register} exact />
+                <Route path="/register/confirm" component={ConfirmRegister} />
                 <PrivateRouter path="/profile" component={ProfileScreen} />
                 <PrivateRouter path="/cart/:id?" component={CartScreen} />
                 <PrivateRouter path="/shipping" component={ShippingScreen} />
                 <PrivateRouter path="/payment" component={PaymentScreen} />
                 <PrivateRouter path="/placeorder" component={PlaceOrderScreen} />
                 <PrivateRouter path="/order/:id" component={OrderScreen} />
+                <Route path="/reset" component={ResetScreen} />
+
                 <Route path="*" component={NotFound} />
             </Switch>
         </Router>

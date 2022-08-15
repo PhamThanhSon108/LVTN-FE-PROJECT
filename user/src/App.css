@@ -496,6 +496,9 @@ textarea:focus {
     margin-top: 10px;
     border-radius: 4px;
 }
+
+
+
 /* LOGIN */
 .login-from {
     position: relative;
@@ -657,6 +660,77 @@ textarea:focus {
 }
 .Login p a {
     color: #7a7a7a;
+}
+
+.btn ~ .btn__fogot-pass {
+    line-height: 1;
+    font-size: 14px;
+    color: #05a !important;
+    font-weight: 400;
+    z-index: 2;
+    position: relative;
+    display: inline-block;
+    /* background-color: #fff; */
+    padding: 0 8px 0 7px;
+}
+
+.btn__fogot-pass a:hover {
+    color: #ee2624 !important;
+}
+.form-login__line-center-register {
+    text-align: center;
+    position: relative;
+    top: 2px;
+    padding-top: 1px;
+    margin-bottom: 14px;
+    line-height: 0;
+}
+.form-login__line-center-register:after {
+    content: "";
+    width: 100%;
+    background-color: transparent;
+    display: block;
+    height: 1px;
+    border-top: 1px solid #e7e7e7;
+    position: absolute;
+    top: 75%;
+    margin-top: -1px;
+    z-index: 1;
+    
+}
+.form-login__line-center-register p {
+    line-height: 1;
+    font-size: 14px;
+    color: #767676;
+    font-weight: 400;
+    z-index: 2;
+    position: relative;
+    display: inline-block;
+    background-color: #fff;
+    padding: 0 8px 0 7px;
+
+}
+.btn__login {
+    width: 100%;
+}
+.btn__register{
+    width: 100%;
+}
+.btn__register:hover {
+    background-color: #0d98fc;
+}
+
+.layout__loading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    height: 100%;
+    width : 100%;
+    top: 0px;
+    right: 0px;
+    background-color: transparent;
+    position: absolute;
+    z-index: 10;
 }
 /* PROFILE */
 .author-card {

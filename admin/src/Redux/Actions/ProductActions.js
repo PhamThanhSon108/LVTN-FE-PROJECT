@@ -15,7 +15,7 @@ import {
     PRODUCT_UPDATE_REQUEST,
     PRODUCT_UPDATE_SUCCESS,
 } from '../Constants/ProductConstants';
-import axios from 'axios';
+import request from '../../utils/request';
 import { logout } from './userActions';
 
 export const listProducts =
@@ -34,7 +34,7 @@ export const listProducts =
                 },
             };
 
-            const { data } = await axios.get(
+            const { data } = await request.get(
                 `/api/product/admin?category=${category}&keyword=${keyword}&pageNumber=${pageNumber}`,
                 config,
             );
@@ -67,7 +67,7 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
             },
         };
 
-        await axios.delete(`/api/product/${id}`, config);
+        await request.delete(`/api/product/${id}`, config);
 
         dispatch({ type: PRODUCT_DELETE_SUCCESS });
     } catch (error) {
@@ -98,7 +98,7 @@ export const createProduct =
                 },
             };
 
-            const { data } = await axios.post(
+            const { data } = await request.post(
                 `/api/product/`,
                 { name, price, description, category, image, countInStock },
                 config,
@@ -121,7 +121,7 @@ export const createProduct =
 export const editProduct = (id) => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_EDIT_REQUEST });
-        const { data } = await axios.get(`/api/product/${id}`);
+        const { data } = await request.get(`/api/product/${id}`);
         dispatch({ type: PRODUCT_EDIT_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -151,7 +151,7 @@ export const updateProduct = (product) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.put(`/api/product/${product._id}`, product, config);
+        const { data } = await request.put(`/api/product/${product._id}`, product, config);
 
         dispatch({ type: PRODUCT_UPDATE_SUCCESS, payload: data });
         dispatch({ type: PRODUCT_EDIT_SUCCESS, payload: data });

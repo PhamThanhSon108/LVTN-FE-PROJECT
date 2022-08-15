@@ -21,9 +21,9 @@ import {
     ORDER_CANCEL_SUCCESS,
     ORDER_CANCEL_FAIL,
 } from '../Constants/OrderConstants';
-import axios from 'axios';
 import { CART_CLEAR_ITEMS } from '../Constants/CartConstants';
 import { logout } from './userActions';
+import request from '../../utils/request';
 
 // CREATE ORDER
 export const createOrder = (order) => async (dispatch, getState) => {
@@ -41,7 +41,7 @@ export const createOrder = (order) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.post(`/api/order`, order, config);
+        const { data } = await request.post(`/api/order`, order, config);
         dispatch({ type: ORDER_CREATE_SUCCESS, payload: data });
         dispatch({ type: CART_CLEAR_ITEMS, payload: data });
 
@@ -73,7 +73,7 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.get(`/api/order/${id}`, config);
+        const { data } = await request.get(`/api/order/${id}`, config);
         dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -103,7 +103,7 @@ export const payOrder = (orderId, paymentResult) => async (dispatch, getState) =
             },
         };
 
-        const { data } = await axios.put(`/api/order/${orderId}/pay`, paymentResult, config);
+        const { data } = await request.put(`/api/order/${orderId}/pay`, paymentResult, config);
         dispatch({ type: ORDER_PAY_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -132,7 +132,7 @@ export const listMyOrders = () => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.get(`/api/order/`, config);
+        const { data } = await request.get(`/api/order/`, config);
         dispatch({ type: ORDER_LIST_MY_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -161,7 +161,7 @@ export const orderGetAddress = () => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.get(`/api/order/${userInfo._id}/address`, config);
+        const { data } = await request.get(`/api/order/${userInfo._id}/address`, config);
         dispatch({ type: ORDER_ADDRESS_MY_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -179,7 +179,7 @@ export const orderGetAddress = () => async (dispatch, getState) => {
 export const listAllOrder = () => async (dispatch) => {
     try {
         dispatch({ type: ORDER_LIST_ALL_REQUEST });
-        const { data } = await axios.get(`/api/order/productbestseller`);
+        const { data } = await request.get(`/api/order/productbestseller`);
         dispatch({ type: ORDER_LIST_ALL_SUCCESS, payload: data });
     } catch (error) {
         dispatch({
@@ -203,7 +203,7 @@ export const cancelOrder = (order) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.delete(`/api/order/${order._id}/ucancel`, config);
+        const { data } = await request.delete(`/api/order/${order._id}/ucancel`, config);
         dispatch({ type: ORDER_CANCEL_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;

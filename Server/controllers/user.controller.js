@@ -48,7 +48,7 @@ const register = async (req, res, next) => {
     });
     const emailVerificationToken = user.getEmailVerificationToken();
     await user.save();
-    const url = `http://localhost:${process.env.PORT}/api/user/auth/verify-email/?emailVerificationToken=${emailVerificationToken}`;
+    const url = `http://localhost:3000/register/confirm?emailVerificationToken=${emailVerificationToken}`;
     const html = `<a href="${url}" target="_blank"><b>Click đi đừng ngại</b></a>`;
     //start cron-job
     let scheduledJob = schedule.scheduleJob(`*/${process.env.EMAIL_VERIFY_EXPIED_TIME_IN_MINUTE} * * * *`, async () => {

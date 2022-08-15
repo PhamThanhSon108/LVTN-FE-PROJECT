@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import request from '../../utils/request';
 import {
     SLIDER_CREATE_FAIL,
     SLIDER_CREATE_RESET,
@@ -16,7 +16,7 @@ import { logout } from './userActions';
 export const ListSlider = () => async (dispatch) => {
     try {
         dispatch({ type: SLIDER_LIST_REQUEST });
-        const { data } = await axios.get(`/api/slider`);
+        const { data } = await request.get(`/api/slider`);
         dispatch({ type: SLIDER_LIST_SUCCESS, payload: data });
     } catch (error) {
         dispatch({
@@ -40,7 +40,7 @@ export const deleteSlider = (id) => async (dispatch, getState) => {
             },
         };
 
-        await axios.delete(`/api/slider/${id}`, config);
+        await request.delete(`/api/slider/${id}`, config);
 
         dispatch({ type: SLIDER_DELETE_SUCCESS });
     } catch (error) {
@@ -69,7 +69,7 @@ export const createSlider = (url, id) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.post(`/api/slider/`, { url, id }, config);
+        const { data } = await request.post(`/api/slider/`, { url, id }, config);
 
         dispatch({ type: SLIDER_CREATE_SUCCESS, payload: data });
     } catch (error) {

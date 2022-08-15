@@ -20,10 +20,10 @@ const LatestOrder = (props) => {
                             {orders.slice(0, 5).map((order) => (
                                 <tr key={order._id}>
                                     <td>
-                                        <b>{order.user.name}</b>
+                                        <b>{order.user?.name}</b>
                                     </td>
-                                    <td>{order.user.email}</td>
-                                    <td>${order.totalPrice}</td>
+                                    <td>{order.user?.email}</td>
+                                    <td>${order?.totalPrice}</td>
                                     <td>
                                         {order?.cancel != 1 ? (
                                             order.isPaid ? (

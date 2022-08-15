@@ -1,12 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Message from '../LoadingError/Error';
 import Toast from './../LoadingError/Toast';
-import Loading from './../LoadingError/Loading';
-import { toast } from 'react-toastify';
+import Loading, { FormLoading } from './../LoadingError/Loading';
 import { updateUserPassword, updateUserProfile } from '../../Redux/Actions/userActions';
 import isEmpty from 'validator/lib/isEmpty';
-import { listCart } from '../../Redux/Actions/cartActions';
 
 const ProfileTabs = () => {
     const [name, setName] = useState('');
@@ -21,7 +18,6 @@ const ProfileTabs = () => {
     const [uploadProfile, setUploadProfile] = useState(true); //ghi chú
     const [uploadPassword, setUploadPassword] = useState(false); //ghi chú
     const [checkbox, setCheckbox] = useState('0');
-    const toastId = React.useRef(null);
     const refProfile = useRef(); /// ghi chú
     const refSetPassword = useRef(); /// ghi chú
 
@@ -118,14 +114,6 @@ const ProfileTabs = () => {
         if (Object.keys(passObj).length > 0) return false;
         return true;
     }
-    // useEffect(() => {
-    //     dispatch(listCart());
-    //     if (!toast.isActive(toastId.current)) {
-    //         if (updatesuccessPass === true) {
-    //             toastId.current = toast.success('Password Updated', Toastobjects);
-    //         }
-    //     }
-    // }, [updatesuccessPass]);
     useEffect(() => {
         if (user) {
             setName(user.name);
@@ -135,41 +123,17 @@ const ProfileTabs = () => {
             setCity(user.city);
             setCountry(user.country);
         }
-        // if (errorUpdate) {
-        //     toastId.current = toast.error(error, Toastobjects);
-        // }
     }, [dispatch, user]);
 
-    // useEffect(() => {
-    //   dispatch(updateUserProfile({ id: user._id, oldPassword, password }));
-    // },[dispatch, success])
     const submitUpdateProfile = (e) => {
         e.preventDefault();
         if (!checkObjProfile()) return;
         dispatch(updateUserProfile({ id: user._id, name, email, phone, country, city, address }));
-
-        // if (!toast.isActive(toastId.current)) {
-        //     toastId.current = toast.success('Profile Updated', Toastobjects);
-        // }
     };
 
     const submitUpdatePassword = (e) => {
         e.preventDefault();
         if (!checkPassword()) return; // check funtion check pass để kiểm tra xem có các trường bị rổng hay không
-        // // Password match
-        // if (password !== confirmPassword) {
-        //   if (!toast.isActive(toastId.current)) {
-        //     toastId.current = toast.error("Password does not match", Toastobjects);
-        //   }
-        // } else {
-        //   dispatch(updateUserProfile({ id: user._id, oldPassword, password }));
-
-        //   if (!toast.isActive(toastId.current)) {
-        //     if (updatesuccess && uploadPassword) {
-        //       toastId.current = toast.success("Password Updated", Toastobjects);
-        //     }
-        //   }
-        // }
         dispatch(updateUserPassword({ currentPassword: oldPassword, newPassword: password }));
         setOldPassword('');
         setPassword('');
@@ -179,11 +143,11 @@ const ProfileTabs = () => {
         <>
             <Toast />
             {/* {error && <Message variant="alert-danger">{error}</Message>} */}
-            {loading && <Loading />}
-            {updateLoading && <Loading />}
-            <div className="row form-container">
+            <div className="row form-container" style={{ position: 'relative' }}>
                 {/*Update profile*/}
                 {/* nut check radio */}
+                {loading && <FormLoading />}
+                {updateLoading && <FormLoading />}
                 <div className="radio-check">
                     <from className="radio-from">
                         <div className="radio-from__flex">
@@ -215,9 +179,13 @@ const ProfileTabs = () => {
                 <div
                     ref={refProfile}
                     className={uploadProfile ? 'col-lg-12 col-md-12 col-sm-12 color' : 'col-lg-12 col-md-12 col-sm-12'}
-                    style={{ display: uploadProfile ? 'block' : 'none' }}
+                    style={{ display: uploadProfile ? 'block' : 'none', position: 'relative' }}
                 >
-                    <form className="row  form-container" onSubmit={submitUpdateProfile}>
+                    <form
+                        className="row  form-container"
+                        onSubmit={submitUpdateProfile}
+                        style={{ position: 'relative' }}
+                    >
                         <div className="col-md-12">
                             <div className="form">
                                 <label for="account-fn">UserName</label>
