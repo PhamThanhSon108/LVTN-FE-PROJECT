@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useRouteMatch } from 'react-router-dom';
 import isEmpty from 'validator/lib/isEmpty';
 import Message from '../components/LoadingError/Error';
-import Loading from '../components/LoadingError/Loading';
+import Loading, { FormLoading } from '../components/LoadingError/Loading';
 import Toast from '../components/LoadingError/Toast';
 import { register } from '../Redux/Actions/userActions';
 import Header from './../components/Header';
@@ -110,9 +110,8 @@ const Register = ({ location, history }) => {
             <Toast />
             <div className="container d-flex flex-column justify-content-center align-items-center login-center">
                 {error && <Message variant="alert-danger">{error}</Message>}
-                {loading && <Loading />}
-
                 <form className="Login col-md-6 col-lg-4 col-10" onSubmit={submitHandler}>
+                    {loading && <FormLoading />}
                     <div className="Login-from">
                         <input
                             type="text"

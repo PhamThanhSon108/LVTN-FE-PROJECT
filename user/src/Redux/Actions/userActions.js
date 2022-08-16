@@ -96,10 +96,12 @@ export const register = (history, name, email, phone, password) => async (dispat
 
         // localStorage.setItem('userInfo', JSON.stringify(data));
     } catch (error) {
+        const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         dispatch({
             type: USER_REGISTER_FAIL,
-            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+            payload: message,
         });
+        toast.error(message, Toastobjects);
     }
 };
 
