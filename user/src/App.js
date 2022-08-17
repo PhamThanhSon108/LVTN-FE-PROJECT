@@ -17,6 +17,7 @@ import NotFound from './screens/NotFound';
 import PrivateRouter from './PrivateRouter';
 import ResetScreen from './screens/ResetScreen';
 import ConfirmRegister from './screens/ConfirmRegister';
+import VerifyRegisterSuccess from './screens/VerifyRegisterSuccess';
 
 const App = () => {
     return (
@@ -32,6 +33,7 @@ const App = () => {
                 <Route path="/login" component={Login} />
                 <Route path="/register" component={Register} exact />
                 <Route path="/register/confirm" component={ConfirmRegister} />
+                <Route path="/register/verify" component={VerifyRegisterSuccess} />
                 <PrivateRouter path="/profile" component={ProfileScreen} />
                 <PrivateRouter path="/cart/:id?" component={CartScreen} />
                 <PrivateRouter path="/shipping" component={ShippingScreen} />

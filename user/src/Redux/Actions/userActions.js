@@ -87,12 +87,7 @@ export const register = (history, name, email, phone, password) => async (dispat
         const { data } = await request.post(`/api/user/register`, { name, email, password, phone }, config);
         dispatch({ type: USER_REGISTER_VERIFY });
         // dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
-        toast.warn('Verification message has been sent to your gmail, please check it', Toastobjects);
-        setTimeout(() => {
-            if (data) {
-                window.location.href = 'https://mail.google.com/mail/u/0/?tab=rm#spam';
-            }
-        }, 2000);
+        history.push(`/register/verify?email=${email}`);
 
         // localStorage.setItem('userInfo', JSON.stringify(data));
     } catch (error) {
@@ -162,7 +157,6 @@ export const cancelRegister = (verifyEmail, history) => async (dispatch) => {
         //     type: USER_REGISTER_FAIL,
         //     payload: error.response && error.response.data.message ? error.response.data.message : error.message,
         // });
-        toast.error(message, Toastobjects);
         setTimeout(() => {
             history.push('/login');
         }, 2000);
