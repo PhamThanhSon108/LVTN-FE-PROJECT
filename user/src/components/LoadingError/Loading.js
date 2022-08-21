@@ -12,7 +12,7 @@ const Loading = () => {
 
 export const FormLoading = () => (
     <div className="layout__loading">
-        <div className="d-flex justify-content-center">
+        <div className="d-flex justify-content-center align-items-center">
             <div className="spinner-border text-success" role="status" style={{ width: '50px', height: '50px' }}>
                 <span className="sr-only">Loading...</span>
             </div>

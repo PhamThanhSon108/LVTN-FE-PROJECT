@@ -1,4 +1,9 @@
 import {
+    FORGOT_PASSWORD_REQUEST,
+    FORGOT_PASSWORD_SUCCESS,
+    RESET_PASSWORD_FAIL,
+    RESET_PASSWORD_REQUEST,
+    RESET_PASSWORD_SUCCESS,
     USER_DETAILS_FAIL,
     USER_DETAILS_REQUEST,
     USER_DETAILS_RESET,
@@ -162,6 +167,61 @@ export const cancelRegister = (verifyEmail, history) => async (dispatch) => {
         }, 2000);
     }
 };
+
+export const forGotPassWord = (data, history) => async (dispatch) => {
+    try {
+        dispatch({ type: FORGOT_PASSWORD_REQUEST });
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+        const apiData = await request.patch(`/api/user/auth/forgot-password`, { email: data.emailReset }, config);
+        dispatch({ type: FORGOT_PASSWORD_SUCCESS, payload: apiData });
+
+        toast.success('Verify email to reset password is sent, please check your inbox', Toastobjects);
+    } catch (error) {
+        const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+
+        dispatch({
+            type: RESET_PASSWORD_FAIL,
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        });
+        toast.error(message, Toastobjects);
+    }
+};
+
+export const resetPassWord = (resetPasswordToken, data, history) => async (dispatch) => {
+    try {
+        dispatch({ type: RESET_PASSWORD_REQUEST });
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+        const dataApi = await request.patch(
+            `api/user/auth/reset-password?resetPasswordToken=${resetPasswordToken}`,
+            { ...data },
+            config,
+        );
+        dispatch({ type: RESET_PASSWORD_SUCCESS, payload: dataApi });
+        toast.success('Reset is success', Toastobjects);
+        setTimeout(() => {
+            history.push('/login');
+        }, 1500);
+    } catch (error) {
+        const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+
+        dispatch({
+            type: RESET_PASSWORD_FAIL,
+            payload: message,
+        });
+        toast.error(message, Toastobjects);
+    }
+};
+
 // USER DETAILS
 export const getUserDetails = (id) => async (dispatch, getState) => {
     try {

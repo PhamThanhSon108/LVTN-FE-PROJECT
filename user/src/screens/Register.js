@@ -109,7 +109,7 @@ const Register = ({ location, history }) => {
             <Header />
             <Toast />
             <div className="container d-flex flex-column justify-content-center align-items-center login-center">
-                {error && <Message variant="alert-danger">{error}</Message>}
+                {/* {error && <Message variant="alert-danger">{error}</Message>} */}
                 <form className="Login col-md-6 col-lg-4 col-10" onSubmit={submitHandler}>
                     {loading && <FormLoading />}
                     <div className="Login-from">

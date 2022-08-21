@@ -120,7 +120,7 @@ const Login = ({ location, history }) => {
                         Login
                     </button>
                     <p className="d-flex justify-content-end btn__fogot-pass">
-                        <Link to={'/reset'}>Fogot password</Link>
+                        <Link to={'/forgotpassword'}>Fogot password</Link>
                     </p>
                     <div class="form-login__line-center-register">
                         <p>New to Fashionshop?</p>
