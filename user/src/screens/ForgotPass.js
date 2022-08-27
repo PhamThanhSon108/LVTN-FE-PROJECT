@@ -19,6 +19,7 @@ export default function ForgotPass({ history }) {
 
     const forgotPassword = useSelector((state) => state.forgotPassword);
     const { error: errorForgot, loading: loadingForgot, success: successForgot } = forgotPassword;
+
     const onSubmit = (data) => {
         dispatch(forGotPassWord(data, history));
         // console.log(data);
@@ -29,7 +30,8 @@ export default function ForgotPass({ history }) {
             <Toast />
             <div className="container d-flex flex-column justify-content-center align-items-center login-center">
                 <form className="Login col-md-6 col-lg-4 col-10" onSubmit={handleSubmit(onSubmit)}>
-                    {loading && <FormLoading />}
+                    {/* {loading && <FormLoading />} */}
+
                     {loadingForgot && <FormLoading />}
 
                     <div

@@ -1,5 +1,7 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { addressRequest } from '~/utils/request';
 import Header from '../components/Header';
 import { listCart, saveShippingAddress } from '../Redux/Actions/cartActions';
 import { listMyOrders, orderGetAddress } from '../Redux/Actions/OrderActions';
@@ -23,10 +25,6 @@ const ShippingScreen = ({ history }) => {
     const [country, setCountry] = useState('');
 
     useEffect(() => {
-        dispatch(getUserDetails('profile'));
-        // dispatch(listCart());
-    }, []);
-    useEffect(() => {
         if (user.address != undefined) {
             setAddress(user.address);
             setCity(user.city);
@@ -40,6 +38,7 @@ const ShippingScreen = ({ history }) => {
         dispatch(saveShippingAddress({ address, city, country }));
         dispatch(updateUserProfile({ id: user._id, address, city, country }));
     };
+
     return (
         <>
             <Header />

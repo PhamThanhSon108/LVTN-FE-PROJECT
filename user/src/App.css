@@ -497,8 +497,77 @@ textarea:focus {
     border-radius: 4px;
 }
 
+.btn__product-option {
+    line-height: '1.5rem';
+    padding: '0.2rem 0.5rem 0.15rem 0.5rem';
+    min-width: '22.5rem';
+    margin: 5px 5px 5px 0px;
+    border-radius: 0;
+    font-size: 1rem;
+    border: 1px solid rgb(163, 155, 155);
+    color: rgb(123, 119, 119);
+    margin-right: 5px;
+}
 
+.btn__product-option + .btn__product-option {
+    margin-right: 5px;
+}
+.btn__product-option:hover {
+    border: 1px solid #ee4d2d;
+    color: #ee4d2d;
+}
 
+.btn__product-option.active {
+    border: 1px solid #ee4d2d;
+    position: relative;
+    color: #ee4d2d;
+    outline: none;
+}
+.btn__product-option.active::before {
+    outline: none;
+    border: 1rem solid transparent;
+    border-bottom: 0rem solid var(--brand-primary-color, #ee4d2d);
+    border-right: 1.5rem solid var(--brand-primary-color, #ee4d2d);
+    content: '';
+    right: 0rem;
+    position: absolute;
+
+    bottom: -0.1999999999999993px;
+}
+
+.input-quantity {
+    width: 50px;
+    height: 32px;
+    border-left: 0;
+    border-right: 0;
+    font-size: 16px;
+    font-weight: 400;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: text;
+    border-radius: 0;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+    border: 0;
+    /* line-height: 1; */
+    letter-spacing: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.1s cubic-bezier(0.4, 0, 0.6, 1);
+    border: 1px solid rgba(0, 0, 0, 0.09);
+    border-radius: 2px;
+    background: transparent;
+    color: rgba(0, 0, 0, 0.8);
+}
+.input-quantity.icon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.875rem;
+    font-weight: 300;
+}
 /* LOGIN */
 .login-from {
     position: relative;
@@ -686,7 +755,7 @@ textarea:focus {
     line-height: 0;
 }
 .form-login__line-center-register:after {
-    content: "";
+    content: '';
     width: 100%;
     background-color: transparent;
     display: block;
@@ -696,7 +765,6 @@ textarea:focus {
     top: 75%;
     margin-top: -1px;
     z-index: 1;
-    
 }
 .form-login__line-center-register p {
     line-height: 1;
@@ -708,12 +776,11 @@ textarea:focus {
     display: inline-block;
     background-color: #fff;
     padding: 0 8px 0 7px;
-
 }
 .btn__login {
     width: 100%;
 }
-.btn__register{
+.btn__register {
     width: 100%;
 }
 .btn__register:hover {
@@ -725,7 +792,7 @@ textarea:focus {
     align-items: flex-start;
     justify-content: center;
     height: 100%;
-    width : 100%;
+    width: 100%;
     top: 0px;
     right: 0px;
     background-color: transparent;

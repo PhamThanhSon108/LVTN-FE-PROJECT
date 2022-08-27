@@ -9,11 +9,14 @@ import Loading from '../components/LoadingError/Loading';
 import { PRODUCT_CREATE_REVIEW_RESET } from '../Redux/Constants/ProductConstants';
 import moment from 'moment';
 import { addToCart } from '../Redux/Actions/cartActions';
+import image from '~/assets/images';
 
 const SingleProduct = ({ history, match }) => {
     const [qty, setQty] = useState(1);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
+    const [currentColor, setCurrentColor] = useState(0);
+    const [currentSize, setCurrentSize] = useState('');
 
     const productId = match.params.id;
     const dispatch = useDispatch();
@@ -28,7 +31,31 @@ const SingleProduct = ({ history, match }) => {
         error: errorCreateReview,
         success: successCreateReview,
     } = productReviewCreate;
+    const defaultColor =
+        product.variants?.reduce((color, value) => {
+            if (!color.includes(value.color)) color.push(value.color);
+            return color;
+        }, []) || [];
 
+    const defaultSize =
+        product.variants?.reduce((sizes, value) => {
+            if (!sizes.includes(value.size)) sizes.push(value.size);
+            return sizes;
+        }, []) || [];
+
+    const defaultVariants = defaultSize?.map((value, index) =>
+        product.variants.reduce(
+            (variants, variant, i) => {
+                if (variant.size === value) variants = { field: [...variants.field, variant] };
+                return variants;
+            },
+            { field: [] },
+        ),
+    );
+
+    const quantity = product?.variants?.find(
+        (value) => value.color == currentColor && value.size == currentSize,
+    )?.quantity;
     useEffect(() => {
         if (successCreateReview) {
             // alert('Review Submitted');
@@ -40,7 +67,6 @@ const SingleProduct = ({ history, match }) => {
     }, [dispatch, productId, successCreateReview]);
 
     const AddToCartHandle = (e) => {
-        console.log(product);
         e.preventDefault();
         if (userInfo) {
             dispatch(addToCart(productId, qty, userInfo._id));
@@ -84,44 +110,121 @@ const SingleProduct = ({ history, match }) => {
                                             <div className="product-baner">
                                                 <img
                                                     style={{ width: '100%' }}
-                                                    src="https://m.media-amazon.com/images/S/aplus-media/vc/2b83d5b5-3c19-4578-8137-7e5094bbc801.__CR0,0,970,300_PT0_SX970_V1___.jpg"
+                                                    src={image.imgInSigleProduct}
                                                     alt=""
                                                 ></img>
                                             </div>
                                             <div className="product-count col-lg-12 ">
-                                                <div className="flex-box d-flex justify-content-between align-items-center">
-                                                    <h6>Price</h6>
-                                                    <span>${product.price}</span>
+                                                <div className="flex-box d-flex justify-content-start align-items-center">
+                                                    <h4 className="col-3">Price</h4>
+                                                    <div>
+                                                        <span>
+                                                            $
+                                                            {product?.variants
+                                                                ?.find(
+                                                                    (value) =>
+                                                                        value.color == currentColor &&
+                                                                        value.size == currentSize,
+                                                                )
+                                                                ?.price.toFixed(2) || product.price}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                                <div className="flex-box d-flex justify-content-between align-items-center">
-                                                    <h6>Status</h6>
-                                                    {product.countInStock > 0 ? (
+                                                <div className="flex-box d-flex justify-content-start align-items-center">
+                                                    <h6 className="col-3">Status</h6>
+                                                    {product?.variants?.find(
+                                                        (value) =>
+                                                            value.color == currentColor && value.size == currentSize,
+                                                    )?.quantity ||
+                                                    product?.variants?.reduce(
+                                                        (count, value, index) => count + value.quantity,
+                                                        0,
+                                                    ) ? (
                                                         <span>In Stock</span>
                                                     ) : (
                                                         <span>unavailable</span>
                                                     )}
                                                 </div>
-                                                <div className="flex-box d-flex justify-content-between align-items-center">
-                                                    <h6>Reviews</h6>
+                                                <div className="flex-box d-flex justify-content-start align-items-center flex-wrap">
+                                                    <h6 className="col-3">Reviews</h6>
                                                     <Rating
                                                         value={product.rating}
                                                         text={`${product.numReviews} reviews`}
                                                     />
                                                 </div>
-                                                {product.countInStock > 0 ? (
-                                                    <>
-                                                        <div className="flex-box d-flex justify-content-between align-items-center">
-                                                            <h6>Quantity</h6>
-                                                            <select
-                                                                value={qty}
-                                                                onChange={(e) => setQty(e.target.value)}
+                                                <div className="flex-box d-flex justify-content-start align-items-center flex-wrap">
+                                                    <h6 className="col-3">Size</h6>
+                                                    <div className="col-9">
+                                                        {defaultSize?.map((value, index) => (
+                                                            <button
+                                                                onClick={() => {
+                                                                    setCurrentSize(value);
+                                                                    console.log('active');
+                                                                }}
+                                                                className={`btn text-md-start btn__product-option ${
+                                                                    value === currentSize && 'active'
+                                                                }`}
                                                             >
-                                                                {[...Array(product.countInStock).keys()].map((x) => (
-                                                                    <option key={x + 1} value={x + 1}>
-                                                                        {x + 1}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
+                                                                {value}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                <div className="flex-box d-flex justify-content-start align-items-center flex-wrap">
+                                                    <h6 className="col-3">Color</h6>
+                                                    {defaultColor?.map((value, index) => (
+                                                        <button
+                                                            onClick={() => {
+                                                                setCurrentColor(value);
+                                                            }}
+                                                            className={`btn text-md-start btn__product-option ${
+                                                                value == currentColor && 'active'
+                                                            }`}
+                                                        >
+                                                            {value}
+                                                        </button>
+                                                    ))}
+                                                </div>
+
+                                                {product?.variants?.find(
+                                                    (value) => value.color == currentColor && value.size == currentSize,
+                                                )?.quantity ? (
+                                                    <>
+                                                        <div className="flex-box d-flex justify-content-start align-items-center">
+                                                            <h6 className="col-3">Quantity</h6>
+
+                                                            <div className="col-9 d-flex align-items-center">
+                                                                <i
+                                                                    class="far fa-minus input-quantity icon"
+                                                                    onClick={() => {
+                                                                        if (qty >= 1) setQty((qty) => qty - 1);
+                                                                    }}
+                                                                ></i>
+                                                                <input
+                                                                    class="input-quantity"
+                                                                    type="text"
+                                                                    role="spinbutton"
+                                                                    aria-valuenow={1}
+                                                                    value={qty}
+                                                                ></input>
+                                                                <i
+                                                                    class="far fa-plus input-quantity icon"
+                                                                    style={{ marginRight: '15px' }}
+                                                                    onClick={() => {
+                                                                        if (qty < quantity) setQty((qty) => qty + 1);
+                                                                    }}
+                                                                ></i>
+                                                                {product?.variants?.find(
+                                                                    (value) =>
+                                                                        value.color == currentColor &&
+                                                                        value.size == currentSize,
+                                                                )?.quantity ||
+                                                                    product?.variants?.reduce(
+                                                                        (count, value, index) => count + value.quantity,
+                                                                        0,
+                                                                    )}{' '}
+                                                                products available
+                                                            </div>
                                                         </div>
                                                         <button onClick={AddToCartHandle} className="round-black-btn">
                                                             Add To Cart

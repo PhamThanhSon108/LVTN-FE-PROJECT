@@ -1,4 +1,5 @@
 import {
+    FORGOT_PASSWORD_FAIL,
     FORGOT_PASSWORD_REQUEST,
     FORGOT_PASSWORD_SUCCESS,
     RESET_PASSWORD_FAIL,
@@ -185,7 +186,7 @@ export const forGotPassWord = (data, history) => async (dispatch) => {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
 
         dispatch({
-            type: RESET_PASSWORD_FAIL,
+            type: FORGOT_PASSWORD_FAIL,
             payload: error.response && error.response.data.message ? error.response.data.message : error.message,
         });
         toast.error(message, Toastobjects);

@@ -2,7 +2,7 @@ import { ErrorMessage } from '@hookform/error-message';
 import React, { useRef } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import Loading, { FormLoading } from '../components/LoadingError/Loading';
+import { FormLoading } from '../components/LoadingError/Loading';
 import image from '~/assets/images';
 import { resetPassWord } from '~/Redux/Actions/userActions';
 

@@ -23,7 +23,7 @@ const ShopSection = (props) => {
         dispatch(listCart());
         dispatch(listProduct(category, keyword, pageNumber, rating, minPrice, maxPrice, sortProducts));
     }, [dispatch, category, keyword, pageNumber, rating, minPrice, maxPrice, sortProducts]);
-
+    console.log(products);
     return (
         <>
             <div className="container">
@@ -68,7 +68,7 @@ const ShopSection = (props) => {
                                 ) : (
                                     <>
                                         {' '}
-                                        {products.length !== 0 ? (
+                                        {products?.length !== 0 ? (
                                             products?.map((product) => (
                                                 <div className="shop col-lg-3 col-md-6 col-sm-12" key={product._id}>
                                                     <div className="border-product">
