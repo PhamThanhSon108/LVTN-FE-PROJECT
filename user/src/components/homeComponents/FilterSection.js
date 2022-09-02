@@ -52,6 +52,7 @@ export default function FilterSection({ setRating, setMinPrice, setMaxPrice, rat
         return true;
     };
     const ClearHandle = () => {
+        console.log('abc');
         setRating('');
         setCheckId('');
         setMaxPrice('');
@@ -214,14 +215,15 @@ export default function FilterSection({ setRating, setMinPrice, setMaxPrice, rat
                 </div> */}
                 <div className="" display={{ display: 'flex', alignItems: 'center' }}>
                     <button className="distance-price__submit">
-                        <Link
+                        {/* <Link
                             className="navbar-brand"
                             to="/"
                             onClick={ClearHandle}
                             style={{ fontSize: '0.85rem', color: '#fff' }}
                         >
                             CLEAR ALL FILTER
-                        </Link>
+                        </Link> */}
+                        <button onClick={ClearHandle}>CLEAR ALL FILTER</button>
                     </button>
                 </div>
             </div>

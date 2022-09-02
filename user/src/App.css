@@ -568,6 +568,12 @@ textarea:focus {
     font-size: 0.875rem;
     font-weight: 300;
 }
+
+.remove-arrow-input::-webkit-outer-spin-button,
+.remove-arrow-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 /* LOGIN */
 .login-from {
     position: relative;
@@ -1006,6 +1012,36 @@ textarea:focus {
     border-radius: 8px;
     background-color: red;
 }
+
+.select-quantity {
+    width: 6rem !important;
+    min-width: 50px;
+}
+
+.select-quantity.loading {
+    background-color: white;
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: default;
+}
+
+.form-select:disabled {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    color: #ccc !important;
+    cursor: default !important;
+    background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.btn-delete-noline {
+    cursor: pointer;
+    color: #000000;
+}
+
+.btn-delete-noline:hover {
+    background-color: transparent !important;
+    color: #ee2624;
+}
+
 /* FOOTER */
 .footer {
     background-color: #ececec;

@@ -1,5 +1,8 @@
+import { toast } from 'react-toastify';
 import request from '../../utils/request';
 import {
+    CART_ADD_PRODUCT_ORDER_REQUEST,
+    CART_ADD_PRODUCT_ORDER_SUCCESS,
     CART_CLEAR_SUCCESS,
     CART_CREATE_FAIL,
     CART_CREATE_REQUEST,
@@ -10,30 +13,22 @@ import {
     CART_LIST_FAIL,
     CART_LIST_REQUEST,
     CART_LIST_SUCCESS,
+    CART_ORDER_SHIPPING_ADDRESS,
     CART_REMOVE_ITEM,
     CART_SAVE_PAYMENT_METHOD,
     CART_SAVE_SHIPPING_ADDRESS,
+    CART_UPDATE_REQUEST,
+    CART_UPDATE_SUCCESS,
 } from '../Constants/CartConstants';
 import { logout } from './userActions';
 
-// ADD TO CART OLD
-// export const addToCart = (id, qty) => async (dispatch, getState) => {
-//   const { data } = await request.get(`/api/product/${id}`);
+const Toastobjects = {
+    pauseOnFocusLoss: false,
+    draggable: false,
+    pauseOnHover: false,
+    autoClose: 2000,
+};
 
-//   dispatch({
-//     type: CART_ADD_ITEM,
-//     payload: {
-//       product: data._id,
-//       name: data.name,
-//       image: data.image,
-//       price: data.price,
-//       countInStock: data.countInStock,
-//       qty,
-//     },
-//   });
-
-//   localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));
-// };
 export const listCart = () => async (dispatch, getState) => {
     try {
         dispatch({ type: CART_LIST_REQUEST });
@@ -48,7 +43,7 @@ export const listCart = () => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await request.get(`/api/cart/${userInfo._id}`, config);
+        const { data } = await request.get(`/api/cart`, config);
         localStorage.setItem('cartItems', JSON.stringify(data));
 
         dispatch({ type: CART_LIST_SUCCESS, payload: data });
@@ -64,7 +59,7 @@ export const listCart = () => async (dispatch, getState) => {
     }
 };
 //ADD TO CART NEW
-export const addToCart = (productId, qty) => async (dispatch, getState) => {
+export const addToCart = (variantId, qty, history) => async (dispatch, getState) => {
     try {
         dispatch({ type: CART_CREATE_REQUEST });
 
@@ -78,7 +73,78 @@ export const addToCart = (productId, qty) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await request.post(`/api/cart/`, { productId, qty, _id }, config);
+        const { data } = await request.post(`/api/cart/add`, { variantId, quantity: qty }, config);
+        toast.success('Register success', Toastobjects);
+
+        setTimeout(() => {
+            history.push(`/cart/${variantId}?qty=${qty}`);
+            dispatch({ type: CART_CREATE_SUCCESS });
+        }, 200);
+    } catch (error) {
+        const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+        if (message === 'Not authorized, token failed') {
+            dispatch(logout());
+        }
+        dispatch({
+            type: CART_CREATE_FAIL,
+            payload: message,
+        });
+        toast.error(message, { ...Toastobjects, autoClose: 3000 });
+    }
+};
+
+export const updateCart =
+    ({ variantId, qty, setCartChoise, setLoadingIndices, updateCart }) =>
+    async (dispatch, getState) => {
+        try {
+            dispatch({ type: CART_UPDATE_REQUEST });
+
+            const {
+                userLogin: { userInfo },
+            } = getState();
+            const { _id } = userInfo;
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            };
+            const { data } = await request.patch(`/api/cart/update`, { variantId, quantity: qty }, config);
+            if (updateCart == true && data)
+                setCartChoise((pre) => {
+                    if (pre[variantId] !== undefined) pre[variantId].quantity = qty;
+                    return { ...pre };
+                });
+            dispatch({ type: CART_UPDATE_SUCCESS });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+            if (message === 'Not authorized, token failed') {
+                dispatch(logout());
+            }
+            setLoadingIndices(null);
+            toast.error(message, { ...Toastobjects, autoClose: 3000 });
+            dispatch({
+                type: CART_CREATE_FAIL,
+                payload: message,
+            });
+        }
+    };
+
+export const addToBuy = (variantId, qty) => async (dispatch, getState) => {
+    try {
+        dispatch({ type: CART_CREATE_REQUEST });
+
+        const {
+            userLogin: { userInfo },
+        } = getState();
+        const { _id } = userInfo;
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.accessToken}`,
+            },
+        };
+
+        const { data } = await request.patch(`/api/cart/update`, { variantId, quantity: qty }, config);
+
         dispatch({ type: CART_CREATE_SUCCESS });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -93,43 +159,51 @@ export const addToCart = (productId, qty) => async (dispatch, getState) => {
 };
 
 // REMOVE PRODUCT FROM CART
-export const removefromcart = (pr) => async (dispatch, getState) => {
-    try {
-        dispatch({ type: CART_DELETE_REQUEST });
+export const removefromcart =
+    ({ id, setCartChoise, deleteCartOnly, deleteCartAll }) =>
+    async (dispatch, getState) => {
+        try {
+            dispatch({ type: CART_DELETE_REQUEST });
 
-        const {
-            userLogin: { userInfo },
-        } = getState();
+            const {
+                userLogin: { userInfo },
+            } = getState();
 
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.accessToken}`,
-            },
-        };
-        const user = userInfo._id;
-        await request.post(
-            `/api/cart/delete`,
-            {
-                user,
-                pr,
-            },
-            config,
-        );
-
-        dispatch({ type: CART_DELETE_SUCCESS, payload: pr });
-    } catch (error) {
-        const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (message === 'Not authorized, token failed') {
-            dispatch(logout());
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            };
+            const { data } = await request.patch(
+                `/api/cart/remove`,
+                {
+                    variantIds: id,
+                },
+                config,
+            );
+            console.log(id);
+            if (deleteCartOnly === true && data)
+                setCartChoise((pre) => {
+                    delete pre[id[0]];
+                    return { ...pre };
+                });
+            else {
+                if (data && deleteCartAll === true) setCartChoise([]);
+            }
+            dispatch({ type: CART_DELETE_SUCCESS, payload: data });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+            if (message === 'Not authorized, token failed') {
+                dispatch(logout());
+            }
+            dispatch({
+                type: CART_DELETE_FAIL,
+                payload: message,
+            });
         }
-        dispatch({
-            type: CART_DELETE_FAIL,
-            payload: message,
-        });
-    }
 
-    localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems));
-};
+        localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems));
+    };
 
 //Delete all item from cart
 export const clearFromCart = () => async (dispatch, getState) => {
@@ -168,8 +242,7 @@ export const saveShippingAddress = (data) => (dispatch) => {
         type: CART_SAVE_SHIPPING_ADDRESS,
         payload: data,
     });
-
-    localStorage.setItem('shippingAddress', JSON.stringify(data));
+    // localStorage.setItem('shippingAddress', JSON.stringify(data));
 };
 
 // SAVE PAYMENT METHOD
@@ -180,4 +253,32 @@ export const savePaymentMethod = (data) => (dispatch) => {
     });
 
     localStorage.setItem('paymentMethod', JSON.stringify(data));
+};
+
+export const addProductOrderInCart = (data) => (dispatch) => {
+    dispatch({
+        type: CART_ADD_PRODUCT_ORDER_SUCCESS,
+        payload: data,
+    });
+
+    localStorage.setItem('cartOrderItems', JSON.stringify(data));
+};
+
+export const listOrderCart = () => async (dispatch, getState) => {
+    try {
+        // dispatch({ type: CART_LIST_REQUEST });
+
+        const data = JSON.parse(localStorage.getItem('cartOrderItems'));
+        console.log(data);
+        dispatch({ type: CART_ADD_PRODUCT_ORDER_SUCCESS, payload: data });
+    } catch (error) {
+        const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+        if (message === 'Not authorized, token failed') {
+            dispatch(logout());
+        }
+        dispatch({
+            type: CART_LIST_FAIL,
+            payload: message,
+        });
+    }
 };

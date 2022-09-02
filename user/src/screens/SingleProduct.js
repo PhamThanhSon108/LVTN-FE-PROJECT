@@ -10,6 +10,8 @@ import { PRODUCT_CREATE_REVIEW_RESET } from '../Redux/Constants/ProductConstants
 import moment from 'moment';
 import { addToCart } from '../Redux/Actions/cartActions';
 import image from '~/assets/images';
+import Toast from '~/components/LoadingError/Toast';
+import useDebounce from '~/hooks/useDebounce';
 
 const SingleProduct = ({ history, match }) => {
     const [qty, setQty] = useState(1);
@@ -21,6 +23,8 @@ const SingleProduct = ({ history, match }) => {
     const productId = match.params.id;
     const dispatch = useDispatch();
 
+    const deBounce = useDebounce(qty, 500);
+    const [currentQty, setCurrentQty] = useState(1);
     const productDetails = useSelector((state) => state.productDetails);
     const { loading, error, product } = productDetails;
     const userLogin = useSelector((state) => state.userLogin);
@@ -43,15 +47,22 @@ const SingleProduct = ({ history, match }) => {
             return sizes;
         }, []) || [];
 
-    const defaultVariants = defaultSize?.map((value, index) =>
-        product.variants.reduce(
-            (variants, variant, i) => {
-                if (variant.size === value) variants = { field: [...variants.field, variant] };
-                return variants;
-            },
-            { field: [] },
-        ),
-    );
+    // const defaultVariants = defaultSize?.map((value, index) =>
+    //     product.variants.reduce(
+    //         (variants, variant, i) => {
+    //             if (variant.size === value) variants = { field: [...variants.field, variant] };
+    //             return variants;
+    //         },
+    //         { field: [] },
+    //     ),
+    // );
+    // console.log(product.variants, 'dataVariant');
+
+    useEffect(() => {
+        if (!qty) setQty(null);
+        if (qty > quantity) setQty(quantity);
+        else if (qty <= 0) setQty(1);
+    }, [deBounce]);
 
     const quantity = product?.variants?.find(
         (value) => value.color == currentColor && value.size == currentSize,
@@ -63,14 +74,19 @@ const SingleProduct = ({ history, match }) => {
             setComment('');
             dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
         }
+        console.log('new render');
         dispatch(listProductDetails(productId));
     }, [dispatch, productId, successCreateReview]);
 
     const AddToCartHandle = (e) => {
         e.preventDefault();
-        if (userInfo) {
-            dispatch(addToCart(productId, qty, userInfo._id));
-            history.push(`/cart/${productId}?qty=${qty}`);
+
+        const variantId = product?.variants?.find(
+            (value) => value.color == currentColor && value.size == currentSize,
+        )._id;
+
+        if (userInfo && variantId) {
+            dispatch(addToCart(variantId, qty, history));
         } else history.push('/login');
     };
     const submitHandler = (e) => {
@@ -84,6 +100,7 @@ const SingleProduct = ({ history, match }) => {
     };
     return (
         <>
+            <Toast />
             <Header />
             <div className="container single-product">
                 {loading ? (
@@ -197,15 +214,23 @@ const SingleProduct = ({ history, match }) => {
                                                                 <i
                                                                     class="far fa-minus input-quantity icon"
                                                                     onClick={() => {
-                                                                        if (qty >= 1) setQty((qty) => qty - 1);
+                                                                        if (qty >= 2) setQty((qty) => qty - 1);
                                                                     }}
                                                                 ></i>
                                                                 <input
-                                                                    class="input-quantity"
-                                                                    type="text"
-                                                                    role="spinbutton"
-                                                                    aria-valuenow={1}
-                                                                    value={qty}
+                                                                    class="input-quantity remove-arrow-input"
+                                                                    type="number"
+                                                                    // role="spinbutton"
+                                                                    // aria-valuemax={quantity}
+                                                                    value={parseInt(qty)}
+                                                                    onKeyDown={(evt) =>
+                                                                        [('e', 'E', '+', '-')].includes(evt.key) &&
+                                                                        evt.target.startWith(0) &&
+                                                                        evt.preventDefault()
+                                                                    }
+                                                                    onChange={(e) => {
+                                                                        setQty(parseInt(e.target.value));
+                                                                    }}
                                                                 ></input>
                                                                 <i
                                                                     class="far fa-plus input-quantity icon"

@@ -7,7 +7,13 @@ import {
     productListReducer,
     productListAllReducer,
 } from './Reducers/ProductReducers';
-import { cartReducer, CreateCartReducer, DeleteCartReducer } from './Reducers/CartReducers';
+import {
+    CartOrderReducer,
+    cartReducer,
+    CreateCartReducer,
+    DeleteCartReducer,
+    UpdateCartReducer,
+} from './Reducers/CartReducers';
 import {
     forgotPasswordReducer,
     resetPasswordReducer,
@@ -37,6 +43,9 @@ const reducer = combineReducers({
     cart: cartReducer,
     cartCreate: CreateCartReducer,
     cartDelete: DeleteCartReducer,
+    cartUpdate: UpdateCartReducer,
+    cartOrder: CartOrderReducer,
+
     userLogin: userLoginReducer,
     userRegister: userRegisterReducer,
     userDetails: userDetailsReducer,
@@ -57,6 +66,10 @@ const cartItemsFromLocalStorage = localStorage.getItem('cartItems')
     ? JSON.parse(localStorage.getItem('cartItems'))
     : [];
 
+const cartOrderItemsFromLocalStorage = localStorage.getItem('cartOrderItems')
+    ? JSON.parse(localStorage.getItem('cartOrderItems'))
+    : [];
+
 // login
 const userInfoFromLocalStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;
 
@@ -69,6 +82,10 @@ const initialState = {
     cart: {
         cartItems: [],
         shippingAddress: [],
+    },
+    cartOrder: {
+        cartOrderItems: cartOrderItemsFromLocalStorage,
+        shippingAddress: shippingAddressFromLocalStorage,
     },
     userLogin: { userInfo: userInfoFromLocalStorage },
 };

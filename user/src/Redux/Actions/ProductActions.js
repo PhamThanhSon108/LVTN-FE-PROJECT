@@ -36,7 +36,7 @@ export const listProduct =
         try {
             dispatch({ type: PRODUCT_LIST_REQUEST });
             const { data } = await request.get(
-                `/api/product?&category=${category}&keyword=${keyword}&pageNumber=${pageNumber}&rating=${rating}
+                `/api/product?category=${category}&keyword=${keyword}&pageNumber=${pageNumber}&rating=${rating}
         &minPrice=${minPrice}&maxPrice=${maxPrice}&sortProducts=${sortProducts}`,
             );
             dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });

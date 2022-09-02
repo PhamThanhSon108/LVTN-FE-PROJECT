@@ -1,78 +1,135 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { addressRequest } from '~/utils/request';
 import Header from '../components/Header';
 import { listCart, saveShippingAddress } from '../Redux/Actions/cartActions';
-import { listMyOrders, orderGetAddress } from '../Redux/Actions/OrderActions';
 import { getUserDetails, updateUserProfile } from '../Redux/Actions/userActions';
-import { ORDER_ADDRESS_MY_RESET } from '../Redux/Constants/OrderConstants';
+import classNames from 'classnames';
 
 const ShippingScreen = ({ history }) => {
     window.scrollTo(0, 0);
     const dispatch = useDispatch();
-    // const orderListMy = useSelector((state) => state.orderAddress);
-    // const { success: successOrder, orderAddress, loading: loadingOrder } = orderListMy;
-    // const cart = useSelector((state) => state.cart);
-    // const { shippingAddress } = cart;
+
     const userDetails = useSelector((state) => state.userDetails);
-    const { loading, error, user } = userDetails;
-    // const userLogin = useSelector((state) => state.userLogin);
-    // const { userInfo, success } = userLogin;
-    const [address, setAddress] = useState('');
-    const [city, setCity] = useState('');
-    // const [postalCode, setPostalCode] = useState('');
-    const [country, setCountry] = useState('');
+    console.log(useSelector((state) => state));
+    const { user, success: successUserDetails } = userDetails;
+    const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
+    const { success: updatesuccess, loading: updateLoading, error: errorUpdate } = userUpdateProfile;
+    const { handleSubmit, control, setValue, reset } = useForm({
+        defaultValues: { phone: '', address: '', country: '', city: '' },
+    });
 
     useEffect(() => {
-        if (user.address != undefined) {
-            setAddress(user.address);
-            setCity(user.city);
-            setCountry(user.country);
-        }
-    }, [dispatch, user]);
+        dispatch(getUserDetails('profile'));
+    }, []);
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
-        history.push('/payment');
-        dispatch(saveShippingAddress({ address, city, country }));
-        dispatch(updateUserProfile({ id: user._id, address, city, country }));
+    useEffect(() => {
+        if (!user) dispatch(getUserDetails('profile'));
+        reset({ phone: user?.phone, address: user?.address, country: user?.country, city: user?.city });
+    }, [user, successUserDetails, dispatch]);
+
+    const submitHandler = async (data) => {
+        // console.log(e);
+        dispatch(updateUserProfile(data, history));
+        dispatch(saveShippingAddress(data));
     };
 
     return (
         <>
             <Header />
             <div className="container d-flex justify-content-center align-items-center login-center">
-                <form className="Login col-md-8 col-lg-4 col-11" onSubmit={submitHandler}>
+                <form className="Login col-md-8 col-lg-4 col-11" onSubmit={handleSubmit(submitHandler)}>
                     <h6>DELIVERY ADDRESS</h6>
-                    <input
-                        type="text"
-                        placeholder="Enter address"
-                        value={address}
-                        required
-                        onChange={(e) => setAddress(e.target.value)}
+                    <Controller
+                        control={control}
+                        name="phone"
+                        rules={{ required: 'The field is required', pattern: /^[0-9-+]{9,15}$/ }}
+                        render={({
+                            field: { onChange, value, ref },
+                            fieldState: { invalid, isTouched, isDirty, error },
+                        }) => (
+                            <>
+                                <input
+                                    cl
+                                    type="text"
+                                    placeholder="Enter phone number"
+                                    value={value}
+                                    aria-invalid={error ? 'true' : 'false'}
+                                    onChange={(e) => onChange(e.target.value)}
+                                    className={error && 'border-red'}
+                                />
+                                {error?.type === 'required' && <span className="text-danger">{error.message}</span>}
+                                {error?.type === 'pattern' && <span className="text-danger">Invalid phone number</span>}
+                            </>
+                        )}
                     />
-                    <input
-                        type="text"
-                        placeholder="Enter city"
-                        value={city}
-                        required
-                        onChange={(e) => setCity(e.target.value)}
+                    <Controller
+                        control={control}
+                        name="address"
+                        rules={{ required: 'The field is required' }}
+                        render={({
+                            field: { onChange, onBlur, value, name, ref },
+                            fieldState: { invalid, isTouched, isDirty, error },
+                        }) => (
+                            <>
+                                <input
+                                    type="text"
+                                    placeholder="Enter address"
+                                    value={value}
+                                    className={error && 'border-red'}
+                                    onChange={(e) => onChange(e.target.value)}
+                                />
+                                {error && <span className="text-danger">{error.message}</span>}
+                            </>
+                        )}
                     />
-                    {/* <input
-                        type="text"
-                        placeholder="Enter postal code"
-                        value={postalCode}
-                        required
-                        onChange={(e) => setPostalCode(e.target.value)}
-                    /> */}
-                    <input
-                        type="text"
-                        placeholder="Enter country"
-                        value={country}
-                        required
-                        onChange={(e) => setCountry(e.target.value)}
+                    <Controller
+                        control={control}
+                        name="city"
+                        rules={{ required: 'The field is required' }}
+                        render={({
+                            field: { onChange, onBlur, value, name, ref },
+                            fieldState: { invalid, isTouched, isDirty, error },
+                        }) => (
+                            <>
+                                <input
+                                    type="text"
+                                    placeholder="Enter city"
+                                    value={value}
+                                    required
+                                    className={error && 'border-red'}
+                                    onChange={(e) => onChange(e.target.value)}
+                                />
+                                {error && <span className="text-danger">{error.message}</span>}
+                            </>
+                        )}
                     />
+                    <Controller
+                        control={control}
+                        name="country"
+                        rules={{
+                            required: 'The field is required',
+                        }}
+                        render={({
+                            field: { onChange, onBlur, value, name, ref },
+                            fieldState: { invalid, isTouched, isDirty, error },
+                        }) => (
+                            <>
+                                <input
+                                    type="text"
+                                    placeholder="Enter country"
+                                    value={value}
+                                    required
+                                    className={error && 'border-red'}
+                                    onChange={(e) => onChange(e.target.value)}
+                                />
+                                {error && <span className="text-danger">{error.message}</span>}
+                            </>
+                        )}
+                    />
+
                     <button type="submit">Continue</button>
                 </form>
             </div>

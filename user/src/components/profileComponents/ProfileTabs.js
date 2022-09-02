@@ -152,7 +152,7 @@ const ProfileTabs = () => {
                     <from className="radio-from">
                         <div className="radio-from__flex">
                             <label for="profile" className={Number(checkbox) === 0 ? 'color' : ''}>
-                                Upload Profile
+                                Update Profile
                             </label>
                             <input
                                 id="profile"
