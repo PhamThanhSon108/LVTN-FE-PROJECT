@@ -126,7 +126,6 @@ export const editProduct = (id) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_EDIT_REQUEST });
     const { data } = await request.get(`/api/product/${id}`);
-    console.log(data, 'edit succees');
     dispatch({ type: PRODUCT_EDIT_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;

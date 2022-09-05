@@ -6,6 +6,7 @@ import { addProductOrderInCart, listCart, removefromcart, updateCart } from './.
 
 import WrapConfirmModal from '~/components/Modal/WrapConfirmModal';
 import Toast from '~/components/LoadingError/Toast';
+import Loading, { FormLoading } from '~/components/LoadingError/Loading';
 
 const CartScreen = ({ match, location, history }) => {
     const logger = (key) => {
@@ -23,7 +24,7 @@ const CartScreen = ({ match, location, history }) => {
     const qty = location.search ? Number(location.search.split('=')[1]) : 1;
 
     const cart = useSelector((state) => state.cart);
-    const { cartItems } = cart;
+    const { cartItems, loading: loadListCart } = cart;
     const [cartChoise, setCartChoise] = useState({});
 
     const [loadingIndices, setLoadingIndices] = useState(null);
@@ -55,7 +56,6 @@ const CartScreen = ({ match, location, history }) => {
     };
     const handleDeleteAll = useCallback(() => {
         dispatch(removefromcart({ id: Object.keys(cartChoise), setCartChoise, deleteCartAll: true }));
-        console.log(Object.keys(cartChoise));
     }, [cartChoise]);
 
     const createContent = useCallback(() => {
@@ -76,12 +76,15 @@ const CartScreen = ({ match, location, history }) => {
         <>
             <Toast />
             <Header />
+
             {/* Cart */}
-            <div class="modal-dialog"></div>
+
             {/* </div> */}
-            <div className="container">
+            <div className="container ">
+                {/* {<FormLoading />} */}
+                {loadListCart && <FormLoading />}
                 {cartItems?.length === 0 || !cartItems ? (
-                    <div className=" alert alert-info text-center mt-3 ">
+                    <div className=" alert alert-info text-center mt-3 position-relative">
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <img
                                 style={{ width: '100px', height: '100px', margin: '0 auto' }}
@@ -135,6 +138,7 @@ const CartScreen = ({ match, location, history }) => {
                                                         else delete pre[item?.variant?._id];
                                                         return { ...pre };
                                                     });
+                                                    refItem.current.focus();
                                                 }}
                                             ></input>
                                         </div>

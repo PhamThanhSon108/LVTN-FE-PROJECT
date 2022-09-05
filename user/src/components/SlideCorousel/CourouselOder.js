@@ -58,8 +58,8 @@ export default function CorouselOder() {
         <div className="container corousel-container">
             <h2>Best seller</h2>
             <div></div>
-            <div className="corousel">
-                <Slider {...settings}>
+            <div className="corousel" style={{ maxHeight: '340px' }}>
+                <Slider {...settings} style={{ maxHeight: '340px' }}>
                     {products &&
                         products?.map((product, index) => {
                             return (

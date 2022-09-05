@@ -8,7 +8,6 @@ function PrivateRouter({ component: Component, ...rest }) {
             component={(props) => {
                 const token = window.localStorage.getItem('userInfo');
                 if (token) {
-                    console.log(token);
                     return <Component {...props} />;
                 } else {
                     return <Redirect to={'/login'} />;

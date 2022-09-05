@@ -964,3 +964,10 @@ ul.row-sm {
     background-color: #fb5533;
     border: none;
 }
+
+
+
+
+.order-undo-status-btn:hover{
+    opacity: 0.85;
+}

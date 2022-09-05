@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 export default function VerifyRegisterSuccess({ location, history }) {
-    console.log(location);
     const [loading, setLoading] = useState(false);
     const email = location.search ? location.search.split('=')[1] : 'nulll';
     setTimeout(() => {}, 2000);

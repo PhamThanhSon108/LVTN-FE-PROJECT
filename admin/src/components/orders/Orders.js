@@ -1,97 +1,88 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
+import { statusDescription } from './statusDescription';
+import Pagination from '../Home/pagination';
 const Orders = (props) => {
-    const { orders } = props;
-    let orderss = orders;
-    const [status, setStatus] = useState('0');
-    if (orderss) {
-        if (status == '1') {
-            orderss = orders.filter((i) => i.isPaid == false && i.isDelivered == false && i.cancel != 1);
-        }
-        if (status == '2') {
-            orderss = orders.filter((i) => i.isPaid == false && i.isDelivered == true && i.cancel != 1);
-        }
-        if (status == '3') {
-            orderss = orders.filter((i) => i.isPaid == false && i.isDelivered == true && i.cancel != 1);
-        }
-        if (status == '3') {
-            orderss = orders.filter((i) => i.isPaid == true && i.isDelivered == true && i.cancel != 1);
-        }
-        if (status == '4') {
-            orderss = orders.filter((i) => i.cancel == 1);
-        }
-    }
-    console.log(orderss);
-    const handleStatus = (value) => {
-        setStatus(value.target.value);
-    };
-    return (
-        <>
-            <div className="col-lg-2 col-6 col-md-3">
-                <select className="form-select" value={status} onChange={handleStatus}>
-                    <option value={'0'}>All category</option>
-                    <option value={'1'}>Awaiting confirm</option>
-                    <option value={'2'}>Delivering</option>
-                    <option value={'3'}>Paid</option>
-                    <option value={'4'}>Cancel</option>
-                </select>
-            </div>
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Paid</th>
-                        <th scope="col">Date</th>
-                        <th>Status</th>
-                        <th scope="col" className="text-end">
-                            Action
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orderss?.map((order) => (
-                        <tr key={order._id}>
-                            <td>
-                                <b>{order.user?.name}</b>
-                            </td>
-                            <td>{order.user?.email}</td>
-                            <td>${order?.totalPrice}</td>
-                            <td>
-                                {order.isPaid ? (
-                                    <span className="badge rounded-pill alert-success">
-                                        Paid At {moment(order.paidAt).format('MMM Do YY')}
-                                    </span>
-                                ) : (
-                                    <span className="badge rounded-pill alert-danger">Awaiting payment</span>
-                                )}
-                            </td>
-                            <td>{moment(order.createdAt).format('MMM Do YY')}</td>
-                            <td>
-                                {order?.cancel != 1 ? (
-                                    order.isDelivered == true && order.isPaid == true ? (
-                                        <span className="badge rounded-pill alert-success">Delivered</span>
-                                    ) : order?.isDelivered ? (
-                                        <span className="badge alert-warning">Delivering</span>
-                                    ) : (
-                                        <span className="badge alert-danger">Awaiting confirm</span>
-                                    )
-                                ) : (
-                                    <span className="badge bg-dark">This order has been cancelled</span>
-                                )}
-                            </td>
-                            <td className="d-flex justify-content-end align-item-center">
-                                <Link to={`/order/${order._id}`} className="text-success">
-                                    <i className="fas fa-eye"></i>
-                                </Link>
-                            </td>
-                        </tr>
-                    ))}
+  const { orders } = props;
+  let orderss = orders.orders;
+  const [dateOrder, setDateOrder] = useState('');
+  const [orderStatus, setOrderStatus] = useState('');
 
-                    {/* Not paid Not delivered */}
-                    {/* <tr>
+  // const [page, setPage] = useState('1');
+  // const [, setStatus] = useState('0');
+  // const [status, setStatus] = useState('0');
+
+  // const handleStatus = (value) => {
+  //   setStatus(value.target.value);
+  // };
+
+  return (
+    <>
+      <table className="table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Total</th>
+            <th scope="col">Date</th>
+            <th>Status</th>
+            <th scope="col" className="text-end">
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders?.orders?.length === 0 && <tr className="">No order</tr>}
+          {orders?.orders?.map((order) => (
+            <tr key={order._id}>
+              <td>
+                <b>{order.user?.name}</b>
+              </td>
+              <td>{order.user?.email}</td>
+              <td>${order?.totalPrice}</td>
+              <td>{moment(order.createdAt).format('MMM Do YY')}</td>
+              <td style={{ position: 'relative' }}>
+                {order?.status === 'Placed' && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: '7px',
+                      top: '2px',
+                      borderRadius: '50%',
+                      fontSize: '0.6rem',
+                      display: 'block',
+                      backgroundColor: 'red',
+                      color: 'white',
+                      height: '1.2rem',
+                      width: '1.2rem',
+                      lineHeight: '1.15rem',
+                    }}
+                  >
+                    new
+                  </div>
+                )}
+                <span
+                  className={`badge rounded-pill 
+                     ${order?.status === 'Completed' && 'alert-success'}
+                      ${order?.status === 'Cancelled' && 'bg-dark text-white'}
+                       ${order?.status === 'Failed' && 'bg-danger text-white'}
+                      text-dark`}
+                  style={{ fontSize: '15px' }}
+                >
+                  {statusDescription[order.status]}
+                </span>
+              </td>
+              <td className="d-flex justify-content-end align-item-center">
+                <Link to={`/order/${order._id}`} className="text-success">
+                  <i className="fas fa-eye"></i>
+                </Link>
+              </td>
+            </tr>
+          ))}
+
+          {/* Not paid Not delivered */}
+          {/* <tr>
           <td>
             <b>Velcro Sneakers For Boys & Girls (Blue)</b>
           </td>
@@ -110,10 +101,11 @@ const Orders = (props) => {
             </Link>
           </td>
         </tr> */}
-                </tbody>
-            </table>
-        </>
-    );
+        </tbody>
+      </table>
+      {/* <Pagination pages={pages} page={page}  keyword={keyword ? keyword : ''} /> */}
+    </>
+  );
 };
 
 export default Orders;

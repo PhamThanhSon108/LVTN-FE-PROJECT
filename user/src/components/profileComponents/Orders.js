@@ -33,37 +33,29 @@ const Orders = (props) => {
                                     <tr>
                                         <th>ID</th>
                                         <th>STATUS</th>
-                                        <th>DATE</th>
+                                        <th>TIME</th>
                                         <th>TOTAL</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {orders.map((order) => (
+                                    {orders.orders?.map((order) => (
                                         <tr
-                                            className={`${order.isPaid ? 'alert-success' : 'alert-color-white'}`}
+                                            className={`${order?.status === 'Cancelled' && 'alert-dark'} 
+                                            ${order?.status === 'Completed' && ' alert-success'}
+                                            ${order?.status === 'Failed' && 'alert-danger'}
+                                            `}
                                             key={order._id}
                                         >
+                                            {' '}
                                             <td>
                                                 <a href={`/order/${order._id}`} className="link">
                                                     {order._id}
                                                 </a>
                                             </td>
                                             <td>
-                                                {order.cancel != 1 ? (
-                                                    order.isPaid ? (
-                                                        <>Paid</>
-                                                    ) : (
-                                                        <>awaiting payment</>
-                                                    )
-                                                ) : (
-                                                    <span className="btn-dark">This Order has been cancelled</span>
-                                                )}
+                                                <span className="">{order?.status}</span>
                                             </td>
-                                            <td>
-                                                {order.isPaid
-                                                    ? moment(order.paidAt).calendar()
-                                                    : moment(order.createdAt).calendar()}
-                                            </td>
+                                            <td>{moment(order.createdAt).calendar()}</td>
                                             <td>${order.totalPrice}</td>
                                         </tr>
                                     ))}

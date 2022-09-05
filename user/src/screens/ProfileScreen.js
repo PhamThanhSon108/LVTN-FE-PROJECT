@@ -104,7 +104,7 @@ const ProfileScreen = () => {
                                             <i class="fas fa-shopping-cart"></i>
                                         </div>
                                         Orders List
-                                        <span className="badge2">{orders ? orders.length : 0}</span>
+                                        <span className="badge2">{orders ? orders?.orders?.length : 0}</span>
                                     </button>
                                 </div>
                             </div>

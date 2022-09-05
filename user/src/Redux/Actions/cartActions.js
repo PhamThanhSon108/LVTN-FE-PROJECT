@@ -13,6 +13,7 @@ import {
     CART_LIST_FAIL,
     CART_LIST_REQUEST,
     CART_LIST_SUCCESS,
+    CART_ORDER_RESET,
     CART_ORDER_SHIPPING_ADDRESS,
     CART_REMOVE_ITEM,
     CART_SAVE_PAYMENT_METHOD,
@@ -129,35 +130,6 @@ export const updateCart =
         }
     };
 
-export const addToBuy = (variantId, qty) => async (dispatch, getState) => {
-    try {
-        dispatch({ type: CART_CREATE_REQUEST });
-
-        const {
-            userLogin: { userInfo },
-        } = getState();
-        const { _id } = userInfo;
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.accessToken}`,
-            },
-        };
-
-        const { data } = await request.patch(`/api/cart/update`, { variantId, quantity: qty }, config);
-
-        dispatch({ type: CART_CREATE_SUCCESS });
-    } catch (error) {
-        const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (message === 'Not authorized, token failed') {
-            dispatch(logout());
-        }
-        dispatch({
-            type: CART_CREATE_FAIL,
-            payload: message,
-        });
-    }
-};
-
 // REMOVE PRODUCT FROM CART
 export const removefromcart =
     ({ id, setCartChoise, deleteCartOnly, deleteCartAll }) =>
@@ -181,7 +153,6 @@ export const removefromcart =
                 },
                 config,
             );
-            console.log(id);
             if (deleteCartOnly === true && data)
                 setCartChoise((pre) => {
                     delete pre[id[0]];
@@ -208,33 +179,17 @@ export const removefromcart =
 //Delete all item from cart
 export const clearFromCart = () => async (dispatch, getState) => {
     try {
-        dispatch({ type: CART_DELETE_REQUEST });
+        dispatch({ type: CART_ORDER_RESET });
 
-        const {
-            userLogin: { userInfo },
-        } = getState();
-
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.accessToken}`,
-            },
-        };
-        const user = userInfo._id;
-        await request.delete(`/api/cart/${user}`, config);
-
-        dispatch({ type: CART_CLEAR_SUCCESS });
+        localStorage.removeItem('cartOrderItems');
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         if (message === 'Not authorized, token failed') {
             dispatch(logout());
         }
-        dispatch({
-            type: CART_DELETE_FAIL,
-            payload: message,
-        });
     }
 
-    localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems));
+    localStorage.setItem('cartOrderItems', JSON.stringify(getState().cart.cartItems));
 };
 // SAVE SHIPPING ADDRESS
 export const saveShippingAddress = (data) => (dispatch) => {
@@ -242,7 +197,7 @@ export const saveShippingAddress = (data) => (dispatch) => {
         type: CART_SAVE_SHIPPING_ADDRESS,
         payload: data,
     });
-    // localStorage.setItem('shippingAddress', JSON.stringify(data));
+    localStorage.setItem('shippingAddress', JSON.stringify(data));
 };
 
 // SAVE PAYMENT METHOD
@@ -269,7 +224,7 @@ export const listOrderCart = () => async (dispatch, getState) => {
         // dispatch({ type: CART_LIST_REQUEST });
 
         const data = JSON.parse(localStorage.getItem('cartOrderItems'));
-        console.log(data);
+
         dispatch({ type: CART_ADD_PRODUCT_ORDER_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;

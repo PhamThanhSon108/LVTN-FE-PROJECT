@@ -15,6 +15,7 @@ import {
     CART_LIST_MY_RESET,
     CART_LIST_REQUEST,
     CART_LIST_SUCCESS,
+    CART_ORDER_RESET,
     CART_ORDER_SHIPPING_ADDRESS,
     // CART_REMOVE_ITEM,
     CART_SAVE_PAYMENT_METHOD,
@@ -126,8 +127,8 @@ export const CartOrderReducer = (state = { cartOrderItems: [], shippingAddress: 
                 loading: false,
                 error: action.payload,
             };
-        case CART_UPDATE_RESET:
-            return {};
+        case CART_ORDER_RESET:
+            return { cartOrderItems: [], shippingAddress: {} };
         default:
             return state;
     }

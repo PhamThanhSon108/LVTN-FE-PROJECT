@@ -63,14 +63,14 @@ export const logout = () => (dispatch) => {
     try {
         setTimeout(() => {
             dispatch({ type: USER_LOGIN_REQUEST });
-        }, 2000);
+        }, 100);
         setTimeout(() => {
             localStorage.removeItem('userInfo');
             dispatch({ type: USER_LOGOUT });
             dispatch({ type: USER_DETAILS_RESET });
             dispatch({ type: ORDER_LIST_MY_RESET });
             dispatch({ type: CART_LIST_MY_RESET });
-        }, 3000);
+        }, 500);
     } catch (error) {
         toast.error(
             error.response && error.response.data.message ? error.response.data.message : error.message,

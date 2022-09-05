@@ -403,7 +403,6 @@ const AddProductMain = () => {
                       id="defaultCheck1"
                       onChange={(e) => {
                         e.target.checked ? setChangForAll(true) : setChangForAll(false);
-                        console.log(changeForALL, 'Change');
                       }}
                     />
                     <label class="form-check-label" for="defaultCheck1">

@@ -25,6 +25,7 @@ import {
 import {
     orderAddressMyReducer,
     orderCancelReducer,
+    orderConfirmPaidReducer,
     orderCreateReducer,
     orderDetailsReducer,
     orderListMyReducer,
@@ -52,12 +53,14 @@ const reducer = combineReducers({
     userUpdateProfile: userUpdateProfileReducer,
     forgotPassword: forgotPasswordReducer,
     resetPassword: resetPasswordReducer,
+
     orderCreate: orderCreateReducer,
     orderDetails: orderDetailsReducer,
     orderAddress: orderAddressMyReducer,
     orderPay: orderPayReducer,
     orderListMy: orderListMyReducer,
     orderCancel: orderCancelReducer,
+    orderConfirmPaid: orderConfirmPaidReducer,
     sliderLoad: Sliderload,
     CategoryList: categoryListReducer,
 });

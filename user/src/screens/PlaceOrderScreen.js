@@ -17,17 +17,6 @@ const PlaceOrderScreen = ({ history }) => {
     const cartOrder = useSelector((state) => state.cartOrder);
     const { cartOrderItems } = cartOrder;
     const currenCartItems = cartOrderItems;
-    // .filter((item) => item.isBuy == true)
-    // .reduce((arr, pro) => {
-    //     arr.push({
-    //         name: pro.product.name,
-    //         qty: pro.qty,
-    //         image: pro.product.image,
-    //         price: pro.product.price,
-    //         product: pro.product._id,
-    //     });
-    //     return arr;
-    // }, []);
     const createContent = useCallback(() => {
         return { title: 'Place order this product?', body: 'Are you sure?' };
     });
@@ -69,23 +58,24 @@ const PlaceOrderScreen = ({ history }) => {
         dispatch(
             createOrder({
                 orderItems: currenCartItems,
-                // shippingAddress: cart.shippingAddress,
                 shippingAddress: {
                     address: userInfo.address,
                     city: userInfo.city,
                     postalCode: '',
                     country: userInfo.country,
                 },
-                // paymentMethod: cart.paymentMethod,
+
                 paymentMethod: 'Payment in cash',
-                itemsPrice: cartOrder.itemsPrice,
-                shippingPrice: cartOrder.shippingPrice,
                 taxPrice: cartOrder.taxPrice,
+                shippingPrice: cartOrder.shippingPrice,
                 totalPrice: cartOrder.totalPrice,
-                phone: userInfo.phone,
+                contactInformation: {
+                    email: userInfo.email,
+                    phone: userInfo.phone,
+                },
             }),
         );
-        dispatch(clearFromCart(userInfo._id));
+        // dispatch(clearFromCart(userInfo._id));
     };
     return (
         <>

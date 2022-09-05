@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const Pagination = (props) => {
-    const { page, pages, category = '', keyword = '' } = props;
+    // const { page, pages, category = '', keyword = '' } = props;
+    const { page, pages, keyword = '' } = props;
     return (
         pages > 1 && (
             <nav
@@ -13,11 +14,16 @@ const Pagination = (props) => {
             >
                 <div className="icon-left">
                     <Link
+                        // to={
+                        //     keyword
+                        //         ? `/search/${keyword}/page/${page > 1 ? page - 1 : page}`
+                        //         : category
+                        //         ? `/category/${category}/page/${page > 1 ? page - 1 : page}`
+                        //         : `/page/${page > 1 ? page - 1 : page}`
+                        // }
                         to={
                             keyword
                                 ? `/search/${keyword}/page/${page > 1 ? page - 1 : page}`
-                                : category
-                                ? `/category/${category}/page/${page > 1 ? page - 1 : page}`
                                 : `/page/${page > 1 ? page - 1 : page}`
                         }
                     >
@@ -29,13 +35,14 @@ const Pagination = (props) => {
                         <li className={`page-item ${x + 1 === page ? 'active' : ''}`} key={x + 1}>
                             <Link
                                 className="page-link"
-                                to={
-                                    keyword
-                                        ? `/search/${keyword}/page/${x + 1}`
-                                        : category
-                                        ? `/category/${category}/page/${x + 1}`
-                                        : `/page/${x + 1}`
-                                }
+                                // to={
+                                //     keyword
+                                //         ? `/search/${keyword}/page/${x + 1}`
+                                //         : category
+                                //         ? `/category/${category}/page/${x + 1}`
+                                //         : `/page/${x + 1}`
+                                // }
+                                to={keyword ? `/search/${keyword}/page/${x + 1}` : `/page/${x + 1}`}
                             >
                                 {x + 1}
                             </Link>
@@ -44,11 +51,16 @@ const Pagination = (props) => {
                 </ul>
                 <div className="icon-right">
                     <Link
+                        // to={
+                        //     keyword
+                        //         ? `/search/${keyword}/page/${page < pages ? page + 1 : pages}`
+                        //         : category
+                        //         ? `/category/${category}/page/${page < pages ? page + 1 : pages}`
+                        //         : `/page/${page < pages ? page + 1 : pages}`
+                        // }
                         to={
                             keyword
                                 ? `/search/${keyword}/page/${page < pages ? page + 1 : pages}`
-                                : category
-                                ? `/category/${category}/page/${page < pages ? page + 1 : pages}`
                                 : `/page/${page < pages ? page + 1 : pages}`
                         }
                     >

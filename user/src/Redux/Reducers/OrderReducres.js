@@ -25,6 +25,10 @@ import {
     ORDER_CANCEL_SUCCESS,
     ORDER_CANCEL_FAIL,
     ORDER_CANCEL_RESET,
+    ORDER_CONFIRM_PAID_REQUEST,
+    ORDER_CONFIRM_PAID_FAIL,
+    ORDER_CONFIRM_PAID_SUCCESS,
+    ORDER_CONFIRM_PAID_RESET,
 } from '../Constants/OrderConstants';
 
 // CREATE ORDER
@@ -129,6 +133,21 @@ export const orderCancelReducer = (state = {}, action) => {
         case ORDER_CANCEL_FAIL:
             return { loading: false, error: action.payload };
         case ORDER_CANCEL_RESET:
+            return {};
+        default:
+            return state;
+    }
+};
+
+export const orderConfirmPaidReducer = (state = {}, action) => {
+    switch (action.type) {
+        case ORDER_CONFIRM_PAID_REQUEST:
+            return { loading: true };
+        case ORDER_CONFIRM_PAID_SUCCESS:
+            return { loading: false, success: true };
+        case ORDER_CONFIRM_PAID_FAIL:
+            return { loading: false, error: action.payload };
+        case ORDER_CONFIRM_PAID_RESET:
             return {};
         default:
             return state;

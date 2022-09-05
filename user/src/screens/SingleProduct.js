@@ -74,7 +74,6 @@ const SingleProduct = ({ history, match }) => {
             setComment('');
             dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
         }
-        console.log('new render');
         dispatch(listProductDetails(productId));
     }, [dispatch, productId, successCreateReview]);
 
@@ -176,7 +175,6 @@ const SingleProduct = ({ history, match }) => {
                                                             <button
                                                                 onClick={() => {
                                                                     setCurrentSize(value);
-                                                                    console.log('active');
                                                                 }}
                                                                 className={`btn text-md-start btn__product-option ${
                                                                     value === currentSize && 'active'

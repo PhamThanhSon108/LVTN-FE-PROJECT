@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ListCategory } from '../../Redux/Actions/categoryActions';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import isEmpty from 'validator/lib/isEmpty';
 import Rating from './Rating';
 
-export default function FilterSection({ setRating, setMinPrice, setMaxPrice, rating, minPrice, maxPrice }) {
+export default function FilterSection({
+    setRating,
+    setMinPrice,
+    setCategory,
+    setMaxPrice,
+    rating,
+    minPrice,
+    maxPrice,
+}) {
     const dispatch = useDispatch();
-
+    const history = useHistory();
     const lcategories = useSelector((state) => state.CategoryList);
     const { categories } = lcategories;
     const [curentMinPrice, setCurentMinPrice] = useState('');
@@ -52,7 +60,7 @@ export default function FilterSection({ setRating, setMinPrice, setMaxPrice, rat
         return true;
     };
     const ClearHandle = () => {
-        console.log('abc');
+        setCategory('');
         setRating('');
         setCheckId('');
         setMaxPrice('');
@@ -83,12 +91,24 @@ export default function FilterSection({ setRating, setMinPrice, setMaxPrice, rat
                                 setCheckId(category._id);
                             }}
                         >
-                            <Link
+                            {/* <Link
                                 style={checkId === category._id ? { color: 'red' } : {}}
                                 to={`/category/${category._id}`}
                             >
                                 {category.name}
-                            </Link>
+                            </Link> */}
+                            <span
+                                style={
+                                    checkId === category._id
+                                        ? { color: 'red', cursor: 'pointer' }
+                                        : { cursor: 'pointer' }
+                                }
+                                onClick={() => {
+                                    setCategory(category._id);
+                                }}
+                            >
+                                {category.name}
+                            </span>
                         </li>
                     ))}
                 </ul>
@@ -135,8 +155,8 @@ export default function FilterSection({ setRating, setMinPrice, setMaxPrice, rat
                                 id="five"
                                 value={'5'}
                                 onClick={(e) => {
-                                    console.log(e.target.value);
                                     setRating(e.target.value);
+                                    // history.push('/');
                                 }}
                             ></input>
                             <label for="five" className={rating == '5' ? 'rating-color' : ' '}>
@@ -215,15 +235,13 @@ export default function FilterSection({ setRating, setMinPrice, setMaxPrice, rat
                 </div> */}
                 <div className="" display={{ display: 'flex', alignItems: 'center' }}>
                     <button className="distance-price__submit">
-                        {/* <Link
+                        <span
                             className="navbar-brand"
-                            to="/"
-                            onClick={ClearHandle}
                             style={{ fontSize: '0.85rem', color: '#fff' }}
+                            onClick={ClearHandle}
                         >
                             CLEAR ALL FILTER
-                        </Link> */}
-                        <button onClick={ClearHandle}>CLEAR ALL FILTER</button>
+                        </span>
                     </button>
                 </div>
             </div>
