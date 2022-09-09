@@ -27,6 +27,8 @@ import {
 import { CART_CLEAR_ITEMS, CART_ORDER_RESET } from '../Constants/CartConstants';
 import { logout } from './userActions';
 import request from '../../utils/request';
+import { toast } from 'react-toastify';
+import { Toastobjects } from '~/components/LoadingError/Toast';
 
 // CREATE ORDER
 export const createOrder = (order) => async (dispatch, getState) => {
@@ -45,6 +47,7 @@ export const createOrder = (order) => async (dispatch, getState) => {
         };
 
         const { data } = await request.post(`/api/order`, order, config);
+        toast.success('Successful order', Toastobjects);
         dispatch({ type: ORDER_CREATE_SUCCESS, payload: data });
         dispatch({ type: CART_ORDER_RESET });
         localStorage.removeItem('cartOrderItems');
@@ -53,6 +56,7 @@ export const createOrder = (order) => async (dispatch, getState) => {
         if (message === 'Not authorized, token failed') {
             dispatch(logout());
         }
+        toast.error(message, Toastobjects);
         dispatch({
             type: ORDER_CREATE_FAIL,
             payload: message,
@@ -120,33 +124,36 @@ export const payOrder = (orderId, paymentResult) => async (dispatch, getState) =
 };
 
 // USER ORDERS
-export const listMyOrders = () => async (dispatch, getState) => {
-    try {
-        dispatch({ type: ORDER_LIST_MY_REQUEST });
+export const listMyOrders =
+    ({ pageNumber }) =>
+    async (dispatch, getState) => {
+        try {
+            dispatch({ type: ORDER_LIST_MY_REQUEST });
 
-        const {
-            userLogin: { userInfo },
-        } = getState();
+            const {
+                userLogin: { userInfo },
+            } = getState();
 
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.accessToken}`,
-            },
-        };
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            };
 
-        const { data } = await request.get(`/api/order/`, config);
-        dispatch({ type: ORDER_LIST_MY_SUCCESS, payload: data });
-    } catch (error) {
-        const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (message === 'Not authorized, token failed') {
-            dispatch(logout());
+            const { data } = await request.get(`/api/order?pageSize=20&&pageNumber=${pageNumber}`, config);
+            console.log(data);
+            dispatch({ type: ORDER_LIST_MY_SUCCESS, payload: data });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+            if (message === 'Not authorized, token failed') {
+                dispatch(logout());
+            }
+            dispatch({
+                type: ORDER_LIST_MY_FAIL,
+                payload: message,
+            });
         }
-        dispatch({
-            type: ORDER_LIST_MY_FAIL,
-            payload: message,
-        });
-    }
-};
+    };
 
 //GET ORDER
 export const orderGetAddress = () => async (dispatch, getState) => {

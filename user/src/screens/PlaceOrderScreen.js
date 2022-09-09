@@ -8,6 +8,7 @@ import Header from './../components/Header';
 import Message from './../components/LoadingError/Error';
 import { getUserDetails } from '../Redux/Actions/userActions';
 import WrapConfirmModal from '~/components/Modal/WrapConfirmModal';
+import Toast from '~/components/LoadingError/Toast';
 
 const PlaceOrderScreen = ({ history }) => {
     window.scrollTo(0, 0);
@@ -79,6 +80,7 @@ const PlaceOrderScreen = ({ history }) => {
     };
     return (
         <>
+            <Toast />
             <Header />
             <div className="container">
                 {/* <PayModal
@@ -122,7 +124,7 @@ const PlaceOrderScreen = ({ history }) => {
                         <div className="row" style={{ display: 'flex', alignItems: 'center' }}>
                             <div className="col-lg-3 col-sm-3 mb-lg-3 center fix-bottom">
                                 <div className="alert-success order-box fix-none">
-                                    <i class="fab fa-paypal"></i>
+                                    <i class="fab fa-cash"></i>
                                 </div>
                             </div>
                             <div className="col-lg-9 col-sm-9 mb-lg-9">
@@ -142,10 +144,14 @@ const PlaceOrderScreen = ({ history }) => {
                             <>
                                 {cartOrder.cartOrderItems.map((item, index) => (
                                     <div className="order-product row" key={index}>
-                                        <div className="col-md-3 col-6">
-                                            <img src={item.variant.product.image} alt={item.variant.product.name} />
+                                        <div className="col-md-3 col-3" style={{ width: '20%' }}>
+                                            <img
+                                                className="col-md-3 col-3"
+                                                src={item.variant.product.image}
+                                                alt={item.variant.product.name}
+                                            />
                                         </div>
-                                        <div className="col-md-5 col-6 d-flex align-items-center">
+                                        <div className="col-md-5 col-5 d-flex align-items-center">
                                             <Link to={`/product/${item.variant.product._id}`}>
                                                 <h6>{item.variant.product.name}</h6>
                                             </Link>
@@ -172,10 +178,10 @@ const PlaceOrderScreen = ({ history }) => {
                         )}
                     </div>
                 </div>
-                <div className="row" style={{ padding: '10px 0', backgroundColor: '#fff', marginTop: '10px' }}>
+                <div className="row d-flex" style={{ padding: '10px 0', backgroundColor: '#fff', marginTop: '10px' }}>
                     {/* total */}
-                    <div className="col-lg-12 d-flex align-items-end flex-column subtotal-order">
-                        <table className="table fix-bottom">
+                    <div className="col-9 d-flex align-items-end flex-column subtotal-order">
+                        <table className="table table-bordered fix-bottom">
                             <tbody>
                                 <tr>
                                     <td>
@@ -201,8 +207,25 @@ const PlaceOrderScreen = ({ history }) => {
                             </tbody>
                         </table>
                     </div>
+
+                    <div className="col-3 d-flex justify-content-center align-content-center flex-column ">
+                        <div style={{ fontWeight: '600', height: '50%', textAlign: 'center', lineHeight: '2.5rem' }}>
+                            Total: ${cartOrder.totalPrice}
+                        </div>
+                        {cartOrder.cartOrderItems.length === 0 ? null : (
+                            <WrapConfirmModal content={createContent()} handleSubmit={placeOrderHandler}>
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary pay-button col-12"
+                                    style={{ height: '100%' }}
+                                >
+                                    PLACE ORDER
+                                </button>
+                            </WrapConfirmModal>
+                        )}
+                    </div>
                 </div>
-                <div
+                {/* <div
                     className="row"
                     style={{ padding: '10px 0', backgroundColor: '#fff', marginTop: '10px', marginBottom: '30px' }}
                 >
@@ -211,17 +234,7 @@ const PlaceOrderScreen = ({ history }) => {
                             <Message variant="alert-danger">{error}</Message>
                         </div>
                     )}
-                    <div className="col-lg-12 fix-right">
-                        <div style={{ fontWeight: '600', paddingRight: '10px' }}>Total: ${cartOrder.totalPrice}</div>
-                        {cartOrder.cartOrderItems.length === 0 ? null : (
-                            <WrapConfirmModal content={createContent()} handleSubmit={placeOrderHandler}>
-                                <button type="submit" class="btn btn-primary pay-button">
-                                    PLACE ORDER
-                                </button>
-                            </WrapConfirmModal>
-                        )}
-                    </div>
-                </div>
+                </div> */}
             </div>
         </>
     );

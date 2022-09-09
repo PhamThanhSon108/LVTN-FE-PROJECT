@@ -18,11 +18,15 @@ const ProfileScreen = () => {
     const { loading, error, orders } = orderListMy;
     const [buleanProfile, setBuleanProfile] = useState(true);
     const [buleanOrder, setBuleanOrder] = useState(false);
+    const [pageNumber, setPageNumber] = useState(1);
 
     useEffect(() => {
-        dispatch(listMyOrders());
         dispatch(getUserDetails('profile'));
     }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(listMyOrders({ pageNumber }));
+    }, [pageNumber]);
 
     return (
         <>
@@ -104,7 +108,7 @@ const ProfileScreen = () => {
                                             <i class="fas fa-shopping-cart"></i>
                                         </div>
                                         Orders List
-                                        <span className="badge2">{orders ? orders?.orders?.length : 0}</span>
+                                        <span className="badge2">{orders ? orders?.totalProducts : 0}</span>
                                     </button>
                                 </div>
                             </div>
@@ -127,7 +131,12 @@ const ProfileScreen = () => {
                             role="tabpanel"
                             aria-labelledby="v-pills-profile-tab"
                         >
-                            <Orders orders={orders} loading={loading} error={error} />
+                            <Orders
+                                orders={orders}
+                                loading={loading}
+                                error={error}
+                                setPageNumber={(value) => setPageNumber(value)}
+                            />
                         </div>
                     </div>
                 </div>

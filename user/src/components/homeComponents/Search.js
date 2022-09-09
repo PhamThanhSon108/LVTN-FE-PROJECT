@@ -4,7 +4,7 @@ import useDebounce from '~/hooks/useDebounce';
 import axios from 'axios';
 import request from '~/utils/request';
 import { Link, useHistory } from 'react-router-dom';
-export default function Search() {
+export default function Search({ refSearch }) {
     const [keyword, setKeyword] = useState('');
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
@@ -12,7 +12,6 @@ export default function Search() {
     // const [loading, setLoading] = useState(false);
     const history = useHistory();
     const inputRef = useRef();
-
     const debounce = useDebounce(searchValue, 500);
     const submitHandler = (e) => {
         e.preventDefault();
@@ -94,6 +93,7 @@ export default function Search() {
             <div style={{ height: '100%', width: '100%', position: 'relative' }}>
                 <div className={'search-wrap d-flex'}>
                     <input
+                        ref={refSearch}
                         type="search"
                         className="form-control rounded search search-focus"
                         placeholder="Search"

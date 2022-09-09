@@ -10,6 +10,10 @@ import moment from 'moment';
 import axios from 'axios';
 import { ORDER_PAY_RESET } from '../Redux/Constants/OrderConstants';
 import image, { imageOrder } from '~/assets/images';
+import { Dialog } from 'primereact/dialog';
+import { Button } from 'react-bootstrap';
+import { ReviewDialog } from '~/components/profileComponents/Review/ReviewDialog';
+import Toast from '~/components/LoadingError/Toast';
 
 const OrderScreen = ({ match }) => {
     window.scrollTo(0, 0);
@@ -26,7 +30,7 @@ const OrderScreen = ({ match }) => {
     const { loading: loadingCancel, success: successCancel } = orderCancel;
 
     const orderConfirmPaid = useSelector((state) => state.orderConfirmPaid);
-    const { loading: loadingConfirmPaid, success: successConfirmPaid } = orderCancel;
+    const { loading: loadingConfirmPaid, success: successConfirmPaid } = orderConfirmPaid;
 
     const itemsPrice = order?.orderItems
         .reduce((totalPrice, i) => totalPrice + i.quantity * i.variant.price, 0)
@@ -52,6 +56,20 @@ const OrderScreen = ({ match }) => {
 
         order.itemsPrice = addDecimals(order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0));
     }
+
+    const footer = (
+        <div>
+            <Button label="Yes" icon="pi pi-check" />
+            <Button label="No" icon="pi pi-times" />
+        </div>
+    );
+
+    const myIcon = (
+        <button className="p-dialog-titlebar-icon p-link">
+            <span className="pi pi-search"></span>
+        </button>
+    );
+
     useEffect(() => {
         dispatch(getOrderDetails(orderId));
     }, [successCancel, successConfirmPaid]);
@@ -80,13 +98,13 @@ const OrderScreen = ({ match }) => {
         // }
     }, [dispatch, orderId, order]);
     //[dispatch, orderId, successPay, order]);
-
     const successPaymentHandler = (paymentResult) => {
         dispatch(payOrder(orderId, paymentResult));
     };
 
     return (
         <>
+            <Toast />
             <Header />
             <div className="container">
                 {loading ? (
@@ -202,7 +220,7 @@ const OrderScreen = ({ match }) => {
                                 style={{ margin: '0px 15px 0px 15px' }}
                             >
                                 <p className="order-name-customer ">{order?.user?.name}</p>
-                                <p className="order-address-custommer">{order?.phone}</p>
+                                <p className="order-address-custommer">{order?.contactInformation?.phone}</p>
                                 <p className="order-address-custommer">{order?.user?.name}</p>
 
                                 <p className="order-address-custommer">
@@ -257,29 +275,37 @@ const OrderScreen = ({ match }) => {
                                         {order.orderItems.map((item, index) => (
                                             <div className="order-product row shadow-sm" key={index}>
                                                 <div className="col-md-2 col-2">
-                                                    <img src={item.variant.product.image} alt={item.name} />
+                                                    <img src={item?.variant?.product?.image} alt={item?.name} />
                                                 </div>
                                                 <div className="col-md-5 col-3 d-flex align-items-center">
-                                                    <Link to={`/product/${item.product}`}>
-                                                        <h6>{item.variant.product.name}</h6>
+                                                    <Link to={`/product/${item?.variant?.product?._id}`}>
+                                                        <h6>{item?.variant?.product?.name}</h6>
                                                     </Link>
                                                 </div>
                                                 <div className="mt-1 mt-md-1 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
                                                     <h4>QUANTITY</h4>
-                                                    <h6>{item.quantity}</h6>
+                                                    <h6>{item?.quantity}</h6>
                                                 </div>
                                                 <div className="mt-1 mt-md-1 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
                                                     <h4>SIZE</h4>
-                                                    <h6>{item.variant.size}</h6>
+                                                    <h6>{item?.variant?.size}</h6>
                                                 </div>
                                                 <div className="mt-1 mt-md-1 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
                                                     <h4>COLOR</h4>
-                                                    <h6>{item.variant.color}</h6>
+                                                    <h6>{item?.variant?.color}</h6>
                                                 </div>
                                                 <div className="mt-2 mt-md-2 col-md-2 col-2 align-items-end  d-flex flex-column justify-content-center ">
                                                     <h4>SUBTOTAL</h4>
                                                     <h6>${item?.quantity * item?.variant.price}</h6>
                                                 </div>
+                                                {order.status === 'Completed' && order?.orderItems?.length >= 1 && (
+                                                    <div
+                                                        className="d-flex justify-content-end col-12"
+                                                        style={{ marginTop: '10px' }}
+                                                    >
+                                                        <ReviewDialog order={item} />
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                     </>

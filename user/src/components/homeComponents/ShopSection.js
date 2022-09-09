@@ -8,6 +8,7 @@ import Loading from '../LoadingError/Loading';
 import Message from '../LoadingError/Error';
 import { listCart } from '../../Redux/Actions/cartActions';
 import FilterSection from './FilterSection';
+import { Image } from 'primereact/image';
 
 const ShopSection = (props) => {
     // const { category, keyword, pageNumber } = props;
@@ -103,6 +104,12 @@ const ShopSection = (props) => {
                                                             <Link to={`/product/${product._id}`}>
                                                                 <div className="shopBack">
                                                                     <img src={product.image} alt={product.name} />
+                                                                    <Image
+                                                                        src={product.image}
+                                                                        template="Preview Content"
+                                                                        alt={product.name}
+                                                                        preview
+                                                                    />
                                                                 </div>
                                                             </Link>
 

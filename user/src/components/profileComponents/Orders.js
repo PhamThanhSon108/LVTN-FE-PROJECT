@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Message from '../LoadingError/Error';
 import Loading from '../LoadingError/Loading';
 const Orders = (props) => {
-    const { loading, error, orders } = props;
+    const { loading, error, orders, setPageNumber } = props;
     return (
         <div className=" d-flex justify-content-center align-items-center flex-column">
             {loading ? (
@@ -64,6 +64,26 @@ const Orders = (props) => {
                         </div>
                     )}
                 </>
+            )}
+
+            {orders && orders?.orders?.length > 1 && !loading && (
+                <div className="col-12 d-flex justify-center" style={{ display: 'flex', justifyContent: 'center' }}>
+                    <nav aria-label="...">
+                        <ul class="pagination">
+                            {[...Array(orders?.pages).keys()].map((item) => (
+                                <li
+                                    class={`page-item ${item === orders?.page - 1 && 'active'}`}
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => {
+                                        setPageNumber(item + 1);
+                                    }}
+                                >
+                                    <a class="page-link">{item + 1}</a>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                </div>
             )}
         </div>
     );

@@ -10,6 +10,8 @@ import Loading from '../LoadingError/Loading';
 import { ListCategory } from '../../Redux/Actions/categoryActions';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
+import { FileUploadDemo } from './UploadImage';
+import { Image } from 'primereact/image';
 
 const ToastObjects = {
   pauseOnFocusLoss: false,
@@ -25,6 +27,7 @@ const EditProductMain = (props) => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState('');
+  const [newImage, setNewImage] = useState('');
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState('');
 
@@ -130,19 +133,35 @@ const EditProductMain = (props) => {
   const submitHandler = (data, e) => {
     e.preventDefault();
     if (category != -1) {
-      dispatch(
-        updateProduct({
-          _id: productId,
-          name,
-          category,
-          description,
-          image,
-          variants: data.variants.reduce((variants, variant) => {
+      let newProduct = new FormData();
+      newProduct.append('_id', productId);
+      newProduct.append('name', name);
+      newProduct.append('description', description);
+      newProduct.append('category', category);
+      newProduct.append(
+        'variants',
+        JSON.stringify(
+          data.variants.reduce((variants, variant) => {
             variants = variants.concat(variant.field);
             return variants;
           }, []),
-        }),
+        ),
       );
+      newImage ? newProduct.append('productImage', newImage) : newProduct.append('productImage', image);
+      // dispatch(
+      //   updateProduct({
+      //     _id: productId,
+      //     name,
+      //     category,
+      //     description,
+      //     image,
+      //     variants: data.variants.reduce((variants, variant) => {
+      //       variants = variants.concat(variant.field);
+      //       return variants;
+      //     }, []),
+      //   }),
+      // );
+      dispatch(updateProduct(newProduct));
     }
   };
 
@@ -226,14 +245,11 @@ const EditProductMain = (props) => {
                         ></textarea>
                       </div>
                       <div className="mb-4">
-                        <label className="form-label">Images</label>
-                        <input
-                          className="form-control"
-                          type="text"
-                          value={image}
-                          required
-                          onChange={(e) => setImage(e.target.value)}
-                        />
+                        <label className="form-label">Old Images</label>
+
+                        <Image src={image} template="Preview Content" alt="Image Text" preview width="40px" />
+
+                        <FileUploadDemo setImage={(value) => setNewImage(value)} name={name} />
                       </div>
 
                       <div className="card mb-4 shadow-sm">

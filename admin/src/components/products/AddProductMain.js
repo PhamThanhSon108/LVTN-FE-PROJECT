@@ -11,6 +11,9 @@ import { ListCategory } from '../../Redux/Actions/categoryActions';
 import isEmpty from 'validator/lib/isEmpty';
 import { v4 as uuidv4 } from 'uuid';
 import { set, useFieldArray, useForm } from 'react-hook-form';
+import { FileUpload } from 'primereact/fileupload';
+import { FileUploadDemo } from './UploadImage';
+import { Button } from 'primereact/button';
 const ToastObjects = {
   pauseOnFocusLoss: false,
   draggable: false,
@@ -21,7 +24,7 @@ const AddProductMain = () => {
   const [name, setName] = useState('');
 
   const [category, setCategory] = useState('');
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState();
 
   const [description, setDescription] = useState('');
   const [validate, setValidate] = useState({});
@@ -29,11 +32,11 @@ const AddProductMain = () => {
   const refInput = useRef();
 
   const dispatch = useDispatch();
-
   const [changeForALL, setChangForAll] = useState(false);
   const [size, setSize] = useState([]);
   const [color, setColor] = useState([]);
-
+  const [reviewImage, setReviewImage] = useState('');
+  const [clear, setClear] = useState(false);
   // const [groupProduct, setGroupProduct] = useState({ ...defaultGroupProduct });
   const productCreate = useSelector((state) => state.productCreate);
   const { loading, error, product } = productCreate;
@@ -86,9 +89,10 @@ const AddProductMain = () => {
       setSize(['']);
       setColor(['']);
       // reset({ defaultValues: defaultGroupProduct });
-      setValue('size', []);
-      setValue('color', []);
-      setValue('variants', []);
+      setValue('size', ['']);
+      setValue('color', ['']);
+      setValue('variants', ['']);
+      setClear((pre) => !pre);
     }
   }, [product, dispatch]);
   const isEmptyCheckEdit = () => {
@@ -102,10 +106,10 @@ const AddProductMain = () => {
       msg.borderRed2 = 'border-red';
     }
 
-    if (isEmpty(image)) {
-      msg.image = 'Please input your image';
-      msg.borderRed4 = 'border-red';
-    }
+    // if (isEmpty(image)) {
+    //   msg.image = 'Please input your image';
+    //   msg.borderRed4 = 'border-red';
+    // }
 
     if (isEmpty(description)) {
       msg.description = 'Please input your description';
@@ -117,28 +121,49 @@ const AddProductMain = () => {
   };
 
   const submitHandler = (data, e) => {
-    console.log(data);
     e.preventDefault();
+    if (!image) {
+      toast.error('Please choose image!!', ToastObjects);
+      return;
+    }
     const isEmptyValidate = isEmptyCheckEdit();
     if (!isEmptyValidate) return;
     // console.log(category);
     if (category != -1) {
-      dispatch(
-        createProduct({
-          name,
-          description,
-          category,
-          image,
-          variants: data.variants.reduce((variants, variant) => {
+      let newProduct = new FormData();
+      newProduct.append('name', name);
+      newProduct.append('description', description);
+      newProduct.append('category', category);
+      newProduct.append(
+        'variants',
+        JSON.stringify(
+          data.variants.reduce((variants, variant) => {
             variants = variants.concat(variant.field);
             return variants;
           }, []),
-        }),
+        ),
+      );
+      newProduct.append('productImage', image);
+      // dispatch(createProduct(imagef));
+      for (const value of newProduct.values()) {
+        console.log(value);
+      }
+      dispatch(
+        // createProduct({
+        //   name,
+        //   description,
+        //   category,
+        //   image: image,
+        //   variants: data.variants.reduce((variants, variant) => {
+        //     variants = variants.concat(variant.field);
+        //     return variants;
+        //   }, []),
+        // }),
+        createProduct(newProduct),
       );
     }
     // console.log(data, 'dữ liệu');
   };
-
   return (
     <>
       <Toast />
@@ -243,8 +268,9 @@ const AddProductMain = () => {
                     <p className="product_validate">{validate.description}</p>
                   </div>
                   <div className="mb-4">
-                    <label className="form-label">Images</label>
-                    <input
+                    {/* <label className="form-label">Images</label> */}
+                    {/* {image && <img src={URL.createObjectURL(image)} />} */}
+                    {/* <input
                       className={`form-control ${validate.borderRed4}`}
                       type="text"
                       placeholder="Enter Image URL"
@@ -260,8 +286,17 @@ const AddProductMain = () => {
                       }}
                       onChange={(e) => setImage(e.target.value)}
                     />
-                    <p className="product_validate">{validate.image}</p>
-                    {/* <input className="form-control mt-3" type="file" /> */}
+                    <p className="product_validate">{validate.image}</p> */}
+                    {/* <input
+                      {...register('picture')}
+                      className="form-control mt-3"
+                      type="file"
+                      // onChange={(e) => {
+                      //   // console.log(e.target.files[0]);
+                      //   setImage(e.target.files[0]);
+                      // }}
+                    /> */}
+                    <FileUploadDemo setImage={(value) => setImage(value)} name={name} clear={clear} />
                   </div>
                 </div>
               </div>
@@ -283,7 +318,7 @@ const AddProductMain = () => {
                           <div className="card-body shadow-sm col-9">
                             {getValues(valueOption)?.map((valueField, i) => (
                               <div className="mb-4 d-flex" key={uuidv4()}>
-                                <label className="col-2 text-start ">Phân loại hàng</label>
+                                <label className="col-2 text-start ">Name of classify</label>
                                 <div className="col-10 d-flex">
                                   <input
                                     {...register(`${valueOption}.${i}`, {
@@ -292,7 +327,7 @@ const AddProductMain = () => {
                                     className="flex-grow-1 form-control"
                                     name={`${valueOption}.${i}`}
                                     type="text"
-                                    placeholder="Nhập tên nhóm phân loại"
+                                    placeholder="Enter name of classify"
                                     aria-label="Price"
                                     aria-describedby="basic-addon1"
                                   ></input>{' '}
@@ -424,13 +459,13 @@ const AddProductMain = () => {
                             {...register('price')}
                             className="border-0 input "
                             placeholder="Enter price"
-                            type={'number'}
+                            type="number"
                           ></input>
                         </td>
                         <td>
                           <input
                             className="border-0 input "
-                            type={'number'}
+                            type="number"
                             {...register('quantity')}
                             placeholder="Enter quantity"
                           />{' '}

@@ -47,7 +47,7 @@ export default function AddSlider() {
   const submitHandler = (e) => {
     e.preventDefault();
     if (!checkUrl()) return;
-    dispatch(createSlider({ url, id: '1' }));
+    dispatch(createSlider({ url }));
   };
   return (
     <>

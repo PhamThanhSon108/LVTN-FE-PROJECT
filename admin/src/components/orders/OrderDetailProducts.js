@@ -14,7 +14,7 @@ const OrderDetailProducts = (props) => {
     };
 
     order.itemsPrice = addDecimals(
-      order.orderItems.reduce((acc, item) => acc + item.variant.product.price * item.quantity, 0),
+      order.orderItems.reduce((acc, item) => acc + item?.variant?.product?.price * item?.quantity, 0),
     );
   }
 
@@ -40,13 +40,13 @@ const OrderDetailProducts = (props) => {
                 <Link className="itemside" to="#">
                   <div className="left">
                     <img
-                      src={item.variant.product.image}
-                      alt={item.variant.product.name}
+                      src={item.variant.product?.image}
+                      alt={item.variant.product?.name}
                       style={{ width: '40px', height: '40px' }}
                       className="img-xs"
                     />
                   </div>
-                  <div className="info">{item.variant.product.name}</div>
+                  <div className="info">{item.variant.product?.name}</div>
                 </Link>
               </td>
               <td>{item.variant.size} </td>

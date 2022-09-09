@@ -8,7 +8,7 @@ import { createProductReview, listProductDetails } from '../Redux/Actions/Produc
 import Loading from '../components/LoadingError/Loading';
 import { PRODUCT_CREATE_REVIEW_RESET } from '../Redux/Constants/ProductConstants';
 import moment from 'moment';
-import { addToCart } from '../Redux/Actions/cartActions';
+import { addProductOrderInCart, addToCart } from '../Redux/Actions/cartActions';
 import image from '~/assets/images';
 import Toast from '~/components/LoadingError/Toast';
 import useDebounce from '~/hooks/useDebounce';
@@ -86,6 +86,30 @@ const SingleProduct = ({ history, match }) => {
 
         if (userInfo && variantId) {
             dispatch(addToCart(variantId, qty, history));
+        } else history.push('/login');
+    };
+
+    const BuyProductHandle = (e) => {
+        e.preventDefault();
+        const variantOrder = product?.variants?.find(
+            (value) => value.color == currentColor && value.size == currentSize,
+        );
+        console.log(userInfo, 'user');
+        console.log(variantOrder, 'vảiant');
+        console.log(product);
+        if (userInfo && variantOrder) {
+            dispatch(
+                addProductOrderInCart([
+                    {
+                        quantity: qty,
+                        variant: {
+                            ...variantOrder,
+                            product: { ...product, variants: product?.variants?.map((value) => value._id) },
+                        },
+                    },
+                ]),
+            );
+            history.push('/login?redirect=shipping');
         } else history.push('/login');
     };
     const submitHandler = (e) => {
@@ -249,9 +273,24 @@ const SingleProduct = ({ history, match }) => {
                                                                 products available
                                                             </div>
                                                         </div>
-                                                        <button onClick={AddToCartHandle} className="round-black-btn">
-                                                            Add To Cart
-                                                        </button>
+                                                        <div
+                                                            className="d-flex"
+                                                            style={{ marginTop: '10px', marginLeft: '25px' }}
+                                                        >
+                                                            <button
+                                                                onClick={AddToCartHandle}
+                                                                style={{ marginRight: '15px' }}
+                                                                className="col-4 btn btn-outline-danger"
+                                                            >
+                                                                Add To Cart
+                                                            </button>
+                                                            <button
+                                                                onClick={BuyProductHandle}
+                                                                className="col-2 btn btn-primary"
+                                                            >
+                                                                Buy product
+                                                            </button>
+                                                        </div>
                                                     </>
                                                 ) : null}
                                             </div>

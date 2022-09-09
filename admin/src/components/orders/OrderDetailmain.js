@@ -26,7 +26,7 @@ const OrderDetailmain = (props) => {
   const orderCancel = useSelector((state) => state.orderCancel);
   const { loading: loadingCancel, success: successCancel } = orderCancel;
   const [status, setStatus] = useState(order?.status);
-
+  console.log(status, 'stus');
   const itemsPrice = order?.orderItems
     .reduce((totalPrice, i) => totalPrice + i.quantity * i.variant.price, 0)
     .toFixed(2);
@@ -201,10 +201,7 @@ const OrderDetailmain = (props) => {
                           >
                             {Object.keys(statusAdminUpdate)?.map((item) => (
                               <option
-                                disabled={
-                                  order?.statusHistory.find((status) => status.status === item) ||
-                                  item === 'Update status'
-                                }
+                                disabled={order?.statusHistory.find((status) => status.status === item)}
                                 className={item === 'Update status' && 'bg-light'}
                                 value={item}
                               >
@@ -219,7 +216,7 @@ const OrderDetailmain = (props) => {
                           </select>
 
                           <div style={{ marginTop: '15px' }}>
-                            {order.status !== 'Cancelled' && (
+                            {status !== 'Update status' && order.status !== 'Cancelled' && (
                               <button onClick={saveStatusHandler} className="btn btn-danger col-12">
                                 SAVE STATUS
                               </button>

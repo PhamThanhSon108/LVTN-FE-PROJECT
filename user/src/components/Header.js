@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../Redux/Actions/userActions';
@@ -11,7 +11,8 @@ const Header = () => {
     const [navbar, setNavbar] = useState(false);
     const dispatch = useDispatch();
     let history = useHistory();
-
+    const refSearch = useRef();
+    console.log(refSearch, 'ref search');
     const cart = useSelector((state) => state.cart);
     const { cartItems } = cart;
     const userLogin = useSelector((state) => state.userLogin);
@@ -175,14 +176,19 @@ const Header = () => {
                         {/* PC HEADER */}
                         <div className="pc-header">
                             <div className="row">
-                                <div className="col-md-3 col-4 d-flex align-items-center">
+                                <div
+                                    className="col-md-3 col-4 d-flex align-items-center "
+                                    onClick={() => {
+                                        refSearch.current.setvalue(0);
+                                    }}
+                                >
                                     <Link className="navbar-brand" to="/">
                                         <img alt="logo" src="/images/logo.png" />
                                     </Link>
                                 </div>
                                 <div className="col-md-6 col-8 header-nav__search">
                                     <form className="input-group col-12">
-                                        <Search />
+                                        <Search refSearch={refSearch} />
                                     </form>
                                     <NavBar></NavBar>
                                 </div>

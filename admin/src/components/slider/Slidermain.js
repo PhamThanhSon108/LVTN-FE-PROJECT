@@ -17,7 +17,7 @@ export default function Slidermain() {
   const handleEditSlide = (url, id) => {
     let newSlider = window.prompt('Edit Slider', `${url}`);
     if (newSlider) {
-      dispatch(createSlider(newSlider, id));
+      dispatch(createSlider({ url: newSlider, id }));
     }
   };
   const handleDeleteSlider = (id) => {

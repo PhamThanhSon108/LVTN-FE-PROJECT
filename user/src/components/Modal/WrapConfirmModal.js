@@ -4,7 +4,7 @@ import ConfirmModal from './ConfirmModal';
 function WrapConfirmModal({ children, ...data }) {
     return (
         <>
-            <ConfirmModal {...data} />;
+            <ConfirmModal {...data} />
             <div
                 data-bs-toggle="modal"
                 data-bs-target="#staticBackdrop"
