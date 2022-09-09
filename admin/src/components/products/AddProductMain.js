@@ -93,6 +93,8 @@ const AddProductMain = () => {
       setValue('color', ['']);
       setValue('variants', ['']);
       setClear((pre) => !pre);
+      setChangForAll('');
+      reset();
     }
   }, [product, dispatch]);
   const isEmptyCheckEdit = () => {
@@ -166,7 +168,7 @@ const AddProductMain = () => {
   };
   return (
     <>
-      <Toast />
+      {/* <Toast /> */}
       <section className="content-main" style={{ maxWidth: '1200px' }}>
         <form onSubmit={handleSubmit(submitHandler)}>
           <div className="content-header">
@@ -185,7 +187,6 @@ const AddProductMain = () => {
             <div className="col-xl-12 col-lg-12">
               <div className="card mb-4 shadow-sm">
                 <div className="card-body">
-                  {error && <Message variant="alert-danger">{error}</Message>}
                   {loading && <Loading />}
                   <div className="mb-4">
                     <label htmlFor="product_title" className="form-label">

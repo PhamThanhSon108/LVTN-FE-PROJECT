@@ -167,7 +167,7 @@ const EditProductMain = (props) => {
 
   return (
     <>
-      <Toast />
+      {/* <Toast /> */}
       <section className="content-main" style={{ maxWidth: '1200px' }}>
         <form onSubmit={handleSubmit(submitHandler)}>
           <div className="content-header">
@@ -186,12 +186,13 @@ const EditProductMain = (props) => {
             <div className="col-xl-12 col-lg-12">
               <div className="card mb-4 shadow-sm">
                 <div className="card-body">
-                  {errorUpdate && <Message variant="alert-danger">{errorUpdate}</Message>}
+                  {/* {errorUpdate && <Message variant="alert-danger">{errorUpdate}</Message>} */}
                   {loadingUpdate && <Loading />}
                   {loading ? (
                     <Loading />
                   ) : error ? (
-                    <Message variant="alert-danger">{error}</Message>
+                    // <Message variant="alert-danger">{error}</Message>
+                    <></>
                   ) : (
                     <>
                       <div className="mb-4">

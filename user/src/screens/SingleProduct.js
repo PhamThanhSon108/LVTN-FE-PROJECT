@@ -115,9 +115,12 @@ const SingleProduct = ({ history, match }) => {
     const submitHandler = (e) => {
         e.preventDefault();
         dispatch(
-            createProductReview(productId, {
-                rating,
-                comment,
+            createProductReview({
+                productId,
+                review: {
+                    rating,
+                    comment,
+                },
             }),
         );
     };
@@ -345,9 +348,9 @@ const SingleProduct = ({ history, match }) => {
                                             <h6 className="write-review">WRITE A CUSTOMER REVIEW</h6>
                                             <div className="my-4">
                                                 {loadingCreateReview && <Loading />}
-                                                {errorCreateReview && (
+                                                {/* {errorCreateReview && (
                                                     <Message variant="alert-danger">{errorCreateReview}</Message>
-                                                )}
+                                                )} */}
                                             </div>
                                             {userInfo ? (
                                                 <form onSubmit={submitHandler}>

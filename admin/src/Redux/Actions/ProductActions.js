@@ -44,6 +44,7 @@ export const listProducts =
         `/api/product?category=${category}&keyword=${keyword}&pageNumber=${pageNumber}`,
         config,
       );
+      console.log(data, 'total');
 
       dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
     } catch (error) {
@@ -138,10 +139,11 @@ export const createProduct = (newProduct) => async (dispatch, getState) => {
     };
 
     const { data } = await request.post(`/api/product/`, newProduct, config);
-
+    toast.success('Add product success', ToastObjects);
     dispatch({ type: PRODUCT_CREATE_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+    toast.success(message, ToastObjects);
     if (message === 'Not authorized, token failed') {
       dispatch(logout());
     }
@@ -184,15 +186,15 @@ export const updateProduct = (product) => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     };
-    for (const value of product.values()) {
-      console.log(value);
-    }
-    const { data } = await request.put(`/api/product/${product.get('_id')}`, product, config);
 
+    const { data } = await request.put(`/api/product/${product.get('_id')}`, product, config);
+    toast.success('Success update', ToastObjects);
     dispatch({ type: PRODUCT_UPDATE_SUCCESS });
     // dispatch({ type: PRODUCT_EDIT_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+    toast.error(message, ToastObjects);
+
     if (message === 'Not authorized, token failed') {
       dispatch(logout());
     }

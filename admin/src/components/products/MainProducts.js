@@ -51,7 +51,7 @@ const MainProducts = (props) => {
 
   return (
     <>
-      <Toast />
+      {/* <Toast /> */}
       <section className="content-main">
         <div className="content-header">
           <h2 className="content-title">Products</h2>

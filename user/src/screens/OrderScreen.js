@@ -32,9 +32,7 @@ const OrderScreen = ({ match }) => {
     const orderConfirmPaid = useSelector((state) => state.orderConfirmPaid);
     const { loading: loadingConfirmPaid, success: successConfirmPaid } = orderConfirmPaid;
 
-    const itemsPrice = order?.orderItems
-        .reduce((totalPrice, i) => totalPrice + i.quantity * i.variant.price, 0)
-        .toFixed(2);
+    const itemsPrice = order?.orderItems.reduce((totalPrice, i) => totalPrice + i.quantity * i?.price, 0).toFixed(2);
 
     const cancelOrderHandler = () => {
         if (window.confirm('Are you sure??')) {
@@ -46,6 +44,7 @@ const OrderScreen = ({ match }) => {
             dispatch(confirmPaid({ orderId: order?._id }));
         }
     };
+    console.log(order, 'sfsdfds');
     //gọi thêm userLogin để lấy số điện thoại
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
@@ -219,7 +218,7 @@ const OrderScreen = ({ match }) => {
                                 className="col-lg-3 col-sm-3 mb-lg-3 mb-3 mb-sm-3 fix-bottom p-3  "
                                 style={{ margin: '0px 15px 0px 15px' }}
                             >
-                                <p className="order-name-customer ">{order?.user?.name}</p>
+                                <p className="order-name-customer ">{order?.username}</p>
                                 <p className="order-address-custommer">{order?.contactInformation?.phone}</p>
                                 <p className="order-address-custommer">{order?.user?.name}</p>
 
@@ -275,11 +274,11 @@ const OrderScreen = ({ match }) => {
                                         {order.orderItems.map((item, index) => (
                                             <div className="order-product row shadow-sm" key={index}>
                                                 <div className="col-md-2 col-2">
-                                                    <img src={item?.variant?.product?.image} alt={item?.name} />
+                                                    <img src={item?.image} alt={item?.name} />
                                                 </div>
                                                 <div className="col-md-5 col-3 d-flex align-items-center">
-                                                    <Link to={`/product/${item?.variant?.product?._id}`}>
-                                                        <h6>{item?.variant?.product?.name}</h6>
+                                                    <Link to={`/product/${item?.product}`}>
+                                                        <h6>{item?.name}</h6>
                                                     </Link>
                                                 </div>
                                                 <div className="mt-1 mt-md-1 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
@@ -288,15 +287,15 @@ const OrderScreen = ({ match }) => {
                                                 </div>
                                                 <div className="mt-1 mt-md-1 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
                                                     <h4>SIZE</h4>
-                                                    <h6>{item?.variant?.size}</h6>
+                                                    <h6>{item?.size}</h6>
                                                 </div>
                                                 <div className="mt-1 mt-md-1 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
                                                     <h4>COLOR</h4>
-                                                    <h6>{item?.variant?.color}</h6>
+                                                    <h6>{item?.color}</h6>
                                                 </div>
                                                 <div className="mt-2 mt-md-2 col-md-2 col-2 align-items-end  d-flex flex-column justify-content-center ">
                                                     <h4>SUBTOTAL</h4>
-                                                    <h6>${item?.quantity * item?.variant.price}</h6>
+                                                    <h6>${item?.quantity * item?.price}</h6>
                                                 </div>
                                                 {order.status === 'Completed' && order?.orderItems?.length >= 1 && (
                                                     <div

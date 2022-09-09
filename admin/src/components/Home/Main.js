@@ -12,12 +12,14 @@ const Main = () => {
   const orderList = useSelector((state) => state.orderList);
   const { loading, error, orders } = orderList;
   const productList = useSelector((state) => state.productList);
-  const { products } = productList;
+  const { products, countProducts } = productList;
   const userList = useSelector((state) => state.userList);
   const { users } = userList;
   useEffect(() => {
     dispatch(listProducts());
   }, [dispatch]);
+  console.log(products);
+
   return (
     <>
       <section className="content-main">
@@ -25,7 +27,7 @@ const Main = () => {
           <h2 className="content-title"> Dashboard </h2>
         </div>
         {/* Top Total */}
-        <TopTotal orders={orders} countProducts={products?.length} countUsers={users ? users.length : 0} />
+        <TopTotal orders={orders} countProducts={countProducts} countUsers={users ? users.length : 0} />
 
         <div className="row">
           {/* STATICS */}

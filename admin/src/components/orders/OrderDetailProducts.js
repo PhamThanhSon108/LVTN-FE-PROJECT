@@ -4,9 +4,7 @@ import { statusDescription } from './statusDescription';
 
 const OrderDetailProducts = (props) => {
   const { order, loading } = props;
-  const itemsPrice = order?.orderItems
-    .reduce((totalPrice, i) => totalPrice + i.quantity * i.variant.price, 0)
-    .toFixed(2);
+  const itemsPrice = order?.orderItems.reduce((totalPrice, i) => totalPrice + i.quantity * i?.price, 0).toFixed(2);
   if (!loading) {
     // Calculate Price
     const addDecimals = (num) => {
@@ -40,20 +38,20 @@ const OrderDetailProducts = (props) => {
                 <Link className="itemside" to="#">
                   <div className="left">
                     <img
-                      src={item.variant.product?.image}
-                      alt={item.variant.product?.name}
+                      src={item?.image}
+                      alt={item?.name}
                       style={{ width: '40px', height: '40px' }}
                       className="img-xs"
                     />
                   </div>
-                  <div className="info">{item.variant.product?.name}</div>
+                  <div className="info">{item?.name}</div>
                 </Link>
               </td>
-              <td>{item.variant.size} </td>
-              <td>{item.variant.color} </td>
-              <td>${item.variant.price} </td>
+              <td>${item?.price} </td>
+              <td>{item?.size} </td>
+              <td>{item?.color} </td>
               <td>{item.quantity} </td>
-              <td className="text-end"> ${item.quantity * item.variant.price}</td>
+              <td className="text-end"> ${item.quantity * item.price}</td>
             </tr>
           ))}
 

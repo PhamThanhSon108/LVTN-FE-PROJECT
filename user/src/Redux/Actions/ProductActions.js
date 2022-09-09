@@ -83,7 +83,7 @@ export const createProductReview =
             };
 
             await request.post(`/api/product/${productId}/review`, review, config);
-            onHide('displayBasic');
+            onHide && onHide('displayBasic');
             toast.success('Successful review', Toastobjects);
             dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS });
         } catch (error) {

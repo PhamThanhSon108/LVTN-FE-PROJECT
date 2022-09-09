@@ -2,6 +2,7 @@ import React from 'react';
 
 const OrderDetailInfo = (props) => {
   const { order } = props;
+  console.log(order, 'order in detail');
   return (
     <div className="row mb-5 order-info-wrap">
       <div className="col-md-6 col-lg-4">
@@ -11,7 +12,7 @@ const OrderDetailInfo = (props) => {
           </span>
           <div className="text">
             <p className="mb-1">
-              Name: {order.user?.name} <br />
+              Name: {order?.username} <br />
               <p>Phone: {order?.contactInformation?.phone}</p>
             </p>
           </div>

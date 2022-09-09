@@ -16,6 +16,7 @@ const Orders = (props) => {
   // const handleStatus = (value) => {
   //   setStatus(value.target.value);
   // };
+  console.log(orders);
 
   return (
     <>
@@ -37,9 +38,9 @@ const Orders = (props) => {
           {orders?.orders?.map((order) => (
             <tr key={order._id}>
               <td>
-                <b>{order.user?.name}</b>
+                <b>{order?.username}</b>
               </td>
-              <td>{order.user?.email}</td>
+              <td>{order?.contactInformation?.email || order?.user?.email}</td>
               <td>${order?.totalPrice}</td>
               <td>{moment(order.createdAt).format('MMM Do YY')}</td>
               <td style={{ position: 'relative' }}>

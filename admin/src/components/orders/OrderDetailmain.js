@@ -27,9 +27,7 @@ const OrderDetailmain = (props) => {
   const { loading: loadingCancel, success: successCancel } = orderCancel;
   const [status, setStatus] = useState(order?.status);
   console.log(status, 'stus');
-  const itemsPrice = order?.orderItems
-    .reduce((totalPrice, i) => totalPrice + i.quantity * i.variant.price, 0)
-    .toFixed(2);
+  const itemsPrice = order?.orderItems.reduce((totalPrice, i) => totalPrice + i.quantity * i?.price, 0).toFixed(2);
   useEffect(() => {
     dispatch(getOrderDetails(orderId));
   }, [dispatch, orderId, successDelivered, successUpdateStatus, successCancel]);
@@ -61,7 +59,7 @@ const OrderDetailmain = (props) => {
 
   return (
     <section className="content-main">
-      <Toast />
+      {/* <Toast /> */}
       <div className="content-header">
         <Link to="/orders" className="btn btn-dark text-white">
           Back To Orders
