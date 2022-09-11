@@ -9,12 +9,14 @@ import Message from '../LoadingError/Error';
 import { listCart } from '../../Redux/Actions/cartActions';
 import FilterSection from './FilterSection';
 import { Image } from 'primereact/image';
-
+import { useLocation } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
 const ShopSection = (props) => {
+    const history = createBrowserHistory();
     // const { category, keyword, pageNumber } = props;
     const { keyword, pageNumber } = props;
     const dispatch = useDispatch();
-
+    const location = useLocation();
     const productList = useSelector((state) => state.productList);
     const { loading, error, products, page, pages } = productList;
     const [rating, setRating] = useState('');
@@ -23,15 +25,25 @@ const ShopSection = (props) => {
     const [maxPrice, setMaxPrice] = useState('');
     const [priceOrder, setPriceOrder] = useState('');
     const [sortProducts, setSortProducts] = useState('1');
+    // useEffect(() => {
+    //     dispatch(listCart());
+    //     dispatch(listProduct(category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder));
+    // }, [dispatch, category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder]);
     useEffect(() => {
         dispatch(listCart());
         dispatch(listProduct(category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder));
-    }, [dispatch, category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder]);
+    }, [dispatch, pageNumber]);
+
+    useEffect(() => {
+        if (location?.pathname !== '/page/1')
+            dispatch(listProduct(category, keyword, 1, rating, minPrice, maxPrice, priceOrder));
+        else dispatch(listProduct(category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder));
+    }, [dispatch, category, keyword, rating, minPrice, maxPrice, priceOrder]);
     return (
         <>
             <div className="container">
                 <div className="section">
-                    {products && (
+                    {products && products?.length > 1 && (
                         <div
                             style={{
                                 display: 'flex',
@@ -124,7 +136,7 @@ const ShopSection = (props) => {
                                                                     value={product.rating}
                                                                     text={`${product.numReviews} reviews`}
                                                                 />
-                                                                <h3>${product.price}</h3>
+                                                                <h3>${product.price.toFixed(2)}</h3>
                                                             </div>
                                                         </div>
                                                     </div>

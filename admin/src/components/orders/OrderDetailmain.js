@@ -18,7 +18,6 @@ const OrderDetailmain = (props) => {
   const { loading, error, order } = orderDetails;
 
   // const orderUser = useSelector((state) => state.orderPaid);
-  // console.log(orderUser);
   const orderDeliver = useSelector((state) => state.orderDeliver);
   const { loading: loadingDelivered, success: successDelivered } = orderDeliver;
   const orderUpdateStatus = useSelector((state) => state.orderUpdateStatus);
@@ -26,7 +25,6 @@ const OrderDetailmain = (props) => {
   const orderCancel = useSelector((state) => state.orderCancel);
   const { loading: loadingCancel, success: successCancel } = orderCancel;
   const [status, setStatus] = useState(order?.status);
-  console.log(status, 'stus');
   const itemsPrice = order?.orderItems.reduce((totalPrice, i) => totalPrice + i.quantity * i?.price, 0).toFixed(2);
   useEffect(() => {
     dispatch(getOrderDetails(orderId));

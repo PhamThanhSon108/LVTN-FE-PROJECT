@@ -13,7 +13,6 @@ const ShippingScreen = ({ history }) => {
     const dispatch = useDispatch();
 
     const userDetails = useSelector((state) => state.userDetails);
-    console.log(useSelector((state) => state));
     const { user, success: successUserDetails } = userDetails;
     const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
     const { success: updatesuccess, loading: updateLoading, error: errorUpdate } = userUpdateProfile;
@@ -31,7 +30,6 @@ const ShippingScreen = ({ history }) => {
     }, [user, successUserDetails, dispatch]);
 
     const submitHandler = async (data) => {
-        // console.log(e);
         dispatch(updateUserProfile(data, history));
         dispatch(saveShippingAddress(data));
     };

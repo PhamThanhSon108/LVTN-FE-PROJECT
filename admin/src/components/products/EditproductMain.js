@@ -90,7 +90,7 @@ const EditProductMain = (props) => {
     if (successUpdate) {
       dispatch(editProduct(productId));
       dispatch({ type: PRODUCT_UPDATE_RESET });
-      toast.success('Product Updated', ToastObjects);
+      // toast.success('Product Updated', ToastObjects);
     } else {
       if (!product.name || product._id !== productId) {
         dispatch(editProduct(productId));
@@ -107,17 +107,6 @@ const EditProductMain = (props) => {
 
   useEffect(() => {
     dispatch(editProduct(productId));
-
-    // return reset({
-    //   defaultValues: {
-    //     option: ['size', 'color'],
-    //     size: size,
-
-    //     color: color,
-
-    //     variants: [],
-    //   },
-    // });
   }, [productId]);
 
   useEffect(() => {
@@ -186,12 +175,10 @@ const EditProductMain = (props) => {
             <div className="col-xl-12 col-lg-12">
               <div className="card mb-4 shadow-sm">
                 <div className="card-body">
-                  {/* {errorUpdate && <Message variant="alert-danger">{errorUpdate}</Message>} */}
                   {loadingUpdate && <Loading />}
                   {loading ? (
                     <Loading />
                   ) : error ? (
-                    // <Message variant="alert-danger">{error}</Message>
                     <></>
                   ) : (
                     <>

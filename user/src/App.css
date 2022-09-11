@@ -1824,7 +1824,7 @@ textarea:focus {
     width: 100%;
     top: 50%;
     bottom: 10px;
-    right: -89%;
+    right: -50%;
     background-color: rgba(0, 0, 0, 0.09);
 }
 

@@ -16,7 +16,6 @@ const Orders = (props) => {
   // const handleStatus = (value) => {
   //   setStatus(value.target.value);
   // };
-  console.log(orders);
 
   return (
     <>

@@ -17,8 +17,6 @@ export default function Corousel() {
         dispatch(ListProductAll());
     }, []);
 
-    //console.log(products)
-
     // const products = [
     //     {
     //       id: 1,

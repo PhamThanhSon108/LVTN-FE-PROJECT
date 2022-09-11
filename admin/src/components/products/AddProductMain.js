@@ -4,16 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { PRODUCT_CREATE_RESET } from '../../Redux/Constants/ProductConstants';
 import { createProduct } from './../../Redux/Actions/ProductActions';
-import Toast from '../LoadingError/Toast';
-import Message from '../LoadingError/Error';
 import Loading from '../LoadingError/Loading';
 import { ListCategory } from '../../Redux/Actions/categoryActions';
 import isEmpty from 'validator/lib/isEmpty';
 import { v4 as uuidv4 } from 'uuid';
-import { set, useFieldArray, useForm } from 'react-hook-form';
-import { FileUpload } from 'primereact/fileupload';
+import { useForm } from 'react-hook-form';
+
 import { FileUploadDemo } from './UploadImage';
-import { Button } from 'primereact/button';
+
 const ToastObjects = {
   pauseOnFocusLoss: false,
   draggable: false,
@@ -80,7 +78,6 @@ const AddProductMain = () => {
 
   useEffect(() => {
     if (product) {
-      toast.success('Product Added', ToastObjects);
       dispatch({ type: PRODUCT_CREATE_RESET });
       setName('');
       setDescription('');
@@ -130,7 +127,7 @@ const AddProductMain = () => {
     }
     const isEmptyValidate = isEmptyCheckEdit();
     if (!isEmptyValidate) return;
-    // console.log(category);
+
     if (category != -1) {
       let newProduct = new FormData();
       newProduct.append('name', name);
@@ -147,9 +144,9 @@ const AddProductMain = () => {
       );
       newProduct.append('productImage', image);
       // dispatch(createProduct(imagef));
-      for (const value of newProduct.values()) {
-        console.log(value);
-      }
+      // for (const value of newProduct.values()) {
+      //   console.log(value);
+      // }
       dispatch(
         // createProduct({
         //   name,
@@ -164,7 +161,6 @@ const AddProductMain = () => {
         createProduct(newProduct),
       );
     }
-    // console.log(data, 'dữ liệu');
   };
   return (
     <>
@@ -293,7 +289,7 @@ const AddProductMain = () => {
                       className="form-control mt-3"
                       type="file"
                       // onChange={(e) => {
-                      //   // console.log(e.target.files[0]);
+
                       //   setImage(e.target.files[0]);
                       // }}
                     /> */}

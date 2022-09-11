@@ -4,18 +4,11 @@ import { ListCategory } from '../../Redux/Actions/categoryActions';
 import { Link, useHistory } from 'react-router-dom';
 import isEmpty from 'validator/lib/isEmpty';
 import Rating from './Rating';
+import { useLocation } from 'react-router-dom';
 
-export default function FilterSection({
-    setRating,
-    setMinPrice,
-    setCategory,
-    setMaxPrice,
-    rating,
-    minPrice,
-    maxPrice,
-}) {
+export default function FilterSection({ setRating, setMinPrice, setCategory, setMaxPrice, rating }) {
+    const location = useLocation();
     const dispatch = useDispatch();
-    const history = useHistory();
     const lcategories = useSelector((state) => state.CategoryList);
     const { categories } = lcategories;
     const [curentMinPrice, setCurentMinPrice] = useState('');

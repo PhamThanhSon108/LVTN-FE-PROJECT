@@ -18,7 +18,6 @@ const Main = () => {
   useEffect(() => {
     dispatch(listProducts());
   }, [dispatch]);
-  console.log(products);
 
   return (
     <>

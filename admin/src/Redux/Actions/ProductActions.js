@@ -44,7 +44,6 @@ export const listProducts =
         `/api/product?category=${category}&keyword=${keyword}&pageNumber=${pageNumber}`,
         config,
       );
-      console.log(data, 'total');
 
       dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
     } catch (error) {
@@ -100,7 +99,6 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
 //       const {
 //         userLogin: { userInfo },
 //       } = getState();
-//       console.log(image);
 //       const config = {
 //         headers: {
 //           Authorization: `Bearer ${userInfo.accessToken}`,

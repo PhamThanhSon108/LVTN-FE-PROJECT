@@ -17,7 +17,7 @@ const HomeScreen = ({ match }) => {
 
     return (
         <div>
-            <Header />
+            <Header keyword={keyword} />
             {/* <Silder /> */}
             {!keyword ? <Sliders /> : ''}
             {!keyword ? <Corousel /> : ''}

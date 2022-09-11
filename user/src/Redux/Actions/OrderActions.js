@@ -141,7 +141,6 @@ export const listMyOrders =
             };
 
             const { data } = await request.get(`/api/order?pageSize=20&&pageNumber=${pageNumber}`, config);
-            console.log(data);
             dispatch({ type: ORDER_LIST_MY_SUCCESS, payload: data });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -202,7 +201,6 @@ export const cancelOrder =
     ({ orderId }) =>
     async (dispatch, getState) => {
         try {
-            console.log(orderId, 'log order ID');
             dispatch({ type: ORDER_CANCEL_REQUEST });
 
             const {

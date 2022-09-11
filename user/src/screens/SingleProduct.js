@@ -56,7 +56,6 @@ const SingleProduct = ({ history, match }) => {
     //         { field: [] },
     //     ),
     // );
-    // console.log(product.variants, 'dataVariant');
 
     useEffect(() => {
         if (!qty) setQty(null);
@@ -94,9 +93,6 @@ const SingleProduct = ({ history, match }) => {
         const variantOrder = product?.variants?.find(
             (value) => value.color == currentColor && value.size == currentSize,
         );
-        console.log(userInfo, 'user');
-        console.log(variantOrder, 'vảiant');
-        console.log(product);
         if (userInfo && variantOrder) {
             dispatch(
                 addProductOrderInCart([

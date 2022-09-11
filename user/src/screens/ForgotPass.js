@@ -22,7 +22,6 @@ export default function ForgotPass({ history }) {
 
     const onSubmit = (data) => {
         dispatch(forGotPassWord(data, history));
-        // console.log(data);
     };
     return (
         <>

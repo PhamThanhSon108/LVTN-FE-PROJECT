@@ -3,7 +3,6 @@ import React from 'react';
 const TopTotal = (props) => {
   const { orders, countProducts, countUsers } = props;
   let totalSale = 0;
-  console.log(countProducts, 'count');
   if (orders) {
     orders?.orders?.map((order) => (order.status === 'Completed' ? (totalSale = totalSale + order.totalPrice) : null));
   }

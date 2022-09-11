@@ -44,7 +44,6 @@ const OrderScreen = ({ match }) => {
             dispatch(confirmPaid({ orderId: order?._id }));
         }
     };
-    console.log(order, 'sfsdfds');
     //gọi thêm userLogin để lấy số điện thoại
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
@@ -149,14 +148,11 @@ const OrderScreen = ({ match }) => {
                                 style={{ padding: '15px' }}
                             >
                                 {order.statusHistory.map((status, i) => (
-                                    <li
-                                        className="d-flex"
-                                        style={{ position: 'relative', justifyItems: 'center', marginRight: '50px' }}
-                                    >
+                                    <li className="d-flex" style={{ position: 'relative', justifyItems: 'center' }}>
                                         <div
                                             className=""
                                             style={{
-                                                padding: '15px',
+                                                padding: '15PX 60px',
                                                 display: 'flex',
                                                 justifyItems: 'center',
                                                 height: '5rem',
@@ -167,6 +163,7 @@ const OrderScreen = ({ match }) => {
                                             <img
                                                 style={{
                                                     height: '100%',
+                                                    zIndex: '2',
                                                 }}
                                                 src={imageOrder[`${status.status}`]}
                                             />

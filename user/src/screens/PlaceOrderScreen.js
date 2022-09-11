@@ -124,7 +124,7 @@ const PlaceOrderScreen = ({ history }) => {
                         <div className="row" style={{ display: 'flex', alignItems: 'center' }}>
                             <div className="col-lg-3 col-sm-3 mb-lg-3 center fix-bottom">
                                 <div className="alert-success order-box fix-none">
-                                    <i class="fab fa-cash"></i>
+                                    <i class="fab fa-pa"></i>
                                 </div>
                             </div>
                             <div className="col-lg-9 col-sm-9 mb-lg-9">

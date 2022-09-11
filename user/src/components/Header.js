@@ -7,18 +7,18 @@ import NavBar from './navbar';
 import Search from './homeComponents/Search';
 
 const Header = () => {
-    const [keyword, setKeyword] = useState('');
+    // const [keyword, setKeyword] = useState('');
+    // const keyword = match.params.keyword;
     const [navbar, setNavbar] = useState(false);
     const dispatch = useDispatch();
     let history = useHistory();
-    const refSearch = useRef();
-    console.log(refSearch, 'ref search');
     const cart = useSelector((state) => state.cart);
     const { cartItems } = cart;
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
     const { error } = userLogin;
-
+    const [searchValue, setSearchValue] = useState('');
+    const [keyword, setKeyword] = useState('');
     const clickIconNavBar = () => {
         setNavbar(true);
     };
@@ -94,7 +94,8 @@ const Header = () => {
                 <div className="header bg-white">
                     <div className="container">
                         {/* MOBILE HEADER */}
-                        {/* <div className="mobile-header">
+                        <div>
+                            {/* <div className="mobile-header">
                             <div className="container ">
                                 <div className="row ">
                                     <div className="col-6 d-flex align-items-center">
@@ -172,6 +173,7 @@ const Header = () => {
                                 </div>
                             </div>
                         </div> */}
+                        </div>
 
                         {/* PC HEADER */}
                         <div className="pc-header">
@@ -179,7 +181,9 @@ const Header = () => {
                                 <div
                                     className="col-md-3 col-4 d-flex align-items-center "
                                     onClick={() => {
-                                        refSearch.current.setvalue(0);
+                                        // refSearch.current.reset();
+                                        setSearchValue('');
+                                        setKeyword('');
                                     }}
                                 >
                                     <Link className="navbar-brand" to="/">
@@ -188,7 +192,10 @@ const Header = () => {
                                 </div>
                                 <div className="col-md-6 col-8 header-nav__search">
                                     <form className="input-group col-12">
-                                        <Search refSearch={refSearch} />
+                                        <Search
+                                            value={{ searchValue, setSearchValue }}
+                                            keyword={{ keyword, setKeyword }}
+                                        />
                                     </form>
                                     <NavBar></NavBar>
                                 </div>

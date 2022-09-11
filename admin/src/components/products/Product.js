@@ -6,7 +6,6 @@ import Toast from '../LoadingError/Toast';
 
 const Product = (props) => {
   const { product } = props;
-  // console.log(product);
   const dispatch = useDispatch();
 
   const deletehandler = (id) => {

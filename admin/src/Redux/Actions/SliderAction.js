@@ -64,7 +64,6 @@ export const createSlider =
       const {
         userLogin: { userInfo },
       } = getState();
-      console.log(url, 'url');
       const config = {
         headers: {
           Authorization: `Bearer ${userInfo.accessToken}`,

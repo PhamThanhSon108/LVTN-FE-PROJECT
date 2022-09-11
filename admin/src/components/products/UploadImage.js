@@ -11,7 +11,7 @@ export const FileUploadDemo = (props) => {
   const [totalSize, setTotalSize] = useState(0);
   const toast = useRef(null);
   const fileUploadRef = useRef(null);
-  console.log(fileUploadRef.current);
+
   useEffect(() => {
     fileUploadRef.current.clear();
   }, [clear]);
@@ -32,7 +32,6 @@ export const FileUploadDemo = (props) => {
   //   e.files.forEach((file) => {
   //     _totalSize += file.size || 0;
   //   });
-  //   console.log(e.files[0]);
   //   setValue('picture', e.target.files[0]);
   //   setTotalSize(_totalSize);
   //   toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
@@ -47,7 +46,6 @@ export const FileUploadDemo = (props) => {
   const onTemplateClear = () => {
     setTotalSize(0);
     setImage('');
-    console.log('hehe');
   };
 
   const onBasicUpload = () => {

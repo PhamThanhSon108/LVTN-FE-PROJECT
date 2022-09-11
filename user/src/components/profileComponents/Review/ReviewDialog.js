@@ -13,15 +13,10 @@ import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import { Controller, useForm } from 'react-hook-form';
 export const ReviewDialog = ({ order }) => {
-    const { control, handleSubmit } = useForm();
+    const { control, handleSubmit, reset } = useForm();
 
     const [displayBasic, setDisplayBasic] = useState(false);
     const dispatch = useDispatch();
-    // const [displayBasic2, setDisplayBasic2] = useState(false);
-    // const [displayModal, setDisplayModal] = useState(false);
-    // const [displayMaximizable, setDisplayMaximizable] = useState(false);
-    // const [displayPosition, setDisplayPosition] = useState(false);
-    // const [displayResponsive, setDisplayResponsive] = useState(false);
     const [position, setPosition] = useState('center');
     const productReviewCreate = useSelector((state) => state.productReviewCreate);
     const {
@@ -31,18 +26,12 @@ export const ReviewDialog = ({ order }) => {
     } = productReviewCreate;
     const dialogFuncMap = {
         displayBasic: setDisplayBasic,
-        // displayBasic2: setDisplayBasic2,
-        // displayModal: setDisplayModal,
-        // displayMaximizable: setDisplayMaximizable,
-        // displayPosition: setDisplayPosition,
-        // displayResponsive: setDisplayResponsive,
     };
-    console.log(order);
     const submitHandler = (data) => {
-        if (order?.variant?.product?._id && data.comment && data.rating)
+        if (order?.product && data.comment && data.rating)
             dispatch(
                 createProductReview({
-                    productId: order?.variant?.product?._id,
+                    productId: order?.product,
                     review: {
                         rating: data.rating,
                         comment: data.comment,
@@ -61,6 +50,7 @@ export const ReviewDialog = ({ order }) => {
 
     const onHide = (name) => {
         dialogFuncMap[`${name}`](false);
+        reset();
     };
 
     const renderFooter = (name) => {
@@ -73,7 +63,6 @@ export const ReviewDialog = ({ order }) => {
                     type="submit"
                     form="review"
                     // onClick={(e) => {
-                    //     console.log('fssdfaloalo');
                     //     if (rating && comment) {
                     //         submitHandler(e, order);
                     //         onHide(name);
@@ -114,7 +103,7 @@ export const ReviewDialog = ({ order }) => {
                             onSubmit={handleSubmit(submitHandler)}
                         >
                             <div style={{ backgroundColor: 'white', marginTop: '15px' }}>
-                                <img style={{ height: '50%' }} src={order?.variant?.product?.image} alt={order?.name} />
+                                <img style={{ height: '50%' }} src={order?.image} alt={order?.name} />
                             </div>
                             <Link to={`/product/${order?.product}`}>
                                 <h6
@@ -126,17 +115,15 @@ export const ReviewDialog = ({ order }) => {
                                         paddingBottom: '15px',
                                     }}
                                 >
-                                    {order?.variant?.product?.name}
+                                    {order?.name}
                                 </h6>
                             </Link>
                             <div className="d-flex ">
                                 <div className=" d-flex align-items-center flex-column justify-content-center ">
-                                    <h6
-                                        style={{ color: 'black', paddingRight: '10px' }}
-                                    >{`Size: ${order?.variant?.size}`}</h6>
+                                    <h6 style={{ color: 'black', paddingRight: '10px' }}>{`Size: ${order?.size}`}</h6>
                                 </div>
                                 <div className="d-flex align-items-center flex-column justify-content-center ">
-                                    <h6 style={{ color: 'black' }}>Color: {order?.variant?.color}</h6>
+                                    <h6 style={{ color: 'black' }}>Color: {order?.color}</h6>
                                 </div>
                             </div>
                             <strong>Rating</strong>
@@ -152,7 +139,6 @@ export const ReviewDialog = ({ order }) => {
                                 )}
                                 name="rating"
                                 control={control}
-                                defaultValue=""
                             />
 
                             <div style={{ color: 'black', paddingRight: '10px' }}>Review</div>
