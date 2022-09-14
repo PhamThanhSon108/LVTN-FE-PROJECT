@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Message from './../components/LoadingError/Error';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProductReview, listProductDetails } from '../Redux/Actions/ProductActions';
+import { listCart } from '../Redux/Actions/cartActions';
 import Loading from '../components/LoadingError/Loading';
 import { PRODUCT_CREATE_REVIEW_RESET } from '../Redux/Constants/ProductConstants';
 import moment from 'moment';
@@ -35,6 +36,12 @@ const SingleProduct = ({ history, match }) => {
         error: errorCreateReview,
         success: successCreateReview,
     } = productReviewCreate;
+
+    const cartUpdate = useSelector((state) => state.cartUpdate);
+    const { loading: loadingUpdate, success: successUpdate, error: errorUpdate } = cartUpdate;
+
+    const cartAdd = useSelector((state) => state.cartCreate);
+    const { success: successAdd, error: errorAdd } = cartAdd;
     const defaultColor =
         product.variants?.reduce((color, value) => {
             if (!color.includes(value.color)) color.push(value.color);
@@ -56,6 +63,9 @@ const SingleProduct = ({ history, match }) => {
     //         { field: [] },
     //     ),
     // );
+    useEffect(() => {
+        dispatch(listCart());
+    }, [successAdd]);
 
     useEffect(() => {
         if (!qty) setQty(null);

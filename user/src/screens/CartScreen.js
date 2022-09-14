@@ -7,6 +7,7 @@ import { addProductOrderInCart, listCart, removefromcart, updateCart } from './.
 import WrapConfirmModal from '~/components/Modal/WrapConfirmModal';
 import Toast from '~/components/LoadingError/Toast';
 import Loading, { FormLoading } from '~/components/LoadingError/Loading';
+import SlideDialogConfirm from '~/modal/confirm/SlideDialogConfirm';
 
 const CartScreen = ({ match, location, history }) => {
     const logger = (key) => {
@@ -18,7 +19,7 @@ const CartScreen = ({ match, location, history }) => {
     };
     const log = logger('log');
 
-    window.scrollTo(0, 0);
+    // window.scrollTo(0, 0);
     const dispatch = useDispatch();
     const productId = match.params.id;
     const qty = location.search ? Number(location.search.split('=')[1]) : 1;
@@ -49,10 +50,10 @@ const CartScreen = ({ match, location, history }) => {
         history.push('/login?redirect=shipping');
     };
 
-    const removeFromCartHandle = (id) => {
-        if (window.confirm('Are you sure!')) {
-            dispatch(removefromcart({ id, setCartChoise, deleteCartOnly: true }));
-        }
+    const removeFromCartHandle = (id, setCartChoise) => {
+        // if (window.confirm('Are you sure!')) {
+        dispatch(removefromcart({ id, setCartChoise, deleteCartOnly: true }));
+        // }
     };
     const handleDeleteAll = useCallback(() => {
         dispatch(removefromcart({ id: Object.keys(cartChoise), setCartChoise, deleteCartAll: true }));
@@ -71,7 +72,7 @@ const CartScreen = ({ match, location, history }) => {
                 }
             }, 320);
     }, [suc, successCreate, successUpdate]);
-
+    console.log(cartItems, 'cartItem');
     return (
         <>
             <Toast />
@@ -127,20 +128,30 @@ const CartScreen = ({ match, location, history }) => {
                                         "
                                             style={{ height: '100%' }}
                                         >
-                                            <input
-                                                style={{ height: '100%' }}
-                                                type="checkbox"
-                                                checked={cartChoise[item?.variant?._id] != undefined}
-                                                onChange={(e) => {
-                                                    setCartChoise((pre) => {
-                                                        if (pre[item?.variant?._id] === undefined)
-                                                            pre[item?.variant?._id] = item;
-                                                        else delete pre[item?.variant?._id];
-                                                        return { ...pre };
-                                                    });
-                                                    refItem.current.focus();
-                                                }}
-                                            ></input>
+                                            {item.variant.quantity > 0 ? (
+                                                item.quantity <= item.variant.quantity ? (
+                                                    <input
+                                                        style={{ height: '100%' }}
+                                                        type="checkbox"
+                                                        checked={cartChoise[item?.variant?._id] != undefined}
+                                                        onChange={(e) => {
+                                                            setCartChoise((pre) => {
+                                                                if (pre[item?.variant?._id] === undefined)
+                                                                    pre[item?.variant?._id] = item;
+                                                                else delete pre[item?.variant?._id];
+                                                                return { ...pre };
+                                                            });
+                                                            refItem.current.focus();
+                                                        }}
+                                                    ></input>
+                                                ) : (
+                                                    <span className="text-danger position-fixed">
+                                                        {`Not available ${item?.quantity} products`}
+                                                    </span>
+                                                )
+                                            ) : (
+                                                <span className="text-danger"> Unavailable</span>
+                                            )}
                                         </div>
                                     ) : (
                                         <div className="col-md-1 cart-check">
@@ -178,7 +189,8 @@ const CartScreen = ({ match, location, history }) => {
                                                 // loadingCreate === true ||
                                                 loadingIndices === index
                                             }
-                                            value={item.quantity}
+                                            value={item?.quantity <= item?.variant?.quantity ? item.quantity : ''}
+                                            // defaultValue=""
                                             onChange={(e) => {
                                                 e.preventDefault();
                                                 setLoadingIndices(index);
@@ -207,12 +219,18 @@ const CartScreen = ({ match, location, history }) => {
 
                                     <div
                                         className=" col-md-1 delete-cart"
-                                        onClick={() => {
-                                            removeFromCartHandle([item.variant._id]);
-                                        }}
+                                        // onClick={() => {
+                                        //     removeFromCartHandle([item.variant._id]);
+                                        // }}
                                         style={{ display: 'flex', justifyContent: 'right', cursor: 'pointer' }}
                                     >
-                                        Remove
+                                        <SlideDialogConfirm
+                                            handleConfirm={{
+                                                handleSubmit: removeFromCartHandle,
+                                                key: item.variant._id,
+                                                setCartChoise: setCartChoise,
+                                            }}
+                                        />
                                     </div>
                                 </div>
                             ))}

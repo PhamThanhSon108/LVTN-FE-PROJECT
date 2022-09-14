@@ -5,16 +5,15 @@ import './ReviewDialog.css';
 import { Link } from 'react-router-dom';
 import { Rating } from '@mui/material';
 import { style } from '@mui/material/node_modules/@mui/system';
-import { createProductReview } from '~/Redux/Actions/ProductActions';
+import { createProductReview, createProductReviewByOrder } from '~/Redux/Actions/ProductActions';
 import { useDispatch, useSelector } from 'react-redux';
 import Toast from '~/components/LoadingError/Toast';
 import 'primereact/resources/themes/lara-light-indigo//theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import { Controller, useForm } from 'react-hook-form';
-export const ReviewDialog = ({ order }) => {
+export const ReviewDialog = ({ order, OrderId }) => {
     const { control, handleSubmit, reset } = useForm();
-
     const [displayBasic, setDisplayBasic] = useState(false);
     const dispatch = useDispatch();
     const [position, setPosition] = useState('center');
@@ -30,8 +29,10 @@ export const ReviewDialog = ({ order }) => {
     const submitHandler = (data) => {
         if (order?.product && data.comment && data.rating)
             dispatch(
-                createProductReview({
-                    productId: order?.product,
+                createProductReviewByOrder({
+                    OrderId,
+                    OrderItemId: order._id,
+                    ProductId: order?.product,
                     review: {
                         rating: data.rating,
                         comment: data.comment,

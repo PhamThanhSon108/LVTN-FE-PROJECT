@@ -99,3 +99,38 @@ export const createProductReview =
             });
         }
     };
+
+export const createProductReviewByOrder =
+    ({ OrderId, OrderItemId, ProductId, review, onHide }) =>
+    async (dispatch, getState) => {
+        try {
+            dispatch({ type: PRODUCT_CREATE_REVIEW_REQUEST });
+
+            const {
+                userLogin: { userInfo },
+            } = getState();
+
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            };
+
+            await request.post(`/api/order/${OrderId}/orderItem/${OrderItemId}/product/${ProductId}`, review, config);
+            onHide && onHide('displayBasic');
+            toast.success('Successful review', Toastobjects);
+            dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+            toast.error(message, Toastobjects);
+
+            if (message === 'Not authorized, token failed') {
+                dispatch(logout());
+            }
+            dispatch({
+                type: PRODUCT_CREATE_REVIEW_FAIL,
+                payload: message,
+            });
+        }
+    };

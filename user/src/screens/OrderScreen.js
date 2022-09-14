@@ -14,6 +14,7 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'react-bootstrap';
 import { ReviewDialog } from '~/components/profileComponents/Review/ReviewDialog';
 import Toast from '~/components/LoadingError/Toast';
+import { listCart } from '~/Redux/Actions/cartActions';
 
 const OrderScreen = ({ match }) => {
     window.scrollTo(0, 0);
@@ -31,6 +32,13 @@ const OrderScreen = ({ match }) => {
 
     const orderConfirmPaid = useSelector((state) => state.orderConfirmPaid);
     const { loading: loadingConfirmPaid, success: successConfirmPaid } = orderConfirmPaid;
+
+    const productReviewCreate = useSelector((state) => state.productReviewCreate);
+    const {
+        loading: loadingCreateReview,
+        error: errorCreateReview,
+        success: successCreateReview,
+    } = productReviewCreate;
 
     const itemsPrice = order?.orderItems.reduce((totalPrice, i) => totalPrice + i.quantity * i?.price, 0).toFixed(2);
 
@@ -70,7 +78,7 @@ const OrderScreen = ({ match }) => {
 
     useEffect(() => {
         dispatch(getOrderDetails(orderId));
-    }, [successCancel, successConfirmPaid]);
+    }, [successCancel, successConfirmPaid, successCreateReview]);
     useEffect(() => {
         // const addPayPalScript = async () => {
         //   const { data: clientId } = await request.get("/api/config/paypal");
@@ -87,6 +95,7 @@ const OrderScreen = ({ match }) => {
             dispatch({ type: ORDER_PAY_RESET });
             dispatch(getOrderDetails(orderId));
         }
+        dispatch(listCart());
         // else if (!order.isPaid) {
         // if (!window.paypal) {
         //   addPayPalScript();
@@ -294,14 +303,16 @@ const OrderScreen = ({ match }) => {
                                                     <h4>SUBTOTAL</h4>
                                                     <h6>${item?.quantity * item?.price}</h6>
                                                 </div>
-                                                {order.status === 'Completed' && order?.orderItems?.length >= 1 && (
-                                                    <div
-                                                        className="d-flex justify-content-end col-12"
-                                                        style={{ marginTop: '10px' }}
-                                                    >
-                                                        <ReviewDialog order={item} />
-                                                    </div>
-                                                )}
+                                                {item?.isAbleToReview &&
+                                                    order.status === 'Completed' &&
+                                                    order?.orderItems?.length >= 1 && (
+                                                        <div
+                                                            className="d-flex justify-content-end col-12"
+                                                            style={{ marginTop: '10px' }}
+                                                        >
+                                                            <ReviewDialog order={item} OrderId={order._id} />
+                                                        </div>
+                                                    )}
                                             </div>
                                         ))}
                                     </>

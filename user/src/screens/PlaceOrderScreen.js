@@ -44,7 +44,7 @@ const PlaceOrderScreen = ({ history }) => {
     useEffect(() => {
         dispatch(listOrderCart());
         dispatch(listCart());
-    }, []);
+    }, [success, dispatch]);
     useEffect(() => {
         // dispatch(getUserDetails('profile'));
 

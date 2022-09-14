@@ -67,7 +67,6 @@ export const addToCart = (variantId, qty, history) => async (dispatch, getState)
         const {
             userLogin: { userInfo },
         } = getState();
-        const { _id } = userInfo;
         const config = {
             headers: {
                 Authorization: `Bearer ${userInfo.accessToken}`,
@@ -75,12 +74,12 @@ export const addToCart = (variantId, qty, history) => async (dispatch, getState)
         };
 
         const { data } = await request.post(`/api/cart/add`, { variantId, quantity: qty }, config);
-        toast.success('Register success', Toastobjects);
+        toast.success('Product added to cart', Toastobjects);
 
-        setTimeout(() => {
-            history.push(`/cart/${variantId}?qty=${qty}`);
-            dispatch({ type: CART_CREATE_SUCCESS });
-        }, 200);
+        // setTimeout(() => {
+        //     history.push(`/cart/${variantId}?qty=${qty}`);
+        dispatch({ type: CART_CREATE_SUCCESS });
+        // }, 200);
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         if (message === 'Not authorized, token failed') {
