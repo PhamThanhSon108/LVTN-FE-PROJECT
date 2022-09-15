@@ -190,14 +190,17 @@ const Header = () => {
                                         <img alt="logo" src="/images/logo.png" />
                                     </Link>
                                 </div>
-                                <div className="col-md-6 col-8 header-nav__search">
+                                <div
+                                    className="col-md-6 col-8 header-nav__search"
+                                    style={{ display: 'flex', alignItems: 'center' }}
+                                >
                                     <form className="input-group col-12">
                                         <Search
                                             value={{ searchValue, setSearchValue }}
                                             keyword={{ keyword, setKeyword }}
                                         />
                                     </form>
-                                    <NavBar></NavBar>
+                                    {/* <NavBar></NavBar> */}
                                 </div>
                                 <div className="col-md-3 d-flex align-items-center justify-content-end Login-Register">
                                     {userInfo ? (
@@ -232,7 +235,7 @@ const Header = () => {
                                         </>
                                     )}
 
-                                    <Link to="/cart">
+                                    <Link to={`${userInfo ? '/cart' : '/login'}`}>
                                         <i className="fas fa-shopping-bag"></i>
                                         <span className="badge">{cartItems ? cartItems?.length : 0}</span>
                                     </Link>

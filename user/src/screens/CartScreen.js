@@ -121,10 +121,10 @@ const CartScreen = ({ match, location, history }) => {
 
                         <div className="cart-scroll">
                             {cartItems?.map((item, index) => (
-                                <div className="cart-iterm row" ref={refItem}>
+                                <div className="cart-iterm row d-flex" ref={refItem}>
                                     {item?.quantity > 0 ? (
                                         <div
-                                            className="col-md-1 cart-check
+                                            className="col-1 cart-check
                                         "
                                             style={{ height: '100%' }}
                                         >
@@ -154,36 +154,35 @@ const CartScreen = ({ match, location, history }) => {
                                             )}
                                         </div>
                                     ) : (
-                                        <div className="col-md-1 cart-check">
+                                        <div className="col-1 cart-check">
                                             <span className="span" style={{ fontSize: '12px', color: 'red' }}>
                                                 Unavailable
                                             </span>
                                         </div>
                                     )}
-                                    <div className="cart-image col-md-2">
+                                    <div className="cart-image col-md-3 col-sm-5 col-lg-2 col-2">
                                         <img src={item?.variant?.product?.image} alt={item.product?.name} />
                                     </div>
-                                    <div className="cart-text col-md-4 d-flex align-items-center">
+                                    <div className="cart-text col-4 col-md-8 col-sm-7 col-lg-4 d-flex align-items-center">
                                         <Link to={`/product/${item?.variant?.product?._id}`}>
                                             <h4>{item?.variant?.product?.name}</h4>
                                         </Link>
                                     </div>
-                                    <div className="cart-image col-md-1 d-flex flex-column justify-content-center">
-                                        <h6>SIZE</h6>
+                                    <div className="cart-image col-sm-3 col-lg-1 col-md-1 d-flex flex-column justify-content-center">
+                                        <h6>Size</h6>
                                         <span>{item?.variant?.size}</span>
                                     </div>
-                                    <div className="cart-image col-md-1 d-flex flex-column justify-content-center">
-                                        <h6>COLOR</h6>
+                                    <div className="cart-image col-sm-3 col-lg-1 col-md-1 col-xl-1 d-flex flex-column justify-content-center">
+                                        <h6>Color</h6>
                                         <span>{item?.variant?.color}</span>
                                     </div>
 
                                     <div
-                                        className="cart-qty col-md-1 col-sm-5 mt-3 mt-md-0 d-flex flex-column justify-content-center quantity-css"
+                                        className="cart-qty col-sm-3 col-lg-1 col-5 col-md-3 col-xl-1 flex-column justify-content-center align-content-center d-flex quantity-css"
                                         style={{ position: 'relative' }}
                                     >
-                                        <h6>QUANTITY</h6>
                                         <select
-                                            className="form-select select-quantity"
+                                            className="form-select select-quantity col-12"
                                             disabled={
                                                 item?.variant?.quantity <= 0 ||
                                                 // loadingCreate === true ||
@@ -212,13 +211,13 @@ const CartScreen = ({ match, location, history }) => {
                                             ))}
                                         </select>
                                     </div>
-                                    <div className="cart-price mt-3 mt-md-0 col-md-1 align-items-sm-end align-items-start  d-flex flex-column justify-content-center col-sm-7 quantity-css">
-                                        <h6>PRICE</h6>
+                                    <div className="cart-price col-12 col-sm-3 col-lg-1 align-items-sm-end align-items-start  d-flex flex-column justify-content-center quantity-css">
+                                        <h6>Price</h6>
                                         <h4>${item?.variant?.price}</h4>
                                     </div>
 
                                     <div
-                                        className=" col-md-1 delete-cart"
+                                        className=" col-3 delete-cart col-sm-3 col-lg-1"
                                         // onClick={() => {
                                         //     removeFromCartHandle([item.variant._id]);
                                         // }}

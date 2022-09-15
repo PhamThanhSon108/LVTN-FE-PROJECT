@@ -126,9 +126,9 @@ const Login = ({ location, history }) => {
                         <p>New to Fashionshop?</p>
                     </div>
 
-                    <div className="btn btn-outline-primary btn__register">
-                        <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>Create Account</Link>
-                    </div>
+                    <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>
+                        <div className="btn btn-outline-primary btn__register">Create account</div>
+                    </Link>
                 </form>
             </div>
         </>

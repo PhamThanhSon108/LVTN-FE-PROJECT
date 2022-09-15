@@ -23,7 +23,6 @@ const SingleProduct = ({ history, match }) => {
 
     const productId = match.params.id;
     const dispatch = useDispatch();
-
     const deBounce = useDebounce(qty, 500);
     const [currentQty, setCurrentQty] = useState(1);
     const productDetails = useSelector((state) => state.productDetails);
@@ -130,6 +129,8 @@ const SingleProduct = ({ history, match }) => {
             }),
         );
     };
+
+    console.log(product);
     return (
         <>
             <Toast />
@@ -175,20 +176,25 @@ const SingleProduct = ({ history, match }) => {
                                                                         value.color == currentColor &&
                                                                         value.size == currentSize,
                                                                 )
-                                                                ?.price.toFixed(2) || product.price}
+                                                                ?.price?.toFixed(2) || product.price?.toFixed(2)}
                                                         </span>
                                                     </div>
                                                 </div>
                                                 <div className="flex-box d-flex justify-content-start align-items-center">
                                                     <h6 className="col-3">Status</h6>
-                                                    {product?.variants?.find(
-                                                        (value) =>
-                                                            value.color == currentColor && value.size == currentSize,
-                                                    )?.quantity ||
-                                                    product?.variants?.reduce(
-                                                        (count, value, index) => count + value.quantity,
-                                                        0,
-                                                    ) ? (
+                                                    {!currentColor || !currentSize ? (
+                                                        product?.variants?.reduce(
+                                                            (count, value, index) => count + value.quantity,
+                                                            0,
+                                                        ) > 0 ? (
+                                                            <span>In Stock</span>
+                                                        ) : (
+                                                            <span>Unavailable</span>
+                                                        )
+                                                    ) : product?.variants?.find(
+                                                          (value) =>
+                                                              value.color == currentColor && value.size == currentSize,
+                                                      )?.quantity > 0 ? (
                                                         <span>In Stock</span>
                                                     ) : (
                                                         <span>unavailable</span>
@@ -198,7 +204,7 @@ const SingleProduct = ({ history, match }) => {
                                                     <h6 className="col-3">Reviews</h6>
                                                     <Rating
                                                         value={product.rating}
-                                                        text={`${product.numReviews} reviews`}
+                                                        text={`${product?.reviews?.length} reviews`}
                                                     />
                                                 </div>
                                                 <div className="flex-box d-flex justify-content-start align-items-center flex-wrap">

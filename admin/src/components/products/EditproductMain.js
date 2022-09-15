@@ -119,9 +119,22 @@ const EditProductMain = (props) => {
       setSize(defaultSize);
     }
   }, [successGetProduct, product]);
-
+  const checkSameValue = (arrValue) => {
+    return (
+      arrValue?.length ===
+      arrValue.reduce((newArr, item, index) => {
+        if (!newArr?.includes(item)) newArr?.push(item);
+        return newArr;
+      }, [])?.length
+    );
+  };
   const submitHandler = (data, e) => {
+    console.log(data);
     e.preventDefault();
+    if (!checkSameValue(data.color) || !checkSameValue(data.size)) {
+      toast.error('Name of classify cannot be duplicated!!', ToastObjects);
+      return;
+    }
     if (category != -1) {
       let newProduct = new FormData();
       newProduct.append('_id', productId);
@@ -157,7 +170,7 @@ const EditProductMain = (props) => {
 
   return (
     <>
-      {/* <Toast /> */}
+      <Toast />
       <section className="content-main" style={{ maxWidth: '1200px' }}>
         <form onSubmit={handleSubmit(submitHandler)}>
           <div className="content-header">
@@ -165,18 +178,13 @@ const EditProductMain = (props) => {
               Go to products
             </Link>
             <h2 className="content-title">Update Product</h2>
-            <div>
-              <button type="submit" className="btn btn-primary">
-                Update now
-              </button>
-            </div>
           </div>
 
           <div className="row mb-4">
             <div className="col-xl-12 col-lg-12">
               <div className="card mb-4 shadow-sm">
                 <div className="card-body">
-                  {loadingUpdate && <Loading />}
+                  {/* {loadingUpdate && <Loading />} */}
                   {loading ? (
                     <Loading />
                   ) : error ? (
@@ -486,6 +494,14 @@ const EditProductMain = (props) => {
                       </div>
                     </>
                   )}
+                </div>
+              </div>
+              <div className="col-12 ">
+                {loadingUpdate && <Loading />}
+                <div className="d-flex align-content-between justify-content-end">
+                  <button type="submit" className="btn btn-primary">
+                    Update now
+                  </button>
                 </div>
               </div>
             </div>

@@ -121,18 +121,18 @@ export default function Corousel() {
         <div className="container corousel-container">
             <h2>New Products</h2>
             <div></div>
-            <div className="corousel">
-                <Slider {...settings}>
+            <div className="corousel" style={{ maxHeight: '340px' }}>
+                <Slider {...settings} style={{ maxHeight: '340px' }}>
                     {products?.map((product, index) => {
                         return (
-                            <div key={index} className="corousel-div">
+                            <div key={index} className="corousel-div overflow-hidden ">
                                 <Link to={`/product/${product._id}`} className="corousel-link">
-                                    <img src={product.image} className="corousel-img"></img>
+                                    <img src={product.image} className="corousel-img "></img>
                                     <p className="corousel-noti">{product.name}</p>
                                     <div className="corousel-rating">
                                         <Rating value={product.rating} text={`${product.numReviews} reviews`} />
                                     </div>
-                                    <p className="corousel-price">${product.price}</p>
+                                    <p className="corousel-price">${product.price.toFixed(2)}</p>
                                 </Link>
                             </div>
                         );

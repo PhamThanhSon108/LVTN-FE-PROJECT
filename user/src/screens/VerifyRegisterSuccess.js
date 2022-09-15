@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import image from '~/assets/images';
 
 export default function VerifyRegisterSuccess({ location, history }) {
     const [loading, setLoading] = useState(false);
@@ -29,7 +30,7 @@ export default function VerifyRegisterSuccess({ location, history }) {
                                 style={{
                                     height: '100%',
                                 }}
-                                src="https://scontent.fsgn5-10.fna.fbcdn.net/v/t1.15752-9/290316587_586427556449035_3497678023536528746_n.png?_nc_cat=107&ccb=1-7&_nc_sid=ae9488&_nc_ohc=OomrRlOp2BYAX-vVcwM&_nc_ht=scontent.fsgn5-10.fna&oh=03_AVKrOr3fH2fhaIOOvUnNbSboJdrdM03_sU2b-M9d8RzhKg&oe=6320B38D"
+                                src={image.logo}
                             />
                         </div>
                         <h4 style={{ color: '#127412' }}>Great, now verify your email</h4>
@@ -43,7 +44,7 @@ export default function VerifyRegisterSuccess({ location, history }) {
                                 style={{
                                     width: '230px',
                                 }}
-                                src="https://scontent.xx.fbcdn.net/v/t1.15752-9/298027259_3213264782324797_2189087690777944740_n.png?stp=dst-png_p206x206&_nc_cat=102&ccb=1-7&_nc_sid=aee45a&_nc_ohc=MQf0-cGNiOgAX8GBkDe&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AVI5Frrgq_K0mybcpnXX4zWKBiV9q6KEsta6vK0Dwg4z6Q&oe=6320DFFD"
+                                src={image.email}
                                 // src="https://account.mongodb.com/static/dist/images/953862e6f29d77cebef307438ae8c10a.png"
                             />
                         </div>

@@ -120,8 +120,23 @@ const AddProductMain = () => {
     return true;
   };
 
+  const checkSameValue = (arrValue) => {
+    return (
+      arrValue?.length ==
+      arrValue.reduce((newArr, item, index) => {
+        if (!newArr?.includes(item)) newArr?.push(item);
+        return newArr;
+      }, [])?.length
+    );
+  };
+
   const submitHandler = (data, e) => {
     e.preventDefault();
+    console.log(data);
+    if (!checkSameValue(data.size) || !checkSameValue(data.color)) {
+      toast.error('Name of classify cannot be duplicated!!', ToastObjects);
+      return;
+    }
     if (!image) {
       toast.error('Please choose image!!', ToastObjects);
       return;
@@ -148,19 +163,8 @@ const AddProductMain = () => {
       // for (const value of newProduct.values()) {
       //   console.log(value);
       // }
-      dispatch(
-        // createProduct({
-        //   name,
-        //   description,
-        //   category,
-        //   image: image,
-        //   variants: data.variants.reduce((variants, variant) => {
-        //     variants = variants.concat(variant.field);
-        //     return variants;
-        //   }, []),
-        // }),
-        createProduct(newProduct),
-      );
+      console.log(data);
+      dispatch(createProduct(newProduct));
     }
   };
   return (
@@ -173,11 +177,11 @@ const AddProductMain = () => {
               Go to products
             </Link>
             <h2 className="content-title">Add product</h2>
-            <div>
+            {/* <div>
               <button type="submit" className="btn btn-primary color-orange">
                 Add Product
               </button>
-            </div>
+            </div> */}
           </div>
 
           <div className="row mb-4">
@@ -516,6 +520,14 @@ const AddProductMain = () => {
                       </table>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div className="col-12 ">
+                {loading && <Loading />}
+                <div className="d-flex align-content-between justify-content-end">
+                  <button type="submit" className="btn btn-primary">
+                    Add product
+                  </button>
                 </div>
               </div>
             </div>
