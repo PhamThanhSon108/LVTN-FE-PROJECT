@@ -101,6 +101,8 @@ const OrderDetailmain = (props) => {
                           {i === order?.statusHistory.length - 1 &&
                           item.status !== 'Placed' &&
                           item.status !== 'Cancelled' &&
+                          item.status !== 'Failed' &&
+                          item.status !== 'Paid' &&
                           item.status !== 'Completed' ? (
                             <div
                               data-toggle="tooltip"

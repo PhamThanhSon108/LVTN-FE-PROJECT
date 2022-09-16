@@ -70,7 +70,7 @@ export default function CorouselOder() {
                                         <div className="corousel-rating">
                                             <Rating value={product.rating} text={`${product.numReviews} reviews`} />
                                         </div>
-                                        <p className="corousel-price">${product.price}</p>
+                                        <p className="corousel-price">${product.price?.toFixed(2)}</p>
                                     </Link>
                                 </div>
                             );

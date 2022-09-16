@@ -5,6 +5,7 @@ import Message from '../LoadingError/Error';
 import Loading from '../LoadingError/Loading';
 const Orders = (props) => {
     const { loading, error, orders, setPageNumber } = props;
+    console.log(orders);
     return (
         <div className=" d-flex justify-content-center align-items-center flex-column">
             {loading ? (
@@ -13,7 +14,7 @@ const Orders = (props) => {
                 <Message variant="alert-danger">{error}</Message>
             ) : (
                 <>
-                    {orders.length === 0 ? (
+                    {orders?.orders?.length === 0 || !orders?.orders ? (
                         <div className="col-12 alert alert-info text-center mt-3">
                             No Orders
                             <Link

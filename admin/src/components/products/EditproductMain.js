@@ -265,7 +265,7 @@ const EditProductMain = (props) => {
                                   <div className="col-1 col-md-2">{index == 0 ? 'Size' : 'Color'}</div>
                                   <div className="card-body shadow-sm col-11">
                                     {getValues(valueOption)?.map((valueField, i) => (
-                                      <div className="col-mb-11 d-flex" key={uuidv4()}>
+                                      <div className="col-mb-11 d-flex" key={uuidv4()} style={{ marginTop: '15px' }}>
                                         <label className="col-2 text-start ">Name of classify</label>
                                         <div className="col-10 d-flex">
                                           {/* <input
@@ -499,7 +499,7 @@ const EditProductMain = (props) => {
               <div className="col-12 ">
                 {loadingUpdate && <Loading />}
                 <div className="d-flex align-content-between justify-content-end">
-                  <button type="submit" className="btn btn-primary">
+                  <button type="submit" className="btn btn-primary col-5">
                     Update now
                   </button>
                 </div>

@@ -60,7 +60,7 @@ const Login = ({ location, history }) => {
         e.preventDefault();
         const isEmptyLogin = funtionCheck();
         if (!isEmptyLogin) return;
-        dispatch(login(email, password));
+        dispatch(login(email?.toLowerCase()?.trim(), password));
     };
 
     return (

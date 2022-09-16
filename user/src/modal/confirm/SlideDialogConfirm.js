@@ -27,21 +27,23 @@ export default function SlideDialogConfirm(props) {
     };
 
     return (
-        <div style={{ minWidth: '250px !important' }}>
+        <div style={{ minWidth: '400px !important' }}>
             <div variant="outlined" onClick={handleClickOpen}>
                 Remove
             </div>
             <Dialog
-                style={{ minWidth: '250px !important' }}
+                style={{ minWidth: '400px !important' }}
                 open={open}
                 TransitionComponent={Transition}
                 keepMounted
                 onClose={handleClose}
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle>{'Are you sure?'}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">Remove this item?</DialogContentText>
+                <DialogTitle style={{ width: '350px' }}>{'Are you sure?'}</DialogTitle>
+                <DialogContent style={{ width: '350px' }}>
+                    <DialogContentText style={{ width: '250px' }} id="alert-dialog-slide-description">
+                        Remove this item?
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>

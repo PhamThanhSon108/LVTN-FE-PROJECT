@@ -132,7 +132,6 @@ const AddProductMain = () => {
 
   const submitHandler = (data, e) => {
     e.preventDefault();
-    console.log(data);
     if (!checkSameValue(data.size) || !checkSameValue(data.color)) {
       toast.error('Name of classify cannot be duplicated!!', ToastObjects);
       return;
@@ -177,11 +176,11 @@ const AddProductMain = () => {
               Go to products
             </Link>
             <h2 className="content-title">Add product</h2>
-            {/* <div>
-              <button type="submit" className="btn btn-primary color-orange">
+            <div>
+              {/* <button type="submit" className="btn btn-primary color-orange">
                 Add Product
-              </button>
-            </div> */}
+              </button> */}
+            </div>
           </div>
 
           <div className="row mb-4">
@@ -524,8 +523,8 @@ const AddProductMain = () => {
               </div>
               <div className="col-12 ">
                 {loading && <Loading />}
-                <div className="d-flex align-content-between justify-content-end">
-                  <button type="submit" className="btn btn-primary">
+                <div className="d-flex align-content-between justify-content-end ">
+                  <button type="submit" className="btn btn-primary col-5">
                     Add product
                   </button>
                 </div>

@@ -1,8 +1,8 @@
 export const classes = (theme) => ({
   cropContainer: {
     position: 'relative',
-    width: '100%',
-    height: 200,
+    width: '200px',
+    height: '220px',
     background: '#333',
     [theme.breakpoints.up('sm')]: {
       height: 400,

@@ -6,7 +6,7 @@ import { Button } from 'primereact/button';
 import { Tooltip } from 'primereact/tooltip';
 import { Tag } from 'primereact/tag';
 
-export const FileUploadDemo = (props) => {
+export const UploadSlider = (props) => {
   const { setImage, name, clear } = props;
   const [totalSize, setTotalSize] = useState(0);
   const toast = useRef(null);
@@ -20,10 +20,8 @@ export const FileUploadDemo = (props) => {
   };
   const onTemplateSelect = (e) => {
     let _totalSize = e.files[0].size;
-    // e?.files.forEach((file) => {
-    //   _totalSize += file.size;
-    // });
-    setImage(e.files[0]);
+    console.log(e.files.file);
+    setImage((pre) => [...pre, ...e.files]);
     setTotalSize(_totalSize);
   };
 
@@ -39,13 +37,16 @@ export const FileUploadDemo = (props) => {
 
   const onTemplateRemove = (file, callback) => {
     setTotalSize(totalSize - file.size);
-    setImage('');
+    // setImage('');
+
+    setImage((pre) => pre.filter((item) => item.name !== file.name));
     callback();
   };
 
   const onTemplateClear = () => {
     setTotalSize(0);
-    setImage('');
+    console.log('abc');
+    setImage([]);
   };
 
   const onBasicUpload = () => {
@@ -65,11 +66,12 @@ export const FileUploadDemo = (props) => {
       <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
         {chooseButton}
         {cancelButton}
-        <ProgressBar
+        {/* <ProgressBar
           value={value}
           displayValueTemplate={() => `${formatedValue} / 1 MB`}
-          // style={{ width: '300px', height: '20px', marginLeft: 'auto' }}
-        ></ProgressBar>
+          style={{ width: '300px', height: '20px', marginLeft: 'auto' }}
+        ></ProgressBar> */}
+        <div style={{ width: '300px', height: '20px', marginLeft: 'auto' }}></div>
       </div>
     );
   };
@@ -79,13 +81,13 @@ export const FileUploadDemo = (props) => {
       <div className="flex align-items-center flex-wrap  " style={{ display: 'flex', height: '150px' }}>
         <div className="flex align-items-center  d-flex " style={{ width: '90%', display: 'flex' }}>
           <img alt={file.name} role="presentation" src={file.objectURL} height={150} />
-          <span
+          {/* <span
             className="flex  text-left justify-content-start"
             style={{
               fontSize: '1.6rem',
               paddingLeft: '2rem',
-              maxWidth: '80%',
-              minWidth: '80%',
+              maxWidth: '60%',
+              minWidth: '60%',
               textAlign: 'start',
               textOverflow: 'ellipsis',
               overflow: 'hidden',
@@ -93,9 +95,9 @@ export const FileUploadDemo = (props) => {
               whiteSpace: 'nowrap',
             }}
           >
-            {`Image of ${name || 'product'}`}
-          </span>
-          <small style={{ paddingLeft: '5px' }}>{new Date().toLocaleDateString()}</small>
+            {`Image of ${name || 'banner'}`}
+          </span> */}
+          {/* <small style={{ paddingLeft: '5px' }}>{new Date().toLocaleDateString()}</small> */}
         </div>
         {/* <Tag value={props.formatSize} severity="warning" className="px-3 py-2" /> */}
         <div style={{ width: '10%' }}>
@@ -146,15 +148,15 @@ export const FileUploadDemo = (props) => {
   };
 
   return (
-    <div>
+    <div className="col-12">
       <Toast ref={toast}></Toast>
 
-      <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
+      {/* <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
 
-      <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
+      <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" /> */}
 
-      <div className="card col-12">
-        <h5>New picture</h5>
+      <div className="card">
+        <h5 style={{ padding: '15px' }}>New banner</h5>
         <FileUpload
           ref={fileUploadRef}
           name="demo[]"
@@ -170,6 +172,7 @@ export const FileUploadDemo = (props) => {
           emptyTemplate={emptyTemplate}
           chooseOptions={chooseOptions}
           cancelOptions={cancelOptions}
+          multiple
         />
       </div>
     </div>

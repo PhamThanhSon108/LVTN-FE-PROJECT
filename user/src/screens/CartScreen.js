@@ -121,12 +121,26 @@ const CartScreen = ({ match, location, history }) => {
 
                         <div className="cart-scroll">
                             {cartItems?.map((item, index) => (
-                                <div className="cart-iterm row d-flex" ref={refItem}>
+                                <div
+                                    className="cart-iterm row d-flex"
+                                    ref={refItem}
+                                    style={{
+                                        height: '100%',
+                                        lineHeight: '22px',
+                                        alignItems: 'center',
+                                        display: 'flex',
+                                    }}
+                                >
                                     {item?.quantity > 0 ? (
                                         <div
-                                            className="col-1 cart-check
+                                            className="col-1 cart-check d-flex
                                         "
-                                            style={{ height: '100%' }}
+                                            style={{
+                                                height: '100%',
+                                                lineHeight: '22px',
+                                                alignItems: 'center',
+                                                display: 'flex',
+                                            }}
                                         >
                                             {item.variant.quantity > 0 ? (
                                                 item.quantity <= item.variant.quantity ? (
@@ -145,8 +159,9 @@ const CartScreen = ({ match, location, history }) => {
                                                         }}
                                                     ></input>
                                                 ) : (
-                                                    <span className="text-danger position-fixed">
-                                                        {`Not available ${item?.quantity} products`}
+                                                    <span className="text-danger  col-4">
+                                                        {`Not available 
+                                                        ${item?.quantity} products`}
                                                     </span>
                                                 )
                                             ) : (

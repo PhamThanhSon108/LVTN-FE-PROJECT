@@ -7,6 +7,8 @@ import Message from '../LoadingError/Error';
 import Loading from '../LoadingError/Loading';
 import Toast from '../LoadingError/Toast';
 import isEmpty from 'validator/lib/isEmpty';
+import { FileUploadDemo } from '../products/UploadImage';
+import { UploadSlider } from './UploadSlider';
 
 const ToastObjects = {
   pauseOnFocusLoss: false,
@@ -14,52 +16,54 @@ const ToastObjects = {
   pauseOnHover: false,
   autoClose: 2000,
 };
-export default function AddSlider() {
-  const [url, setUrl] = useState('');
+export default function AddSlider({ setOpen }) {
+  const [image, setImage] = useState();
   const dispatch = useDispatch();
-
+  const [clear, setClear] = useState(false);
   const [valueUrl, SetValueUrl] = useState({});
-  const checkUrl = () => {
-    const msg = {};
-    let re = /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
-    if (isEmpty(url)) {
-      msg.url = 'Please input your url';
-    } else {
-      if (!re.test(url)) {
-        msg.url = 'Please enter valid URL';
-      }
-    }
-    SetValueUrl(msg);
-    if (Object.keys(msg).length > 0) return false;
-    return true;
-  };
   const sliderCreate = useSelector((state) => state.sliderCreate);
-  const { loading, error, slider } = sliderCreate;
+  const { loading, error, slider, success } = sliderCreate;
   useEffect(() => {
     if (slider) {
-      toast.success('Slider Added', ToastObjects);
-      dispatch({ type: SLIDER_CREATE_RESET });
-      setUrl('');
+      // toast.success('Slider Added', ToastObjects);
+      setOpen(false);
+      setClear((pre) => !pre);
+      // dispatch({ type: SLIDER_CREATE_RESET });
+      // setUrl('');
     }
-    dispatch(ListSlider());
-  }, [dispatch, slider]);
+    // dispatch(ListSlider());
+  }, [dispatch, success]);
 
   const submitHandler = (e) => {
+    console.log(e);
+    if (!image || image?.length <= 0) {
+      toast.error('Please choose image', ToastObjects);
+      return;
+    }
+    if (image?.length > 5) {
+      toast.error('Too many selected images', ToastObjects);
+      return;
+    }
     e.preventDefault();
-    if (!checkUrl()) return;
-    dispatch(createSlider({ url }));
+    const slider = new FormData();
+    slider.append('slider', image);
+    for (let i = 0; i < image.length; i++) {
+      slider.append('slider', image[i]);
+    }
+
+    dispatch(createSlider({ slider }));
   };
   return (
     <>
       <Toast />
-      {error && (
+      {/* {error && (
         <div class="alert alert-danger" role="alert">
           {error}
         </div>
-      )}
+      )} */}
       {loading && <Loading />}
-      <div class="input-group mb-3">
-        <input
+      <div class="input-group col-12">
+        {/* <input
           type="url"
           class="form-control"
           placeholder="Please type url"
@@ -73,15 +77,16 @@ export default function AddSlider() {
             return x;
           }}
           onChange={(e) => setUrl(e.target.value)}
-        />
-        <div class="input-group-prepend">
-          <button class="btn btn-outline-secondary" type="button" onClick={submitHandler}>
-            Add
-          </button>
-        </div>
+        /> */}
+        {/* <input type="file" name="slider" multiple onChange={(e) => setImage(e.target.files)} /> */}
+        <UploadSlider setImage={setImage} clear={clear} />
       </div>
-      <p style={{ color: 'red' }}>{valueUrl.url}</p>
-
+      {/* <p style={{ color: 'red' }}>{valueUrl.url}</p> */}
+      <div style={{ padding: '15px 15px' }} className="col-12 d-flex justify-content-end">
+        <button class="btn btn-outline-secondary col-5" type="button" onClick={submitHandler}>
+          Add banner
+        </button>
+      </div>
       {/* <form onSubmit={submitHandler} style={{ maxWidth: "1000px" }}>
         <div className="row mb-4">
           <div className="col-xl-8 col-lg-8">

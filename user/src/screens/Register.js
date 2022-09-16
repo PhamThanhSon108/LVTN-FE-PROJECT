@@ -100,7 +100,7 @@ const Register = ({ location, history }) => {
         e.preventDefault();
         const isValid = validateAll();
         if (!isValid) return;
-        dispatch(register(history, name, email, phone, password));
+        dispatch(register(history, name, email.toLowerCase().trim(), phone, password));
     };
 
     return (

@@ -37,16 +37,16 @@ const Product = (props) => {
               <div className="d-flex align-content-center justify-content-between">
                 <Link
                   to={`/product/${product._id}/edit`}
-                  className="btn  btn-outline-primary col-5 "
-                  style={{ fontSize: '18px', fontWeight: '600' }}
+                  className="btn  btn-outline-primary col-6 "
+                  style={{ fontSize: '18px', fontWeight: '600', marginRight: '5px' }}
                 >
                   <i className="fas fa-pen"></i>
                 </Link>
 
                 <div
                   onClick={() => deletehandler(product._id)}
-                  className="btn btn-outline-danger col-5 "
-                  style={{ fontSize: '18px', fontWeight: '600' }}
+                  className="btn btn-outline-danger col-6 "
+                  style={{ fontSize: '18px', fontWeight: '600', marginLeft: '5px' }}
                 >
                   <i className="fas fa-trash-alt"></i>
                 </div>
