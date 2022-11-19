@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import { saveShippingAddress } from '../Redux/Actions/cartActions';
 import { getUserDetails, updateUserProfile } from '../Redux/Actions/userActions';
 import { LoadingButton } from '@mui/lab';
+import { LinearProgress } from '@mui/material';
 
 const ShippingScreen = ({ history }) => {
     window.scrollTo(0, 0);
@@ -19,9 +20,10 @@ const ShippingScreen = ({ history }) => {
     });
 
     const [loading, setLoading] = useState();
-
+    const [loadingFetchUserShipping, setLoadingFetchUserShipping] = useState();
     useEffect(() => {
-        dispatch(getUserDetails('profile'));
+        setLoadingFetchUserShipping(true);
+        dispatch(getUserDetails('profile', setLoadingFetchUserShipping));
     }, []);
 
     useEffect(() => {
@@ -40,6 +42,7 @@ const ShippingScreen = ({ history }) => {
             <Header />
             <div className="container d-flex justify-content-center align-items-center login-center">
                 <form className="Login col-md-8 col-lg-4 col-11" onSubmit={handleSubmit(submitHandler)}>
+                    {loadingFetchUserShipping ? <LinearProgress style={{ marginBottom: 15 }} /> : null}
                     <h6>DELIVERY ADDRESS</h6>
                     <Controller
                         control={control}
@@ -51,6 +54,7 @@ const ShippingScreen = ({ history }) => {
                         }) => (
                             <>
                                 <input
+                                    disabled={loadingFetchUserShipping}
                                     cl
                                     type="text"
                                     placeholder="Enter phone number"
@@ -74,6 +78,7 @@ const ShippingScreen = ({ history }) => {
                         }) => (
                             <>
                                 <input
+                                    disabled={loadingFetchUserShipping}
                                     type="text"
                                     placeholder="Enter address"
                                     value={value}
@@ -94,6 +99,7 @@ const ShippingScreen = ({ history }) => {
                         }) => (
                             <>
                                 <input
+                                    disabled={loadingFetchUserShipping}
                                     type="text"
                                     placeholder="Enter city"
                                     value={value}
@@ -117,6 +123,7 @@ const ShippingScreen = ({ history }) => {
                         }) => (
                             <>
                                 <input
+                                    disabled={loadingFetchUserShipping}
                                     type="text"
                                     placeholder="Enter country"
                                     value={value}

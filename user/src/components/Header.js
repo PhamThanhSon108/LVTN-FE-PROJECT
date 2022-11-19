@@ -5,6 +5,7 @@ import { logout } from '../Redux/Actions/userActions';
 import { listCart } from '../Redux/Actions/cartActions';
 import NavBar from './navbar';
 import Search from './homeComponents/Search';
+import { Button } from '@mui/material';
 
 const Header = () => {
     // const [keyword, setKeyword] = useState('');
@@ -91,88 +92,106 @@ const Header = () => {
                     </div>
                 </div>
                 {/* Header */}
-                <div className="header bg-white">
+                <div
+                    className="header bg-white"
+                    style={{
+                        zIndex: '3',
+                        height: '90px',
+                        width: '100%',
+                        backgroundColor: '#fff',
+                        paddingRight: 25,
+                    }}
+                >
                     <div className="container">
                         {/* MOBILE HEADER */}
                         <div>
-                            {/* <div className="mobile-header">
-                            <div className="container ">
-                                <div className="row ">
-                                    <div className="col-6 d-flex align-items-center">
-                                        <div className="moblie-menu" onClick={clickIconNavBar}>
-                                            <i class="fas fa-bars"></i>
+                            <div className="mobile-header" style={{ paddingTop: 15 }}>
+                                <div className="container ">
+                                    <div className="row ">
+                                        <div className="col-6 d-flex align-items-center">
+                                            {/* <div className="moblie-menu" onClick={clickIconNavBar}>
+                                                <i class="fas fa-bars"></i>
+                                            </div> */}
+                                            <Link className="navbar-brand" to="/">
+                                                <img alt="logo" src="/images/logo.png" />
+                                            </Link>
                                         </div>
-                                        <Link className="navbar-brand" to="/">
-                                            <img alt="logo" src="/images/logo.png" />
-                                        </Link>
-                                    </div>
-                                    {navbar && <NavBar onRemove={removeNavBar}></NavBar>}
-                                    <div className="col-6 d-flex align-items-center justify-content-end Login-Register">
-                                        {userInfo ? (
-                                            <div className="btn-group">
-                                                <button
-                                                    type="button"
-                                                    className="name-button dropdown-toggle"
-                                                    data-toggle="dropdown"
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                >
-                                                    <i class="fas fa-user"></i>
-                                                </button>
-                                                <div className="dropdown-menu">
-                                                    <Link className="dropdown-item" to="/profile">
-                                                        Profile
-                                                    </Link>
+                                        {/* {navbar && <NavBar onRemove={removeNavBar}></NavBar>} */}
+                                        <div className="col-6 d-flex align-items-center justify-content-end Login-Register">
+                                            {userInfo ? (
+                                                <div className="btn-group">
+                                                    <button
+                                                        type="button"
+                                                        className="name-button dropdown-toggle"
+                                                        data-toggle="dropdown"
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                    >
+                                                        <i class="fas fa-user"></i>
+                                                    </button>
+                                                    <div className="dropdown-menu">
+                                                        <Link className="dropdown-item" to="/profile">
+                                                            Profile
+                                                        </Link>
 
-                                                    <Link className="dropdown-item" to="#" onClick={logoutHandler}>
-                                                        Logout
-                                                    </Link>
+                                                        <Link className="dropdown-item" to="#" onClick={logoutHandler}>
+                                                            Logout
+                                                        </Link>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ) : (
-                                            <div className="btn-group">
-                                                <button
-                                                    type="button"
-                                                    className="name-button dropdown-toggle"
-                                                    data-toggle="dropdown"
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                >
-                                                    <i class="fas fa-user"></i>
-                                                </button>
-                                                <div className="dropdown-menu">
-                                                    <Link className="dropdown-item" to="/login">
+                                            ) : (
+                                                <div className="btn-group">
+                                                    {/* <button
+                                                        type="button"
+                                                        className="name-button dropdown-toggle"
+                                                        data-toggle="dropdown"
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                    >
+                                                        <i class="fas fa-long-arrow-right"></i>
+                                                        <i class="fa-light fa-arrow-right-to-bracket"></i>
+                                                    </button>
+                                                    <div className="dropdown-menu">
+                                                        <Link className="dropdown-item" to="/login">
+                                                            Login
+                                                        </Link>
+
+                                                        <Link className="dropdown-item" to="/register">
+                                                            Register
+                                                        </Link>
+                                                    </div> */}
+
+                                                    <Link
+                                                        className="text-info"
+                                                        style={{ width: 50, marginRight: 0 }}
+                                                        to="/login"
+                                                    >
                                                         Login
                                                     </Link>
 
-                                                    <Link className="dropdown-item" to="/register">
+                                                    <Link className="text-danger" to="/register">
                                                         Register
                                                     </Link>
                                                 </div>
-                                            </div>
-                                        )}
+                                            )}
 
-                                        <Link to="/cart" className="cart-mobile-icon">
-                                            <i className="fas fa-shopping-bag"></i>
-                                            <span className="badge">{cartItems ? cartItems.length : 0}</span>
-                                        </Link>
-                                    </div>
-                                    <div className="col-12 d-flex align-items-center">
-                                        <form onSubmit={submitHandler} className="input-group">
-                                            <input
-                                                type="search"
-                                                className="form-control rounded search"
-                                                placeholder="Search"
-                                                onChange={(e) => setKeyword(e.target.value)}
-                                            />
-                                            <button type="submit" className="search-button">
-                                                <i className="fas fa-search submit-search"></i>
-                                            </button>
-                                        </form>
+                                            <Link to="/cart" className="cart-mobile-icon">
+                                                <i className="fas fa-shopping-bag"></i>
+                                                <span className="badge">{cartItems ? cartItems.length : 0}</span>
+                                            </Link>
+                                        </div>
+                                        {/* <div className="col-12 d-flex align-items-center">
+                                            <form className="input-group">
+                                                <Search
+                                                    width="300px"
+                                                    value={{ searchValue, setSearchValue }}
+                                                    keyword={{ keyword, setKeyword }}
+                                                />
+                                            </form>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>
-                        </div> */}
                         </div>
 
                         {/* PC HEADER */}

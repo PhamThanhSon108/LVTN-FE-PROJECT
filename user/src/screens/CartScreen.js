@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import Header from './../components/Header';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -72,6 +72,8 @@ const CartScreen = ({ match, location, history }) => {
                 }
             }, 320);
     }, [suc, successCreate, successUpdate]);
+
+    const [isMobile] = useState(window.innerWidth < 540);
     return (
         <>
             <Toast />
@@ -174,26 +176,38 @@ const CartScreen = ({ match, location, history }) => {
                                             </span>
                                         </div>
                                     )}
-                                    <div className="cart-image col-md-3 col-sm-5 col-lg-2 col-2">
+                                    <div
+                                        className="cart-image col-md-3 col-sm-5 col-lg-2 col-2"
+                                        style={isMobile ? { width: 300 } : null}
+                                    >
                                         <img src={item?.variant?.product?.image} alt={item.product?.name} />
                                     </div>
-                                    <div className="cart-text col-4 col-md-8 col-sm-7 col-lg-4 d-flex align-items-center">
+                                    <div
+                                        className="cart-text col-4 col-md-8 col-sm-7 col-lg-4 d-flex align-items-center"
+                                        style={isMobile ? { width: '100%', marginBottom: 15 } : null}
+                                    >
                                         <Link to={`/product/${item?.variant?.product?._id}`}>
                                             <h4>{item?.variant?.product?.name}</h4>
                                         </Link>
                                     </div>
-                                    <div className="cart-image col-sm-3 col-lg-1 col-md-1 d-flex flex-column justify-content-center">
+                                    <div
+                                        className="cart-image col-sm-3 col-lg-1 col-md-1 d-flex flex-column justify-content-center"
+                                        style={{ width: 90, display: 'flex', flexDirection: 'column' }}
+                                    >
                                         <h6>Size</h6>
                                         <span>{item?.variant?.size}</span>
                                     </div>
-                                    <div className="cart-image col-sm-3 col-lg-1 col-md-1 col-xl-1 d-flex flex-column justify-content-center">
+                                    <div
+                                        style={{ width: 90 }}
+                                        className="cart-image col-sm-3 col-lg-1 col-md-1 col-xl-1 d-flex flex-column justify-content-center"
+                                    >
                                         <h6>Color</h6>
                                         <span>{item?.variant?.color}</span>
                                     </div>
 
                                     <div
                                         className="cart-qty col-sm-3 col-lg-1 col-5 col-md-3 col-xl-1 flex-column justify-content-center align-content-center d-flex quantity-css"
-                                        style={{ position: 'relative' }}
+                                        style={{ position: 'relative', width: '90' }}
                                     >
                                         <select
                                             className="form-select select-quantity col-12"
@@ -225,9 +239,12 @@ const CartScreen = ({ match, location, history }) => {
                                             ))}
                                         </select>
                                     </div>
-                                    <div className="cart-price col-12 col-sm-3 col-lg-1 align-items-sm-end align-items-start  d-flex flex-column justify-content-center quantity-css">
+                                    <div
+                                        className="cart-price col-12 col-sm-3 col-lg-1 align-items-sm-end align-items-start  d-flex flex-column justify-content-center quantity-css"
+                                        style={isMobile ? { width: 90, marginRight: '20%' } : null}
+                                    >
                                         <h6>Price</h6>
-                                        <h4>${item?.variant?.price}</h4>
+                                        <h6 className="text-danger">${item?.variant?.price}</h6>
                                     </div>
 
                                     <div
@@ -235,7 +252,12 @@ const CartScreen = ({ match, location, history }) => {
                                         // onClick={() => {
                                         //     removeFromCartHandle([item.variant._id]);
                                         // }}
-                                        style={{ display: 'flex', justifyContent: 'right', cursor: 'pointer' }}
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'right',
+                                            cursor: 'pointer',
+                                            alignItems: 'center',
+                                        }}
                                     >
                                         <SlideDialogConfirm
                                             handleConfirm={{

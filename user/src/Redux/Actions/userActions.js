@@ -224,7 +224,7 @@ export const resetPassWord = (resetPasswordToken, data, history) => async (dispa
 };
 
 // USER DETAILS
-export const getUserDetails = (id) => async (dispatch, getState) => {
+export const getUserDetails = (id, setLoadingFetchUserShipping) => async (dispatch, getState) => {
     try {
         dispatch({ type: USER_DETAILS_REQUEST });
         const {
@@ -238,6 +238,7 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
         };
 
         const { data } = await request.get(`/api/user/${id}`, config);
+        setLoadingFetchUserShipping && setLoadingFetchUserShipping(false);
         dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;

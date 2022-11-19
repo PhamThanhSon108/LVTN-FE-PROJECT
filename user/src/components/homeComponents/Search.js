@@ -4,7 +4,7 @@ import useDebounce from '~/hooks/useDebounce';
 import request from '~/utils/request';
 import { Link, useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router';
-const Search = ({ value, keyword }) => {
+const Search = ({ value, keyword, width }) => {
     // const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const [showResult, setShowResult] = useState(false);
@@ -71,8 +71,9 @@ const Search = ({ value, keyword }) => {
                     className="shadow-sm"
                     style={{
                         position: 'absolute',
-                        right: '-200px',
-                        width: '490px',
+                        right: '50%',
+                        transform: 'translateX(calc(44%))',
+                        width: width || '460px',
                         top: '56px',
                         borderRadius: '5px',
                         zIndex: '15',
