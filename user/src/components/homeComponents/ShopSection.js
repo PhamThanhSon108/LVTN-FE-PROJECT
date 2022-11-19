@@ -11,6 +11,7 @@ import FilterSection from './FilterSection';
 import { Image } from 'primereact/image';
 import { useLocation } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
+import { Skeleton } from '@mui/material';
 const ShopSection = (props) => {
     const history = createBrowserHistory();
     // const { category, keyword, pageNumber } = props;
@@ -29,6 +30,7 @@ const ShopSection = (props) => {
     //     dispatch(listCart());
     //     dispatch(listProduct(category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder));
     // }, [dispatch, category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder]);
+    let SkeletonOption = window.innerWidth > 540 ? [1, 2, 3, 4] : [1];
     useEffect(() => {
         dispatch(listCart());
         dispatch(listProduct(category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder));
@@ -83,9 +85,18 @@ const ShopSection = (props) => {
                         <div className="col-lg-10 col-md-9 article">
                             <div className="shopcontainer row">
                                 {loading ? (
-                                    <div className="mb-5">
-                                        <Loading />
-                                    </div>
+                                    <>
+                                        <div style={{ display: 'flex' }}>
+                                            {SkeletonOption.map(() => (
+                                                <div className="" style={{ margin: '15px 7.9px', width: '100%' }}>
+                                                    <Skeleton variant="rectangular" width={'100%'} height={209} />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton width="60%" />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </>
                                 ) : error ? (
                                     <Message variant="alert-danger">{error}</Message>
                                 ) : (

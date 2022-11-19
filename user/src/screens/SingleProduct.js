@@ -13,6 +13,7 @@ import { addProductOrderInCart, addToCart } from '../Redux/Actions/cartActions';
 import image from '~/assets/images';
 import Toast from '~/components/LoadingError/Toast';
 import useDebounce from '~/hooks/useDebounce';
+import { LoadingButton } from '@mui/lab';
 
 const SingleProduct = ({ history, match }) => {
     const [qty, setQty] = useState(1);
@@ -24,12 +25,13 @@ const SingleProduct = ({ history, match }) => {
     const productId = match.params.id;
     const dispatch = useDispatch();
     const deBounce = useDebounce(qty, 500);
-    const [currentQty, setCurrentQty] = useState(1);
     const productDetails = useSelector((state) => state.productDetails);
     const { loading, error, product } = productDetails;
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
     const productReviewCreate = useSelector((state) => state.productReviewCreate);
+
+    const [loadingAddtoCart, setLoadingAddtoCart] = useState(false);
     const {
         loading: loadingCreateReview,
         error: errorCreateReview,
@@ -53,15 +55,6 @@ const SingleProduct = ({ history, match }) => {
             return sizes;
         }, []) || [];
 
-    // const defaultVariants = defaultSize?.map((value, index) =>
-    //     product.variants.reduce(
-    //         (variants, variant, i) => {
-    //             if (variant.size === value) variants = { field: [...variants.field, variant] };
-    //             return variants;
-    //         },
-    //         { field: [] },
-    //     ),
-    // );
     useEffect(() => {
         dispatch(listCart());
     }, [successAdd]);
@@ -77,7 +70,6 @@ const SingleProduct = ({ history, match }) => {
     )?.quantity;
     useEffect(() => {
         if (successCreateReview) {
-            // alert('Review Submitted');
             setRating(0);
             setComment('');
             dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
@@ -93,7 +85,8 @@ const SingleProduct = ({ history, match }) => {
         )._id;
 
         if (userInfo && variantId) {
-            dispatch(addToCart(variantId, qty, history));
+            setLoadingAddtoCart(true);
+            dispatch(addToCart(variantId, qty, history, setLoadingAddtoCart));
         } else history.push('/login');
     };
 
@@ -129,8 +122,6 @@ const SingleProduct = ({ history, match }) => {
             }),
         );
     };
-
-    console.log(product);
     return (
         <>
             <Toast />
@@ -292,14 +283,18 @@ const SingleProduct = ({ history, match }) => {
                                                             className="d-flex"
                                                             style={{ marginTop: '10px', marginLeft: '25px' }}
                                                         >
-                                                            <button
+                                                            <LoadingButton
+                                                                variant="outlined"
+                                                                loading={loadingAddtoCart}
                                                                 onClick={AddToCartHandle}
                                                                 style={{ marginRight: '15px' }}
-                                                                className="col-4 btn btn-outline-danger"
+                                                                className="col-4 btn text-primary"
+                                                                loadingPosition="start"
                                                             >
                                                                 Add To Cart
-                                                            </button>
+                                                            </LoadingButton>
                                                             <button
+                                                                style={{ minWidth: 120 }}
                                                                 onClick={BuyProductHandle}
                                                                 className="col-2 btn btn-primary"
                                                             >

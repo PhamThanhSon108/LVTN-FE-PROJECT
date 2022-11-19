@@ -35,7 +35,6 @@ export default function AddSlider({ setOpen }) {
   }, [dispatch, success]);
 
   const submitHandler = (e) => {
-    console.log(e);
     if (!image || image?.length <= 0) {
       toast.error('Please choose image', ToastObjects);
       return;

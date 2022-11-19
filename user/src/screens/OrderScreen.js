@@ -15,6 +15,7 @@ import { Button } from 'react-bootstrap';
 import { ReviewDialog } from '~/components/profileComponents/Review/ReviewDialog';
 import Toast from '~/components/LoadingError/Toast';
 import { listCart } from '~/Redux/Actions/cartActions';
+import { LoadingButton } from '@mui/lab';
 
 const OrderScreen = ({ match }) => {
     window.scrollTo(0, 0);
@@ -80,31 +81,12 @@ const OrderScreen = ({ match }) => {
         dispatch(getOrderDetails(orderId));
     }, [successCancel, successConfirmPaid, successCreateReview]);
     useEffect(() => {
-        // const addPayPalScript = async () => {
-        //   const { data: clientId } = await request.get("/api/config/paypal");
-        //   const script = document.createElement("script");
-        //   script.type = "text/javascript";
-        //   script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
-        //   script.async = true;
-        //   script.onload = () => {
-        //     setSdkReady(true);
-        //   };
-        //   document.body.appendChild(script);
-        // };
         if (!order || successPay) {
             dispatch({ type: ORDER_PAY_RESET });
             dispatch(getOrderDetails(orderId));
         }
         dispatch(listCart());
-        // else if (!order.isPaid) {
-        // if (!window.paypal) {
-        //   addPayPalScript();
-        // } else {
-        //   setSdkReady(true);
-        // }
-        // }
     }, [dispatch, orderId, order]);
-    //[dispatch, orderId, successPay, order]);
     const successPaymentHandler = (paymentResult) => {
         dispatch(payOrder(orderId, paymentResult));
     };
@@ -121,18 +103,6 @@ const OrderScreen = ({ match }) => {
                 ) : (
                     <>
                         <div className="content-header"></div>
-                        {/* <div className="row order-detail d-flex">
-                            {['Placed', 'Approved', 'Delivering', 'Paid', 'Completed', 'Failed', 'Cancelled'].map(
-                                (item, i) => (
-                                    <div className="d-flex">
-                                        <div className="order-border">
-                                            <div className={`order-${item}`}></div>
-                                        </div>
-                                        <div>{i < 6 && <i class="far fa-arrow-right"></i>}</div>
-                                    </div>
-                                ),
-                            )}
-                        </div> */}
                         <div
                             className="row shadow-sm d-flex justify-content-center align-content-center "
                             style={{
@@ -362,14 +332,21 @@ const OrderScreen = ({ match }) => {
                                 </table>
                                 {order.status === 'Placed' && (
                                     <div className="col-lg-12 " style={{ paddingTop: '10px' }}>
-                                        <button
+                                        <LoadingButton
                                             disabled={order.status === 'Cancelled'}
                                             onClick={cancelOrderHandler}
-                                            className="btn btn-dark col-12"
-                                            style={{ marginBottom: '-10px' }}
+                                            className="btn col-12"
+                                            style={{
+                                                marginBottom: '-10px',
+
+                                                color: 'red',
+                                            }}
+                                            variant="outlined"
+                                            loading={loadingCancel}
+                                            loadingPosition="start"
                                         >
                                             CANCEL THIS ORDER
-                                        </button>
+                                        </LoadingButton>
                                     </div>
                                 )}
                                 {order.status === 'Delivering' && (

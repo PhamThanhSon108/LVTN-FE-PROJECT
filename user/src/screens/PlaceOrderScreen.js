@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { clearFromCart, listCart, listOrderCart } from '../Redux/Actions/cartActions';
@@ -9,6 +9,7 @@ import Message from './../components/LoadingError/Error';
 import { getUserDetails } from '../Redux/Actions/userActions';
 import WrapConfirmModal from '~/components/Modal/WrapConfirmModal';
 import Toast from '~/components/LoadingError/Toast';
+import { LoadingButton } from '@mui/lab';
 
 const PlaceOrderScreen = ({ history }) => {
     window.scrollTo(0, 0);
@@ -41,6 +42,7 @@ const PlaceOrderScreen = ({ history }) => {
     const orderCreate = useSelector((state) => state.orderCreate);
     const { order, success, error } = orderCreate;
 
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         dispatch(listOrderCart());
         dispatch(listCart());
@@ -56,25 +58,29 @@ const PlaceOrderScreen = ({ history }) => {
 
     const placeOrderHandler = () => {
         //if (window.confirm("Are you sure"))
+        setLoading(true);
         dispatch(
-            createOrder({
-                orderItems: currenCartItems,
-                shippingAddress: {
-                    address: userInfo.address,
-                    city: userInfo.city,
-                    postalCode: '',
-                    country: userInfo.country,
-                },
+            createOrder(
+                {
+                    orderItems: currenCartItems,
+                    shippingAddress: {
+                        address: userInfo.address,
+                        city: userInfo.city,
+                        postalCode: '',
+                        country: userInfo.country,
+                    },
 
-                paymentMethod: 'Payment in cash',
-                taxPrice: cartOrder.taxPrice,
-                shippingPrice: cartOrder.shippingPrice,
-                totalPrice: cartOrder.totalPrice,
-                contactInformation: {
-                    email: userInfo.email,
-                    phone: userInfo.phone,
+                    paymentMethod: 'Payment in cash',
+                    taxPrice: cartOrder.taxPrice,
+                    shippingPrice: cartOrder.shippingPrice,
+                    totalPrice: cartOrder.totalPrice,
+                    contactInformation: {
+                        email: userInfo.email,
+                        phone: userInfo.phone,
+                    },
                 },
-            }),
+                setLoading,
+            ),
         );
         // dispatch(clearFromCart(userInfo._id));
     };
@@ -214,27 +220,20 @@ const PlaceOrderScreen = ({ history }) => {
                         </div>
                         {cartOrder.cartOrderItems.length === 0 ? null : (
                             <WrapConfirmModal content={createContent()} handleSubmit={placeOrderHandler}>
-                                <button
+                                <LoadingButton
                                     type="submit"
                                     class="btn btn-primary pay-button col-12"
-                                    style={{ height: '100%' }}
+                                    variant="outlined"
+                                    loading={loading}
+                                    loadingPosition="start"
+                                    style={{ height: '100%', width: '100%' }}
                                 >
                                     PLACE ORDER
-                                </button>
+                                </LoadingButton>
                             </WrapConfirmModal>
                         )}
                     </div>
                 </div>
-                {/* <div
-                    className="row"
-                    style={{ padding: '10px 0', backgroundColor: '#fff', marginTop: '10px', marginBottom: '30px' }}
-                >
-                    {error && (
-                        <div className="">
-                            <Message variant="alert-danger">{error}</Message>
-                        </div>
-                    )}
-                </div> */}
             </div>
         </>
     );

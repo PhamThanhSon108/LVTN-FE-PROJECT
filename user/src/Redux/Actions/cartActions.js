@@ -60,7 +60,7 @@ export const listCart = () => async (dispatch, getState) => {
     }
 };
 //ADD TO CART NEW
-export const addToCart = (variantId, qty, history) => async (dispatch, getState) => {
+export const addToCart = (variantId, qty, history, setLoadingAddtoCart) => async (dispatch, getState) => {
     try {
         dispatch({ type: CART_CREATE_REQUEST });
 
@@ -78,6 +78,7 @@ export const addToCart = (variantId, qty, history) => async (dispatch, getState)
 
         // setTimeout(() => {
         //     history.push(`/cart/${variantId}?qty=${qty}`);
+        setLoadingAddtoCart(false);
         dispatch({ type: CART_CREATE_SUCCESS });
         // }, 200);
     } catch (error) {

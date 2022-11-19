@@ -129,7 +129,6 @@ const EditProductMain = (props) => {
     );
   };
   const submitHandler = (data, e) => {
-    console.log(data);
     e.preventDefault();
     if (!checkSameValue(data.color) || !checkSameValue(data.size)) {
       toast.error('Name of classify cannot be duplicated!!', ToastObjects);

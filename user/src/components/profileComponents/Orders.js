@@ -5,7 +5,6 @@ import Message from '../LoadingError/Error';
 import Loading from '../LoadingError/Loading';
 const Orders = (props) => {
     const { loading, error, orders, setPageNumber } = props;
-    console.log(orders);
     return (
         <div className=" d-flex justify-content-center align-items-center flex-column">
             {loading ? (

@@ -20,7 +20,6 @@ export const UploadSlider = (props) => {
   };
   const onTemplateSelect = (e) => {
     let _totalSize = e.files[0].size;
-    console.log(e.files.file);
     setImage((pre) => [...pre, ...e.files]);
     setTotalSize(_totalSize);
   };

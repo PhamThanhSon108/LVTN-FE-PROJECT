@@ -19,7 +19,6 @@ export default function Slidermain() {
   const { loading: loadingUpdate, error, success: successUpdate } = sliderCreate;
   useEffect(() => {
     dispatch(ListSlider());
-    console.log(1111);
   }, [successDelete, successUpdate]);
   // const handleEditSlide = (url, id) => {
   //   let newSlider = window.prompt('Edit Slider', `${url}`);

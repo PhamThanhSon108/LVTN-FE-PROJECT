@@ -31,7 +31,7 @@ import { toast } from 'react-toastify';
 import { Toastobjects } from '~/components/LoadingError/Toast';
 
 // CREATE ORDER
-export const createOrder = (order) => async (dispatch, getState) => {
+export const createOrder = (order, setLoading) => async (dispatch, getState) => {
     try {
         dispatch({ type: ORDER_CREATE_REQUEST });
 
@@ -48,6 +48,7 @@ export const createOrder = (order) => async (dispatch, getState) => {
 
         const { data } = await request.post(`/api/order`, order, config);
         toast.success('Successful order', Toastobjects);
+        setLoading(false);
         dispatch({ type: ORDER_CREATE_SUCCESS, payload: data });
         dispatch({ type: CART_ORDER_RESET });
         localStorage.removeItem('cartOrderItems');

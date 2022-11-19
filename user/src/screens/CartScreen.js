@@ -72,7 +72,6 @@ const CartScreen = ({ match, location, history }) => {
                 }
             }, 320);
     }, [suc, successCreate, successUpdate]);
-    console.log(cartItems, 'cartItem');
     return (
         <>
             <Toast />

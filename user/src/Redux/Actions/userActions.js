@@ -252,7 +252,7 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
 };
 
 // UPDATE PROFILE
-export const updateUserProfile = (user, history) => async (dispatch, getState) => {
+export const updateUserProfile = (user, history, setLoading) => async (dispatch, getState) => {
     try {
         dispatch({ type: USER_UPDATE_PROFILE_REQUEST });
 
@@ -272,6 +272,7 @@ export const updateUserProfile = (user, history) => async (dispatch, getState) =
         if (!history) toast.success('Profile Updated', Toastobjects);
         dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: { ...data, accessToken: userInfo.accessToken } });
         dispatch({ type: USER_LOGIN_SUCCESS, payload: { ...data, accessToken: userInfo.accessToken } });
+        setLoading(false);
         localStorage.setItem('userInfo', JSON.stringify({ ...data, accessToken: userInfo.accessToken }));
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;

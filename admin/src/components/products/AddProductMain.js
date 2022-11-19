@@ -162,7 +162,6 @@ const AddProductMain = () => {
       // for (const value of newProduct.values()) {
       //   console.log(value);
       // }
-      console.log(data);
       dispatch(createProduct(newProduct));
     }
   };

@@ -1,12 +1,10 @@
-import axios from 'axios';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { addressRequest } from '~/utils/request';
 import Header from '../components/Header';
-import { listCart, saveShippingAddress } from '../Redux/Actions/cartActions';
+import { saveShippingAddress } from '../Redux/Actions/cartActions';
 import { getUserDetails, updateUserProfile } from '../Redux/Actions/userActions';
-import classNames from 'classnames';
+import { LoadingButton } from '@mui/lab';
 
 const ShippingScreen = ({ history }) => {
     window.scrollTo(0, 0);
@@ -20,6 +18,8 @@ const ShippingScreen = ({ history }) => {
         defaultValues: { phone: '', address: '', country: '', city: '' },
     });
 
+    const [loading, setLoading] = useState();
+
     useEffect(() => {
         dispatch(getUserDetails('profile'));
     }, []);
@@ -30,7 +30,8 @@ const ShippingScreen = ({ history }) => {
     }, [user, successUserDetails, dispatch]);
 
     const submitHandler = async (data) => {
-        dispatch(updateUserProfile(data, history));
+        setLoading(true);
+        dispatch(updateUserProfile(data, history, setLoading));
         dispatch(saveShippingAddress(data));
     };
 
@@ -128,7 +129,15 @@ const ShippingScreen = ({ history }) => {
                         )}
                     />
 
-                    <button type="submit">Continue</button>
+                    <LoadingButton
+                        size="small"
+                        loading={loading}
+                        loadingPosition="start"
+                        variant="contained"
+                        type="submit"
+                    >
+                        Continue
+                    </LoadingButton>
                 </form>
             </div>
         </>

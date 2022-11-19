@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { ListProductAll } from '../../Redux/Actions/ProductActions';
 import { useEffect, useState } from 'react';
+import { Box, Skeleton } from '@mui/material';
+import { width } from '@mui/material/node_modules/@mui/system';
 
 export default function Corousel() {
     const allProduct = useSelector((state) => state.productAll);
@@ -16,6 +18,7 @@ export default function Corousel() {
     useEffect(() => {
         dispatch(ListProductAll());
     }, []);
+    const SkeletonOption = window.innerWidth > 540 ? [1, 2, 3, 4, 5, 6] : [1, 2];
 
     // const products = [
     //     {
@@ -122,22 +125,37 @@ export default function Corousel() {
             <h2>New Products</h2>
             <div></div>
             <div className="corousel" style={{ maxHeight: '340px' }}>
-                <Slider {...settings} style={{ maxHeight: '340px' }}>
-                    {products?.map((product, index) => {
-                        return (
-                            <div key={index} className="corousel-div overflow-hidden ">
-                                <Link to={`/product/${product._id}`} className="corousel-link">
-                                    <img src={product.image} className="corousel-img "></img>
-                                    <p className="corousel-noti">{product.name}</p>
-                                    <div className="corousel-rating">
-                                        <Rating value={product.rating} text={`${product.numReviews} reviews`} />
-                                    </div>
-                                    <p className="corousel-price">${product.price.toFixed(2)}</p>
-                                </Link>
-                            </div>
-                        );
-                    })}
-                </Slider>
+                {products?.length > 0 ? (
+                    <Slider {...settings} style={{ maxHeight: '340px' }}>
+                        {products?.map((product, index) => {
+                            return (
+                                <div key={index} className="corousel-div overflow-hidden ">
+                                    <Link to={`/product/${product._id}`} className="corousel-link">
+                                        <img src={product.image} className="corousel-img "></img>
+                                        <p className="corousel-noti">{product.name}</p>
+                                        <div className="corousel-rating">
+                                            <Rating value={product.rating} text={`${product.numReviews} reviews`} />
+                                        </div>
+                                        <p className="corousel-price">${product.price.toFixed(2)}</p>
+                                    </Link>
+                                </div>
+                            );
+                        })}
+                    </Slider>
+                ) : (
+                    <>
+                        <div style={{ display: 'flex' }}>
+                            {SkeletonOption.map(() => (
+                                <div className="" style={{ margin: '15px 7.9px', width: '100%' }}>
+                                    <Skeleton variant="rectangular" width={'100%'} height={209} />
+                                    <Skeleton />
+                                    <Skeleton />
+                                    <Skeleton width="60%" />
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );

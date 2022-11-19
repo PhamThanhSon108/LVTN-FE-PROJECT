@@ -7,6 +7,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { listCart } from '../Redux/Actions/cartActions';
+import { Skeleton } from '@mui/material';
 
 export default function Sliders() {
     const sliderList = useSelector((state) => state.sliderLoad);
@@ -29,15 +30,19 @@ export default function Sliders() {
         <div className="Announcement">
             <div class="container ">
                 <div class="row slider-row">
-                    <Slider {...settings}>
-                        {slider?.map((value, index) => {
-                            return (
-                                <div key={index} className="slider-div__image">
-                                    <img className="slider-image" src={value.url}></img>
-                                </div>
-                            );
-                        })}
-                    </Slider>
+                    {slider?.length === 0 ? (
+                        <Skeleton variant="rectangular" width={'100%'} height={'25vh'} />
+                    ) : (
+                        <Slider {...settings}>
+                            {slider?.map((value, index) => {
+                                return (
+                                    <div key={index} className="slider-div__image">
+                                        <img className="slider-image" src={value.url}></img>
+                                    </div>
+                                );
+                            })}
+                        </Slider>
+                    )}
                 </div>
             </div>
         </div>
