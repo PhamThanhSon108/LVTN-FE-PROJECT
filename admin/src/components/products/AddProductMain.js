@@ -268,20 +268,7 @@ const AddProductMain = () => {
                     <p className="product_validate">{validate.description}</p>
                   </div>
                   <div className="mb-4">
-                    <input
-                      {...register('picture', { required: 'This field is required' })}
-                      className="form-control mt-3"
-                      type="file"
-                      onChange={(e) => {
-                        setImage(e.target.files[0]);
-                      }}
-                    />
-                    {image && (
-                      <div className="d-block" style={{ paddingTop: '150px', position: 'relative' }}>
-                        <CropImage setImage={(value) => setImage(value)} image={image} />
-                      </div>
-                    )}
-                    {/* <FileUploadDemo setImage={(value) => setImage(value)} name={name} clear={clear} /> */}
+                    <FileUploadDemo setImage={(value) => setImage(value)} name={name} clear={clear} />
                   </div>
                 </div>
               </div>
