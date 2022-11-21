@@ -7,7 +7,8 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { listAllOrder } from '../../Redux/Actions/OrderActions';
 import { useEffect, useState } from 'react';
-import { Skeleton } from '@mui/material';
+import { Card, CardActions, CardContent, CardMedia, Divider, Skeleton, Typography } from '@mui/material';
+import { Button } from 'react-bootstrap';
 
 export default function CorouselOder() {
     const orderAllList = useSelector((state) => state.listAllOrder);
@@ -56,25 +57,51 @@ export default function CorouselOder() {
     };
 
     return (
-        <div className="container corousel-container">
-            <h2>Best seller</h2>
-            <div></div>
+        <div className="container " style={{ marginTop: '20px' }}>
+            <Divider
+                light
+                textAlign="center"
+                variant="fullWidth"
+                children={
+                    <h4 style={{ textAlign: 'center', marginBottom: 12, color: 'rgb(238, 77, 45)' }}>BEST SELLER</h4>
+                }
+            />
+
             <div className="corousel" style={{ maxHeight: '340px' }}>
                 {products?.length > 0 ? (
                     <Slider {...settings} style={{ maxHeight: '340px' }}>
                         {products &&
                             products?.map((product, index) => {
                                 return (
-                                    <div key={index} className="corousel-div">
+                                    <Card className="col-sm-4 product-card">
                                         <Link to={`/product/${product._id}`} className="corousel-link">
-                                            <img src={product.image} className="corousel-img"></img>
-                                            <p className="corousel-noti">{product.name}</p>
-                                            <div className="corousel-rating">
-                                                <Rating value={product.rating} text={`${product.numReviews} reviews`} />
-                                            </div>
-                                            <p className="corousel-price">${product.price?.toFixed(2)}</p>
+                                            <CardMedia
+                                                component="img"
+                                                height="180"
+                                                image={product?.image}
+                                                className="corousel-img"
+                                            />
+                                            <CardContent>
+                                                <Typography
+                                                    gutterBottom
+                                                    variant="h8"
+                                                    component="div"
+                                                    className="corousel-noti"
+                                                >
+                                                    {product.name}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    <div className="corousel-rating">
+                                                        <Rating
+                                                            value={product.rating}
+                                                            text={`${product.numReviews} reviews`}
+                                                        />
+                                                    </div>
+                                                    <p className="corousel-price">${product.price?.toFixed(2)}</p>
+                                                </Typography>
+                                            </CardContent>
                                         </Link>
-                                    </div>
+                                    </Card>
                                 );
                             })}
                     </Slider>

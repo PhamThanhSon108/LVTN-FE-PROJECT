@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { ListProductAll } from '../../Redux/Actions/ProductActions';
 import { useEffect, useState } from 'react';
-import { Box, Skeleton } from '@mui/material';
+import { Box, Card, CardContent, CardMedia, Divider, Skeleton, Typography } from '@mui/material';
 import { width } from '@mui/material/node_modules/@mui/system';
 
 export default function Corousel() {
@@ -121,24 +121,62 @@ export default function Corousel() {
         ],
     };
     return (
-        <div className="container corousel-container">
-            <h2>New Products</h2>
+        <div className="container" style={{ marginTop: '20px' }}>
+            <Divider
+                light
+                textAlign="center"
+                variant="fullWidth"
+                children={
+                    <h4 style={{ textAlign: 'center', marginBottom: 12, color: 'rgb(238, 77, 45)' }}>NEW PRODUCTS</h4>
+                }
+            />
+
             <div></div>
             <div className="corousel" style={{ maxHeight: '340px' }}>
                 {products?.length > 0 ? (
                     <Slider {...settings} style={{ maxHeight: '340px' }}>
                         {products?.map((product, index) => {
                             return (
-                                <div key={index} className="corousel-div overflow-hidden ">
+                                // <div key={index} className="corousel-div overflow-hidden ">
+                                //     <Link to={`/product/${product._id}`} className="corousel-link">
+                                //         <img src={product.image} className="corousel-img "></img>
+                                //         <p className="corousel-noti">{product.name}</p>
+                                //         <div className="corousel-rating">
+                                //             <Rating value={product.rating} text={`${product.numReviews} reviews`} />
+                                //         </div>
+                                //         <p className="corousel-price">${product.price.toFixed(2)}</p>
+                                //     </Link>
+                                // </div>
+
+                                <Card className="col-sm-4 product-card">
                                     <Link to={`/product/${product._id}`} className="corousel-link">
-                                        <img src={product.image} className="corousel-img "></img>
-                                        <p className="corousel-noti">{product.name}</p>
-                                        <div className="corousel-rating">
-                                            <Rating value={product.rating} text={`${product.numReviews} reviews`} />
-                                        </div>
-                                        <p className="corousel-price">${product.price.toFixed(2)}</p>
+                                        <CardMedia
+                                            component="img"
+                                            height="180"
+                                            image={product?.image}
+                                            className="corousel-img"
+                                        />
+                                        <CardContent>
+                                            <Typography
+                                                gutterBottom
+                                                variant="h8"
+                                                component="div"
+                                                className="corousel-noti"
+                                            >
+                                                {product.name}
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                <div className="corousel-rating">
+                                                    <Rating
+                                                        value={product.rating}
+                                                        text={`${product.numReviews} reviews`}
+                                                    />
+                                                </div>
+                                                <p className="corousel-price">${product.price?.toFixed(2)}</p>
+                                            </Typography>
+                                        </CardContent>
                                     </Link>
-                                </div>
+                                </Card>
                             );
                         })}
                     </Slider>

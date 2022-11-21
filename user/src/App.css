@@ -1866,3 +1866,28 @@ textarea:focus {
 .search-btn-header:focus{
     border: none !important;
 }
+
+.product-card + .product-card{
+    margin-left: 15px;
+}
+.product-card :hover img{
+ background-color: red;
+transform: translateY(-3px);
+
+transition: all 0.2s ease;
+
+}
+
+.corousel-price {
+    padding: 0;
+    padding-left: 0 !important;
+}
+.corousel-noti {
+    padding: 0 !important;
+    text-align: start;
+}
+.corousel-rating {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

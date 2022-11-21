@@ -27,8 +27,8 @@ export default function Sliders() {
         cssEase: 'linear',
     };
     return (
-        <div className="Announcement">
-            <div class="container ">
+        <div className="" style={{ marginTop: 15 }}>
+            <div class="container">
                 <div class="row slider-row">
                     {slider?.length === 0 ? (
                         <Skeleton variant="rectangular" width={'100%'} height={'25vh'} />

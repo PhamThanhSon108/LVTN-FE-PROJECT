@@ -56,8 +56,10 @@ const ShopSection = (props) => {
                         >
                             <div className="">
                                 <select
+                                    tabIndex={2}
                                     className="form-select"
                                     value={priceOrder}
+                                    style={{ cursor: 'pointer' }}
                                     onChange={(e) => {
                                         setPriceOrder(e.target.value);
                                     }}
