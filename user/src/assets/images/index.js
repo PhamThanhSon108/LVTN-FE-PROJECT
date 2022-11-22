@@ -3,8 +3,7 @@ import { imageOrder } from './imageOrder';
 const image = {
     logo: 'https://scontent.fsgn5-10.fna.fbcdn.net/v/t1.15752-9/290316587_586427556449035_3497678023536528746_n.png?_nc_cat=107&ccb=1-7&_nc_sid=ae9488&_nc_ohc=ASUGB7OsYVEAX8X0FWC&_nc_ht=scontent.fsgn5-10.fna&oh=03_AVKtgmGXdhDVLlwH-NVBiIB-BwKXR_DwEEU6z6p0RlWKew&oe=6348408D',
     email: 'https://cdn-icons-png.flaticon.com/512/3059/3059989.png',
-    orderUser:
-        'https://scontent.xx.fbcdn.net/v/t1.15752-9/299433240_1134514614082388_6999135536761879100_n.png?_nc_cat=107&ccb=1-7&_nc_sid=aee45a&_nc_ohc=L-wf5PRHfvcAX-CGh4S&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AVL-kHE8af70LHg5R0Nn8ZLmC-WfiTIOjpFjBh5ASm4nzw&oe=63386CF6',
+    orderUser: 'https://icons.veryicon.com/png/o/miscellaneous/two-color-webpage-small-icon/user-244.png',
     imgInSigleProduct:
         'https://m.media-amazon.com/images/S/aplus-media/vc/2b83d5b5-3c19-4578-8137-7e5094bbc801.__CR0,0,970,300_PT0_SX970_V1___.jpg',
     tick: (

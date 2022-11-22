@@ -44,7 +44,6 @@ export const UploadSlider = (props) => {
 
   const onTemplateClear = () => {
     setTotalSize(0);
-    console.log('abc');
     setImage([]);
   };
 

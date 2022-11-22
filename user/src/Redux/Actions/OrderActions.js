@@ -58,6 +58,7 @@ export const createOrder = (order, setLoading) => async (dispatch, getState) => 
             dispatch(logout());
         }
         toast.error(message, Toastobjects);
+        setLoading(false);
         dispatch({
             type: ORDER_CREATE_FAIL,
             payload: message,

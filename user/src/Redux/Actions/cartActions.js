@@ -83,6 +83,7 @@ export const addToCart = (variantId, qty, history, setLoadingAddtoCart) => async
         // }, 200);
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+        setLoadingAddtoCart(false);
         if (message === 'Not authorized, token failed') {
             dispatch(logout());
         }
@@ -90,6 +91,7 @@ export const addToCart = (variantId, qty, history, setLoadingAddtoCart) => async
             type: CART_CREATE_FAIL,
             payload: message,
         });
+
         toast.error(message, { ...Toastobjects, autoClose: 3000 });
     }
 };

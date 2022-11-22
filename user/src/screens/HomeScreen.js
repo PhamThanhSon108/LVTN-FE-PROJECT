@@ -14,14 +14,14 @@ const HomeScreen = ({ match }) => {
     const keyword = match.params.keyword;
     const pageNumber = match.params.pageNumber;
     // const category = match.params.category;
-
+    console.log(match.params, 'param');
     return (
         <div>
             <Header keyword={keyword} />
             {/* <Silder /> */}
-            {!keyword ? <Sliders /> : ''}
-            {!keyword ? <Corousel /> : ''}
-            {!keyword ? <CorouselOder /> : ''}
+            {!keyword && !pageNumber ? <Sliders /> : ''}
+            {!keyword && !pageNumber ? <Corousel /> : ''}
+            {!keyword && !pageNumber ? <CorouselOder /> : ''}
 
             <ShopSection keyword={keyword} pageNumber={pageNumber} />
 

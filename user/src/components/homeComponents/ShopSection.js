@@ -54,12 +54,12 @@ const ShopSection = (props) => {
                                 marginRight: '20px',
                             }}
                         >
-                            <div className="">
+                            <div className="" style={{ cursor: 'pointer', zIndex: '2' }}>
                                 <select
-                                    tabIndex={2}
+                                    tabIndex={-2}
                                     className="form-select"
                                     value={priceOrder}
-                                    style={{ cursor: 'pointer' }}
+                                    style={{ cursor: 'pointer', zIndex: '10' }}
                                     onChange={(e) => {
                                         setPriceOrder(e.target.value);
                                     }}

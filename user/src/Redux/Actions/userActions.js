@@ -242,9 +242,11 @@ export const getUserDetails = (id, setLoadingFetchUserShipping) => async (dispat
         dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+        setLoadingFetchUserShipping && setLoadingFetchUserShipping(false);
         if (message === 'Not authorized, token failed') {
             dispatch(logout());
         }
+
         dispatch({
             type: USER_DETAILS_FAIL,
             payload: message,
