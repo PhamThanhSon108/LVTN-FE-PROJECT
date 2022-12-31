@@ -1,7 +1,7 @@
 import { imageOrder } from './imageOrder';
 
 const image = {
-    logo: 'https://scontent.fsgn5-10.fna.fbcdn.net/v/t1.15752-9/290316587_586427556449035_3497678023536528746_n.png?_nc_cat=107&ccb=1-7&_nc_sid=ae9488&_nc_ohc=ASUGB7OsYVEAX8X0FWC&_nc_ht=scontent.fsgn5-10.fna&oh=03_AVKtgmGXdhDVLlwH-NVBiIB-BwKXR_DwEEU6z6p0RlWKew&oe=6348408D',
+    logo: '/images/logo.png',
     email: 'https://cdn-icons-png.flaticon.com/512/3059/3059989.png',
     orderUser: 'https://icons.veryicon.com/png/o/miscellaneous/two-color-webpage-small-icon/user-244.png',
     imgInSigleProduct:

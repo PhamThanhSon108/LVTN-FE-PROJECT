@@ -223,7 +223,9 @@ const Register = ({ location, history }) => {
                             }}
                         />
                         <p className="noti-validate">{checkValidate.cfpassword}</p>
-                        <p className={`Login-from__cfpassword ${checkValidate.colorRed5}`}>Cfpassword</p>
+                        <p style={{ width: '150px' }} className={`Login-from__cfpassword ${checkValidate.colorRed5}`}>
+                            Confirm password
+                        </p>
                     </div>
 
                     <button type="submit">Register</button>

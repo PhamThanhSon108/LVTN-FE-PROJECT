@@ -188,7 +188,7 @@ const SingleProduct = ({ history, match }) => {
                                                       )?.quantity > 0 ? (
                                                         <span>In Stock</span>
                                                     ) : (
-                                                        <span>unavailable</span>
+                                                        <span>Unavailable</span>
                                                     )}
                                                 </div>
                                                 <div className="flex-box d-flex justify-content-start align-items-center flex-wrap">

@@ -1832,7 +1832,6 @@ textarea:focus {
 .search-wrap {
     position: relative;
     width: 100%;
-  
 }
 
 .inner {
@@ -1840,10 +1839,7 @@ textarea:focus {
     width: 100%;
 }
 .search-item {
-    
     min-height: 55px;
-   
-   
 
     /* text-align: center; */
 }
@@ -1858,24 +1854,21 @@ textarea:focus {
     line-height: 1rem;
     overflow: hidden;
     white-space: nowrap;
-   padding-left: 5px;
+    padding-left: 5px;
     text-overflow: ellipsis;
 }
 
-
-.search-btn-header:focus{
+.search-btn-header:focus {
     border: none !important;
 }
 
-.product-card + .product-card{
+.product-card + .product-card {
     margin-left: 15px;
 }
-.product-card :hover img{
- background-color: red;
-transform: translateY(-3px);
+.product-card :hover img {
+    transform: translateY(-3px);
 
-transition: all 0.2s ease;
-
+    transition: all 0.2s ease;
 }
 
 .corousel-price {
@@ -1899,7 +1892,7 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-track {
-    background-color: transparent
+    background-color: transparent;
 }
 
 body::-webkit-scrollbar-thumb {
@@ -1907,4 +1900,11 @@ body::-webkit-scrollbar-thumb {
     height: 50vh;
     border-radius: 50px;
     background-image: linear-gradient(-45deg, #e5c291, #efcdcd);
+}
+
+.loading__main {
+    transform: translateX(-50%);
+    position: absolute;
+    top: 40%;
+    left: 50%;
 }
