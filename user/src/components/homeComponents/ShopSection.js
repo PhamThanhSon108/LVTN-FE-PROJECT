@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Rating from './Rating';
-import Pagination from './Pagination';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProduct } from '../../Redux/Actions/ProductActions';
 import Message from '../LoadingError/Error';
 import { listCart } from '../../Redux/Actions/cartActions';
 import FilterSection from './FilterSection';
-import { useLocation } from 'react-router-dom';
-
 import { Button, Skeleton } from '@mui/material';
 import './styles.scss';
+import Pagination from './Pagination';
 
 const ShopSection = (props) => {
     const dispatch = useDispatch();
-    const location = useLocation();
     const { keyword, pageNumber = 1, queryCategory } = props;
     const productList = useSelector((state) => state.productList);
     const { loading, error, products, page, pages } = productList;
@@ -167,14 +164,7 @@ const ShopSection = (props) => {
                                 )}
 
                                 {/* Pagination */}
-                                {/* {props?.todayProducts ? (
-                                    <Pagination
-                                        pages={pages}
-                                        page={page}
-                                        // category={category ? category : ''}
-                                        keyword={keyword ? keyword : ''}
-                                    />
-                                ) : null} */}
+
                                 <div className="row d-flex justify-content-center" style={{ paddingTop: '18px' }}>
                                     {keyword || category ? (
                                         <Pagination

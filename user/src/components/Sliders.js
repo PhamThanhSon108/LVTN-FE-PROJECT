@@ -6,7 +6,6 @@ import { ListSlider } from '../Redux/Actions/sliderAction';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { listCart } from '../Redux/Actions/cartActions';
 import { Skeleton } from '@mui/material';
 import './styles.scss';
 
@@ -44,8 +43,8 @@ export default function Sliders() {
                             })}
                         </Slider>
                         <div className="slider-right-wrap">
-                            <img className="slider-image" src={slider[0].url}></img>
-                            <img className="slider-image" src={slider[3].url}></img>
+                            <img className="slider-image" src={slider[0]?.url}></img>
+                            <img className="slider-image" src={slider[3]?.url}></img>
                         </div>
                     </>
                 )}
