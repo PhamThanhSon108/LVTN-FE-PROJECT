@@ -32,12 +32,6 @@ const ShopSection = (props) => {
         dispatch(listProduct({ category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder }));
     }, [dispatch, category, keyword, rating, minPrice, maxPrice, priceOrder, pageNumber]);
 
-    // useEffect(() => {
-    //     if (location?.pathname !== '/page/1')
-    //         dispatch(listProduct({ category, keyword, pageNumber: 1, rating, minPrice, maxPrice, priceOrder }));
-    //     else dispatch(listProduct({ category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder }));
-    // }, [dispatch, category, keyword, rating, minPrice, maxPrice, priceOrder]);
-
     return (
         <>
             <div className="container">
