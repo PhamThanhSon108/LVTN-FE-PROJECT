@@ -2,14 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import HeadlessTippy from '@tippyjs/react/headless';
 import useDebounce from '~/hooks/useDebounce';
 import request from '~/utils/request';
-import { Link, useHistory } from 'react-router-dom';
-import { useLocation } from 'react-router';
+import { useHistory } from 'react-router-dom';
+
 const Search = ({ value, keyword, width }) => {
-    // const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const [showResult, setShowResult] = useState(false);
-    // const [loading, setLoading] = useState(false);
-    // const location = useLocation();
     const history = useHistory();
     const inputRef = useRef();
     const debounce = useDebounce(value?.searchValue, 500);
@@ -21,17 +18,10 @@ const Search = ({ value, keyword, width }) => {
         }
         setShowResult(false);
     };
-    // useEffect(() => {
-    //     // if (keyword !== undefined) {
-    //     //     if (keyword.trim() && keyword) {
-    //     //         history.push(`/search/${keyword}`);
-    //     //     }
-    //     // }
-    // }, []);
     useEffect(() => {
         if (keyword?.keyword !== undefined) {
             if (keyword?.keyword.trim() && keyword?.keyword) {
-                history.push(`/search/${keyword?.keyword}`);
+                history.push(`/search?keyword=${keyword?.keyword}`);
             }
             // if (!keyword && searchValue && history.location.pathname === '/') setSearchValue('');
         }

@@ -19,70 +19,6 @@ export default function Corousel() {
         dispatch(ListProductAll());
     }, []);
     const SkeletonOption = window.innerWidth > 540 ? [1, 2, 3, 4, 5, 6] : [1, 2];
-
-    // const products = [
-    //     {
-    //       id: 1,
-    //       image: 'https://m.media-amazon.com/images/I/711+-K5DG0L._AC_UL480_FMwebp_QL65_.jpg',
-    //       name: 'Amazon'
-    //     },
-    //     {
-    //       id: 2,
-    //       image: 'https://m.media-amazon.com/images/I/61Ju0tiHWML._AC_UL480_FMwebp_QL65_.jpg',
-    //       name: 'Amazon Essentials'
-    //     },
-    //     {
-    //       id: 3,
-    //       name: 'Amazon 1',
-    //       image: 'https://m.media-amazon.com/images/I/711+-K5DG0L._AC_UL480_FMwebp_QL65_.jpg'
-    //     },
-    //     {
-    //       id: 4,
-    //       image: 'https://m.media-amazon.com/images/I/61Ju0tiHWML._AC_UL480_FMwebp_QL65_.jpg',
-    //       name: 'Amazon 2'
-    //     },
-    //     {
-    //       id: 5,
-    //       image: 'https://m.media-amazon.com/images/I/711+-K5DG0L._AC_UL480_FMwebp_QL65_.jpg',
-    //       name: 'Amazon 3'
-    //     },
-    //     {
-    //       id: 6,
-    //       image: 'https://m.media-amazon.com/images/I/61Ju0tiHWML._AC_UL480_FMwebp_QL65_.jpg',
-    //       name: 'Amazon 4'
-    //     },
-    //     {
-    //       id: 7,
-    //       image: 'https://m.media-amazon.com/images/I/61Ju0tiHWML._AC_UL480_FMwebp_QL65_.jpg',
-    //       name: 'Amazon 5'
-    //     },
-    //     {
-    //       id: 8,
-    //       name: 'Amazon 6',
-    //       image: 'https://m.media-amazon.com/images/I/711+-K5DG0L._AC_UL480_FMwebp_QL65_.jpg'
-    //     },
-    //     {
-    //       id: 9,
-    //       image: 'https://m.media-amazon.com/images/I/61Ju0tiHWML._AC_UL480_FMwebp_QL65_.jpg',
-    //       name: 'Amazon 7'
-    //     },
-    //     {
-    //       id: 10,
-    //       image: 'https://m.media-amazon.com/images/I/711+-K5DG0L._AC_UL480_FMwebp_QL65_.jpg',
-    //       name: 'Amazon 8'
-    //     },
-    //     {
-    //       id: 11,
-    //       image: 'https://m.media-amazon.com/images/I/61Ju0tiHWML._AC_UL480_FMwebp_QL65_.jpg',
-    //       name: 'Amazon 9'
-    //     },
-    //     {
-    //       id: 12,
-    //       image: 'https://m.media-amazon.com/images/I/61Ju0tiHWML._AC_UL480_FMwebp_QL65_.jpg',
-    //       name: 'Amazon  10'
-    //     }
-    // ]
-
     const settings = {
         dots: false,
         infinite: true,
@@ -122,14 +58,9 @@ export default function Corousel() {
     };
     return (
         <div className="container" style={{ marginTop: '20px' }}>
-            <Divider
-                light
-                textAlign="center"
-                variant="fullWidth"
-                children={
-                    <h4 style={{ textAlign: 'center', marginBottom: 12, color: 'rgb(238, 77, 45)' }}>NEW PRODUCTS</h4>
-                }
-            />
+            <div className="row divider-custom">
+                <span>New products</span>
+            </div>
 
             <div></div>
             <div className="corousel" style={{ maxHeight: '340px' }}>
@@ -137,18 +68,7 @@ export default function Corousel() {
                     <Slider {...settings} style={{ maxHeight: '340px' }}>
                         {products?.map((product, index) => {
                             return (
-                                // <div key={index} className="corousel-div overflow-hidden ">
-                                //     <Link to={`/product/${product._id}`} className="corousel-link">
-                                //         <img src={product.image} className="corousel-img "></img>
-                                //         <p className="corousel-noti">{product.name}</p>
-                                //         <div className="corousel-rating">
-                                //             <Rating value={product.rating} text={`${product.numReviews} reviews`} />
-                                //         </div>
-                                //         <p className="corousel-price">${product.price.toFixed(2)}</p>
-                                //     </Link>
-                                // </div>
-
-                                <Card className="col-sm-4 product-card">
+                                <Card className="col-sm-2 product-card">
                                     <Link to={`/product/${product._id}`} className="corousel-link">
                                         <CardMedia
                                             component="img"

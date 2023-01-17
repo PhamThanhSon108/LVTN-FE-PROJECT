@@ -1,0 +1,34 @@
+.row .slick-slider {
+    width: 80%;
+    padding: 0px;
+}
+.product-card-custom {
+    display: flex;
+    align-items: center !important;
+    justify-content: center;
+    padding: 15px 10px 25px 10px;
+    max-height: 135px;
+    .slider-img-wrap {
+        width: 100%;
+        height: 60px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+            width: 80px;
+        }
+    }
+    .slider-body-wrap {
+        p {
+            text-align: center;
+            font-size: 0.95rem;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            height: 45px;
+            overflow: hidden;
+            width: 100%;
+        }
+    }
+}

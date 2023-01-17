@@ -19,6 +19,7 @@ import ConfirmRegister from './screens/ConfirmRegister';
 import VerifyRegisterSuccess from './screens/VerifyRegisterSuccess';
 import ForgotPass from './screens/ForgotPass';
 import ResetPass from './screens/ResetPass';
+import TodayProduct from './screens/TodayProduct';
 
 // const HomeScreen = React.lazy(() => import('./screens/HomeScreen'));
 // const SingleProduct = React.lazy(() => import('./screens/SingleProduct'));
@@ -41,13 +42,17 @@ const App = () => {
     return (
         <Router>
             <Switch>
-                {/* <Suspense fallback={'Loading...'}> */}
                 <Route path="/" component={HomeScreen} exact />
-                <Route path="/search/:keyword" component={HomeScreen} exact />
-                <Route path="/category/:category" component={HomeScreen} exact />
-                <Route path="/page/:pageNumber" component={HomeScreen} exact />
-                <Route path="/search/:keyword/page/:pageNumber" component={HomeScreen} exact />
-                <Route path="/category/:category/page/:pageNumber" component={HomeScreen} exact />
+                <Route path="/today-product" component={TodayProduct} exact />
+                {/* <Suspense fallback={'Loading...'}> */}
+                {/* <Route path="/category/:category" component={HomeScreen} exact /> */}
+                {/* <Route path="/page/:pageNumber" component={HomeScreen} exact /> */}
+                {/* <Route path="/category/:category/page/:pageNumber" component={HomeScreen} exact /> */}
+
+                {/* <Route path="/search/:keyword" component={HomeScreen} exact />
+                <Route path="/search/:keyword/page/:pageNumber" component={HomeScreen} exact /> */}
+
+                <Route path="/search" component={HomeScreen} exact />
                 <Route path="/product/:id" component={SingleProduct} />
                 <Route path="/login" component={Login} />
                 <Route path="/register" component={Register} exact />

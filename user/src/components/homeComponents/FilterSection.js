@@ -6,14 +6,23 @@ import isEmpty from 'validator/lib/isEmpty';
 import Rating from './Rating';
 import { useLocation } from 'react-router-dom';
 
-export default function FilterSection({ setRating, setMinPrice, setCategory, setMaxPrice, rating }) {
+export default function FilterSection({
+    setRating,
+    setMinPrice,
+    setCategory,
+    setMaxPrice,
+    rating,
+    categoryCurrent,
+    keyword,
+}) {
     const location = useLocation();
     const dispatch = useDispatch();
+    const history = useHistory();
     const lcategories = useSelector((state) => state.CategoryList);
     const { categories } = lcategories;
     const [curentMinPrice, setCurentMinPrice] = useState('');
     const [curentMaxPrice, setCurentMaxPrice] = useState('');
-    const [checkId, setCheckId] = useState('');
+
     // if (rating) {
     //     setRating(rating);
     // }
@@ -53,9 +62,9 @@ export default function FilterSection({ setRating, setMinPrice, setCategory, set
         return true;
     };
     const ClearHandle = () => {
+        history.push(`?keyword=${keyword}`);
         setCategory('');
         setRating('');
-        setCheckId('');
         setMaxPrice('');
         setMinPrice('');
         setCurentMaxPrice('');
@@ -78,25 +87,15 @@ export default function FilterSection({ setRating, setMinPrice, setCategory, set
                 </div>
                 <ul className="Category-section__list">
                     {categories.map((category) => (
-                        <li
-                            className="Category-section__li"
-                            onClick={() => {
-                                setCheckId(category._id);
-                            }}
-                        >
-                            {/* <Link
-                                style={checkId === category._id ? { color: 'red' } : {}}
-                                to={`/category/${category._id}`}
-                            >
-                                {category.name}
-                            </Link> */}
+                        <li className="Category-section__li">
                             <span
                                 style={
-                                    checkId === category._id
+                                    categoryCurrent === category._id
                                         ? { color: 'red', cursor: 'pointer' }
                                         : { cursor: 'pointer' }
                                 }
                                 onClick={() => {
+                                    history.push(`?keyword=${keyword}?category=${category._id}`);
                                     setCategory(category._id);
                                 }}
                             >

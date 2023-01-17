@@ -58,14 +58,9 @@ export default function CorouselOder() {
 
     return (
         <div className="container " style={{ marginTop: '20px' }}>
-            <Divider
-                light
-                textAlign="center"
-                variant="fullWidth"
-                children={
-                    <h4 style={{ textAlign: 'center', marginBottom: 12, color: 'rgb(238, 77, 45)' }}>BEST SELLER</h4>
-                }
-            />
+            <div className="row divider-custom">
+                <span>Best seller</span>
+            </div>
 
             <div className="corousel" style={{ maxHeight: '340px' }}>
                 {products?.length > 0 ? (
@@ -73,7 +68,7 @@ export default function CorouselOder() {
                         {products &&
                             products?.map((product, index) => {
                                 return (
-                                    <Card className="col-sm-4 product-card">
+                                    <Card className="col-sm-2 product-card">
                                         <Link to={`/product/${product._id}`} className="corousel-link">
                                             <CardMedia
                                                 component="img"

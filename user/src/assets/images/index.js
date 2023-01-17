@@ -1,3 +1,4 @@
+import ArrowUp from '../icon/ArrowUp';
 import { imageOrder } from './imageOrder';
 
 const image = {
@@ -13,6 +14,9 @@ const image = {
             </g>
         </svg>
     ),
+    icon: {
+        ArrowUp: <ArrowUp />,
+    },
 };
 export { imageOrder };
 export default image;

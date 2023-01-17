@@ -33,13 +33,22 @@ export const ListProductAll = () => async (dispatch) => {
 
 // PRODUCT LIST
 export const listProduct =
-    (category = '', keyword = '', pageNumber = '', rating = '', minPrice = '', maxPrice = '', priceOrder = '') =>
+    ({
+        category = '',
+        keyword = '',
+        pageNumber = '',
+        rating = '',
+        minPrice = '',
+        maxPrice = '',
+        priceOrder = '',
+        pageSize = 12,
+    }) =>
     async (dispatch) => {
         try {
             dispatch({ type: PRODUCT_LIST_REQUEST });
             const { data } = await request.get(
                 `/api/product?category=${category}&keyword=${keyword}&pageNumber=${pageNumber}&rating=${rating}
-        &minPrice=${minPrice}&maxPrice=${maxPrice}&priceOrder=${priceOrder}`,
+        &minPrice=${minPrice}&maxPrice=${maxPrice}&priceOrder=${priceOrder}&pageSize=${pageSize}`,
             );
             dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
         } catch (error) {

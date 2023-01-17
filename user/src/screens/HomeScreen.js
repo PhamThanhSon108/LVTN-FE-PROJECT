@@ -4,8 +4,10 @@ import ShopSection from './../components/homeComponents/ShopSection';
 import ContactInfo from './../components/homeComponents/ContactInfo';
 import CalltoActionSection from './../components/homeComponents/CalltoActionSection';
 import Footer from './../components/Footer';
-import Silder from '../components/Silder';
 import { CircularProgress } from '@mui/material';
+import CategorySlider from '~/components/SlideCorousel/CategorySlider';
+import useQuery from '~/hooks/useQuery';
+
 // import Sliders from '../components/Sliders';
 // import Corousel from '../components/SlideCorousel/Corousel';
 // import CorouselOder from '../components/SlideCorousel/CourouselOder';
@@ -21,22 +23,26 @@ const Loading = () => {
         </>
     );
 };
+
 const HomeScreen = ({ match }) => {
     window.scrollTo(0, 0);
-    const keyword = match.params.keyword;
-    const pageNumber = match.params.pageNumber;
+    const query = useQuery();
+    const category = query.get('category') || '';
+    const keyword = query.get('keyword') || '';
+    const pageNumber = query.get('page');
     // const category = match.params.category;
-    console.log(match.params, 'param');
+
     return (
         <Suspense fallback={<Loading></Loading>}>
             <div>
                 <Header keyword={keyword} />
-                {/* <Silder /> */}
-                {!keyword && !pageNumber ? <Sliders /> : ''}
-                {!keyword && !pageNumber ? <Corousel /> : ''}
-                {!keyword && !pageNumber ? <CorouselOder /> : ''}
 
-                <ShopSection keyword={keyword} pageNumber={pageNumber} />
+                {!category && !keyword ? <Sliders /> : null}
+                {!category && !keyword && <CategorySlider />}
+                {!category && !keyword ? <Corousel /> : null}
+                {!category && !keyword ? <CorouselOder /> : null}
+
+                <ShopSection keyword={keyword} pageNumber={pageNumber} queryCategory={category} />
 
                 <CalltoActionSection />
                 <ContactInfo />

@@ -9,9 +9,7 @@ const Footer = () => {
                         <h1 className="footer-hearder">Design</h1>
                         <ul className="footer-list">
                             <li>Pham Thanh Son</li>
-                            <li>Lê Xuân Quý</li>
-                            <li>Tô Thị Thanh Tâm</li>
-                            <li>Nguyễn Yến Nhi</li>
+                            <li>Nguyễn Khắc Tuấn</li>
                         </ul>
                     </div>
                     <div className="col-lg-3 col-md-6 col-sm-12 center">

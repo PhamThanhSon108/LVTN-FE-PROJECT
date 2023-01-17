@@ -8,8 +8,6 @@ import Search from './homeComponents/Search';
 import { Button } from '@mui/material';
 
 const Header = () => {
-    // const [keyword, setKeyword] = useState('');
-    // const keyword = match.params.keyword;
     const [navbar, setNavbar] = useState(false);
     const dispatch = useDispatch();
     let history = useHistory();
@@ -30,16 +28,7 @@ const Header = () => {
         dispatch(logout());
         history.push('/');
     };
-    // const submitHandler = (e) => {
-    //     e.preventDefault();
-    //     if (keyword !== undefined) {
-    //         if (keyword.trim() && keyword) {
-    //             history.push(`/search/${keyword}`);
-    //         } else {
-    //             history.push('/');
-    //         }
-    //     }
-    // };
+
     function avatarUser() {
         const stringUser = userInfo.name;
         const value = stringUser.slice(0, 1);
@@ -141,26 +130,6 @@ const Header = () => {
                                                 </div>
                                             ) : (
                                                 <div className="btn-group">
-                                                    {/* <button
-                                                        type="button"
-                                                        className="name-button dropdown-toggle"
-                                                        data-toggle="dropdown"
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                    >
-                                                        <i class="fas fa-long-arrow-right"></i>
-                                                        <i class="fa-light fa-arrow-right-to-bracket"></i>
-                                                    </button>
-                                                    <div className="dropdown-menu">
-                                                        <Link className="dropdown-item" to="/login">
-                                                            Login
-                                                        </Link>
-
-                                                        <Link className="dropdown-item" to="/register">
-                                                            Register
-                                                        </Link>
-                                                    </div> */}
-
                                                     <Link
                                                         className="text-info"
                                                         style={{ width: 50, marginRight: 0 }}
@@ -180,15 +149,6 @@ const Header = () => {
                                                 <span className="badge">{cartItems ? cartItems.length : 0}</span>
                                             </Link>
                                         </div>
-                                        {/* <div className="col-12 d-flex align-items-center">
-                                            <form className="input-group">
-                                                <Search
-                                                    width="300px"
-                                                    value={{ searchValue, setSearchValue }}
-                                                    keyword={{ keyword, setKeyword }}
-                                                />
-                                            </form>
-                                        </div> */}
                                     </div>
                                 </div>
                             </div>

@@ -1886,7 +1886,7 @@ textarea:focus {
 }
 
 /* Scrollbar */
-body::-webkit-scrollbar {
+/* body::-webkit-scrollbar {
     width: 7px;
     height: 500px;
 }
@@ -1900,7 +1900,7 @@ body::-webkit-scrollbar-thumb {
     height: 50vh;
     border-radius: 50px;
     background-image: linear-gradient(-45deg, #e5c291, #efcdcd);
-}
+} */
 
 .loading__main {
     transform: translateX(-50%);
