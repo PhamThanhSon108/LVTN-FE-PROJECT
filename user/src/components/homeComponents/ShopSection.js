@@ -8,7 +8,7 @@ import { listCart } from '../../Redux/Actions/cartActions';
 import FilterSection from './FilterSection';
 import { Button, Skeleton } from '@mui/material';
 import './styles.scss';
-import Pagination from './Pagination';
+import Pagination from './pagination';
 
 const ShopSection = (props) => {
     const dispatch = useDispatch();
