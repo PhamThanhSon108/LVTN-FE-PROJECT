@@ -37,14 +37,14 @@ export default function Sliders() {
                             {slider?.map((value, index) => {
                                 return (
                                     <div key={index} className="slider-left-wrap d-flex align-items-center ">
-                                        <img src={value.url}></img>
+                                        <img alt="Banner 01" src={value.url}></img>
                                     </div>
                                 );
                             })}
                         </Slider>
                         <div className="slider-right-wrap">
-                            <img className="slider-image" src={slider[0]?.url}></img>
-                            <img className="slider-image" src={slider[3]?.url}></img>
+                            <img className="slider-image" alt="Banner 02" src={slider[0]?.url}></img>
+                            <img className="slider-image" alt="Banner 03" src={slider[1]?.url}></img>
                         </div>
                     </>
                 )}
