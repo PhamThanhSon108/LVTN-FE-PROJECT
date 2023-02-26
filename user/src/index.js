@@ -4,16 +4,17 @@ import App from './App';
 import store from './Redux/store';
 import { Provider } from 'react-redux';
 import BackToTop from './components/Button/BackToTop';
-
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
+const queryClient = new QueryClient();
 ReactDOM.render(
-    <Provider store={store}>
-        <div class="pyro">
-            <div class="before"></div>
-            <div class="after"></div>
-        </div>
-        <BackToTop />
-        <App />
-    </Provider>,
+    <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+            <BackToTop />
+            <App />
+        </Provider>
+        <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>,
 
     document.getElementById('root'),
 );

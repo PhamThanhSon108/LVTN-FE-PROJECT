@@ -1,7 +1,7 @@
 import axios from 'axios';
 const request = axios.create({
     // baseURL: 'https://fashion-shop-v1.herokuapp.com/',
-    baseURL: 'https://apifashionshop.nkt2001.tech/',
+    baseURL: 'http://localhost:5000/',
 });
 
 export const addressRequest = axios.create({

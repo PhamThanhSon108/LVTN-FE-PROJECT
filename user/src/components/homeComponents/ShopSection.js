@@ -9,6 +9,7 @@ import FilterSection from './FilterSection';
 import { Button, Skeleton } from '@mui/material';
 import './styles.scss';
 import Pagination from './pagination';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 const ShopSection = (props) => {
     const dispatch = useDispatch();
@@ -138,7 +139,12 @@ const ShopSection = (props) => {
                                                             <div className="border-product product-card-item">
                                                                 <Link to={`/product/${product._id}`}>
                                                                     <div className="product-card-item-img-wrap">
-                                                                        <img src={product.image} alt={product.name} />
+                                                                        <LazyLoadImage
+                                                                            key={product._id}
+                                                                            src={product.image}
+                                                                            alt={product.name}
+                                                                            effect="blur"
+                                                                        />
                                                                     </div>
                                                                 </Link>
 

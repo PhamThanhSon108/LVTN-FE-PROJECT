@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 
-function PrivateRouter({ component: Component, ...rest }) {
+function PrivateRouter({ tag, component: Component, ...rest }) {
     return (
         <Route
             {...rest}
