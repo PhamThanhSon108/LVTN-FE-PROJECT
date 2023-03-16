@@ -44,15 +44,15 @@ export const listCart = () => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await request.get(`/api/cart`, config);
+        const { data } = await request.get(`/cart`, config);
         localStorage.setItem('cartItems', JSON.stringify(data));
 
         dispatch({ type: CART_LIST_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (message === 'Not authorized, token failed') {
-            dispatch(logout());
-        }
+        // if (message === 'Not authorized, token failed') {
+        //     dispatch(logout());
+        // }
         dispatch({
             type: CART_LIST_FAIL,
             payload: message,
@@ -73,7 +73,7 @@ export const addToCart = (variantId, qty, history, setLoadingAddtoCart) => async
             },
         };
 
-        const { data } = await request.post(`/api/cart/add`, { variantId, quantity: qty }, config);
+        const { data } = await request.post(`/cart/add`, { variantId, quantity: qty }, config);
         toast.success('Product added to cart', Toastobjects);
 
         // setTimeout(() => {
@@ -111,7 +111,7 @@ export const updateCart =
                     Authorization: `Bearer ${userInfo.accessToken}`,
                 },
             };
-            const { data } = await request.patch(`/api/cart/update`, { variantId, quantity: qty }, config);
+            const { data } = await request.patch(`/cart/update`, { variantId, quantity: qty }, config);
             if (updateCart == true && data)
                 setCartChoise((pre) => {
                     if (pre[variantId] !== undefined) pre[variantId].quantity = qty;
@@ -149,7 +149,7 @@ export const removefromcart =
                 },
             };
             const { data } = await request.patch(
-                `/api/cart/remove`,
+                `/cart/remove`,
                 {
                     variantIds: id,
                 },

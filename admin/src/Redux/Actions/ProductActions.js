@@ -33,7 +33,7 @@ export const listProducts =
       const {
         userLogin: { userInfo },
       } = getState();
-
+      console.log(`Bearer ${userInfo.accessToken}`);
       const config = {
         headers: {
           Authorization: `Bearer ${userInfo.accessToken}`,
@@ -41,7 +41,7 @@ export const listProducts =
       };
 
       const { data } = await request.get(
-        `/api/product?category=${category}&keyword=${keyword}&pageNumber=${pageNumber}`,
+        `/product?category=${category}&keyword=${keyword}&pageNumber=${pageNumber}`,
         config,
       );
 
@@ -72,7 +72,7 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     };
-    await request.delete(`/api/product/${id}`, config);
+    await request.delete(`/product/${id}`, config);
 
     toast.success('Product was deleted', ToastObjects);
 
@@ -106,7 +106,7 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
 //         },
 //       };
 
-//       const { data } = await request.post(`/api/product/`, { name, description, category, image, variants }, config);
+//       const { data } = await request.post(`/product/`, { name, description, category, image, variants }, config);
 
 //       dispatch({ type: PRODUCT_CREATE_SUCCESS, payload: data });
 //     } catch (error) {
@@ -136,7 +136,7 @@ export const createProduct = (newProduct) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await request.post(`/api/product/`, newProduct, config);
+    const { data } = await request.post(`/product/`, newProduct, config);
     toast.success('Add product success', ToastObjects);
     dispatch({ type: PRODUCT_CREATE_SUCCESS, payload: data });
   } catch (error) {
@@ -155,7 +155,7 @@ export const createProduct = (newProduct) => async (dispatch, getState) => {
 export const editProduct = (id) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_EDIT_REQUEST });
-    const { data } = await request.get(`/api/product/${id}`);
+    const { data } = await request.get(`/product/${id}`);
     dispatch({ type: PRODUCT_EDIT_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -185,7 +185,7 @@ export const updateProduct = (product) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await request.put(`/api/product/${product.get('_id')}`, product, config);
+    const { data } = await request.put(`/product/${product.get('_id')}`, product, config);
     toast.success('Success update', ToastObjects);
     dispatch({ type: PRODUCT_UPDATE_SUCCESS });
     // dispatch({ type: PRODUCT_EDIT_SUCCESS, payload: data });

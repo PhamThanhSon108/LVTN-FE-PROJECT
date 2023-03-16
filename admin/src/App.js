@@ -56,10 +56,7 @@ function App() {
             exact
           />
           <PrivateRouter path="/orders/filter/dateorder/:dateOrder/page/:pageNumber" component={OrderScreen} exact />
-          {/* //Chỗ này né */}
-          {/* //Chỗ này né */}
-          {/* //Chỗ này né */}
-          {/* //Chỗ này né */}
+
           <PrivateRouter path="/categorie" component={CategoriesScreen} />
           {/* <PrivateRouter path="/orders" component={OrderScreen} exact /> */}
           <PrivateRouter path="/order/:id" component={OrderDetailScreen} exact />

@@ -29,6 +29,8 @@ const ShopSection = (props) => {
         dispatch(listProduct({ category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder }));
     }, [dispatch, category, keyword, rating, minPrice, maxPrice, priceOrder, pageNumber]);
 
+    console.log(productList, 'list product');
+
     return (
         <>
             <div className="container">

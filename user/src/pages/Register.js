@@ -6,7 +6,7 @@ import Message from '../components/LoadingError/Error';
 import Loading, { FormLoading } from '../components/LoadingError/Loading';
 import Toast from '../components/LoadingError/Toast';
 import { register } from '../Redux/Actions/userActions';
-import Header from './../components/Header';
+import Header from '../components/Header';
 
 const Register = ({ location, history }) => {
     window.scrollTo(0, 0);

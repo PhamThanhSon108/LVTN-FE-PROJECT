@@ -6,8 +6,8 @@ import Footer from '../components/Footer';
 import Message from '../components/LoadingError/Error';
 import Loading, { FormLoading } from '../components/LoadingError/Loading';
 import Toast from '../components/LoadingError/Toast';
-import Header from './../components/Header';
-import { login } from './../Redux/Actions/userActions';
+import Header from '../components/Header';
+import { login } from '../Redux/Actions/userActions';
 
 const Login = ({ location, history }) => {
     window.scrollTo(0, 0);

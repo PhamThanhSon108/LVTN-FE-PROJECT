@@ -1,9 +1,9 @@
 import React, { Suspense } from 'react';
-import Header from './../components/Header';
-import ShopSection from './../components/homeComponents/ShopSection';
-import ContactInfo from './../components/homeComponents/ContactInfo';
-import CalltoActionSection from './../components/homeComponents/CalltoActionSection';
-import Footer from './../components/Footer';
+import Header from '../components/Header';
+import ShopSection from '../components/homeComponents/ShopSection';
+import ContactInfo from '../components/homeComponents/ContactInfo';
+import CalltoActionSection from '../components/homeComponents/CalltoActionSection';
+import Footer from '../components/Footer';
 import { CircularProgress } from '@mui/material';
 import CategorySlider from '~/components/SlideCorousel/CategorySlider';
 import useQuery from '~/hooks/useQuery';

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Header from './../components/Header';
+import Header from '../components/Header';
 import { PayPalButton } from 'react-paypal-button-v2';
 import { useDispatch, useSelector } from 'react-redux';
 import { cancelOrder, confirmPaid, getOrderDetails, payOrder } from '../Redux/Actions/OrderActions';
-import Loading from './../components/LoadingError/Loading';
-import Message from './../components/LoadingError/Error';
+import Loading from '../components/LoadingError/Loading';
+import Message from '../components/LoadingError/Error';
 import moment from 'moment';
 import axios from 'axios';
 import { ORDER_PAY_RESET } from '../Redux/Constants/OrderConstants';

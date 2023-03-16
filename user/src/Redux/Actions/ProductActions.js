@@ -21,7 +21,7 @@ import { Toastobjects } from '~/components/LoadingError/Toast';
 export const ListProductAll = () => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_LIST_ALL_REQUEST });
-        const { data } = await request.get(`/api/product/ProductAll`);
+        const { data } = await request.get(`/product/ProductAll`);
         dispatch({ type: PRODUCT_LIST_ALL_SUCCESS, payload: data });
     } catch (error) {
         dispatch({
@@ -47,7 +47,7 @@ export const listProduct =
         try {
             dispatch({ type: PRODUCT_LIST_REQUEST });
             const { data } = await request.get(
-                `/api/product?category=${category}&keyword=${keyword}&pageNumber=${pageNumber}&rating=${rating}
+                `/product?category=${category}&keyword=${keyword}&pageNumber=${pageNumber}&rating=${rating}
         &minPrice=${minPrice}&maxPrice=${maxPrice}&priceOrder=${priceOrder}&pageSize=${pageSize}`,
             );
             dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
@@ -63,7 +63,7 @@ export const listProduct =
 export const listProductDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_DETAILS_REQUEST });
-        const { data } = await request.get(`/api/product/${id}`);
+        const { data } = await request.get(`/product/${id}`);
         dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
     } catch (error) {
         dispatch({
@@ -91,7 +91,7 @@ export const createProductReview =
                 },
             };
 
-            await request.post(`/api/product/${productId}/review`, review, config);
+            await request.post(`/product/${productId}/review`, review, config);
             onHide && onHide('displayBasic');
             toast.success('Successful review', Toastobjects);
             dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS });
@@ -126,7 +126,7 @@ export const createProductReviewByOrder =
                 },
             };
 
-            await request.post(`/api/order/${OrderId}/orderItem/${OrderItemId}/product/${ProductId}`, review, config);
+            await request.post(`/order/${OrderId}/orderItem/${OrderItemId}/product/${ProductId}`, review, config);
             onHide && onHide('displayBasic');
             toast.success('Successful review', Toastobjects);
             dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS });

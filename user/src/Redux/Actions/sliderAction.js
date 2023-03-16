@@ -3,7 +3,7 @@ import { SLIDER_FAIL, SLIDER_REQUEST, SLIDER_SUCCESS } from '../Constants/Slider
 export const ListSlider = () => async (dispatch) => {
     try {
         dispatch({ type: SLIDER_REQUEST });
-        const { data } = await request.get(`/api/slider`);
+        const { data } = await request.get(`/banner`);
         dispatch({ type: SLIDER_SUCCESS, payload: data });
     } catch (error) {
         dispatch({

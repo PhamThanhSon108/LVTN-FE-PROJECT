@@ -46,7 +46,7 @@ export const createOrder = (order, setLoading) => async (dispatch, getState) => 
             },
         };
 
-        const { data } = await request.post(`/api/order`, order, config);
+        const { data } = await request.post(`/order`, order, config);
         toast.success('Successful order', Toastobjects);
         setLoading(false);
         dispatch({ type: ORDER_CREATE_SUCCESS, payload: data });
@@ -81,7 +81,7 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await request.get(`/api/order/${id}`, config);
+        const { data } = await request.get(`/order/${id}`, config);
         dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -111,7 +111,7 @@ export const payOrder = (orderId, paymentResult) => async (dispatch, getState) =
             },
         };
 
-        const { data } = await request.put(`/api/order/${orderId}/pay`, paymentResult, config);
+        const { data } = await request.put(`/order/${orderId}/pay`, paymentResult, config);
         dispatch({ type: ORDER_PAY_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -142,7 +142,7 @@ export const listMyOrders =
                 },
             };
 
-            const { data } = await request.get(`/api/order?pageSize=20&&pageNumber=${pageNumber}`, config);
+            const { data } = await request.get(`/order?pageSize=20&&pageNumber=${pageNumber}`, config);
             dispatch({ type: ORDER_LIST_MY_SUCCESS, payload: data });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -171,7 +171,7 @@ export const orderGetAddress = () => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await request.get(`/api/order/${userInfo._id}/address`, config);
+        const { data } = await request.get(`/order/${userInfo._id}/address`, config);
         dispatch({ type: ORDER_ADDRESS_MY_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -189,7 +189,7 @@ export const orderGetAddress = () => async (dispatch, getState) => {
 export const listAllOrder = () => async (dispatch) => {
     try {
         dispatch({ type: ORDER_LIST_ALL_REQUEST });
-        const { data } = await request.get(`/api/product?bestSeller=true`);
+        const { data } = await request.get(`/product?bestSeller=true`);
         dispatch({ type: ORDER_LIST_ALL_SUCCESS, payload: data?.products });
     } catch (error) {
         dispatch({
@@ -215,7 +215,7 @@ export const cancelOrder =
                 },
             };
 
-            const { data } = await request.patch(`/api/order/${orderId}/cancel`, { orderId }, config);
+            const { data } = await request.patch(`/order/${orderId}/cancel`, { orderId }, config);
             dispatch({ type: ORDER_CANCEL_SUCCESS, payload: data });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -245,7 +245,7 @@ export const confirmPaid =
                 },
             };
 
-            const { data } = await request.patch(`/api/order/${orderId}`, { status: 'Paid' }, config);
+            const { data } = await request.patch(`/order/${orderId}`, { status: 'Paid' }, config);
             dispatch({ type: ORDER_CONFIRM_PAID_SUCCESS, payload: data });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;

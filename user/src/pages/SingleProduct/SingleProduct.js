@@ -1,127 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import Header from './../components/Header';
-import Rating from '../components/homeComponents/Rating';
+import React from 'react';
+import Header from '../../components/Header';
+import Rating from '../../components/homeComponents/Rating';
 import { Link } from 'react-router-dom';
-import Message from './../components/LoadingError/Error';
-import { useDispatch, useSelector } from 'react-redux';
-import { createProductReview, listProductDetails } from '../Redux/Actions/ProductActions';
-import { listCart } from '../Redux/Actions/cartActions';
-import Loading from '../components/LoadingError/Loading';
-import { PRODUCT_CREATE_REVIEW_RESET } from '../Redux/Constants/ProductConstants';
+import Message from '../../components/LoadingError/Error';
+
+import Loading from '../../components/LoadingError/Loading';
+
 import moment from 'moment';
-import { addProductOrderInCart, addToCart } from '../Redux/Actions/cartActions';
+
 import image from '~/assets/images';
 import Toast from '~/components/LoadingError/Toast';
-import useDebounce from '~/hooks/useDebounce';
+
 import { LoadingButton } from '@mui/lab';
+import useSingleProduct from './hook/useSingleProduct';
 
 const SingleProduct = ({ history, match }) => {
-    const [qty, setQty] = useState(1);
-    const [rating, setRating] = useState(0);
-    const [comment, setComment] = useState('');
-    const [currentColor, setCurrentColor] = useState(0);
-    const [currentSize, setCurrentSize] = useState('');
-
-    const productId = match.params.id;
-    const dispatch = useDispatch();
-    const deBounce = useDebounce(qty, 500);
-    const productDetails = useSelector((state) => state.productDetails);
-    const { loading, error, product } = productDetails;
-    const userLogin = useSelector((state) => state.userLogin);
-    const { userInfo } = userLogin;
-    const productReviewCreate = useSelector((state) => state.productReviewCreate);
-
-    const [loadingAddtoCart, setLoadingAddtoCart] = useState(false);
     const {
-        loading: loadingCreateReview,
-        error: errorCreateReview,
-        success: successCreateReview,
-    } = productReviewCreate;
-
-    const cartUpdate = useSelector((state) => state.cartUpdate);
-    const { loading: loadingUpdate, success: successUpdate, error: errorUpdate } = cartUpdate;
-
-    const cartAdd = useSelector((state) => state.cartCreate);
-    const { success: successAdd, error: errorAdd } = cartAdd;
-    const defaultColor =
-        product.variants?.reduce((color, value) => {
-            if (!color.includes(value.color)) color.push(value.color);
-            return color;
-        }, []) || [];
-
-    const defaultSize =
-        product.variants?.reduce((sizes, value) => {
-            if (!sizes.includes(value.size)) sizes.push(value.size);
-            return sizes;
-        }, []) || [];
-
-    useEffect(() => {
-        dispatch(listCart());
-    }, [successAdd]);
-
-    useEffect(() => {
-        if (!qty) setQty(null);
-        if (qty > quantity) setQty(quantity);
-        else if (qty <= 0) setQty(1);
-    }, [deBounce]);
-
-    const quantity = product?.variants?.find(
-        (value) => value.color == currentColor && value.size == currentSize,
-    )?.quantity;
-    useEffect(() => {
-        if (successCreateReview) {
-            setRating(0);
-            setComment('');
-            dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
-        }
-        dispatch(listProductDetails(productId));
-    }, [dispatch, productId, successCreateReview]);
-
-    const AddToCartHandle = (e) => {
-        e.preventDefault();
-
-        const variantId = product?.variants?.find(
-            (value) => value.color == currentColor && value.size == currentSize,
-        )._id;
-
-        if (userInfo && variantId) {
-            setLoadingAddtoCart(true);
-            dispatch(addToCart(variantId, qty, history, setLoadingAddtoCart));
-        } else history.push('/login');
-    };
-
-    const BuyProductHandle = (e) => {
-        e.preventDefault();
-        const variantOrder = product?.variants?.find(
-            (value) => value.color == currentColor && value.size == currentSize,
-        );
-        if (userInfo && variantOrder) {
-            dispatch(
-                addProductOrderInCart([
-                    {
-                        quantity: qty,
-                        variant: {
-                            ...variantOrder,
-                            product: { ...product, variants: product?.variants?.map((value) => value._id) },
-                        },
-                    },
-                ]),
-            );
-            history.push('/login?redirect=shipping');
-        } else history.push('/login');
-    };
-    const submitHandler = (e) => {
-        e.preventDefault();
-        dispatch(
-            createProductReview({
-                productId,
-                review: {
-                    rating,
-                    comment,
-                },
-            }),
-        );
-    };
+        submitHandler,
+        BuyProductHandle,
+        AddToCartHandle,
+        defaultValue1,
+        defaultValue2,
+        error,
+        product,
+        qty,
+        setQty,
+        rating,
+        setComment,
+        loadingCreateReview,
+        userInfo,
+        loading,
+        setValue1,
+        setValue2,
+        quantity,
+        value1,
+        value2,
+        loadingAddtoCart,
+        setRating,
+        comment,
+    } = useSingleProduct({ history, match });
     return (
         <>
             <Toast />
@@ -164,8 +81,8 @@ const SingleProduct = ({ history, match }) => {
                                                             {product?.variants
                                                                 ?.find(
                                                                     (value) =>
-                                                                        value.color == currentColor &&
-                                                                        value.size == currentSize,
+                                                                        value.attributes?.[0].value == value1 &&
+                                                                        value.attributes?.[1].value == value2,
                                                                 )
                                                                 ?.price?.toFixed(2) || product.price?.toFixed(2)}
                                                         </span>
@@ -173,7 +90,7 @@ const SingleProduct = ({ history, match }) => {
                                                 </div>
                                                 <div className="flex-box d-flex justify-content-start align-items-center">
                                                     <h6 className="col-3">Status</h6>
-                                                    {!currentColor || !currentSize ? (
+                                                    {!value1 || !value2 ? (
                                                         product?.variants?.reduce(
                                                             (count, value, index) => count + value.quantity,
                                                             0,
@@ -184,7 +101,8 @@ const SingleProduct = ({ history, match }) => {
                                                         )
                                                     ) : product?.variants?.find(
                                                           (value) =>
-                                                              value.color == currentColor && value.size == currentSize,
+                                                              value.attributes?.[0].value === value1 &&
+                                                              value.attributes?.[1].value === value2,
                                                       )?.quantity > 0 ? (
                                                         <span>In Stock</span>
                                                     ) : (
@@ -201,13 +119,13 @@ const SingleProduct = ({ history, match }) => {
                                                 <div className="flex-box d-flex justify-content-start align-items-center flex-wrap">
                                                     <h6 className="col-3">Size</h6>
                                                     <div className="col-9">
-                                                        {defaultSize?.map((value, index) => (
+                                                        {defaultValue1?.map((value, index) => (
                                                             <button
                                                                 onClick={() => {
-                                                                    setCurrentSize(value);
+                                                                    setValue1(value);
                                                                 }}
                                                                 className={`btn text-md-start btn__product-option ${
-                                                                    value === currentSize && 'active'
+                                                                    value === value1 && 'active'
                                                                 }`}
                                                             >
                                                                 {value}
@@ -217,13 +135,13 @@ const SingleProduct = ({ history, match }) => {
                                                 </div>
                                                 <div className="flex-box d-flex justify-content-start align-items-center flex-wrap">
                                                     <h6 className="col-3">Color</h6>
-                                                    {defaultColor?.map((value, index) => (
+                                                    {defaultValue2?.map((value, index) => (
                                                         <button
                                                             onClick={() => {
-                                                                setCurrentColor(value);
+                                                                setValue2(value);
                                                             }}
                                                             className={`btn text-md-start btn__product-option ${
-                                                                value == currentColor && 'active'
+                                                                value == value2 && 'active'
                                                             }`}
                                                         >
                                                             {value}
@@ -232,7 +150,9 @@ const SingleProduct = ({ history, match }) => {
                                                 </div>
 
                                                 {product?.variants?.find(
-                                                    (value) => value.color == currentColor && value.size == currentSize,
+                                                    (value) =>
+                                                        value.attributes?.[0].value == value1 &&
+                                                        value.attributes?.[1].value === value2,
                                                 )?.quantity ? (
                                                     <>
                                                         <div className="flex-box d-flex justify-content-start align-items-center">
@@ -269,8 +189,8 @@ const SingleProduct = ({ history, match }) => {
                                                                 ></i>
                                                                 {product?.variants?.find(
                                                                     (value) =>
-                                                                        value.color == currentColor &&
-                                                                        value.size == currentSize,
+                                                                        value.attributes?.[0].value === value1 &&
+                                                                        value.attributes?.[1].value === value2,
                                                                 )?.quantity ||
                                                                     product?.variants?.reduce(
                                                                         (count, value, index) => count + value.quantity,

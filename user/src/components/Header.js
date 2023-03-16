@@ -31,16 +31,16 @@ const Header = () => {
 
     function avatarUser() {
         const stringUser = userInfo.name;
-        const value = stringUser.slice(0, 1);
+        const value = stringUser?.slice(0, 1);
         return value;
     }
     // xư lý lấy 1 phần kí tự từ chuổi username khi trả dữ liệu ra màn hình
     function notiUser() {
         let returnUser;
         const valueUser = userInfo.name;
-        if (valueUser.length > 15) {
-            const arrayUser = valueUser.split(' ');
-            returnUser = arrayUser[0];
+        if (valueUser?.length > 15) {
+            const arrayUser = valueUser?.split(' ');
+            returnUser = arrayUser?.[0];
         } else {
             returnUser = valueUser;
         }

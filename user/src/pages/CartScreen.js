@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
-import Header from './../components/Header';
+import Header from '../components/Header';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addProductOrderInCart, listCart, removefromcart, updateCart } from './../Redux/Actions/cartActions';
+import { addProductOrderInCart, listCart, removefromcart, updateCart } from '../Redux/Actions/cartActions';
 
 import WrapConfirmModal from '~/components/Modal/WrapConfirmModal';
 import Toast from '~/components/LoadingError/Toast';

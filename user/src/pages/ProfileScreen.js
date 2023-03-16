@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Header from '../components/Header';
 import ProfileTabs from '../components/profileComponents/ProfileTabs';
 import { getUserDetails } from '../Redux/Actions/userActions';
-import Orders from './../components/profileComponents/Orders';
+import Orders from '../components/profileComponents/Orders';
 import moment from 'moment';
 import { listMyOrders } from '../Redux/Actions/OrderActions';
 

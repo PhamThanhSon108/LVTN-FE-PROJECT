@@ -44,8 +44,8 @@ export const login = (email, password) => async (dispatch) => {
             },
         };
 
-        const { data } = await request.post(`/api/user/login`, { email, password }, config);
-        dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+        const { data } = await request.post(`/user/login`, { email, password }, config);
+        dispatch({ type: USER_LOGIN_SUCCESS, payload: data.user });
         // dispatch(listCart());
         localStorage.setItem('userInfo', JSON.stringify(data));
     } catch (error) {
@@ -90,7 +90,7 @@ export const register = (history, name, email, phone, password) => async (dispat
             },
         };
 
-        const { data } = await request.post(`/api/user/register`, { name, email, password, phone }, config);
+        const { data } = await request.post(`/user/register`, { name, email, password, phone }, config);
         dispatch({ type: USER_REGISTER_VERIFY });
         // dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
         history.push(`/register/verify?email=${email}`);
@@ -116,10 +116,7 @@ export const confirmRegister = (verifyEmail, history) => async (dispatch) => {
             },
         };
 
-        const { data } = await request.patch(
-            `/api/user/auth/verify-email?emailVerificationToken=${verifyEmail}`,
-            config,
-        );
+        const { data } = await request.patch(`/user/auth/verify-email?emailVerificationToken=${verifyEmail}`, config);
         toast.success('Register success', Toastobjects);
         // dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
         // dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
@@ -152,7 +149,7 @@ export const cancelRegister = (verifyEmail, history) => async (dispatch) => {
         };
 
         const { data } = await request.patch(
-            `/api/user/auth/cancel-verify-email?emailVerificationToken=${verifyEmail}`,
+            `/user/auth/cancel-verify-email?emailVerificationToken=${verifyEmail}`,
             config,
         );
         history.push('/login');
@@ -178,7 +175,7 @@ export const forGotPassWord = (data, history) => async (dispatch) => {
                 'Content-Type': 'application/json',
             },
         };
-        const apiData = await request.patch(`/api/user/auth/forgot-password`, { email: data.emailReset }, config);
+        const apiData = await request.patch(`/user/auth/forgot-password`, { email: data.emailReset }, config);
         dispatch({ type: FORGOT_PASSWORD_SUCCESS, payload: apiData });
 
         toast.success('Verify email to reset password is sent, please check your inbox', Toastobjects);
@@ -237,7 +234,7 @@ export const getUserDetails = (id, setLoadingFetchUserShipping) => async (dispat
             },
         };
 
-        const { data } = await request.get(`/api/user/${id}`, config);
+        const { data } = await request.get(`/user/${id}`, config);
         setLoadingFetchUserShipping && setLoadingFetchUserShipping(false);
         dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
     } catch (error) {
@@ -270,7 +267,7 @@ export const updateUserProfile = (user, history, setLoading) => async (dispatch,
             },
         };
 
-        const { data } = await request.put(`/api/user/profile`, user, config);
+        const { data } = await request.put(`/user/profile`, user, config);
         if (data && history) history.push('/payment');
         if (!history) toast.success('Profile Updated', Toastobjects);
         dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: { ...data, accessToken: userInfo.accessToken } });
@@ -305,7 +302,7 @@ export const updateUserPassword = (user) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await request.patch(`/api/user/auth/change-password`, user, config);
+        const { data } = await request.patch(`/user/auth/change-password`, user, config);
         dispatch({ type: USER_UPDATE_PASSWORD_SUCCESS, payload: { ...userInfo, accessToken: userInfo.accessToken } });
         // dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
         toast.success('Update password success', Toastobjects);

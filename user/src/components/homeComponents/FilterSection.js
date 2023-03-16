@@ -86,7 +86,7 @@ export default function FilterSection({
                     <h2 className="Category-section__h2">Category</h2>
                 </div>
                 <ul className="Category-section__list">
-                    {categories.map((category) => (
+                    {categories?.map((category) => (
                         <li className="Category-section__li">
                             <span
                                 style={
