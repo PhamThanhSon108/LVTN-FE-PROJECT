@@ -76,22 +76,10 @@ export const listProductDetails = (id) => async (dispatch) => {
 // PRODUCT REVIEW CREATE
 export const createProductReview =
     ({ productId, review, onHide }) =>
-    async (dispatch, getState) => {
+    async (dispatch) => {
         try {
             dispatch({ type: PRODUCT_CREATE_REVIEW_REQUEST });
-
-            const {
-                userLogin: { userInfo },
-            } = getState();
-
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${userInfo.accessToken}`,
-                },
-            };
-
-            await request.post(`/product/${productId}/review`, review, config);
+            await request.post(`/product/${productId}/review`, review);
             onHide && onHide('displayBasic');
             toast.success('Successful review', Toastobjects);
             dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS });
@@ -111,22 +99,10 @@ export const createProductReview =
 
 export const createProductReviewByOrder =
     ({ OrderId, OrderItemId, ProductId, review, onHide }) =>
-    async (dispatch, getState) => {
+    async (dispatch) => {
         try {
             dispatch({ type: PRODUCT_CREATE_REVIEW_REQUEST });
-
-            const {
-                userLogin: { userInfo },
-            } = getState();
-
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${userInfo.accessToken}`,
-                },
-            };
-
-            await request.post(`/order/${OrderId}/orderItem/${OrderItemId}/product/${ProductId}`, review, config);
+            await request.post(`/order/${OrderId}/orderItem/${OrderItemId}/product/${ProductId}`, review);
             onHide && onHide('displayBasic');
             toast.success('Successful review', Toastobjects);
             dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS });

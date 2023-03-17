@@ -65,10 +65,6 @@ const reducer = combineReducers({
     CategoryList: categoryListReducer,
 });
 
-const cartItemsFromLocalStorage = localStorage.getItem('cartItems')
-    ? JSON.parse(localStorage.getItem('cartItems'))
-    : [];
-
 const cartOrderItemsFromLocalStorage = localStorage.getItem('cartOrderItems')
     ? JSON.parse(localStorage.getItem('cartOrderItems'))
     : [];

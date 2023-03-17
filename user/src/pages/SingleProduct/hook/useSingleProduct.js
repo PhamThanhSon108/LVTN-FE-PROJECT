@@ -110,7 +110,6 @@ export default function useSingleProduct({ history, match }) {
             }),
         );
     };
-
     return {
         submitHandler,
         BuyProductHandle,

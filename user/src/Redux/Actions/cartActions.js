@@ -1,26 +1,7 @@
 import { toast } from 'react-toastify';
-import request from '../../utils/request';
-import {
-    CART_ADD_PRODUCT_ORDER_REQUEST,
-    CART_ADD_PRODUCT_ORDER_SUCCESS,
-    CART_CLEAR_SUCCESS,
-    CART_CREATE_FAIL,
-    CART_CREATE_REQUEST,
-    CART_CREATE_SUCCESS,
-    CART_DELETE_FAIL,
-    CART_DELETE_REQUEST,
-    CART_DELETE_SUCCESS,
-    CART_LIST_FAIL,
-    CART_LIST_REQUEST,
-    CART_LIST_SUCCESS,
-    CART_ORDER_RESET,
-    CART_ORDER_SHIPPING_ADDRESS,
-    CART_REMOVE_ITEM,
-    CART_SAVE_PAYMENT_METHOD,
-    CART_SAVE_SHIPPING_ADDRESS,
-    CART_UPDATE_REQUEST,
-    CART_UPDATE_SUCCESS,
-} from '../Constants/CartConstants';
+import { addProductToCart, getListCart, removeFromCart } from '~/services/cartServices';
+import { clearLocalStorage, getItemFromLocalstorage, setLocalStorage } from '~/utils/localStorage';
+import CART_CONST from '../Constants/CartConstants';
 import { logout } from './userActions';
 
 const Toastobjects = {
@@ -30,57 +11,28 @@ const Toastobjects = {
     autoClose: 2000,
 };
 
-export const listCart = () => async (dispatch, getState) => {
+export const listCart = () => async (dispatch) => {
     try {
-        dispatch({ type: CART_LIST_REQUEST });
-
-        const {
-            userLogin: { userInfo },
-        } = getState();
-
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.accessToken}`,
-            },
-        };
-
-        const { data } = await request.get(`/cart`, config);
-        localStorage.setItem('cartItems', JSON.stringify(data));
-
-        dispatch({ type: CART_LIST_SUCCESS, payload: data });
+        dispatch({ type: CART_CONST?.CART_LIST_REQUEST });
+        const { data } = getListCart();
+        setLocalStorage('cartItems', data);
+        dispatch({ type: CART_CONST?.CART_LIST_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        // if (message === 'Not authorized, token failed') {
-        //     dispatch(logout());
-        // }
         dispatch({
-            type: CART_LIST_FAIL,
+            type: CART_CONST?.CART_LIST_FAIL,
             payload: message,
         });
     }
 };
 //ADD TO CART NEW
-export const addToCart = (variantId, qty, history, setLoadingAddtoCart) => async (dispatch, getState) => {
+export const addToCart = (variantId, qty, setLoadingAddtoCart) => async (dispatch, getState) => {
     try {
-        dispatch({ type: CART_CREATE_REQUEST });
-
-        const {
-            userLogin: { userInfo },
-        } = getState();
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.accessToken}`,
-            },
-        };
-
-        const { data } = await request.post(`/cart/add`, { variantId, quantity: qty }, config);
+        dispatch({ type: CART_CONST?.CART_CREATE_REQUEST });
+        const { data } = addProductToCart({ variantId, quantity: qty });
         toast.success('Product added to cart', Toastobjects);
-
-        // setTimeout(() => {
-        //     history.push(`/cart/${variantId}?qty=${qty}`);
         setLoadingAddtoCart(false);
-        dispatch({ type: CART_CREATE_SUCCESS });
-        // }, 200);
+        dispatch({ type: CART_CONST?.CART_CREATE_SUCCESS });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         setLoadingAddtoCart(false);
@@ -88,7 +40,7 @@ export const addToCart = (variantId, qty, history, setLoadingAddtoCart) => async
             dispatch(logout());
         }
         dispatch({
-            type: CART_CREATE_FAIL,
+            type: CART_CONST?.CART_CREATE_FAIL,
             payload: message,
         });
 
@@ -98,26 +50,16 @@ export const addToCart = (variantId, qty, history, setLoadingAddtoCart) => async
 
 export const updateCart =
     ({ variantId, qty, setCartChoise, setLoadingIndices, updateCart }) =>
-    async (dispatch, getState) => {
+    async (dispatch) => {
         try {
-            dispatch({ type: CART_UPDATE_REQUEST });
-
-            const {
-                userLogin: { userInfo },
-            } = getState();
-            const { _id } = userInfo;
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${userInfo.accessToken}`,
-                },
-            };
-            const { data } = await request.patch(`/cart/update`, { variantId, quantity: qty }, config);
+            dispatch({ type: CART_CONST?.CART_UPDATE_REQUEST });
+            const { data } = await updateCart({ variantId, quantity: qty });
             if (updateCart == true && data)
                 setCartChoise((pre) => {
                     if (pre[variantId] !== undefined) pre[variantId].quantity = qty;
                     return { ...pre };
                 });
-            dispatch({ type: CART_UPDATE_SUCCESS });
+            dispatch({ type: CART_CONST?.CART_UPDATE_SUCCESS });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
             if (message === 'Not authorized, token failed') {
@@ -126,7 +68,7 @@ export const updateCart =
             setLoadingIndices(null);
             toast.error(message, { ...Toastobjects, autoClose: 3000 });
             dispatch({
-                type: CART_CREATE_FAIL,
+                type: CART_CONST?.CART_CREATE_FAIL,
                 payload: message,
             });
         }
@@ -137,24 +79,8 @@ export const removefromcart =
     ({ id, setCartChoise, deleteCartOnly, deleteCartAll }) =>
     async (dispatch, getState) => {
         try {
-            dispatch({ type: CART_DELETE_REQUEST });
-
-            const {
-                userLogin: { userInfo },
-            } = getState();
-
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${userInfo.accessToken}`,
-                },
-            };
-            const { data } = await request.patch(
-                `/cart/remove`,
-                {
-                    variantIds: id,
-                },
-                config,
-            );
+            dispatch({ type: CART_CONST?.CART_DELETE_REQUEST });
+            const { data } = await removeFromCart(id);
             if (deleteCartOnly === true && data)
                 setCartChoise((pre) => {
                     delete pre[id[0]];
@@ -163,14 +89,14 @@ export const removefromcart =
             else {
                 if (data && deleteCartAll === true) setCartChoise([]);
             }
-            dispatch({ type: CART_DELETE_SUCCESS, payload: data });
+            dispatch({ type: CART_CONST?.CART_DELETE_SUCCESS, payload: data });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
             if (message === 'Not authorized, token failed') {
                 dispatch(logout());
             }
             dispatch({
-                type: CART_DELETE_FAIL,
+                type: CART_CONST?.CART_DELETE_FAIL,
                 payload: message,
             });
         }
@@ -181,60 +107,53 @@ export const removefromcart =
 //Delete all item from cart
 export const clearFromCart = () => async (dispatch, getState) => {
     try {
-        dispatch({ type: CART_ORDER_RESET });
-
-        localStorage.removeItem('cartOrderItems');
+        dispatch({ type: CART_CONST?.CART_ORDER_RESET });
+        clearLocalStorage('cartOrderItems');
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         if (message === 'Not authorized, token failed') {
             dispatch(logout());
         }
     }
-
-    localStorage.setItem('cartOrderItems', JSON.stringify(getState().cart.cartItems));
+    setLocalStorage('cartOrderItems', getState().cart.cartItems);
 };
 // SAVE SHIPPING ADDRESS
 export const saveShippingAddress = (data) => (dispatch) => {
     dispatch({
-        type: CART_SAVE_SHIPPING_ADDRESS,
+        type: CART_CONST?.CART_SAVE_SHIPPING_ADDRESS,
         payload: data,
     });
-    localStorage.setItem('shippingAddress', JSON.stringify(data));
+    setLocalStorage('shippingAddress', data);
 };
 
 // SAVE PAYMENT METHOD
 export const savePaymentMethod = (data) => (dispatch) => {
     dispatch({
-        type: CART_SAVE_PAYMENT_METHOD,
+        type: CART_CONST?.CART_SAVE_PAYMENT_METHOD,
         payload: data,
     });
-
-    localStorage.setItem('paymentMethod', JSON.stringify(data));
+    setLocalStorage('paymentMethod', data);
 };
 
 export const addProductOrderInCart = (data) => (dispatch) => {
     dispatch({
-        type: CART_ADD_PRODUCT_ORDER_SUCCESS,
+        type: CART_CONST?.CART_ADD_PRODUCT_ORDER_SUCCESS,
         payload: data,
     });
-
-    localStorage.setItem('cartOrderItems', JSON.stringify(data));
+    setLocalStorage('cartOrderItems', data);
 };
 
 export const listOrderCart = () => async (dispatch, getState) => {
     try {
-        // dispatch({ type: CART_LIST_REQUEST });
-
-        const data = JSON.parse(localStorage.getItem('cartOrderItems'));
-
-        dispatch({ type: CART_ADD_PRODUCT_ORDER_SUCCESS, payload: data });
+        const data = getItemFromLocalstorage('cartOrderItems');
+        dispatch({ type: CART_CONST?.CART_ADD_PRODUCT_ORDER_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         if (message === 'Not authorized, token failed') {
             dispatch(logout());
         }
         dispatch({
-            type: CART_LIST_FAIL,
+            type: CART_CONST?.CART_LIST_FAIL,
             payload: message,
         });
     }

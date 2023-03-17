@@ -24,34 +24,24 @@ import {
     ORDER_CONFIRM_PAID_SUCCESS,
     ORDER_CONFIRM_PAID_FAIL,
 } from '../Constants/OrderConstants';
-import { CART_CLEAR_ITEMS, CART_ORDER_RESET } from '../Constants/CartConstants';
+import CART_CONST from '../Constants/CartConstants';
 import { logout } from './userActions';
 import request from '../../utils/request';
 import { toast } from 'react-toastify';
 import { Toastobjects } from '~/components/LoadingError/Toast';
+import { addOrder, getOrder, getOrdersByUser } from '~/services/orderServices';
+import { clearLocalStorage } from '~/utils/localStorage';
 
 // CREATE ORDER
-export const createOrder = (order, setLoading) => async (dispatch, getState) => {
+export const createOrder = (order, setLoading) => async (dispatch) => {
     try {
         dispatch({ type: ORDER_CREATE_REQUEST });
-
-        const {
-            userLogin: { userInfo },
-        } = getState();
-
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${userInfo.accessToken}`,
-            },
-        };
-
-        const { data } = await request.post(`/order`, order, config);
+        const { data } = addOrder(order);
         toast.success('Successful order', Toastobjects);
         setLoading(false);
         dispatch({ type: ORDER_CREATE_SUCCESS, payload: data });
-        dispatch({ type: CART_ORDER_RESET });
-        localStorage.removeItem('cartOrderItems');
+        dispatch({ type: CART_CONST?.CART_ORDER_RESET });
+        clearLocalStorage('cartOrderItems');
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         if (message === 'Not authorized, token failed') {
@@ -67,21 +57,10 @@ export const createOrder = (order, setLoading) => async (dispatch, getState) => 
 };
 
 // ORDER DETAILS
-export const getOrderDetails = (id) => async (dispatch, getState) => {
+export const getOrderDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: ORDER_DETAILS_REQUEST });
-
-        const {
-            userLogin: { userInfo },
-        } = getState();
-
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.accessToken}`,
-            },
-        };
-
-        const { data } = await request.get(`/order/${id}`, config);
+        const { data } = getOrder(id);
         dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -96,22 +75,10 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
 };
 
 // ORDER PAY
-export const payOrder = (orderId, paymentResult) => async (dispatch, getState) => {
+export const payOrder = (orderId, paymentResult) => async (dispatch) => {
     try {
         dispatch({ type: ORDER_PAY_REQUEST });
-
-        const {
-            userLogin: { userInfo },
-        } = getState();
-
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${userInfo.accessToken}`,
-            },
-        };
-
-        const { data } = await request.put(`/order/${orderId}/pay`, paymentResult, config);
+        const { data } = await request.put(`/order/${orderId}/pay`, paymentResult);
         dispatch({ type: ORDER_PAY_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -128,21 +95,10 @@ export const payOrder = (orderId, paymentResult) => async (dispatch, getState) =
 // USER ORDERS
 export const listMyOrders =
     ({ pageNumber }) =>
-    async (dispatch, getState) => {
+    async (dispatch) => {
         try {
             dispatch({ type: ORDER_LIST_MY_REQUEST });
-
-            const {
-                userLogin: { userInfo },
-            } = getState();
-
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${userInfo.accessToken}`,
-                },
-            };
-
-            const { data } = await request.get(`/order?pageSize=20&&pageNumber=${pageNumber}`, config);
+            const { data } = getOrdersByUser(pageNumber);
             dispatch({ type: ORDER_LIST_MY_SUCCESS, payload: data });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -159,19 +115,9 @@ export const listMyOrders =
 //GET ORDER
 export const orderGetAddress = () => async (dispatch, getState) => {
     try {
+        const { userInfo } = getState();
         dispatch({ type: ORDER_ADDRESS_MY_REQUEST });
-
-        const {
-            userLogin: { userInfo },
-        } = getState();
-
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.accessToken}`,
-            },
-        };
-
-        const { data } = await request.get(`/order/${userInfo._id}/address`, config);
+        const { data } = await request.get(`/order/${userInfo._id}/address`);
         dispatch({ type: ORDER_ADDRESS_MY_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -201,21 +147,10 @@ export const listAllOrder = () => async (dispatch) => {
 
 export const cancelOrder =
     ({ orderId }) =>
-    async (dispatch, getState) => {
+    async (dispatch) => {
         try {
             dispatch({ type: ORDER_CANCEL_REQUEST });
-
-            const {
-                userLogin: { userInfo },
-            } = getState();
-
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${userInfo.accessToken}`,
-                },
-            };
-
-            const { data } = await request.patch(`/order/${orderId}/cancel`, { orderId }, config);
+            const { data } = await request.patch(`/order/${orderId}/cancel`, { orderId });
             dispatch({ type: ORDER_CANCEL_SUCCESS, payload: data });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -231,21 +166,11 @@ export const cancelOrder =
 
 export const confirmPaid =
     ({ orderId }) =>
-    async (dispatch, getState) => {
+    async (dispatch) => {
         try {
             dispatch({ type: ORDER_CONFIRM_PAID_REQUEST });
 
-            const {
-                userLogin: { userInfo },
-            } = getState();
-
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${userInfo.accessToken}`,
-                },
-            };
-
-            const { data } = await request.patch(`/order/${orderId}`, { status: 'Paid' }, config);
+            const { data } = await request.patch(`/order/${orderId}`, { status: 'Paid' });
             dispatch({ type: ORDER_CONFIRM_PAID_SUCCESS, payload: data });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
