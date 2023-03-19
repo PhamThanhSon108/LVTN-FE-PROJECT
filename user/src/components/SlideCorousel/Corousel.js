@@ -5,7 +5,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { ListProductAll } from '../../Redux/Actions/ProductActions';
+import { ListProductAll } from '../../Redux/Actions/productActions';
 import { useEffect, useState } from 'react';
 import { Box, Card, CardContent, CardMedia, Divider, Skeleton, Typography } from '@mui/material';
 import { width } from '@mui/material/node_modules/@mui/system';

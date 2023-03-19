@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Rating from './Rating';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { listProduct } from '../../Redux/Actions/ProductActions';
+import { listProduct } from '../../Redux/Actions/productActions';
 import Message from '../LoadingError/Error';
 import { listCart } from '../../Redux/Actions/cartActions';
 import FilterSection from './FilterSection';
@@ -24,7 +24,6 @@ const TodayProductSection = (props) => {
     let SkeletonOption = window.innerWidth > 540 ? [1, 2, 3, 4, 5, 6] : [1];
 
     const handleChangePage = (e, value) => {
-        console.log(value, 'value nè');
         setpageNumber(value);
     };
     useEffect(() => {

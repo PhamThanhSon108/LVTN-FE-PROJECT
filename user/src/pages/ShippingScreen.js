@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from '../components/Header';
@@ -13,24 +13,24 @@ const ShippingScreen = ({ history }) => {
 
     const userDetails = useSelector((state) => state.userDetails);
     const { user, success: successUserDetails } = userDetails;
-    const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
-    const { success: updatesuccess, loading: updateLoading, error: errorUpdate } = userUpdateProfile;
-    const { handleSubmit, control, setValue, reset } = useForm({
-        defaultValues: { phone: '', address: '', country: '', city: '' },
+    const { handleSubmit, control, reset } = useForm({
+        defaultValues: { province: '', ward: '', district: '', phone: '' },
     });
-
     const [loading, setLoading] = useState();
     const [loadingFetchUserShipping, setLoadingFetchUserShipping] = useState();
     useEffect(() => {
         setLoadingFetchUserShipping(true);
         dispatch(getUserDetails('profile', setLoadingFetchUserShipping));
     }, []);
-
     useEffect(() => {
         if (!user) dispatch(getUserDetails('profile'));
-        reset({ phone: user?.phone, address: user?.address, country: user?.country, city: user?.city });
+        reset({
+            province: user?.address.province,
+            district: user?.address.district,
+            ward: user?.address.ward,
+            phone: user?.phone,
+        });
     }, [user, successUserDetails, dispatch]);
-
     const submitHandler = async (data) => {
         setLoading(true);
         dispatch(updateUserProfile(data, history, setLoading));
@@ -70,7 +70,7 @@ const ShippingScreen = ({ history }) => {
                     />
                     <Controller
                         control={control}
-                        name="address"
+                        name="province"
                         rules={{ required: 'The field is required' }}
                         render={({
                             field: { onChange, onBlur, value, name, ref },
@@ -91,7 +91,7 @@ const ShippingScreen = ({ history }) => {
                     />
                     <Controller
                         control={control}
-                        name="city"
+                        name="district"
                         rules={{ required: 'The field is required' }}
                         render={({
                             field: { onChange, onBlur, value, name, ref },
@@ -113,7 +113,7 @@ const ShippingScreen = ({ history }) => {
                     />
                     <Controller
                         control={control}
-                        name="country"
+                        name="ward"
                         rules={{
                             required: 'The field is required',
                         }}

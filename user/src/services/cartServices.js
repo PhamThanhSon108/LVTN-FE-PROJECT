@@ -8,7 +8,7 @@ const addProductToCart = async (data) => {
     return await request.post(`/cart/add`, data);
 };
 
-const updateCart = async (data) => {
+const updateCartService = async (data) => {
     return await request.patch(`/cart/update`, data);
 };
 
@@ -18,4 +18,4 @@ const removeFromCart = async (id) => {
     });
 };
 
-export { getListCart, addProductToCart, updateCart, removeFromCart };
+export { getListCart, addProductToCart, updateCartService, removeFromCart };

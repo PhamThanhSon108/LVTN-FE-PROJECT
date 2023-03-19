@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Toast from './../LoadingError/Toast';
-import Loading, { FormLoading } from './../LoadingError/Loading';
+import { FormLoading } from './../LoadingError/Loading';
 import { updateUserPassword, updateUserProfile } from '../../Redux/Actions/userActions';
 import isEmpty from 'validator/lib/isEmpty';
+import { addressRequest } from '~/utils/request';
+import { Autocomplete, Button, TextField } from '@mui/material';
+import './Profile.scss';
 
 const ProfileTabs = () => {
     const [name, setName] = useState('');
@@ -11,9 +14,6 @@ const ProfileTabs = () => {
     const [phone, setPhone] = useState('');
     const [oldPassword, setOldPassword] = useState('');
     const [password, setPassword] = useState('');
-    const [address, setAddress] = useState('');
-    const [city, setCity] = useState('');
-    const [country, setCountry] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [uploadProfile, setUploadProfile] = useState(true); //ghi chú
     const [uploadPassword, setUploadPassword] = useState(false); //ghi chú
@@ -21,6 +21,53 @@ const ProfileTabs = () => {
     const refProfile = useRef(); /// ghi chú
     const refSetPassword = useRef(); /// ghi chú
 
+    const [province, setProvince] = useState();
+    const [district, setDistrict] = useState();
+    const [ward, setWard] = useState();
+
+    const [tempAddress, setTemAddress] = useState({
+        provinces: [],
+        wards: [],
+        districts: [],
+    });
+
+    const getAddress = async () => {
+        try {
+            const provinces = await addressRequest.get('/');
+            setTemAddress((pre) => ({ ...pre, provinces: provinces.data }));
+            return;
+        } catch (error) {}
+    };
+    const changeDistrict = ({ district }) => {
+        if (district) {
+            setDistrict(district);
+            const wards = tempAddress.districts.find((tempDistrict) => tempDistrict.name === district)?.wards;
+            setTemAddress((pre) => ({ ...pre, wards: wards }));
+            setWard('');
+            return;
+        }
+    };
+    const changeProvince = ({ province }) => {
+        if (province) {
+            setProvince(province);
+            const districts = tempAddress.provinces.find((tempProvince) => tempProvince.name === province)?.districts;
+            setTemAddress((pre) => ({ ...pre, districts: districts, wards: [] }));
+            setDistrict('');
+            setWard('');
+        }
+    };
+
+    const defaultAddress = ({ district, province, ward }) => {
+        setProvince(province);
+        setDistrict(district);
+        setWard(ward);
+        const districts = tempAddress.provinces.find((tempProvince) => tempProvince.name === province)?.districts || [];
+        const wards = districts.find((tempDistrict) => tempDistrict.name === district)?.wards || [];
+        setTemAddress((pre) => ({ ...pre, districts: districts, wards: wards }));
+    };
+    useEffect(() => {
+        getAddress();
+    }, []);
     const dispatch = useDispatch();
 
     const userDetails = useSelector((state) => state.userDetails);
@@ -72,15 +119,7 @@ const ProfileTabs = () => {
                 profileObj.phone = 'Incorrect phone number';
             }
         }
-        if (isEmpty(address)) {
-            profileObj.address = 'Please input your address';
-        }
-        if (isEmpty(city)) {
-            profileObj.city = 'Please input your city';
-        }
-        if (isEmpty(country)) {
-            profileObj.country = 'Please input your country';
-        }
+
         setObjProfile(profileObj);
         if (Object.keys(profileObj).length > 0) return false;
         return true;
@@ -116,19 +155,21 @@ const ProfileTabs = () => {
     }
     useEffect(() => {
         if (user) {
+            defaultAddress({
+                province: user?.address?.province,
+                district: user?.address?.district,
+                ward: user?.address?.ward,
+            });
             setName(user.name);
             setEmail(user.email);
             setPhone(user.phone);
-            setAddress(user.address);
-            setCity(user.city);
-            setCountry(user.country);
         }
     }, [dispatch, user]);
 
     const submitUpdateProfile = (e) => {
         e.preventDefault();
         if (!checkObjProfile()) return;
-        dispatch(updateUserProfile({ id: user._id, name, email, phone, country, city, address }));
+        dispatch(updateUserProfile({ id: user._id, name, email, phone, address: { province, district, ward } }));
     };
 
     const submitUpdatePassword = (e) => {
@@ -142,16 +183,16 @@ const ProfileTabs = () => {
     return (
         <>
             <Toast />
-            {/* {error && <Message variant="alert-danger">{error}</Message>} */}
             <div className="row form-container" style={{ position: 'relative' }}>
-                {/*Update profile*/}
-                {/* nut check radio */}
                 {loading && <FormLoading />}
                 {updateLoading && <FormLoading />}
                 <div className="radio-check">
                     <from className="radio-from">
                         <div className="radio-from__flex">
-                            <label for="profile" className={Number(checkbox) === 0 ? 'color' : ''}>
+                            <label
+                                for="profile"
+                                className={Number(checkbox) === 0 ? 'form-update-profile-tab-focus' : ''}
+                            >
                                 Update Profile
                             </label>
                             <input
@@ -163,7 +204,7 @@ const ProfileTabs = () => {
                             ></input>
                         </div>
                         <div className="radio-from__flex">
-                            <label for="pass" className={Number(checkbox) === 1 ? 'color' : ''}>
+                            <label for="pass" className={Number(checkbox) === 1 ? 'form-update-profile-tab-focus' : ''}>
                                 Set Password
                             </label>
                             <input
@@ -178,100 +219,130 @@ const ProfileTabs = () => {
                 </div>
                 <div
                     ref={refProfile}
-                    className={uploadProfile ? 'col-lg-12 col-md-12 col-sm-12 color' : 'col-lg-12 col-md-12 col-sm-12'}
+                    className={`col-lg-12 col-md-12 col-sm-12 ${uploadProfile ? 'form-update-profile-focus' : ''}`}
                     style={{ display: uploadProfile ? 'block' : 'none', position: 'relative' }}
                 >
                     <form
-                        className="row  form-container"
+                        className="row  form-container form-update-profile"
                         onSubmit={submitUpdateProfile}
                         style={{ position: 'relative' }}
                     >
                         <div className="col-md-12">
-                            <div className="form">
-                                <label for="account-fn">UserName</label>
-                                <input
-                                    className="form-control"
-                                    type="text"
-                                    // required
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                />
-                                <p className="noti-validate">{objProfile.name}</p>
-                            </div>
+                            <TextField
+                                size="small"
+                                onChange={(e) => setName(e.target.value)}
+                                id="outlined-basic"
+                                label="Username"
+                                sx={{ width: '100%' }}
+                                variant="outlined"
+                                value={name}
+                            />
+                            <p className="noti-validate">{objProfile.name}</p>
                         </div>
 
-                        <div className="col-md-12">
-                            <div className="form">
-                                <label for="account-email">E-mail Address</label>
-                                <input
-                                    className="form-control"
-                                    type="email"
+                        <div className="col-md-12 d-flex form-update-profile-item">
+                            <div className="wrap-input-inline">
+                                <TextField
+                                    size="small"
                                     disabled
+                                    id="outlined-basic"
+                                    label="Email"
+                                    sx={{ width: '100%' }}
+                                    variant="outlined"
                                     value={email}
-                                    // required
-                                    onChange={(e) => setEmail(e.target.value)}
                                 />
                                 <p className="noti-validate"></p>
                             </div>
-                        </div>
-
-                        <div className="col-md-12">
-                            <div className="form">
-                                <label>Phone</label>
-                                <input
-                                    className="form-control"
-                                    type="text"
-                                    value={phone}
-                                    // required
+                            <div className="wrap-input-inline">
+                                <TextField
+                                    size="small"
+                                    type={'text'}
                                     onChange={(e) => setPhone(e.target.value)}
+                                    id="outlined-basic"
+                                    label="Phone"
+                                    sx={{ width: '100%' }}
+                                    variant="outlined"
+                                    value={phone}
                                 />
                                 <p className="noti-validate">{objProfile.phone}</p>
                             </div>
                         </div>
 
-                        <div className="col-md-12">
-                            <div className="form">
-                                <label>Address</label>
-                                <input
-                                    className="form-control"
-                                    type="text"
-                                    value={address}
-                                    // required
-                                    onChange={(e) => setAddress(e.target.value)}
-                                />
-                                <p className="noti-validate">{objProfile.address}</p>
-                            </div>
+                        <div className="col-md-12 d-flex justify-content-lg-between" style={{ width: '100%' }}>
+                            <Autocomplete
+                                size="small"
+                                sx={{ width: '30%' }}
+                                value={tempAddress?.provinces?.find((item) => item.name === province) || { name: '' }}
+                                fullWidth={true}
+                                options={tempAddress.provinces}
+                                getOptionLabel={(option) => option.name}
+                                onChange={(e, value) => {
+                                    changeProvince({ province: value.name });
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        required
+                                        {...params}
+                                        label="Tỉnh/Thành phố"
+                                        inputProps={{
+                                            ...params.inputProps,
+                                        }}
+                                    />
+                                )}
+                            />
+                            <Autocomplete
+                                size="small"
+                                sx={{ width: '30%' }}
+                                value={tempAddress?.districts?.find((item) => item.name === district) || { name: '' }}
+                                fullWidth={true}
+                                disabled={!province}
+                                options={tempAddress.districts}
+                                getOptionLabel={(option) => option.name}
+                                onChange={(e, value) => {
+                                    changeDistrict({ district: value.name });
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        required
+                                        {...params}
+                                        label="Quận/ Huyện"
+                                        inputProps={{
+                                            ...params.inputProps,
+                                        }}
+                                    />
+                                )}
+                            />
+                            <Autocomplete
+                                size="small"
+                                sx={{ width: '30%' }}
+                                value={tempAddress?.wards?.find((item) => item.name === ward) || { name: '' }}
+                                fullWidth={true}
+                                options={tempAddress.wards}
+                                getOptionLabel={(option) => option.name}
+                                onChange={(e, value) => {
+                                    setWard(value.name);
+                                }}
+                                disabled={!district}
+                                renderInput={(params) => (
+                                    <TextField
+                                        required
+                                        {...params}
+                                        label="Phường/ Xã"
+                                        inputProps={{
+                                            ...params.inputProps,
+                                        }}
+                                    />
+                                )}
+                            />
                         </div>
+                        {<p className="noti-validate">{objProfile.country}</p> || (
+                            <p className="noti-validate">{objProfile.city}</p>
+                        )}
 
-                        <div className="col-md-12">
-                            <div className="form">
-                                <label>City</label>
-                                <input
-                                    className="form-control"
-                                    type="text"
-                                    value={city}
-                                    // required
-                                    onChange={(e) => setCity(e.target.value)}
-                                />
-                                <p className="noti-validate">{objProfile.city}</p>
-                            </div>
-                        </div>
-
-                        <div className="col-md-12">
-                            <div className="form">
-                                <label>country</label>
-                                <input
-                                    className="form-control"
-                                    type="text"
-                                    value={country}
-                                    // required
-                                    onChange={(e) => setCountry(e.target.value)}
-                                />
-                                <p className="noti-validate">{objProfile.country}</p>
-                            </div>
-                        </div>
-                        <div className="button-submit">
-                            <button type="submit">Update Profile</button>
+                        <div className=" btn-update-profile">
+                            <Button variant="contained" className="btn btn-primary" type="submit">
+                                Update Profile
+                            </Button>
                         </div>
                     </form>
                 </div>
@@ -279,62 +350,62 @@ const ProfileTabs = () => {
                 {/*Update password*/}
                 <div
                     ref={refSetPassword}
-                    className={uploadPassword ? 'col-lg-12 col-md-12 col-sm-12 color' : 'col-lg-12 col-md-12 col-sm-12'}
+                    className={`col-lg-12 col-md-12 col-sm-12 ${uploadPassword ? 'form-update-profile-focus' : ''}`}
                     style={{ display: uploadPassword ? 'block' : 'none' }}
                 >
-                    {/* dòng này sơn nó in ra thống báo lỗi sơn nhớ sửa lại nhá */}
-                    {/* {errorUpdate && <Message variant="alert-danger">{errorUpdate}</Message>} */}
-                    <form className="row  form-container" onSubmit={submitUpdatePassword}>
+                    <form className="row  form-container form-update-profile" onSubmit={submitUpdatePassword}>
                         <div className="col-md-12">
-                            <div className="form">
-                                <label for="account-pass">Old Password</label>
-                                <input
-                                    className="form-control"
-                                    type="password"
-                                    value={oldPassword}
-                                    onChange={(e) => {
-                                        objFormPass.oldPassword = ' ';
-                                        setOldPassword(e.target.value);
-                                    }}
-                                />
-                                <p className="noti-validate">{objFormPass.oldPassword}</p>
-                            </div>
+                            <TextField
+                                size="small"
+                                type="password"
+                                label="Current password"
+                                sx={{ width: '100%' }}
+                                variant="outlined"
+                                value={oldPassword}
+                                onChange={(e) => {
+                                    objFormPass.oldPassword = ' ';
+                                    setOldPassword(e.target.value);
+                                }}
+                            />
+                            <p className="noti-validate">{objFormPass.oldPassword}</p>
                         </div>
 
                         <div className="col-md-12">
-                            <div className="form">
-                                <label for="account-pass">New Password</label>
-                                <input
-                                    className="form-control"
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => {
-                                        objFormPass.password = ' ';
-                                        setPassword(e.target.value);
-                                    }}
-                                />
-                                <p className="noti-validate">{objFormPass.password}</p>
-                            </div>
+                            <TextField
+                                size="small"
+                                type="password"
+                                label="New password"
+                                sx={{ width: '100%' }}
+                                variant="outlined"
+                                value={password}
+                                onChange={(e) => {
+                                    objFormPass.password = ' ';
+                                    setPassword(e.target.value);
+                                }}
+                            />
+                            <p className="noti-validate">{objFormPass.password}</p>
                         </div>
 
                         <div className="col-md-12">
-                            <div className="form">
-                                <label for="account-confirm-pass">Confirm Password</label>
-                                <input
-                                    className="form-control"
-                                    type="password"
-                                    value={confirmPassword}
-                                    onChange={(e) => {
-                                        objFormPass.confirmPassword = ' ';
-                                        setConfirmPassword(e.target.value);
-                                    }}
-                                />
-                                <p className="noti-validate">{objFormPass.confirmPassword}</p>
-                            </div>
+                            <TextField
+                                size="small"
+                                type="password"
+                                label="Confirm new password"
+                                sx={{ width: '100%' }}
+                                variant="outlined"
+                                value={confirmPassword}
+                                onChange={(e) => {
+                                    objFormPass.confirmPassword = ' ';
+                                    setConfirmPassword(e.target.value);
+                                }}
+                            />
+                            <p className="noti-validate">{objFormPass.confirmPassword}</p>
                         </div>
 
-                        <div className="button-submit">
-                            <button type="submit">Update Password</button>
+                        <div className=" btn-update-profile">
+                            <Button variant="contained" className="btn btn-primary" type="submit">
+                                Update Password
+                            </Button>
                         </div>
                     </form>
                 </div>

@@ -1,41 +1,28 @@
 import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
-import Header from '../components/Header';
+import Header from '../../components/Header';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addProductOrderInCart, listCart, removefromcart, updateCart } from '../Redux/Actions/cartActions';
+import { addProductOrderInCart, listCart, removefromcart, updateCart } from '../../Redux/Actions/cartActions';
 
 import WrapConfirmModal from '~/components/Modal/WrapConfirmModal';
 import Toast from '~/components/LoadingError/Toast';
-import Loading, { FormLoading } from '~/components/LoadingError/Loading';
+import { FormLoading } from '~/components/LoadingError/Loading';
 import SlideDialogConfirm from '~/modal/confirm/SlideDialogConfirm';
 
 const CartScreen = ({ match, location, history }) => {
-    const logger = (key) => {
-        return {
-            log(info) {
-                return console[key](info);
-            },
-        };
-    };
-    const log = logger('log');
-
-    // window.scrollTo(0, 0);
     const dispatch = useDispatch();
-    const productId = match.params.id;
-    const qty = location.search ? Number(location.search.split('=')[1]) : 1;
-
     const cart = useSelector((state) => state.cart);
     const { cartItems, loading: loadListCart } = cart;
     const [cartChoise, setCartChoise] = useState({});
 
     const [loadingIndices, setLoadingIndices] = useState(null);
     const cartDel = useSelector((state) => state.cartDelete);
-    const { loading: loa, success: suc, mesage: mes } = cartDel;
+    const { success: suc } = cartDel;
     const cartCreate = useSelector((state) => state.cartCreate);
-    const { loading: loadingCreate, success: successCreate } = cartCreate;
+    const { success: successCreate } = cartCreate;
 
     const cartUpdate = useSelector((state) => state.cartUpdate);
-    const { loading: loadingUpdate, success: successUpdate, error: errorUpdate } = cartUpdate;
+    const { success: successUpdate } = cartUpdate;
     const refItem = useRef();
 
     const total = cartChoise
@@ -43,17 +30,13 @@ const CartScreen = ({ match, location, history }) => {
               .reduce((a, i) => a + i.quantity * i.variant?.price, 0)
               .toFixed(2)
         : 0;
-    const userLogin = useSelector((state) => state.userLogin);
-    const { userInfo } = userLogin;
     const checkOutHandler = () => {
         dispatch(addProductOrderInCart(Object.values(cartChoise)));
         history.push('/login?redirect=shipping');
     };
 
     const removeFromCartHandle = (id, setCartChoise) => {
-        // if (window.confirm('Are you sure!')) {
         dispatch(removefromcart({ id, setCartChoise, deleteCartOnly: true }));
-        // }
     };
     const handleDeleteAll = useCallback(() => {
         dispatch(removefromcart({ id: Object.keys(cartChoise), setCartChoise, deleteCartAll: true }));
@@ -62,7 +45,6 @@ const CartScreen = ({ match, location, history }) => {
     const createContent = useCallback(() => {
         return { title: 'Remove product in cart', body: 'Are you sure' };
     });
-
     useEffect(() => {
         dispatch(listCart());
         if (successUpdate)
@@ -78,12 +60,7 @@ const CartScreen = ({ match, location, history }) => {
         <>
             <Toast />
             <Header />
-
-            {/* Cart */}
-
-            {/* </div> */}
             <div className="container ">
-                {/* {<FormLoading />} */}
                 {loadListCart && <FormLoading />}
                 {cartItems?.length === 0 || !cartItems ? (
                     <div className=" alert alert-info text-center mt-3 position-relative">
@@ -249,9 +226,6 @@ const CartScreen = ({ match, location, history }) => {
 
                                     <div
                                         className=" col-3 delete-cart col-sm-3 col-lg-1"
-                                        // onClick={() => {
-                                        //     removeFromCartHandle([item.variant._id]);
-                                        // }}
                                         style={{
                                             display: 'flex',
                                             justifyContent: 'right',

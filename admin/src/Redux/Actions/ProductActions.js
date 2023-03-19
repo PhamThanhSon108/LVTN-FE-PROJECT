@@ -33,7 +33,6 @@ export const listProducts =
       const {
         userLogin: { userInfo },
       } = getState();
-      console.log(`Bearer ${userInfo.accessToken}`);
       const config = {
         headers: {
           Authorization: `Bearer ${userInfo.accessToken}`,
@@ -73,9 +72,7 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
       },
     };
     await request.delete(`/product/${id}`, config);
-
     toast.success('Product was deleted', ToastObjects);
-
     dispatch({ type: PRODUCT_DELETE_SUCCESS });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;

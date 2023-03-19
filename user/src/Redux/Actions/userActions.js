@@ -39,8 +39,9 @@ export const login = (email, password) => async (dispatch) => {
         dispatch({ type: USER_LOGIN_REQUEST });
 
         const { data } = await request.post(`/user/login`, { email, password });
-        dispatch({ type: USER_LOGIN_SUCCESS, payload: data?.data.user });
         localStorage.setItem('userInfo', JSON.stringify({ ...data?.data.user, accessToken: data?.data.accessToken }));
+        window.location.href = '/';
+        await dispatch({ type: USER_LOGIN_SUCCESS, payload: data?.data.user });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         dispatch({
@@ -159,12 +160,12 @@ export const resetPassWord = (resetPasswordToken, data, history) => async (dispa
 };
 
 // USER DETAILS
-export const getUserDetails = (id, setLoadingFetchUserShipping) => async (dispatch, getState) => {
+export const getUserDetails = (id, setLoadingFetchUserShipping) => async (dispatch) => {
     try {
         dispatch({ type: USER_DETAILS_REQUEST });
         const { data } = await request.get(`/user/${id}`);
         setLoadingFetchUserShipping && setLoadingFetchUserShipping(false);
-        dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
+        dispatch({ type: USER_DETAILS_SUCCESS, payload: data?.data?.user });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         setLoadingFetchUserShipping && setLoadingFetchUserShipping(false);

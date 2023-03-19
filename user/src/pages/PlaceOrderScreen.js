@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { clearFromCart, listCart, listOrderCart } from '../Redux/Actions/cartActions';
-import { createOrder } from '../Redux/Actions/OrderActions';
+import { createOrder } from '../Redux/Actions/orderActions';
 import { ORDER_CREATE_RESET } from '../Redux/Constants/OrderConstants';
 import Header from '../components/Header';
 import Message from '../components/LoadingError/Error';

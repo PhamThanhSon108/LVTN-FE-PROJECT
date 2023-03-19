@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Rating from './Rating';
 import { useDispatch, useSelector } from 'react-redux';
-import { listProduct } from '../../Redux/Actions/ProductActions';
+import { listProduct } from '../../Redux/Actions/productActions';
 import Message from '../LoadingError/Error';
 import { listCart } from '../../Redux/Actions/cartActions';
 import FilterSection from './FilterSection';
@@ -28,8 +28,6 @@ const ShopSection = (props) => {
         dispatch(listCart());
         dispatch(listProduct({ category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder }));
     }, [dispatch, category, keyword, rating, minPrice, maxPrice, priceOrder, pageNumber]);
-
-    console.log(productList, 'list product');
 
     return (
         <>

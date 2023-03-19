@@ -1,10 +1,10 @@
 import { toast } from 'react-toastify';
-import { addProductToCart, getListCart, removeFromCart } from '~/services/cartServices';
+import { addProductToCart, getListCart, removeFromCart, updateCartService } from '~/services/cartServices';
 import { clearLocalStorage, getItemFromLocalstorage, setLocalStorage } from '~/utils/localStorage';
 import CART_CONST from '../Constants/CartConstants';
 import { logout } from './userActions';
 
-const Toastobjects = {
+export const Toastobjects = {
     pauseOnFocusLoss: false,
     draggable: false,
     pauseOnHover: false,
@@ -14,9 +14,9 @@ const Toastobjects = {
 export const listCart = () => async (dispatch) => {
     try {
         dispatch({ type: CART_CONST?.CART_LIST_REQUEST });
-        const { data } = getListCart();
-        setLocalStorage('cartItems', data);
-        dispatch({ type: CART_CONST?.CART_LIST_SUCCESS, payload: data });
+        const { data } = await getListCart();
+        setLocalStorage('cartItems', data?.data?.cartItems);
+        dispatch({ type: CART_CONST?.CART_LIST_SUCCESS, payload: data?.data?.cartItems });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         dispatch({
@@ -26,34 +26,34 @@ export const listCart = () => async (dispatch) => {
     }
 };
 //ADD TO CART NEW
-export const addToCart = (variantId, qty, setLoadingAddtoCart) => async (dispatch, getState) => {
-    try {
-        dispatch({ type: CART_CONST?.CART_CREATE_REQUEST });
-        const { data } = addProductToCart({ variantId, quantity: qty });
-        toast.success('Product added to cart', Toastobjects);
-        setLoadingAddtoCart(false);
-        dispatch({ type: CART_CONST?.CART_CREATE_SUCCESS });
-    } catch (error) {
-        const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        setLoadingAddtoCart(false);
-        if (message === 'Not authorized, token failed') {
-            dispatch(logout());
+export const addToCart =
+    ({
+        variantId,
+        qty,
+        handleOnFinallAddProductToCart,
+        handleOnSuccessAddProductToCart,
+        handleOnErrorAddProductToCart,
+    }) =>
+    async (dispatch) => {
+        try {
+            dispatch({ type: CART_CONST?.CART_CREATE_REQUEST });
+            await addProductToCart({ variantId, quantity: qty.toString() });
+            await handleOnSuccessAddProductToCart();
+            dispatch({ type: CART_CONST?.CART_CREATE_SUCCESS });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+            await handleOnErrorAddProductToCart({ message });
+        } finally {
+            await handleOnFinallAddProductToCart();
         }
-        dispatch({
-            type: CART_CONST?.CART_CREATE_FAIL,
-            payload: message,
-        });
-
-        toast.error(message, { ...Toastobjects, autoClose: 3000 });
-    }
-};
+    };
 
 export const updateCart =
     ({ variantId, qty, setCartChoise, setLoadingIndices, updateCart }) =>
     async (dispatch) => {
         try {
             dispatch({ type: CART_CONST?.CART_UPDATE_REQUEST });
-            const { data } = await updateCart({ variantId, quantity: qty });
+            const { data } = await updateCartService({ variantId, quantity: qty });
             if (updateCart == true && data)
                 setCartChoise((pre) => {
                     if (pre[variantId] !== undefined) pre[variantId].quantity = qty;
