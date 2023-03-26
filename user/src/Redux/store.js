@@ -34,6 +34,7 @@ import {
 } from './Reducers/OrderReducres';
 import { Sliderload } from './Reducers/SliderReducer';
 import { categoryListReducer } from './Reducers/CategoryReducers';
+import { AddressReducer } from './Reducers/AddressReducers';
 
 const reducer = combineReducers({
     listAllOrder: productbestseller,
@@ -63,6 +64,8 @@ const reducer = combineReducers({
     orderConfirmPaid: orderConfirmPaidReducer,
     sliderLoad: Sliderload,
     CategoryList: categoryListReducer,
+
+    address: AddressReducer,
 });
 
 const cartOrderItemsFromLocalStorage = localStorage.getItem('cartOrderItems')

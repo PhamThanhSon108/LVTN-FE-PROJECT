@@ -16,8 +16,22 @@
 .form-update-profile-item {
     display: flex;
     justify-content: space-between;
-    .wrap-input-inline {
-        width: 48%;
+    width: 100%;
+    .col-1-item {
+        width: 100%;
+    }
+    .col-2-item {
+        width: 49.7%;
+    }
+    .col-3-item {
+        width: 33%;
+    }
+    margin-bottom: 4px;
+    &-label {
+        color: rgba(0, 0, 0, 0.38);
+        display: flex;
+        align-items: center;
+        padding-right: 24px;
     }
 }
 .form-update-profile-focus {

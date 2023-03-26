@@ -57,9 +57,9 @@ export default function CategorySlider() {
 
     return (
         <>
-            <div style={{ display: 'flex', justifyContent: 'center' }} className={'row'}>
+            <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                 {
-                    <Slider style={{ width: '80%', height: '135.5px', padding: 0 }} {...settings}>
+                    <Slider className="category-slider-wrap" style={{ height: '135.5px', padding: 0 }} {...settings}>
                         {categories?.map((category, index) => {
                             return (
                                 <Card className="col-sm-2 product-card-custom">

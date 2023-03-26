@@ -1,11 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../Redux/Actions/userActions';
-import { listCart } from '../Redux/Actions/cartActions';
-import NavBar from './navbar';
 import Search from './homeComponents/Search';
-import { Button } from '@mui/material';
 
 const Header = () => {
     const [navbar, setNavbar] = useState(false);
@@ -15,15 +12,9 @@ const Header = () => {
     const { cartItems } = cart;
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
-    const { error } = userLogin;
+
     const [searchValue, setSearchValue] = useState('');
     const [keyword, setKeyword] = useState('');
-    const clickIconNavBar = () => {
-        setNavbar(true);
-    };
-    const removeNavBar = () => {
-        setNavbar(false);
-    };
     const logoutHandler = () => {
         dispatch(logout());
         history.push('/');
@@ -51,16 +42,21 @@ const Header = () => {
         <>
             <div
                 className="position-fixed"
-                style={{ zIndex: '3', height: '100px', width: '100%', backgroundColor: '#fff' }}
+                style={{
+                    zIndex: '3',
+                    height: '100px',
+                    width: '100%',
+                    backgroundColor: 'blue',
+                }}
             >
                 {/* Top Header */}
                 <div className="Announcement ">
                     <div className="container">
                         <div className="row">
-                            <div className="col-md-6 d-flex align-items-center display-none">
+                            <div className="wrap-hotline-in-header col-md-6 d-flex align-items-center display-none">
                                 <p>Hostline: 0123456789</p>
                             </div>
-                            <div className=" col-12 col-lg-6 justify-content-center justify-content-lg-end d-flex align-items-center">
+                            <div className="wrap-media-icon col-12 col-lg-6 justify-content-center justify-content-lg-end d-flex align-items-center">
                                 <Link to="">
                                     <i className="fab fa-facebook-f"></i>
                                 </Link>
@@ -88,10 +84,9 @@ const Header = () => {
                         height: '90px',
                         width: '100%',
                         backgroundColor: '#fff',
-                        paddingRight: 25,
                     }}
                 >
-                    <div className="container">
+                    <div className="container  wrap-header-section">
                         {/* MOBILE HEADER */}
                         <div>
                             <div className="mobile-header" style={{ paddingTop: 15 }}>
@@ -156,9 +151,9 @@ const Header = () => {
 
                         {/* PC HEADER */}
                         <div className="pc-header">
-                            <div className="row">
+                            <div className="row ">
                                 <div
-                                    className="col-md-3 col-4 d-flex align-items-center "
+                                    className="col-md-3 col-4 d-flex align-items-center"
                                     onClick={() => {
                                         // refSearch.current.reset();
                                         setSearchValue('');
@@ -181,7 +176,7 @@ const Header = () => {
                                     </form>
                                     {/* <NavBar></NavBar> */}
                                 </div>
-                                <div className="col-md-3 d-flex align-items-center justify-content-end Login-Register">
+                                <div className="wrap-profile-cart-icon col-md-3 d-flex align-items-center justify-content-end Login-Register">
                                     {userInfo ? (
                                         <div className="btn-group">
                                             <button
@@ -214,7 +209,7 @@ const Header = () => {
                                         </>
                                     )}
 
-                                    <Link to={`${userInfo ? '/cart' : '/login'}`}>
+                                    <Link to={`${userInfo ? '/cart' : '/login'}`} className="cart-icon-wrap">
                                         <i className="fas fa-shopping-bag"></i>
                                         <span className="badge">{cartItems ? cartItems?.length : 0}</span>
                                     </Link>

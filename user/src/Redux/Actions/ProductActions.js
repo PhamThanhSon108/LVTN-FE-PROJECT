@@ -21,7 +21,7 @@ import { getProducts } from '~/services/productService';
 export const ListProductAll = () => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_LIST_ALL_REQUEST });
-        const { data } = await request.get(`/product/ProductAll`);
+        const { data } = await request.get(`/products`);
         dispatch({ type: PRODUCT_LIST_ALL_SUCCESS, payload: data });
     } catch (error) {
         dispatch({
@@ -68,8 +68,8 @@ export const listProduct =
 export const listProductDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_DETAILS_REQUEST });
-        const { data } = await request.get(`/product/${id}`);
-        dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
+        const { data } = await request.get(`/products/${id}`);
+        dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data.data });
     } catch (error) {
         dispatch({
             type: PRODUCT_DETAILS_FAIL,
@@ -84,7 +84,7 @@ export const createProductReview =
     async (dispatch) => {
         try {
             dispatch({ type: PRODUCT_CREATE_REVIEW_REQUEST });
-            await request.post(`/product/${productId}/review`, review);
+            await request.post(`/products/${productId}/review`, review);
             onHide && onHide('displayBasic');
             toast.success('Successful review', Toastobjects);
             dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS });
@@ -107,7 +107,7 @@ export const createProductReviewByOrder =
     async (dispatch) => {
         try {
             dispatch({ type: PRODUCT_CREATE_REVIEW_REQUEST });
-            await request.post(`/order/${OrderId}/orderItem/${OrderItemId}/product/${ProductId}`, review);
+            await request.post(`/order/${OrderId}/orderItem/${OrderItemId}/products/${ProductId}`, review);
             onHide && onHide('displayBasic');
             toast.success('Successful review', Toastobjects);
             dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS });

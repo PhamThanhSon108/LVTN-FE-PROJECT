@@ -38,7 +38,7 @@ export const login = (email, password) => async (dispatch) => {
     try {
         dispatch({ type: USER_LOGIN_REQUEST });
 
-        const { data } = await request.post(`/user/login`, { email, password });
+        const { data } = await request.post(`/users/login`, { email, password });
         localStorage.setItem('userInfo', JSON.stringify({ ...data?.data.user, accessToken: data?.data.accessToken }));
         window.location.href = '/';
         await dispatch({ type: USER_LOGIN_SUCCESS, payload: data?.data.user });
@@ -77,7 +77,7 @@ export const logout = () => (dispatch) => {
 export const register = (history, name, email, phone, password) => async (dispatch) => {
     try {
         dispatch({ type: USER_REGISTER_REQUEST });
-        const { data } = await request.post(`/user/register`, { name, email, password, phone });
+        const { data } = await request.post(`/users/register`, { name, email, password, phone });
         dispatch({ type: USER_REGISTER_VERIFY });
         history.push(`/register/verify?email=${email}`);
     } catch (error) {
@@ -92,7 +92,7 @@ export const register = (history, name, email, phone, password) => async (dispat
 
 export const confirmRegister = (verifyEmail, history) => async (dispatch) => {
     try {
-        const { data } = await request.patch(`/user/auth/verify-email?emailVerificationToken=${verifyEmail}`);
+        const { data } = await request.patch(`/users/auth/verify-email?emailVerificationToken=${verifyEmail}`);
         toast.success('Register success', Toastobjects);
         setTimeout(() => {
             history.push('/login');
@@ -108,7 +108,7 @@ export const confirmRegister = (verifyEmail, history) => async (dispatch) => {
 
 export const cancelRegister = (verifyEmail, history) => async (dispatch) => {
     try {
-        const { data } = await request.patch(`/user/auth/cancel-verify-email?emailVerificationToken=${verifyEmail}`);
+        const { data } = await request.patch(`/users/auth/cancel-verify-email?emailVerificationToken=${verifyEmail}`);
         history.push('/login');
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -121,7 +121,7 @@ export const cancelRegister = (verifyEmail, history) => async (dispatch) => {
 export const forGotPassWord = (data) => async (dispatch) => {
     try {
         dispatch({ type: FORGOT_PASSWORD_REQUEST });
-        const apiData = await request.patch(`/user/auth/forgot-password`, { email: data.emailReset });
+        const apiData = await request.patch(`/users/auth/forgot-password`, { email: data.emailReset });
         dispatch({ type: FORGOT_PASSWORD_SUCCESS, payload: apiData });
 
         toast.success('Verify email to reset password is sent, please check your inbox', Toastobjects);
@@ -140,7 +140,7 @@ export const resetPassWord = (resetPasswordToken, data, history) => async (dispa
     try {
         dispatch({ type: RESET_PASSWORD_REQUEST });
 
-        const dataApi = await request.patch(`api/user/auth/reset-password?resetPasswordToken=${resetPasswordToken}`, {
+        const dataApi = await request.patch(`api/users/auth/reset-password?resetPasswordToken=${resetPasswordToken}`, {
             ...data,
         });
         dispatch({ type: RESET_PASSWORD_SUCCESS, payload: dataApi });
@@ -163,7 +163,7 @@ export const resetPassWord = (resetPasswordToken, data, history) => async (dispa
 export const getUserDetails = (id, setLoadingFetchUserShipping) => async (dispatch) => {
     try {
         dispatch({ type: USER_DETAILS_REQUEST });
-        const { data } = await request.get(`/user/${id}`);
+        const { data } = await request.get(`/users/${id}`);
         setLoadingFetchUserShipping && setLoadingFetchUserShipping(false);
         dispatch({ type: USER_DETAILS_SUCCESS, payload: data?.data?.user });
     } catch (error) {
@@ -188,7 +188,7 @@ export const updateUserProfile = (user, history, setLoading) => async (dispatch,
         const {
             userLogin: { userInfo },
         } = getState();
-        const { data } = await request.put(`/user/profile`, user);
+        const { data } = await request.put(`/users/profile`, user);
         if (data && history) history.push('/payment');
         if (!history) toast.success('Profile Updated', Toastobjects);
         dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: { ...data, accessToken: userInfo.accessToken } });
@@ -208,7 +208,7 @@ export const updateUserProfile = (user, history, setLoading) => async (dispatch,
     }
 };
 
-export const updateUserPassword = (user) => async (dispatch, getState) => {
+export const updateUserPassword = (user, handleSuccessUpdatePassword) => async (dispatch, getState) => {
     try {
         dispatch({ type: USER_UPDATE_PROFILE_REQUEST });
 
@@ -216,8 +216,11 @@ export const updateUserPassword = (user) => async (dispatch, getState) => {
             userLogin: { userInfo },
         } = getState();
 
-        const { data } = await request.patch(`/user/auth/change-password`, user);
+        const { data } = await request.patch(`/users/auth/change-password`, user);
         dispatch({ type: USER_UPDATE_PASSWORD_SUCCESS, payload: { ...userInfo, accessToken: userInfo.accessToken } });
+        if (handleSuccessUpdatePassword) {
+            handleSuccessUpdatePassword();
+        }
         toast.success('Update password success', Toastobjects);
         localStorage.setItem('userInfo', JSON.stringify({ ...userInfo, accessToken: data.token }));
     } catch (error) {

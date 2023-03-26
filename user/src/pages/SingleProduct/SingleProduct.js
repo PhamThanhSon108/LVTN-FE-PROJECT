@@ -104,7 +104,7 @@ const SingleProduct = ({ history, match }) => {
                         <div className="row">
                             <div className="col-md-5">
                                 <div className="single-image">
-                                    <img src={product.image} alt={product.name} />
+                                    <img src={product.images?.[0]} alt={product.name} />
                                 </div>
                             </div>
                             <div className="col-md-7 product-postion">
@@ -226,7 +226,7 @@ const SingleProduct = ({ history, match }) => {
                                                     <button
                                                         style={{ minWidth: 120 }}
                                                         onClick={buyProductHandle}
-                                                        className="col-2 btn btn-primary"
+                                                        className="col-2 btn btn-primary btn-buy-single-product"
                                                     >
                                                         Buy product
                                                     </button>
@@ -248,10 +248,10 @@ const SingleProduct = ({ history, match }) => {
                             <div className="col-md-6">
                                 <h6 className="mb-3">REVIEWS</h6>
                                 <div className="rating-review">
-                                    {product.reviews.length === 0 && (
+                                    {product?.reviews?.length === 0 && (
                                         <Message variant={'alert-info mt-3'}>No Reviews</Message>
                                     )}
-                                    {product.reviews.map((review) => (
+                                    {product?.reviews?.map((review) => (
                                         <div key={review._id} className="mb-5 mb-md-3 bg-light p-3 shadow-sm rounded">
                                             <div style={{ display: 'flex' }}>
                                                 <div className="rating-review__flex">

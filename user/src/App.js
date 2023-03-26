@@ -3,7 +3,7 @@ import './App.css';
 import './responsive.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import HomeScreen from './pages/HomeScreen';
+import HomeScreen from './pages/HomeScreen/HomeScreen';
 import SingleProduct from './pages/SingleProduct/SingleProduct';
 import CartScreen from './pages/Cart/CartScreen';
 import Login from './pages/Login';

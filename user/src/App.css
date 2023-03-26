@@ -53,10 +53,11 @@ textarea:focus {
     padding: 0;
 }
 .Announcement {
-    background-color: #ee2624;
+    background-color: var(--default-background-color);
     padding: 15px 0;
 }
 .Announcement .container {
+    max-width: var(--default-width-screen);
     padding-left: 0;
     padding-right: 0;
 }
@@ -91,7 +92,7 @@ textarea:focus {
 }
 .search-button {
     width: 20%;
-    background-color: #fb5533;
+    background-color: var(--default-background-color);
     color: white;
     border: 0;
     text-transform: uppercase;
@@ -273,6 +274,7 @@ textarea:focus {
         url('https://bizweb.dktcdn.net/100/372/651/themes/802187/assets/slider_1.jpg?1638761605779') no-repeat scroll
             center / cover;
     padding: 100px 0 100px;
+    width: 100%;
 }
 .subscribe-head h2 {
     color: #fff;
@@ -303,7 +305,7 @@ textarea:focus {
     width: 460px;
 }
 .form-section input[type='submit'] {
-    background: #ee2624;
+    background: var(--default-background-color);
     border: 0 none;
     border-radius: 25px;
     color: #fff;
@@ -338,10 +340,10 @@ textarea:focus {
 .info-image {
     width: 50px;
     height: 50px;
-    border: 2px solid #1cb803;
+    border: 2px solid var(--primary-btn-color);
     border-radius: 100px;
     font-size: 20px;
-    color: #1cb803;
+    color: var(--primary-btn-color);
 }
 .box-info h5 {
     font-weight: bold;
@@ -435,7 +437,7 @@ textarea:focus {
 }
 .round-black-btn {
     border-radius: 4px;
-    background: #ff5722;
+    background: var(--default-background-color);
     bottom: 0;
     color: #fff;
     width: 100%;
@@ -451,7 +453,7 @@ textarea:focus {
     background: #1cb803;
 }
 .bg-orange {
-    background: #ff5722;
+    background: var(--default-background-color);
 }
 .rating-review {
     height: 50vh;
@@ -461,7 +463,7 @@ textarea:focus {
     width: 3px;
 }
 .rating-review::-webkit-scrollbar-thumb {
-    background: #ff5722;
+    background: var(--default-background-color);
     border-radius: 8px;
 }
 /* .rating-review__flex {
@@ -477,7 +479,7 @@ textarea:focus {
     line-height: 40px;
     font-size: 18px;
     font-weight: 600;
-    border: 1px solid #ff5722;
+    border: 1px solid var(--default-background-color);
 }
 .alert-info {
     background-color: #f0eeeb;
@@ -513,21 +515,21 @@ textarea:focus {
     margin-right: 5px;
 }
 .btn__product-option:hover {
-    border: 1px solid #ee4d2d;
-    color: #ee4d2d;
+    border: 1px solid var(--default-background-color);
+    color: var(--default-background-color);
 }
 
 .btn__product-option.active {
-    border: 1px solid #ee4d2d;
+    border: 1px solid var(--default-background-color);
     position: relative;
-    color: #ee4d2d;
+    color: var(--default-background-color);
     outline: none;
 }
 .btn__product-option.active::before {
     outline: none;
     border: 1rem solid transparent;
-    border-bottom: 0rem solid var(--brand-primary-color, #ee4d2d);
-    border-right: 1.5rem solid var(--brand-primary-color, #ee4d2d);
+    border-bottom: 0rem solid var(--brand-primary-color, var(--default-background-color));
+    border-right: 1.5rem solid var(--brand-primary-color, var(--default-background-color));
     content: '';
     right: 0rem;
     position: absolute;
@@ -1334,7 +1336,7 @@ textarea:focus {
     align-items: center;
 }
 .setpass-noti span {
-    color: red;
+    color: var(--primary-btn-color);
     cursor: pointer;
 }
 /* .slider-item-img {
@@ -1524,7 +1526,7 @@ textarea:focus {
 .distance-price__submit {
     margin-top: 15px;
     width: 100%;
-    background-color: rgb(238, 77, 45);
+    background-color: var(--primary-btn-color);
     text-transform: uppercase;
     border: none;
     color: #fff;

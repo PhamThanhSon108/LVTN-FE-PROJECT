@@ -157,7 +157,7 @@ const CartScreen = ({ match, location, history }) => {
                                         className="cart-image col-md-3 col-sm-5 col-lg-2 col-2"
                                         style={isMobile ? { width: 300 } : null}
                                     >
-                                        <img src={item?.variant?.product?.image} alt={item.product?.name} />
+                                        <img src={item?.variant?.product?.images[0]} alt={item.product?.name} />
                                     </div>
                                     <div
                                         className="cart-text col-4 col-md-8 col-sm-7 col-lg-4 d-flex align-items-center"

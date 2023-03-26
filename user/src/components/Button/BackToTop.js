@@ -34,10 +34,8 @@ const BackToTop = () => {
                 fontSize: '40px',
                 zIndex: '1',
                 cursor: 'pointer',
-                color: '#fb5533',
+                color: 'var(--primary-btn-color)',
                 transition: 'width 8s linear 7s',
-                border: '1px solid red',
-
                 alignItems: 'center',
                 padding: 5,
                 display: visible ? 'flex' : 'none',

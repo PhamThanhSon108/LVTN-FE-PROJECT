@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 80%;
+    width: 100%;
     height: 100%;
 }
 
@@ -13,7 +13,6 @@
             background-size: cover;
             // max-height: 300px;
             width: 100%;
-            height: 300px;
         }
     }
 }
@@ -22,7 +21,7 @@
     flex-direction: column;
     justify-content: space-between;
     margin-left: 6px;
-    height: 300px;
+    height: 100%;
     width: 30%;
     img {
         height: calc(100% / 2 - 2px);
@@ -34,6 +33,10 @@
         border-radius: 0;
     }
 }
+
+.category-slider-wrap {
+    width: 100%;
+}
 @media only screen and (max-width: 900px) {
     .slider-container {
         width: 95%;
@@ -44,7 +47,8 @@
     .slider-left-container {
         width: 100%;
         height: auto !important;
-
+        height: 450px;
+        object-fit: cover;
         .slider-left-wrap {
             img {
                 height: auto;
@@ -78,18 +82,62 @@
 }
 .divider-custom {
     box-shadow: 0 0.0625rem 0.125rem 0 rgb(0 0 0 / 10%);
-
+    width: 100%;
     height: 50px;
     background: white;
     margin-bottom: 15px;
-    border-bottom: 3px solid red;
+    border-bottom: 3px solid var(--default-background-color);
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     padding-top: 5px;
     span {
-        color: red;
+        color: var(--default-background-color);
         font-size: 1.1rem;
+    }
+}
+
+.new-product-recomment {
+    padding: 0px 0px;
+    margin: 0px 0px;
+}
+
+.footer-section {
+    width: 100%;
+}
+
+.wrap-header-section {
+    max-width: var(--default-width-screen);
+}
+.wrap-profile-cart-icon {
+    padding: 0 8px 0 0;
+}
+.container {
+    padding-left: 0;
+    padding-right: 0;
+}
+.wrap-media-icon {
+    padding-right: 0;
+}
+.wrap-hotline-in-header {
+    padding-left: 0;
+}
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .pc-header {
+        .row {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+        .navbar-brand {
+            margin-right: 0;
+        }
+
+        .cart-icon-wrap {
+            margin-right: 12px;
+        }
     }
 }

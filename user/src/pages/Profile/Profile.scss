@@ -1,3 +1,8 @@
+:root {
+    --default-background-color: #1976d2;
+    --primary-btn-color: #1976d2;
+}
+
 .wrap-profile-left {
     background-color: white;
     border-radius: 8px;
@@ -29,7 +34,7 @@
     }
     .active-menu {
         color: white;
-        background-color: #4ac4fa;
+        background-color: var(--default-background-color);
     }
 }
 .menu-profile-active {

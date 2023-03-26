@@ -2,7 +2,7 @@ import React from 'react';
 
 const Footer = () => {
     return (
-        <div className="footer" style={{ color: 'white', borderTop: '2px solid #ee2624' }}>
+        <div className="footer-section" style={{ color: 'white', borderTop: '2px solid var(--primary-btn-color)' }}>
             <div className="container">
                 <div className="row">
                     <div className="col-lg-3 col-md-6 col-sm-12 center">

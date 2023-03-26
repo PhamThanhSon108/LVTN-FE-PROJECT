@@ -78,7 +78,7 @@ export const getOrderDetails = (id) => async (dispatch) => {
 export const payOrder = (orderId, paymentResult) => async (dispatch) => {
     try {
         dispatch({ type: ORDER_PAY_REQUEST });
-        const { data } = await request.put(`/order/${orderId}/pay`, paymentResult);
+        const { data } = await request.put(`/orders/${orderId}/pay`, paymentResult);
         dispatch({ type: ORDER_PAY_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -117,7 +117,7 @@ export const orderGetAddress = () => async (dispatch, getState) => {
     try {
         const { userInfo } = getState();
         dispatch({ type: ORDER_ADDRESS_MY_REQUEST });
-        const { data } = await request.get(`/order/${userInfo._id}/address`);
+        const { data } = await request.get(`/orders/${userInfo._id}/address`);
         dispatch({ type: ORDER_ADDRESS_MY_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -150,7 +150,7 @@ export const cancelOrder =
     async (dispatch) => {
         try {
             dispatch({ type: ORDER_CANCEL_REQUEST });
-            const { data } = await request.patch(`/order/${orderId}/cancel`, { orderId });
+            const { data } = await request.patch(`/orders/${orderId}/cancel`, { orderId });
             dispatch({ type: ORDER_CANCEL_SUCCESS, payload: data });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -170,7 +170,7 @@ export const confirmPaid =
         try {
             dispatch({ type: ORDER_CONFIRM_PAID_REQUEST });
 
-            const { data } = await request.patch(`/order/${orderId}`, { status: 'Paid' });
+            const { data } = await request.patch(`/orders/${orderId}`, { status: 'Paid' });
             dispatch({ type: ORDER_CONFIRM_PAID_SUCCESS, payload: data });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;

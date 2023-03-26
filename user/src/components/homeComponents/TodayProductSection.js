@@ -6,16 +6,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { listProduct } from '../../Redux/Actions/productActions';
 import Message from '../LoadingError/Error';
 import { listCart } from '../../Redux/Actions/cartActions';
-import FilterSection from './FilterSection';
 import { useLocation } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-import { Button, Pagination, Skeleton } from '@mui/material';
+import { Pagination, Skeleton } from '@mui/material';
 import './styles.scss';
 const TodayProductSection = (props) => {
     const history = createBrowserHistory();
     // const { category, keyword, pageNumber } = props;
     const dispatch = useDispatch();
-    const location = useLocation();
     const productList = useSelector((state) => state.productList);
     const { loading, error, products, page, pages = 2 } = productList;
     const [pageNumber, setpageNumber] = useState('');
@@ -33,14 +31,14 @@ const TodayProductSection = (props) => {
 
     return (
         <>
-            <div className="container">
+            <div className="container-today-product">
                 <div className="section">
                     <div className="row">
                         <div className={`${'col-lg-12'} col-md-9 article`}>
-                            <div className="shopcontainer row">
+                            <div className="shop-section-container row">
                                 {loading ? (
                                     <>
-                                        <div style={{ display: 'flex' }}>
+                                        <div style={{ display: 'flex', width: '100%' }}>
                                             {SkeletonOption.map(() => (
                                                 <div className="" style={{ margin: '15px 7.9px', width: '100%' }}>
                                                     <Skeleton variant="rectangular" width={'100%'} height={209} />
@@ -85,7 +83,10 @@ const TodayProductSection = (props) => {
                                                             <div className="border-product product-card-item">
                                                                 <Link to={`/product/${product._id}`}>
                                                                     <div className="product-card-item-img-wrap">
-                                                                        <img src={product.image} alt={product.name} />
+                                                                        <img
+                                                                            src={product.images?.[0]}
+                                                                            alt={product.name}
+                                                                        />
                                                                     </div>
                                                                 </Link>
 

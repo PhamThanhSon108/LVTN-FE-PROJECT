@@ -57,7 +57,7 @@ export default function CorouselOder() {
     };
 
     return (
-        <div className="container " style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '20px' }}>
             <div className="row divider-custom">
                 <span>Best seller</span>
             </div>

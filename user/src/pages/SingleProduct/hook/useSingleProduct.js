@@ -127,6 +127,7 @@ export default function useSingleProduct({ history, match }) {
         }
         dispatch(listProductDetails(productId));
     }, [dispatch, productId, successCreateReview]);
+    console.log(product, 'product');
     return {
         submitHandler,
         buyProductHandle,

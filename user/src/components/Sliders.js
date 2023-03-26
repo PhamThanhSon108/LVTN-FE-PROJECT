@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,11 +29,9 @@ export default function Sliders() {
 
     return (
         <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
-            <div class=" slider-container ">
-                {data?.sliders?.length === 0 ? (
-                    <Skeleton variant="rectangular" width={'100%'} height={'25vh'} />
-                ) : (
-                    <>
+            <div class="slider-container ">
+                {data?.sliders?.length > 0 ? (
+                    <Fragment>
                         <Slider {...settings} className="slider-left-container">
                             {data?.sliders?.map((value, index) => {
                                 return (
@@ -47,7 +45,24 @@ export default function Sliders() {
                             <img className="slider-image" alt="Banner 02" src={data?.sliders?.[0]?.imageUrl}></img>
                             <img className="slider-image" alt="Banner 03" src={data?.sliders?.[1]?.imageUrl}></img>
                         </div>
-                    </>
+                    </Fragment>
+                ) : (
+                    <Fragment>
+                        <Skeleton variant="rectangular" width={'70%'} height={'252px'} />
+                        <div
+                            style={{
+                                width: '30%',
+                                marginLeft: 6,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                height: '100%',
+                            }}
+                        >
+                            <Skeleton variant="rectangular" width={'100%'} height={'124px'} />
+                            <Skeleton variant="rectangular" width={'100%'} height={'124px'} />
+                        </div>
+                    </Fragment>
                 )}
             </div>
         </div>

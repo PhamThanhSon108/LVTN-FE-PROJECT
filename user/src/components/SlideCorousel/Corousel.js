@@ -6,9 +6,8 @@ import 'slick-carousel/slick/slick-theme.css';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { ListProductAll } from '../../Redux/Actions/productActions';
-import { useEffect, useState } from 'react';
-import { Box, Card, CardContent, CardMedia, Divider, Skeleton, Typography } from '@mui/material';
-import { width } from '@mui/material/node_modules/@mui/system';
+import { useEffect } from 'react';
+import { Card, CardContent, CardMedia, Skeleton, Typography } from '@mui/material';
 
 export default function Corousel() {
     const allProduct = useSelector((state) => state.productAll);
@@ -57,15 +56,13 @@ export default function Corousel() {
         ],
     };
     return (
-        <div className="container" style={{ marginTop: '20px' }}>
-            <div className="row divider-custom">
+        <div style={{ marginTop: '20px' }}>
+            <div className="divider-custom">
                 <span>New products</span>
             </div>
-
-            <div></div>
-            <div className="corousel" style={{ maxHeight: '340px' }}>
+            <div style={{ maxHeight: '340px' }}>
                 {products?.length > 0 ? (
-                    <Slider {...settings} style={{ maxHeight: '340px' }}>
+                    <Slider className="new-product-recomment" {...settings} style={{ maxHeight: '340px' }}>
                         {products?.map((product, index) => {
                             return (
                                 <Card className="col-sm-2 product-card">
