@@ -8,7 +8,14 @@ const getOrder = async (id) => {
     return await request.get(`/orders/${id}`);
 };
 
-const getOrdersByUser = async (pageNumber) => {
-    return await request.get(`/orders?pageSize=20&&pageNumber=${pageNumber}`);
+const getOrdersByUser = async (userId, pageNumber, limit = 8, status = '') => {
+    return await request.get(`/orders/ordered/${userId}`, {
+        params: {
+            pageSize: 20,
+            page: pageNumber - 1,
+            limit,
+            status,
+        },
+    });
 };
 export { addOrder, getOrder, getOrdersByUser };

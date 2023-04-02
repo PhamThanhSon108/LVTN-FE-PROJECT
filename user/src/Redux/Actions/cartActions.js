@@ -62,9 +62,6 @@ export const updateCart =
             dispatch({ type: CART_CONST?.CART_UPDATE_SUCCESS });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-            if (message === 'Not authorized, token failed') {
-                dispatch(logout());
-            }
             setLoadingIndices(null);
             toast.error(message, { ...Toastobjects, autoClose: 3000 });
             dispatch({
@@ -92,9 +89,6 @@ export const removefromcart =
             dispatch({ type: CART_CONST?.CART_DELETE_SUCCESS, payload: data });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-            if (message === 'Not authorized, token failed') {
-                dispatch(logout());
-            }
             dispatch({
                 type: CART_CONST?.CART_DELETE_FAIL,
                 payload: message,
@@ -111,19 +105,19 @@ export const clearFromCart = () => async (dispatch, getState) => {
         clearLocalStorage('cartOrderItems');
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (message === 'Not authorized, token failed') {
-            dispatch(logout());
-        }
     }
     setLocalStorage('cartOrderItems', getState().cart.cartItems);
 };
 // SAVE SHIPPING ADDRESS
-export const saveShippingAddress = (data) => (dispatch) => {
+export const saveShippingAddress = (data, handleSaveAddressSuccess) => (dispatch) => {
     dispatch({
         type: CART_CONST?.CART_SAVE_SHIPPING_ADDRESS,
         payload: data,
     });
     setLocalStorage('shippingAddress', data);
+    if (handleSaveAddressSuccess) {
+        handleSaveAddressSuccess();
+    }
 };
 
 // SAVE PAYMENT METHOD
@@ -149,9 +143,6 @@ export const listOrderCart = () => async (dispatch, getState) => {
         dispatch({ type: CART_CONST?.CART_ADD_PRODUCT_ORDER_SUCCESS, payload: data });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (message === 'Not authorized, token failed') {
-            dispatch(logout());
-        }
         dispatch({
             type: CART_CONST?.CART_LIST_FAIL,
             payload: message,

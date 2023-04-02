@@ -53,9 +53,6 @@ export default function useSingleProduct({ history, match }) {
     };
 
     const handleOnErrorAddProductToCart = ({ message }) => {
-        if (message === 'Not authorized, token failed') {
-            dispatch(logout());
-        }
         dispatch({
             type: CART_CONST?.CART_CREATE_FAIL,
             payload: message,
@@ -127,7 +124,6 @@ export default function useSingleProduct({ history, match }) {
         }
         dispatch(listProductDetails(productId));
     }, [dispatch, productId, successCreateReview]);
-    console.log(product, 'product');
     return {
         submitHandler,
         buyProductHandle,

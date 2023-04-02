@@ -25,7 +25,6 @@ const TodayProductSection = (props) => {
         setpageNumber(value);
     };
     useEffect(() => {
-        dispatch(listCart());
         dispatch(listProduct({ pageNumber: pageNumber, pageSize }));
     }, [dispatch, pageNumber]);
 

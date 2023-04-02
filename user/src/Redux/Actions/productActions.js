@@ -92,9 +92,6 @@ export const createProductReview =
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
             toast.error(message, Toastobjects);
 
-            if (message === 'Not authorized, token failed') {
-                dispatch(logout());
-            }
             dispatch({
                 type: PRODUCT_CREATE_REVIEW_FAIL,
                 payload: message,
@@ -115,9 +112,6 @@ export const createProductReviewByOrder =
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
             toast.error(message, Toastobjects);
 
-            if (message === 'Not authorized, token failed') {
-                dispatch(logout());
-            }
             dispatch({
                 type: PRODUCT_CREATE_REVIEW_FAIL,
                 payload: message,

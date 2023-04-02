@@ -5,19 +5,10 @@ import { FormLoading } from './../LoadingError/Loading';
 import { updateUserPassword, updateUserProfile } from '../../Redux/Actions/userActions';
 import isEmpty from 'validator/lib/isEmpty';
 import { addressRequest } from '~/utils/request';
-import {
-    Autocomplete,
-    Button,
-    FormControl,
-    FormControlLabel,
-    FormLabel,
-    Radio,
-    RadioGroup,
-    TextField,
-} from '@mui/material';
+import { Autocomplete, Button, FormControl, FormControlLabel, Radio, RadioGroup, TextField } from '@mui/material';
 import './Profile.scss';
 import { getListAddress } from '~/Redux/Actions/address';
-import { DatePicker, DateTimePicker } from '@mui/lab';
+import moment from 'moment';
 const FormUpdatePassword = ({
     uploadPassword,
     submitUpdatePassword,
@@ -134,13 +125,13 @@ const ProfileTabs = () => {
     const [phone, setPhone] = useState('');
     const [specificAddress, setSpecificAddress] = useState('');
     const [gender, setGender] = useState('male');
-
     const [oldPassword, setOldPassword] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [uploadProfile, setUploadProfile] = useState(true); //ghi chú
     const [uploadPassword, setUploadPassword] = useState(false); //ghi chú
     const [checkbox, setCheckbox] = useState('0');
+    const [birthday, setBirthDay] = useState('2023-04-05');
     const refProfile = useRef(); /// ghi chú
     const refSetPassword = useRef(); /// ghi chú
 
@@ -196,12 +187,7 @@ const ProfileTabs = () => {
     const { loading, error, user } = userDetails;
 
     const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
-    const {
-        successPass: updatesuccessPass,
-        success: updatesuccess,
-        loading: updateLoading,
-        error: errorUpdate,
-    } = userUpdateProfile;
+    const { loading: updateLoading } = userUpdateProfile;
 
     function checkProfile() {
         let x = Number(checkbox);
@@ -232,7 +218,7 @@ const ProfileTabs = () => {
     function checkObjProfile() {
         const profileObj = {};
         if (isEmpty(specificAddress)) {
-            profileObj.specificAddress = 'Please input your phone';
+            profileObj.specificAddress = 'Please input your specific address';
         }
         if (isEmpty(province)) {
             profileObj.province = 'Please input your province';
@@ -260,6 +246,12 @@ const ProfileTabs = () => {
     }
     // xử lý login validate profile upload
     const [objFormPass, setObjFromPass] = useState({});
+
+    const handleAfterFetch = {
+        success: () => {},
+        error: () => {},
+        finally: () => {},
+    };
     function checkPassword() {
         const passObj = {};
         if (isEmpty(oldPassword)) {
@@ -303,17 +295,29 @@ const ProfileTabs = () => {
                 district: user?.address?.district,
                 ward: user?.address?.ward,
             });
-            setName(user.name);
-            setEmail(user.email);
-            setPhone(user.phone);
+            if (user.name) setName(user.name);
+            if (user.email) setEmail(user.email);
+            if (user.phone) setPhone(user.phone);
+            if (user.gender) setGender(user.gender);
+            if (user?.address?.specificAddress) setSpecificAddress(user?.address?.specificAddress || '');
+            if (user.birthday) setBirthDay(moment(user.birthday).format('YYYY-MM-DD'));
         }
     }, [dispatch, user]);
 
     const submitUpdateProfile = (e) => {
         e.preventDefault();
-        console.log('submit');
         if (!checkObjProfile()) return;
-        dispatch(updateUserProfile({ id: user._id, name, email, phone, address: { province, district, ward } }));
+        dispatch(
+            updateUserProfile({
+                id: user._id,
+                name,
+                email,
+                phone,
+                address: { province, district, ward, specificAddress },
+                gender,
+                birthday,
+            }),
+        );
     };
 
     const handleSuccessUpdatePassword = () => {
@@ -407,21 +411,19 @@ const ProfileTabs = () => {
                                 </FormControl>
                                 <p className="noti-validate"></p>
                             </div>
+
                             <div className="wrap-input-inline col-2-item">
                                 <FormControl className="d-flex align-content-center">
                                     <div className="form-update-profile-item-label">
                                         <label>Giới tính</label>
                                     </div>
-                                    <RadioGroup
-                                        row
-                                        aria-labelledby="demo-controlled-radio-buttons-group"
-                                        name="controlled-radio-buttons-group"
-                                        value={gender}
-                                        onChange={(e) => setGender(e.target.value)}
-                                    >
-                                        <FormControlLabel value="male" control={<Radio size="small" />} label="Nam" />
-                                        <FormControlLabel value="female" control={<Radio size="small" />} label="Nữ" />
-                                    </RadioGroup>
+                                    <input
+                                        type="date"
+                                        value={birthday}
+                                        onChange={(e) => {
+                                            setBirthDay(e.target.value);
+                                        }}
+                                    />
                                 </FormControl>
                                 <p className="noti-validate"></p>
                             </div>

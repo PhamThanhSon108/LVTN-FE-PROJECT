@@ -7,4 +7,12 @@ const clearLocalStorage = (name) => {
 const getItemFromLocalstorage = (name) => {
     return localStorage.getItem(name) ? JSON.parse(localStorage.getItem(name)) : null;
 };
-export { setLocalStorage, clearLocalStorage, getItemFromLocalstorage };
+
+const getRefreshToken = () => {
+    const userInfo = getItemFromLocalstorage('userInfo');
+    if (userInfo?.refreshToken) {
+        return userInfo.refreshToken;
+    }
+    return null;
+};
+export { setLocalStorage, clearLocalStorage, getItemFromLocalstorage, getRefreshToken };

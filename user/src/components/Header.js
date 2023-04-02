@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../Redux/Actions/userActions';
 import Search from './homeComponents/Search';
+import { listCart } from '~/Redux/Actions/cartActions';
 
 const Header = () => {
-    const [navbar, setNavbar] = useState(false);
     const dispatch = useDispatch();
     let history = useHistory();
     const cart = useSelector((state) => state.cart);
     const { cartItems } = cart;
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
+
+    // useEffect(() => {
+    //     dispatch(listCart());
+    // }, []);
 
     const [searchValue, setSearchValue] = useState('');
     const [keyword, setKeyword] = useState('');

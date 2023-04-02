@@ -34,7 +34,6 @@ const ShopSection = (props) => {
         if (category != queryCategory) setCategory(queryCategory);
     }, [queryCategory]);
     useEffect(() => {
-        dispatch(listCart());
         dispatch(listProduct({ category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder }));
     }, [dispatch, category, keyword, rating, minPrice, maxPrice, priceOrder, pageNumber]);
 

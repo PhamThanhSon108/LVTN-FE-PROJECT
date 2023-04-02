@@ -11,7 +11,7 @@ import Register from './pages/Register';
 import ShippingScreen from './pages/ShippingScreen';
 import ProfileScreen from './pages/Profile/ProfileScreen';
 import PaymentScreen from './pages/PaymentScreen';
-import PlaceOrderScreen from './pages/PlaceOrderScreen';
+import PlaceOrderScreen from './pages/PlaceOrder/PlaceOrderScreen';
 import OrderScreen from './pages/OrderScreen';
 import NotFound from './pages/NotFound';
 import PrivateRouter from './PrivateRouter';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useMemo, Fragment } from 'react';
 import Header from '../../components/Header';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,6 +8,21 @@ import WrapConfirmModal from '~/components/Modal/WrapConfirmModal';
 import Toast from '~/components/LoadingError/Toast';
 import { FormLoading } from '~/components/LoadingError/Loading';
 import SlideDialogConfirm from '~/modal/confirm/SlideDialogConfirm';
+
+export const RenderAttributes = ({ attributes }) => {
+    if (attributes && attributes.length > 0) {
+        return attributes?.map((attribute) => (
+            <div
+                key={attribute.value}
+                className="cart-image col-sm-3 col-lg-1 col-md-1 d-flex flex-column justify-content-center"
+                style={{ width: 90, display: 'flex', flexDirection: 'column' }}
+            >
+                <h6>{attribute.name}</h6>
+                <span>{attribute?.value}</span>
+            </div>
+        ));
+    } else return <Fragment />;
+};
 
 const CartScreen = ({ match, location, history }) => {
     const dispatch = useDispatch();
@@ -100,6 +115,7 @@ const CartScreen = ({ match, location, history }) => {
                         <div className="cart-scroll">
                             {cartItems?.map((item, index) => (
                                 <div
+                                    key={item?.id}
                                     className="cart-iterm row d-flex"
                                     ref={refItem}
                                     style={{
@@ -167,20 +183,7 @@ const CartScreen = ({ match, location, history }) => {
                                             <h4>{item?.variant?.product?.name}</h4>
                                         </Link>
                                     </div>
-                                    <div
-                                        className="cart-image col-sm-3 col-lg-1 col-md-1 d-flex flex-column justify-content-center"
-                                        style={{ width: 90, display: 'flex', flexDirection: 'column' }}
-                                    >
-                                        <h6>Size</h6>
-                                        <span>{item?.variant?.size}</span>
-                                    </div>
-                                    <div
-                                        style={{ width: 90 }}
-                                        className="cart-image col-sm-3 col-lg-1 col-md-1 col-xl-1 d-flex flex-column justify-content-center"
-                                    >
-                                        <h6>Color</h6>
-                                        <span>{item?.variant?.color}</span>
-                                    </div>
+                                    <RenderAttributes attributes={item?.attributes} />
 
                                     <div
                                         className="cart-qty col-sm-3 col-lg-1 col-5 col-md-3 col-xl-1 flex-column justify-content-center align-content-center d-flex quantity-css"

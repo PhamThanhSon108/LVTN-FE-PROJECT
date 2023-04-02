@@ -39,7 +39,14 @@ export const login = (email, password) => async (dispatch) => {
         dispatch({ type: USER_LOGIN_REQUEST });
 
         const { data } = await request.post(`/users/login`, { email, password });
-        localStorage.setItem('userInfo', JSON.stringify({ ...data?.data.user, accessToken: data?.data.accessToken }));
+        localStorage.setItem(
+            'userInfo',
+            JSON.stringify({
+                ...data?.data.user,
+                refreshToken: data?.data.refreshToken,
+                accessToken: data?.data.accessToken,
+            }),
+        );
         window.location.href = '/';
         await dispatch({ type: USER_LOGIN_SUCCESS, payload: data?.data.user });
     } catch (error) {
@@ -77,7 +84,13 @@ export const logout = () => (dispatch) => {
 export const register = (history, name, email, phone, password) => async (dispatch) => {
     try {
         dispatch({ type: USER_REGISTER_REQUEST });
-        const { data } = await request.post(`/users/register`, { name, email, password, phone });
+        const { data } = await request.post(`/users/register`, {
+            name,
+            email,
+            password,
+            phone,
+            confirmPassword: password,
+        });
         dispatch({ type: USER_REGISTER_VERIFY });
         history.push(`/register/verify?email=${email}`);
     } catch (error) {
@@ -169,9 +182,6 @@ export const getUserDetails = (id, setLoadingFetchUserShipping) => async (dispat
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
         setLoadingFetchUserShipping && setLoadingFetchUserShipping(false);
-        if (message === 'Not authorized, token failed') {
-            dispatch(logout());
-        }
 
         dispatch({
             type: USER_DETAILS_FAIL,
@@ -185,25 +195,26 @@ export const updateUserProfile = (user, history, setLoading) => async (dispatch,
     try {
         dispatch({ type: USER_UPDATE_PROFILE_REQUEST });
 
-        const {
-            userLogin: { userInfo },
-        } = getState();
         const { data } = await request.put(`/users/profile`, user);
         if (data && history) history.push('/payment');
         if (!history) toast.success('Profile Updated', Toastobjects);
-        dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: { ...data, accessToken: userInfo.accessToken } });
-        dispatch({ type: USER_LOGIN_SUCCESS, payload: { ...data, accessToken: userInfo.accessToken } });
+        dispatch({
+            type: USER_UPDATE_PROFILE_SUCCESS,
+            payload: { ...data?.data.user, accessToken: data?.data.accessToken },
+        });
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: { ...data?.data.user, accessToken: data?.data.accessToken },
+        });
         if (setLoading) setLoading(false);
-        localStorage.setItem('userInfo', JSON.stringify({ ...data, accessToken: userInfo.accessToken }));
+        localStorage.setItem('userInfo', JSON.stringify({ ...data?.data.user, accessToken: data?.data.accessToken }));
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-        if (message === 'Not authorized, token failed') {
-            dispatch(logout());
-        }
-        dispatch({
-            type: USER_UPDATE_PROFILE_FAIL,
-            payload: message,
-        });
+
+        // dispatch({
+        //     type: USER_UPDATE_PROFILE_FAIL,
+        //     payload: message,
+        // });
         toast.error(message, Toastobjects);
     }
 };
@@ -226,9 +237,6 @@ export const updateUserPassword = (user, handleSuccessUpdatePassword) => async (
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
 
-        if (message === 'Not authorized, token failed') {
-            dispatch(logout());
-        }
         dispatch({
             type: USER_UPDATE_PROFILE_FAIL,
             payload: message,

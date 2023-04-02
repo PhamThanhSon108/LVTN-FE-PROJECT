@@ -6,9 +6,8 @@ import { getUserDetails } from '../../Redux/Actions/userActions';
 import Orders from '../../components/profileComponents/Orders';
 import moment from 'moment';
 import { listMyOrders } from '../../Redux/Actions/orderActions';
-import { addressRequest } from '../../utils/request';
 import './Profile.scss';
-import { Button } from '@mui/material';
+
 const ProfileScreen = () => {
     window.scrollTo(0, 0);
 
@@ -78,7 +77,7 @@ const ProfileScreen = () => {
                             >
                                 <span>Orders List</span>
                                 <div className="number-my-order d-flex justify-content-center align-item-center">
-                                    <span>{orderListMy.length || 0}</span>
+                                    <span>{orders?.length || 0}</span>
                                 </div>
                             </div>
                         </div>

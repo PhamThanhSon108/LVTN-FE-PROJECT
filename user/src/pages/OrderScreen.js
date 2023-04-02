@@ -85,7 +85,6 @@ const OrderScreen = ({ match }) => {
             dispatch({ type: ORDER_PAY_RESET });
             dispatch(getOrderDetails(orderId));
         }
-        dispatch(listCart());
     }, [dispatch, orderId, order]);
     const successPaymentHandler = (paymentResult) => {
         dispatch(payOrder(orderId, paymentResult));

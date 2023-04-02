@@ -3,7 +3,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from '../components/Header';
 import { saveShippingAddress } from '../Redux/Actions/cartActions';
-import { getUserDetails, updateUserProfile } from '../Redux/Actions/userActions';
+import { getUserDetails } from '../Redux/Actions/userActions';
 import { LoadingButton } from '@mui/lab';
 import { LinearProgress } from '@mui/material';
 
@@ -18,6 +18,9 @@ const ShippingScreen = ({ history }) => {
     });
     const [loading, setLoading] = useState();
     const [loadingFetchUserShipping, setLoadingFetchUserShipping] = useState();
+    const handleSaveAddressSuccess = () => {
+        history.push('/payment');
+    };
     useEffect(() => {
         setLoadingFetchUserShipping(true);
         dispatch(getUserDetails('profile', setLoadingFetchUserShipping));
@@ -25,16 +28,16 @@ const ShippingScreen = ({ history }) => {
     useEffect(() => {
         if (!user) dispatch(getUserDetails('profile'));
         reset({
-            province: user?.address.province,
-            district: user?.address.district,
-            ward: user?.address.ward,
+            province: user?.address?.province,
+            district: user?.address?.district,
+            ward: user?.address?.ward,
             phone: user?.phone,
         });
     }, [user, successUserDetails, dispatch]);
     const submitHandler = async (data) => {
         setLoading(true);
-        dispatch(updateUserProfile(data, history, setLoading));
-        dispatch(saveShippingAddress(data));
+        //  dispatch(updateUserProfile(data, history, setLoading));
+        dispatch(saveShippingAddress(data, handleSaveAddressSuccess));
     };
 
     return (
@@ -48,10 +51,7 @@ const ShippingScreen = ({ history }) => {
                         control={control}
                         name="phone"
                         rules={{ required: 'The field is required', pattern: /^[0-9-+]{9,15}$/ }}
-                        render={({
-                            field: { onChange, value, ref },
-                            fieldState: { invalid, isTouched, isDirty, error },
-                        }) => (
+                        render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
                             <>
                                 <input
                                     disabled={loadingFetchUserShipping}
@@ -93,10 +93,7 @@ const ShippingScreen = ({ history }) => {
                         control={control}
                         name="district"
                         rules={{ required: 'The field is required' }}
-                        render={({
-                            field: { onChange, onBlur, value, name, ref },
-                            fieldState: { invalid, isTouched, isDirty, error },
-                        }) => (
+                        render={({ field: { onChange, value }, fieldState: { error } }) => (
                             <>
                                 <input
                                     disabled={loadingFetchUserShipping}

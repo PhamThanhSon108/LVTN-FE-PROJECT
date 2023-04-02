@@ -1,100 +1,34 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { clearFromCart, listCart, listOrderCart } from '../Redux/Actions/cartActions';
-import { createOrder } from '../Redux/Actions/orderActions';
-import { ORDER_CREATE_RESET } from '../Redux/Constants/OrderConstants';
-import Header from '../components/Header';
-import Message from '../components/LoadingError/Error';
-import { getUserDetails } from '../Redux/Actions/userActions';
+import Header from '../../components/Header';
+import Message from '../../components/LoadingError/Error';
 import WrapConfirmModal from '~/components/Modal/WrapConfirmModal';
 import Toast from '~/components/LoadingError/Toast';
 import { LoadingButton } from '@mui/lab';
+import usePlaceOrder from './hook/usePlaceOrder';
+import { Fragment } from 'react';
+
+export const RenderAttributes = ({ attributes }) => {
+    if (attributes && attributes.length > 0) {
+        return attributes?.map((attribute) => (
+            <div
+                key={attribute.value}
+                className="mt-3 mt-md-0 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center"
+                style={{ width: 90, display: 'flex', flexDirection: 'column' }}
+            >
+                <h6>{attribute.name}</h6>
+                <span>{attribute?.value}</span>
+            </div>
+        ));
+    } else return <Fragment />;
+};
 
 const PlaceOrderScreen = ({ history }) => {
-    window.scrollTo(0, 0);
-    // const userDetails = useSelector((state) => state.userDetails);
-    // const { loading, user } = userDetails;
-    const dispatch = useDispatch();
-    const cartOrder = useSelector((state) => state.cartOrder);
-    const { cartOrderItems } = cartOrder;
-    const currenCartItems = cartOrderItems;
-    const createContent = useCallback(() => {
-        return { title: 'Place order this product?', body: 'Are you sure?' };
-    });
-    const userLogin = useSelector((state) => state.userLogin);
-    const { userInfo } = userLogin;
-
-    // Calculate Price
-    const addDecimals = (num) => {
-        return (Math.round(num * 100) / 100).toFixed(2);
-    };
-    cartOrder.itemsPrice = addDecimals(
-        cartOrder.cartOrderItems.reduce((totalPrice, i) => totalPrice + i.quantity * i.variant.price, 0).toFixed(2),
-    );
-    cartOrder.shippingPrice = addDecimals(cartOrder.itemsPrice > 0 ? (cartOrder.itemsPrice > 100 ? 0 : 20) : 0);
-    cartOrder.taxPrice = addDecimals(Number((0.15 * cartOrder.itemsPrice).toFixed(2)));
-    cartOrder.totalPrice =
-        cartOrder?.cartOrderItems.length > 0
-            ? (Number(cartOrder.itemsPrice) + Number(cartOrder.shippingPrice) + Number(cartOrder.taxPrice)).toFixed(2)
-            : 0;
-
-    const orderCreate = useSelector((state) => state.orderCreate);
-    const { order, success, error } = orderCreate;
-
-    const [loading, setLoading] = useState(false);
-    useEffect(() => {
-        dispatch(listOrderCart());
-        dispatch(listCart());
-    }, [success, dispatch]);
-    useEffect(() => {
-        // dispatch(getUserDetails('profile'));
-
-        if (success) {
-            history.push(`/order/${order._id}`);
-            dispatch({ type: ORDER_CREATE_RESET });
-        }
-    }, [history, dispatch, success, order]);
-
-    const placeOrderHandler = () => {
-        //if (window.confirm("Are you sure"))
-        setLoading(true);
-        dispatch(
-            createOrder(
-                {
-                    orderItems: currenCartItems,
-                    shippingAddress: {
-                        address: userInfo.address,
-                        city: userInfo.city,
-                        postalCode: '',
-                        country: userInfo.country,
-                    },
-
-                    paymentMethod: 'Payment in cash',
-                    taxPrice: cartOrder.taxPrice,
-                    shippingPrice: cartOrder.shippingPrice,
-                    totalPrice: cartOrder.totalPrice,
-                    contactInformation: {
-                        email: userInfo.email,
-                        phone: userInfo.phone,
-                    },
-                },
-                setLoading,
-            ),
-        );
-        // dispatch(clearFromCart(userInfo._id));
-    };
+    const { userInfo, cartOrder, createContent, placeOrderHandler, loading } = usePlaceOrder(history);
     return (
         <>
             <Toast />
             <Header />
             <div className="container">
-                {/* <PayModal
-                    Title="PAY"
-                    Body="Do you agree to pay?"
-                    HandleSubmit={placeOrderHandler}
-                    Close="modal"
-                ></PayModal> */}
                 <div className="row  order-detail">
                     <div className="col-lg-4 col-sm-4 mb-lg-4 mb-2 mb-sm-0 fix-bottom">
                         <div className="row " style={{ display: 'flex', alignItems: 'center' }}>
@@ -104,8 +38,8 @@ const PlaceOrderScreen = ({ history }) => {
                                 </div>
                             </div>
                             <div className="col-lg-9 col-sm-9 mb-lg-9 fix-display">
-                                <p>{`Name: ${userInfo.name}`}</p>
-                                <p>{`Phone: ${userInfo.phone}`}</p>
+                                <p>{`Tên: ${userInfo.name}`}</p>
+                                <p>{`Số điện thoại: ${userInfo.phone}`}</p>
                             </div>
                         </div>
                     </div>
@@ -121,7 +55,10 @@ const PlaceOrderScreen = ({ history }) => {
                                 </div>
                             </div>
                             <div className="col-lg-9 col-sm-9 mb-lg-9">
-                                <p>Address: {`${userInfo?.city}, ${userInfo?.address}, ${userInfo?.country}`}</p>
+                                <p>
+                                    Địa chỉ:{' '}
+                                    {` ${userInfo?.address?.specificAddress}, ${userInfo?.address?.ward}, ${userInfo?.address?.district},  ${userInfo?.address?.province}`}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -135,7 +72,7 @@ const PlaceOrderScreen = ({ history }) => {
                             </div>
                             <div className="col-lg-9 col-sm-9 mb-lg-9">
                                 <p>
-                                    <p>Pay method: {'Payment in cash'}</p>
+                                    <p>Phương thức: {'Thanh toán khi nhận hàng'}</p>
                                 </p>
                             </div>
                         </div>
@@ -144,16 +81,16 @@ const PlaceOrderScreen = ({ history }) => {
 
                 <div className="row order-products justify-content-between">
                     <div className="col-lg-12 fix-padding cart-scroll">
-                        {cartOrder.cartOrderItems.length === 0 ? (
+                        {cartOrder.cartOrderItems?.length === 0 ? (
                             <Message variant="alert-info mt-5">No product is selected</Message>
                         ) : (
                             <>
-                                {cartOrder.cartOrderItems.map((item, index) => (
-                                    <div className="order-product row" key={index}>
+                                {cartOrder.cartOrderItems?.map((item) => (
+                                    <div className="order-product row" key={item.id}>
                                         <div className="col-md-3 col-3" style={{ width: '20%' }}>
                                             <img
                                                 className="col-md-3 col-3"
-                                                src={item.variant.product.image}
+                                                src={item.variant.product.images?.[0]}
                                                 alt={item.variant.product.name}
                                             />
                                         </div>
@@ -162,14 +99,8 @@ const PlaceOrderScreen = ({ history }) => {
                                                 <h6>{item.variant.product.name}</h6>
                                             </Link>
                                         </div>
-                                        <div className="mt-3 mt-md-0 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
-                                            <h4>Size</h4>
-                                            <h6>{item?.variant?.size}</h6>
-                                        </div>
-                                        <div className="mt-3 mt-md-0 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
-                                            <h4>Color</h4>
-                                            <h6>{item?.variant?.color}</h6>
-                                        </div>
+                                        <RenderAttributes attributes={item?.attributes} />
+
                                         <div className="mt-3 mt-md-0 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
                                             <h4>QUANTITY</h4>
                                             <h6>{item?.quantity}</h6>
@@ -218,7 +149,7 @@ const PlaceOrderScreen = ({ history }) => {
                         <div style={{ fontWeight: '600', height: '50%', textAlign: 'center', lineHeight: '2.5rem' }}>
                             Total: ${cartOrder.totalPrice}
                         </div>
-                        {cartOrder.cartOrderItems.length === 0 ? null : (
+                        {cartOrder.cartOrderItems?.length === 0 ? null : (
                             <WrapConfirmModal content={createContent()} handleSubmit={placeOrderHandler}>
                                 <LoadingButton
                                     type="submit"
