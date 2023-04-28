@@ -19,12 +19,12 @@ const Product = (props) => {
       <div className="col-md-3 col-sm-4 col-lg-3 mb-5 col-xl-2 fix-bottom">
         <Toast />
         <div className="card card-product-grid">
-          <Link to={`/product/${product._id}/edit`} className="img-wrap">
+          <Link to={`/products/${product._id}/edit`} className="img-wrap">
             <img src={product.image} alt="Product" />
           </Link>
           <div className="info-wrap">
             <Link
-              to={`/product/${product._id}/edit`}
+              to={`/products/${product._id}/edit`}
               className="title text-truncate"
               style={{ color: 'black', padding: '5px 0' }}
             >
@@ -36,7 +36,7 @@ const Product = (props) => {
             <div className="row">
               <div className="d-flex align-content-center justify-content-between">
                 <Link
-                  to={`/product/${product._id}/edit`}
+                  to={`/products/${product._id}/edit`}
                   className="btn  btn-outline-primary col-6 "
                   style={{ fontSize: '18px', fontWeight: '600', marginRight: '5px' }}
                 >

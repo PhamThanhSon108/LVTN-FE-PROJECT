@@ -5,9 +5,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../../Redux/Actions/ProductActions';
 import Loading from '../LoadingError/Loading';
 import Message from '../LoadingError/Error';
-import { ListCategory } from '../../Redux/Actions/categoryActions';
+import { ListCategory } from '../../Redux/Actions/CategoryActions';
 import Pagination from '../Home/pagination';
-import Toast from '../LoadingError/Toast';
+const RenderProducts = ({ loading, error, products = [] }) => {
+  if (loading) {
+    return <Loading />;
+  }
+  if (error) return <Message variant="alert-danger">{error}</Message>;
+  return (
+    <div className="row">
+      {products?.map((product) => (
+        <Product product={product} key={product._id} />
+      ))}
+    </div>
+  );
+};
 
 const MainProducts = (props) => {
   const { category, keyword, pageNumber } = props;
@@ -56,8 +68,8 @@ const MainProducts = (props) => {
         <div className="content-header">
           <h2 className="content-title">Products</h2>
           <div>
-            <Link to="/addproduct" className="btn btn-primary color-orange">
-              Create new
+            <Link to="/products/add" className="btn btn-primary color-orange">
+              Create new product
             </Link>
           </div>
         </div>
@@ -91,8 +103,10 @@ const MainProducts = (props) => {
                   }}
                 >
                   <option value={''}>All category</option>
-                  {categories.map((category) => (
-                    <option value={category._id}>{category.name}</option>
+                  {categories?.map((category) => (
+                    <option key={category?._id} value={category._id}>
+                      {category.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -101,19 +115,7 @@ const MainProducts = (props) => {
 
           <div className="card-body">
             {errorDelete && <Message variant="alert-danger">{errorDelete}</Message>}
-            {loading ? (
-              <Loading />
-            ) : error ? (
-              <Message variant="alert-danger">{error}</Message>
-            ) : (
-              <div className="row">
-                {/* Products */}
-                {products?.map((product) => (
-                  <Product product={product} key={product._id} />
-                ))}
-              </div>
-            )}
-
+            <RenderProducts products={products} loading={loading} error={error} />
             <Pagination
               pages={pages}
               page={page}

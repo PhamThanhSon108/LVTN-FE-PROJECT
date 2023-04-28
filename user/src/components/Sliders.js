@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,7 +11,7 @@ import './styles.scss';
 
 export default function Sliders() {
     const sliderList = useSelector((state) => state.sliderLoad);
-    const { slider } = sliderList;
+    const { data } = sliderList;
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(ListSlider());
@@ -26,27 +26,43 @@ export default function Sliders() {
         autoplaySpeed: 4000,
         cssEase: 'linear',
     };
+
     return (
         <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
-            <div class=" slider-container ">
-                {slider?.length === 0 ? (
-                    <Skeleton variant="rectangular" width={'100%'} height={'25vh'} />
-                ) : (
-                    <>
+            <div class="slider-container ">
+                {data?.sliders?.length > 0 ? (
+                    <Fragment>
                         <Slider {...settings} className="slider-left-container">
-                            {slider?.map((value, index) => {
+                            {data?.sliders?.map((value, index) => {
                                 return (
                                     <div key={index} className="slider-left-wrap d-flex align-items-center ">
-                                        <img alt="Banner 01" src={value.url}></img>
+                                        <img alt="Banner 01" src={value.imageUrl}></img>
                                     </div>
                                 );
                             })}
                         </Slider>
                         <div className="slider-right-wrap">
-                            <img className="slider-image" alt="Banner 02" src={slider[0]?.url}></img>
-                            <img className="slider-image" alt="Banner 03" src={slider[1]?.url}></img>
+                            <img className="slider-image" alt="Banner 02" src={data?.sliders?.[0]?.imageUrl}></img>
+                            <img className="slider-image" alt="Banner 03" src={data?.sliders?.[1]?.imageUrl}></img>
                         </div>
-                    </>
+                    </Fragment>
+                ) : (
+                    <Fragment>
+                        <Skeleton variant="rectangular" width={'70%'} height={'252px'} />
+                        <div
+                            style={{
+                                width: '30%',
+                                marginLeft: 6,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                height: '100%',
+                            }}
+                        >
+                            <Skeleton variant="rectangular" width={'100%'} height={'124px'} />
+                            <Skeleton variant="rectangular" width={'100%'} height={'124px'} />
+                        </div>
+                    </Fragment>
                 )}
             </div>
         </div>

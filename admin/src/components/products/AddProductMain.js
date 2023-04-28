@@ -1,17 +1,36 @@
-import React, { useEffect, useRef, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect, Fragment } from 'react';
+import Toast from './../LoadingError/Toast';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { updateProduct } from './../../Redux/Actions/ProductActions';
 import { toast } from 'react-toastify';
-import { PRODUCT_CREATE_RESET } from '../../Redux/Constants/ProductConstants';
-import { createProduct } from './../../Redux/Actions/ProductActions';
 import Loading from '../LoadingError/Loading';
-import { ListCategory } from '../../Redux/Actions/categoryActions';
-import isEmpty from 'validator/lib/isEmpty';
+import { ListCategory } from '../../Redux/Actions/CategoryActions';
+import { Controller, useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
-import { useForm } from 'react-hook-form';
-
 import { FileUploadDemo } from './UploadImage';
-import CropImage from './cropimage';
+import { Button } from 'primereact/button';
+
+const MainLayout = ({ children }) => {
+  return (
+    <section className="content-main" style={{ maxWidth: '1200px' }}>
+      <div className="content-header">
+        <Link to="/product" className="btn btn-danger text-white">
+          Trở về trang danh sách sản phẩm
+        </Link>
+        <h2 className="content-title">Thêm sản phẩm</h2>
+      </div>
+      <div className="row mb-4">
+        <div className="col-xl-12 col-lg-12">
+          <div className="card mb-4 shadow-sm">
+            <div className="card-body">{children}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const ToastObjects = {
   pauseOnFocusLoss: false,
@@ -19,132 +38,75 @@ const ToastObjects = {
   pauseOnHover: false,
   autoClose: 2000,
 };
-const AddProductMain = () => {
-  const [name, setName] = useState('');
 
+const methodToChange = {
+  add: 1,
+  update: 0,
+  delete: -1,
+};
+
+const AddProductMain = (props) => {
+  const [changeForALL, setChangForAll] = useState(false);
+  const { productId } = props;
   const [category, setCategory] = useState('');
-  const [image, setImage] = useState();
-
+  const [name, setName] = useState('');
+  const [image, setImage] = useState('');
+  const [newImage, setNewImage] = useState('');
   const [description, setDescription] = useState('');
-  const [validate, setValidate] = useState({});
-
-  const refInput = useRef();
+  const [classifyValue, setClassifyValue] = useState();
 
   const dispatch = useDispatch();
-  const [changeForALL, setChangForAll] = useState(false);
-  const [size, setSize] = useState([]);
-  const [color, setColor] = useState([]);
-  const [reviewImage, setReviewImage] = useState('');
-  const [clear, setClear] = useState(false);
-  // const [groupProduct, setGroupProduct] = useState({ ...defaultGroupProduct });
-  const productCreate = useSelector((state) => state.productCreate);
-  const { loading, error, product } = productCreate;
-  const lcategories = useSelector((state) => state.CategoryList);
-  const { categories } = lcategories;
+  const productEdit = useSelector((state) => state.productEdit);
+  const { loading, error } = productEdit;
 
   const defaultGroupProduct = {
-    option: ['size', 'color'],
-    size: [''],
-    color: [''],
-    variants: [
-      {
-        field: [
-          {
-            size: '',
-            color: '',
-            quantity: '',
-            price: '',
-          },
-        ],
-      },
-    ],
+    option: ['firstOption', 'secondOption'],
+    secondOption: [''],
+    firstOption: [''],
+    variants: [],
   };
-  useEffect(() => {
-    dispatch(ListCategory());
-  }, []);
-  //, touchedFields
-  const {
-    getValues,
-    setValue,
-    register,
-    handleSubmit,
-    watch,
-    reset,
-    unregister,
-    formState: { errors, touchedFields },
-  } = useForm({
+
+  const { getValues, setValue, register, handleSubmit, watch, control } = useForm({
     defaultValues: defaultGroupProduct,
     shouldUseNativeValidation: true,
   });
 
   useEffect(() => {
-    if (product) {
-      dispatch({ type: PRODUCT_CREATE_RESET });
-      setName('');
-      setDescription('');
-      setCategory('');
-      setImage('');
-      setSize(['']);
-      setColor(['']);
-      // reset({ defaultValues: defaultGroupProduct });
-      setValue('size', ['']);
-      setValue('color', ['']);
-      setValue('variants', ['']);
-      setClear((pre) => !pre);
-      setChangForAll('');
-      reset();
-    }
-  }, [product, dispatch]);
-  const isEmptyCheckEdit = () => {
-    const msg = {};
-    if (isEmpty(category)) {
-      msg.category = 'Plesae input your category';
-      msg.borderRed1 = 'border-red';
-    }
-    if (isEmpty(name)) {
-      msg.name = 'Please input your name';
-      msg.borderRed2 = 'border-red';
-    }
+    dispatch(ListCategory());
+  }, [productId, dispatch]);
 
-    // if (isEmpty(image)) {
-    //   msg.image = 'Please input your image';
-    //   msg.borderRed4 = 'border-red';
-    // }
+  const productUpdate = useSelector((state) => state.productUpdate);
+  const { loading: loadingUpdate } = productUpdate;
 
-    if (isEmpty(description)) {
-      msg.description = 'Please input your description';
-      msg.borderRed6 = 'border-red';
-    }
-    setValidate(msg);
-    if (Object.keys(msg).length > 0) return false;
-    return true;
-  };
+  const categoriesInStore = useSelector((state) => state.CategoryList);
+  const { categories } = categoriesInStore;
 
   const checkSameValue = (arrValue) => {
     return (
-      arrValue?.length ==
+      arrValue?.length ===
       arrValue.reduce((newArr, item, index) => {
         if (!newArr?.includes(item)) newArr?.push(item);
         return newArr;
       }, [])?.length
     );
   };
-
   const submitHandler = (data, e) => {
     e.preventDefault();
-    if (!checkSameValue(data.size) || !checkSameValue(data.color)) {
+    console.log(
+      data.variants.reduce((variants, variant) => {
+        variants = variants.concat(variant.field);
+        return variants;
+      }, []),
+
+      'submit',
+    );
+    if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
       toast.error('Name of classify cannot be duplicated!!', ToastObjects);
       return;
     }
-    if (!image) {
-      toast.error('Please choose image!!', ToastObjects);
-      return;
-    }
-    const isEmptyValidate = isEmptyCheckEdit();
-    if (!isEmptyValidate) return;
-
-    if (category != -1) {
+    if (category !== -1) {
       let newProduct = new FormData();
+      newProduct.append('_id', productId);
       newProduct.append('name', name);
       newProduct.append('description', description);
       newProduct.append('category', category);
@@ -157,362 +119,349 @@ const AddProductMain = () => {
           }, []),
         ),
       );
-      newProduct.append('productImage', image);
-      // dispatch(createProduct(imagef));
-      // for (const value of newProduct.values()) {
-      //   console.log(value);
-      // }
-      dispatch(createProduct(newProduct));
+      newImage ? newProduct.append('productImage', newImage) : newProduct.append('productImage', image);
+      dispatch(updateProduct(newProduct));
     }
   };
+
+  if (loading) {
+    return (
+      <MainLayout>
+        <Loading />
+      </MainLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <MainLayout>
+        <Fragment />
+      </MainLayout>
+    );
+  }
+
+  const labelOfFirstOption = 'size';
+  const labelOfSecondOption = 'color';
   return (
     <>
-      {/* <Toast /> */}
+      <Toast />
       <section className="content-main" style={{ maxWidth: '1200px' }}>
         <form onSubmit={handleSubmit(submitHandler)}>
           <div className="content-header">
-            <Link to="/product" className="btn btn-danger text-white">
-              Go to products
+            <Link to="/products" className="btn btn-danger text-white">
+              <i className="fas fa-arrow-left" />
             </Link>
-            <h2 className="content-title">Add product</h2>
-            <div>
-              {/* <button type="submit" className="btn btn-primary color-orange">
-                Add Product
-              </button> */}
-            </div>
+            <h2 className="content-title">Thêm sản phẩm</h2>
           </div>
 
           <div className="row mb-4">
             <div className="col-xl-12 col-lg-12">
               <div className="card mb-4 shadow-sm">
                 <div className="card-body">
-                  {loading && <Loading />}
                   <div className="mb-4">
                     <label htmlFor="product_title" className="form-label">
-                      Product title
+                      Tên sản phẩm
                     </label>
                     <input
                       type="text"
-                      placeholder="Type here"
-                      className={`form-control ${validate.borderRed2}`}
+                      placeholder="Nhập tên sản phẩm"
+                      className="form-control"
                       id="product_title"
-                      //required
+                      required
                       value={name}
-                      onClick={() => {
-                        setValidate((values) => {
-                          const x = { ...values };
-                          x.borderRed2 = '';
-                          x.name = '';
-                          return x;
-                        });
-                      }}
                       onChange={(e) => setName(e.target.value)}
                     />
-                    <p className="product_validate">{validate.name}</p>
                   </div>
 
                   <div className="mb-4">
                     <label htmlFor="product_category" className="form-label">
-                      Category
+                      Thể loại
                     </label>
                     <select
                       type="text"
                       id="product_category"
-                      //className="form-select"
-                      className={`form-select ${validate.borderRed1}`}
-                      aria-label=".form-select-lg example"
-                      //required
+                      className="form-select"
+                      placeholder="Category"
+                      required
                       value={category}
-                      onClick={() => {
-                        setValidate((values) => {
-                          const x = { ...values };
-                          x.borderRed1 = '';
-                          x.category = '';
-                          return x;
-                        });
-                      }}
                       onChange={(e) => setCategory(e.target.value)}
-                      title="Please select category"
-                      placeholder="Please select category"
                     >
                       <option value={-1} selected>
-                        Please select category
+                        Chọn thể loại phù hợp
                       </option>
                       {categories?.map((cate, index) => (
-                        <option key={index} value={cate._id}>
+                        <option key={cate._id} value={cate._id}>
                           {cate.name}
                         </option>
                       ))}
                     </select>
-                    <p className="product_validate">{validate.category}</p>
                   </div>
 
                   <div className="mb-4">
-                    <label className="form-label">Description</label>
+                    <label className="form-label">Mô tả</label>
                     <textarea
-                      placeholder="Type here"
-                      className={`form-control ${validate.borderRed6}`}
+                      placeholder="Nhập mô tả"
+                      className="form-control"
                       rows="7"
-                      //required
+                      required
                       value={description}
-                      onClick={() => {
-                        setValidate((values) => {
-                          const x = { ...values };
-                          x.borderRed6 = '';
-                          x.description = '';
-                          return x;
-                        });
-                      }}
                       onChange={(e) => setDescription(e.target.value)}
                     ></textarea>
-                    <p className="product_validate">{validate.description}</p>
                   </div>
                   <div className="mb-4">
-                    <FileUploadDemo setImage={(value) => setImage(value)} name={name} clear={clear} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="card mb-4 shadow-sm">
-                <div className="card-body">
-                  <div className="mb-4">
-                    <h3>Information sales</h3>
+                    <FileUploadDemo setImage={(value) => setNewImage(value)} name={name} />
                   </div>
 
-                  {getValues('option')?.map((valueOption, index) => {
-                    //Tránh ko bị rerender 2 lần trong setState
-                    let dem = 0;
-                    let demDelete = 0;
-                    return (
-                      <>
-                        <div className="mb-4 d-flex" ref={refInput} key={uuidv4()}>
-                          <div className="col-3">{index == 0 ? 'Size' : 'Color'}</div>
-                          <div className="card-body shadow-sm col-9">
-                            {getValues(valueOption)?.map((valueField, i) => (
-                              <div className="mb-4 d-flex" key={uuidv4()}>
-                                <label className="col-2 text-start ">Name of classify</label>
-                                <div className="col-10 d-flex">
-                                  <input
-                                    {...register(`${valueOption}.${i}`, {
-                                      required: 'This is required',
-                                    })}
-                                    className="flex-grow-1 form-control"
-                                    name={`${valueOption}.${i}`}
-                                    type="text"
-                                    placeholder="Enter name of classify"
-                                    aria-label="Price"
-                                    aria-describedby="basic-addon1"
-                                  ></input>{' '}
-                                  {getValues(valueOption).length > 1 && (
-                                    <span
-                                      onClick={() => {
-                                        if (getValues(valueOption).length > 1) {
-                                          if (dem == 0) {
-                                            if (valueOption === 'size') {
-                                              setValue(
-                                                `variants`,
-                                                getValues(`variants`).filter((value, ind) => ind !== i),
-                                              );
-                                              setValue(
-                                                'size',
-                                                getValues('size').filter((value, ind) => ind !== i),
-                                              );
-                                              setSize((pre) => {
-                                                return [...pre.filter((value, ind) => ind !== i)];
-                                              });
-                                            } else {
-                                              setValue(
-                                                `variants`,
-                                                getValues(`variants`)?.map((value) =>
-                                                  value.field?.reduce(
-                                                    (variants, variant, i) => {
-                                                      if (variant.color !== valueField)
-                                                        variants = { field: [...variants.field, variant] };
-                                                      return variants;
-                                                    },
-                                                    { field: [] },
-                                                  ),
-                                                ),
-                                              );
-                                              setValue(
-                                                'color',
-                                                getValues('color').filter((value, ind) => ind !== i),
-                                              );
-                                              setColor((pre) => {
-                                                return [...pre.filter((value, ind) => ind !== i)];
-                                              });
+                  <div className="card mb-4 shadow-sm">
+                    <div className="card-body">
+                      <div className="mb-4">
+                        <h3>Thông tin bán hàng</h3>
+                      </div>
+
+                      {getValues('option')?.map((valueOption, index) => {
+                        let dem = 0;
+                        return (
+                          <>
+                            <div className="mb-4 d-flex" key={uuidv4()}>
+                              <div className="col-1 col-md-2">{index === 0 ? 'Kích thước' : 'Màu sắc'}</div>
+                              <div className="card-body shadow-sm col-11">
+                                {getValues(valueOption)?.map((valueField, i) => (
+                                  <div className="col-mb-11 d-flex" key={uuidv4()} style={{ marginTop: '15px' }}>
+                                    <label className="col-2 text-start ">Tên của phân loại hàng</label>
+                                    <div className="col-10 d-flex">
+                                      <Controller
+                                        control={control}
+                                        name={`${valueOption}.${i}`}
+                                        render={({ field }) => (
+                                          <input
+                                            {...field}
+                                            onBlur={(e) => {
+                                              setClassifyValue(!classifyValue);
+                                              field.onBlur(e);
+                                            }}
+                                            required
+                                            className="flex-grow-1 form-control"
+                                          />
+                                        )}
+                                      />
+                                      {getValues(valueOption)?.length > 1 && (
+                                        <span
+                                          onClick={() => {
+                                            if (dem === 0) {
+                                              if (valueOption === 'firstOption') {
+                                                setValue(
+                                                  `variants`,
+                                                  getValues(`variants`).filter((value, ind) => ind !== i),
+                                                );
+                                                setValue(
+                                                  'firstOption',
+                                                  getValues('firstOption').filter((value, ind) => ind !== i),
+                                                );
+                                              } else {
+                                                setValue(
+                                                  `variants`,
+                                                  getValues(`variants`)?.map((value) => ({
+                                                    field: value.field.filter(
+                                                      (variant) => variant.attributes?.[1]?.value !== valueField,
+                                                    ),
+                                                  })),
+                                                );
+                                                setValue(
+                                                  'secondOption',
+                                                  getValues('secondOption').filter((_, ind) => ind !== i),
+                                                );
+                                              }
                                             }
-                                          }
+                                            setClassifyValue(!classifyValue);
+                                            dem++;
+                                          }}
+                                          style={{
+                                            display: 'flex',
+                                            margin: '15px',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            fontWeight: 500,
+                                            cursor: 'pointer',
+                                          }}
+                                        >
+                                          <i className="fas fa-trash-alt" style={{ color: 'red' }}></i>
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                                {getValues(valueOption)?.length <= 10 && (
+                                  <div className="mb-4 d-flex">
+                                    <div
+                                      style={{ cursor: 'pointer' }}
+                                      className="flex-grow-1 d-flex justify-content-center"
+                                      onClick={() => {
+                                        if (index === 0) {
+                                          setValue(valueOption, [...getValues(valueOption), '']);
+                                          setValue(`variants.${getValues('variants')?.length}`, {
+                                            field: getValues('secondOption').reduce((newArray, value, index) => {
+                                              newArray.push({
+                                                price: '',
+                                                quantity: '',
+                                                status: methodToChange.add,
+                                                attributes: [
+                                                  { name: labelOfFirstOption, value: '' },
+                                                  { name: labelOfSecondOption, value: '' },
+                                                ],
+                                              });
+                                              return newArray;
+                                            }, []),
+                                          });
+                                        } else {
+                                          setValue(valueOption, [...getValues(valueOption), '']);
+                                          setValue(
+                                            'variants',
+                                            getValues('variants')?.map((value) => {
+                                              value.field.push({
+                                                price: '',
+                                                quantity: '',
+                                                status: methodToChange.add,
+                                                attributes: [
+                                                  { name: labelOfFirstOption, value: '' },
+                                                  { name: labelOfSecondOption, value: '' },
+                                                ],
+                                              });
+                                              return value;
+                                            }),
+                                          );
                                         }
-
-                                        dem++;
-                                      }}
-                                      style={{
-                                        display: 'flex',
-                                        margin: '15px',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        fontWeight: 500,
-                                        cursor: 'pointer',
+                                        setClassifyValue((pre) => !pre);
                                       }}
                                     >
-                                      <i className="fas fa-trash-alt" style={{ color: 'red' }}></i>
-                                    </span>
-                                  )}
-                                </div>
+                                      <i class="icon fas fa-plus m-1"></i>
+                                      <p>Thêm phâm loại hàng</p>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
-                            ))}
-                            {getValues(valueOption).length <= 10 && (
-                              <div className="mb-4 d-flex">
-                                <div
-                                  style={{ cursor: 'pointer' }}
-                                  className="flex-grow-1 d-flex justify-content-center"
-                                  onClick={() => {
-                                    // setValue(`${index == 0 ? 'size' : 'color'}`, [
-                                    //     ...watch(`${index == 0 ? 'size' : 'color'}`),
-                                    //     null,
-                                    // ]);
-
-                                    if (index === 0) {
-                                      setValue(valueOption, [...getValues(valueOption), '']);
-                                      // register(
-                                      //     `${valueOption}.${
-                                      //         getValues('size').length || 0
-                                      //     }`,
-                                      // );
-                                      setSize((pre) => [...pre, '']);
-                                    } else {
-                                      setValue(valueOption, [...getValues(valueOption), '']);
-                                      // register(
-                                      //     `${valueOption}.${
-                                      //         getValues('color').length || 0
-                                      //     }`,
-                                      // );
-                                      setColor((pre) => [...pre, '']);
-                                    }
-                                  }}
-                                >
-                                  <i class="icon fas fa-plus m-1"></i>
-                                  <p>Add classify product</p>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </>
-                    );
-                  })}
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      checked={changeForALL}
-                      id="defaultCheck1"
-                      onChange={(e) => {
-                        e.target.checked ? setChangForAll(true) : setChangForAll(false);
-                      }}
-                    />
-                    <label class="form-check-label" for="defaultCheck1">
-                      Apply to all product
-                    </label>
-                  </div>
-                  <table class="table">
-                    {' '}
-                    <thead>
-                      <tr>
-                        <th scope="col">Price</th>
-                        <th scope="col">Quantity</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <input
-                            {...register('price')}
-                            className="border-0 input "
-                            placeholder="Enter price"
-                            type="number"
-                          ></input>
-                        </td>
-                        <td>
-                          <input
-                            className="border-0 input "
-                            type="number"
-                            {...register('quantity')}
-                            placeholder="Enter quantity"
-                          />{' '}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                  <div className="mb-4 d-flex">
-                    <label className="col-3 text-start ">List of classify of goods </label>
-                    <div className="col-9 d-flex">
+                            </div>
+                          </>
+                        );
+                      })}
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          checked={changeForALL}
+                          id="defaultCheck1"
+                          onChange={(e) => {
+                            e.target.checked ? setChangForAll(true) : setChangForAll(false);
+                          }}
+                        />
+                        <label class="form-check-label" for="defaultCheck1">
+                          Áp dụng cho tất cả sản phân loại
+                        </label>
+                      </div>
                       <table class="table">
+                        {' '}
                         <thead>
                           <tr>
-                            <th scope="col">Size</th>
-
-                            <th scope="col">Color</th>
-
-                            <th scope="col">Price</th>
-                            <th scope="col">Quantity</th>
+                            <th scope="col">Giá</th>
+                            <th scope="col">Số lượng</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {getValues('size')?.map((value1, iClass1) => {
-                            return getValues('color')?.map((value2, iClass2) => {
-                              setValue(`variants.${iClass1}.field.${iClass2}.size`, value1);
-                              setValue(`variants.${iClass1}.field.${iClass2}.color`, value2);
-                              if (changeForALL) {
-                                setValue(`variants.${iClass1}.field.${iClass2}.price`, watch('price'));
-                                setValue(`variants.${iClass1}.field.${iClass2}.quantity`, watch('quantity'));
-                              }
-                              return (
-                                <tr>
-                                  <td className="col-3">{value1 || '?'}</td>
-                                  <td className="col-3">{value2 || '?'}</td>
-                                  <td className="col-3">
-                                    <input
-                                      className=""
-                                      placeholder="Enter price"
-                                      {...register(`variants.${iClass1}.field.${iClass2}.price`, {
-                                        required: 'This is required',
-                                        validate: {
-                                          positive: (value) => value > 0 && value < 10000,
-                                        },
-                                      })}
-                                    ></input>
-                                  </td>
-                                  <td className="col-3">
-                                    <input
-                                      className="flex-grow-1"
-                                      placeholder="Enter quantity"
-                                      {...register(`variants.${iClass1}.field.${iClass2}.quantity`, {
-                                        required: 'This is required',
-                                        validate: {
-                                          positive: (value) => value >= 0 && value < 10000,
-                                        },
-                                      })}
-                                    ></input>
-                                  </td>
-                                </tr>
-                              );
-                            });
-                          })}
+                          <tr>
+                            <td>
+                              <input
+                                {...register('price')}
+                                className="border-0 input "
+                                placeholder="Nhập giá"
+                                type={'number'}
+                              ></input>
+                            </td>
+                            <td>
+                              <input
+                                className="border-0 input "
+                                type={'number'}
+                                {...register('quantity')}
+                                placeholder="Nhập số lượng"
+                              />{' '}
+                            </td>
+                          </tr>
                         </tbody>
                       </table>
+
+                      <div className="mb-4 d-flex">
+                        <label className="col-3 text-start ">Danh sách phân loại hàng</label>
+                        <div className="col-9 d-flex">
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">Kích thước</th>
+
+                                <th scope="col">Màu sắc</th>
+
+                                <th scope="col">Giá</th>
+                                <th scope="col">Số lượng</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {getValues('firstOption')?.map((value1, iClass1) => {
+                                return getValues('secondOption')?.map((value2, iClass2) => {
+                                  setValue(`variants.${iClass1}.field.${iClass2}.attributes.0.value`, value1);
+                                  setValue(`variants.${iClass1}.field.${iClass2}.attributes.1.value`, value2);
+                                  if (changeForALL) {
+                                    setValue(`variants.${iClass1}.field.${iClass2}.price`, watch('price'));
+                                    setValue(`variants.${iClass1}.field.${iClass2}.quantity`, watch('quantity'));
+                                  }
+                                  return (
+                                    <tr key={`${value1} + ${value2}`}>
+                                      <td className="col-3">{value1 || '?'}</td>
+                                      <td className="col-3">{value2 || '?'}</td>
+                                      <td className="col-3">
+                                        <input
+                                          type="number"
+                                          className=""
+                                          placeholder="Enter price"
+                                          {...register(`variants.${iClass1}.field.${iClass2}.price`, {
+                                            required: 'This is required',
+                                            validate: {
+                                              positive: (value) => value >= 0 && value < 10000,
+                                            },
+                                          })}
+                                        ></input>
+                                      </td>
+                                      <td className="col-3">
+                                        <input
+                                          type="number"
+                                          className="flex-grow-1"
+                                          placeholder="Enter quantity"
+                                          {...register(`variants.${iClass1}.field.${iClass2}.quantity`, {
+                                            required: 'This is required',
+                                            validate: {
+                                              positive: (value) => value >= 0 && value < 10000,
+                                            },
+                                          })}
+                                        ></input>
+                                      </td>
+                                    </tr>
+                                  );
+                                });
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-12 ">
-                {loading && <Loading />}
-                <div className="d-flex align-content-between justify-content-end ">
-                  <button type="submit" className="btn btn-primary col-5">
-                    Add product
-                  </button>
+                <div className="d-flex align-content-between justify-content-end">
+                  <Button
+                    icon={<i class="fa-solid fa-plus"></i>}
+                    loading={loadingUpdate}
+                    type="submit"
+                    className="btn btn-primary"
+                  >
+                    Thêm sản phẩm
+                  </Button>
                 </div>
               </div>
             </div>

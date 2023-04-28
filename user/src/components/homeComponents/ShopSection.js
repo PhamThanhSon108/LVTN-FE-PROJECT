@@ -2,14 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Rating from './Rating';
 import { useDispatch, useSelector } from 'react-redux';
-import { listProduct } from '../../Redux/Actions/ProductActions';
+import { listProduct } from '../../Redux/Actions/productActions';
 import Message from '../LoadingError/Error';
 import { listCart } from '../../Redux/Actions/cartActions';
 import FilterSection from './FilterSection';
 import { Button, Skeleton } from '@mui/material';
 import './styles.scss';
 import Pagination from './pagination';
-
+const LoadingEachProduct = () => {
+    return (
+        <div className="loading-each-product" style={{ margin: '15px 7.9px' }}>
+            <Skeleton variant="rectangular" width={'100%'} height={209} />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton width="60%" />
+        </div>
+    );
+};
 const ShopSection = (props) => {
     const dispatch = useDispatch();
     const { keyword, pageNumber = 1, queryCategory } = props;
@@ -25,13 +34,12 @@ const ShopSection = (props) => {
         if (category != queryCategory) setCategory(queryCategory);
     }, [queryCategory]);
     useEffect(() => {
-        dispatch(listCart());
         dispatch(listProduct({ category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder }));
     }, [dispatch, category, keyword, rating, minPrice, maxPrice, priceOrder, pageNumber]);
 
     return (
         <>
-            <div className="container">
+            <div className="shop-section-container">
                 <div className="section">
                     <div className="row">
                         {keyword || category ? (
@@ -47,18 +55,16 @@ const ShopSection = (props) => {
                                 keyword={keyword}
                             ></FilterSection>
                         ) : null}
-                        <div className={`${keyword || category ? 'col-lg-10' : 'col-lg-12'} col-md-9 article`}>
-                            <div className="shopcontainer row">
+                        <div
+                            style={{ paddingLeft: 0, paddingRight: 0 }}
+                            className={` ${keyword || category ? 'col-lg-10' : 'col-lg-12'} col-md-9 article`}
+                        >
+                            <div className=" row">
                                 {loading ? (
                                     <>
-                                        <div style={{ display: 'flex' }}>
+                                        <div style={{ display: 'flex', width: '100%' }} className="col-lg-12">
                                             {SkeletonOption.map(() => (
-                                                <div className="" style={{ margin: '15px 7.9px', width: '100%' }}>
-                                                    <Skeleton variant="rectangular" width={'100%'} height={209} />
-                                                    <Skeleton />
-                                                    <Skeleton />
-                                                    <Skeleton width="60%" />
-                                                </div>
+                                                <LoadingEachProduct />
                                             ))}
                                         </div>
                                     </>
@@ -138,7 +144,10 @@ const ShopSection = (props) => {
                                                             <div className="border-product product-card-item">
                                                                 <Link to={`/product/${product._id}`}>
                                                                     <div className="product-card-item-img-wrap">
-                                                                        <img src={product.image} alt={product.name} />
+                                                                        <img
+                                                                            src={product?.images?.[0]}
+                                                                            alt={product.name}
+                                                                        />
                                                                     </div>
                                                                 </Link>
 
@@ -180,9 +189,9 @@ const ShopSection = (props) => {
                                                 <Button
                                                     variant="outlined"
                                                     style={{
-                                                        borderColor: 'red',
+                                                        borderColor: 'var(--default-background-color)',
                                                         width: '100%',
-                                                        color: 'red',
+                                                        color: 'var(--default-background-color)',
                                                         minWidth: '150px',
                                                     }}
                                                 >

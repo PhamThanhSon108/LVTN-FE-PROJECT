@@ -1,0 +1,3 @@
+const voucherConstants = {};
+
+export { voucherConstants };

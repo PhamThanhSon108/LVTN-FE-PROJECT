@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 
 export default function useQuery() {
     const { search } = useLocation();
-    console.log(search, 'search query');
     const query = {
         get: (key) => {
             let result = {};

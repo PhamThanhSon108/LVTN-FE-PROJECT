@@ -1,37 +1,36 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Loading from "../components/LoadingError/Loading";
-import Toast from "../components/LoadingError/Toast";
-import { login } from "../Redux/Actions/userActions";
-import Message from "./../components/LoadingError/Error";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Loading from '../components/LoadingError/Loading';
+import Toast from '../components/LoadingError/Toast';
+import { login } from '../Redux/Actions/UserActions';
+import Message from './../components/LoadingError/Error';
+import { useHistory } from 'react-router-dom';
 
-const Login = ({ history }) => {
+const Login = () => {
   window.scrollTo(0, 0);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const history = useHistory();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
-  const { error, loading, userInfo } = userLogin;
+  const { error, loading } = userLogin;
 
-  useEffect(() => {
-    if (userInfo) {
-      history.push("/");
-    }
-  }, [userInfo, history]);
+  const handleLogin = {
+    success: () => {
+      history.push('/');
+    },
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(login(email, password));
+    dispatch(login(email, password, handleLogin));
   };
   return (
     <>
       <Toast />
-      <div
-        className="card shadow mx-auto"
-        style={{ maxWidth: "380px", marginTop: "100px" }}
-      >
+      <div className="card shadow mx-auto" style={{ maxWidth: '380px', marginTop: '100px' }}>
         <div className="card-body">
           {error && <Message variant="alert-danger">{error}</Message>}
           {loading && <Loading />}

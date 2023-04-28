@@ -1,18 +1,9 @@
 import React from 'react';
-import Sidebar from './../components/sidebar';
-import Header from './../components/Header';
 import EditProductMain from './../components/products/EditproductMain';
+import { useParams } from 'react-router-dom';
 
-const ProductEditScreen = ({ match }) => {
-    const productId = match.params.id;
-    return (
-        <>
-            <Sidebar />
-            <main className="main-wrap">
-                <Header />
-                <EditProductMain productId={productId} />
-            </main>
-        </>
-    );
+const ProductEditScreen = () => {
+  const { id } = useParams();
+  return <EditProductMain productId={id} />;
 };
 export default ProductEditScreen;

@@ -34,6 +34,7 @@ import {
 } from './Reducers/OrderReducres';
 import { Sliderload } from './Reducers/SliderReducer';
 import { categoryListReducer } from './Reducers/CategoryReducers';
+import { AddressReducer } from './Reducers/AddressReducers';
 
 const reducer = combineReducers({
     listAllOrder: productbestseller,
@@ -63,11 +64,9 @@ const reducer = combineReducers({
     orderConfirmPaid: orderConfirmPaidReducer,
     sliderLoad: Sliderload,
     CategoryList: categoryListReducer,
-});
 
-const cartItemsFromLocalStorage = localStorage.getItem('cartItems')
-    ? JSON.parse(localStorage.getItem('cartItems'))
-    : [];
+    address: AddressReducer,
+});
 
 const cartOrderItemsFromLocalStorage = localStorage.getItem('cartOrderItems')
     ? JSON.parse(localStorage.getItem('cartOrderItems'))

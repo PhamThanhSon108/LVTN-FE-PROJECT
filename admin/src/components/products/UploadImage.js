@@ -154,7 +154,7 @@ export const FileUploadDemo = (props) => {
       <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
 
       <div className="card col-12">
-        <h5>New picture</h5>
+        <h5>Thêm ảnh</h5>
         <FileUpload
           ref={fileUploadRef}
           name="demo[]"

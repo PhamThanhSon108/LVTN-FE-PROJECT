@@ -15,7 +15,7 @@ import {
   ORDER_UPDATE_STATUS_REQUEST,
   ORDER_UPDATE_STATUS_SUCCESS,
 } from '../Constants/OrderConstants';
-import { logout } from './userActions';
+import { logout } from './UserActions';
 import request from '../../utils/request';
 import { toast } from 'react-toastify';
 import { ToastObject } from '../../components/LoadingError/ToastObject';
@@ -35,7 +35,7 @@ export const listOrders = (dateOrder, orderStatus, pageNumber) => async (dispatc
     };
 
     const { data } = await request.get(
-      `/api/order/all?pageSize=${15}&pageNumber=${pageNumber}&dateOrder=${dateOrder}&orderStatus=${orderStatus}`,
+      `/order/all?pageSize=${15}&pageNumber=${pageNumber}&dateOrder=${dateOrder}&orderStatus=${orderStatus}`,
 
       config,
     );
@@ -68,7 +68,7 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await request.get(`/api/order/${id}`, config);
+    const { data } = await request.get(`/order/${id}`, config);
     dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -97,7 +97,7 @@ export const deliverOrder = (order) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await request.put(`/api/order/${order._id}/delivered`, {}, config);
+    const { data } = await request.put(`/order/${order._id}/delivered`, {}, config);
     dispatch({ type: ORDER_DELIVERED_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -128,7 +128,7 @@ export const updateStatusOrder =
         },
       };
 
-      const { data } = await request.patch(`/api/order/${orderId}`, { status }, config);
+      const { data } = await request.patch(`/order/${orderId}`, { status }, config);
       toast.success(data?.message, ToastObject);
       dispatch({ type: ORDER_UPDATE_STATUS_SUCCESS, payload: data });
     } catch (error) {
@@ -159,7 +159,7 @@ export const cancelOrder = (order) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await request.patch(`/api/order/${order._id}/cancel`, { orderId: order._id }, config);
+    const { data } = await request.patch(`/order/${order._id}/cancel`, { orderId: order._id }, config);
     dispatch({ type: ORDER_CANCEL_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;

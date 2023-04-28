@@ -16,7 +16,7 @@ export default React.memo(function ArrowUp() {
                 <use fill="#000" filter="url(#a)" xlinkHref="#b"></use>
                 <use fill="#fff" xlinkHref="#b"></use>
                 <circle cx="22" cy="21" r="20"></circle>
-                <path fill="#EE4D2D" d="M12 13h20v2H12zm11 7v13h-2V20l-6 6-1-2 8-8 9 8-2 2z"></path>
+                <path fill="currentColor" d="M12 13h20v2H12zm11 7v13h-2V20l-6 6-1-2 8-8 9 8-2 2z"></path>
             </g>
         </svg>
     );

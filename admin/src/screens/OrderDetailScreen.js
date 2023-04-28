@@ -1,19 +1,8 @@
-import React from "react";
-import Sidebar from "./../components/sidebar";
-import Header from "./../components/Header";
-import OrderDetailmain from "../components/orders/OrderDetailmain";
+import React from 'react';
+import OrderDetailmain from '../components/Orders/OrderDetail';
 
-const OrderDetailScreen = ({ match }) => {
-  const orderId = match.params.id;
-  return (
-    <>
-      <Sidebar />
-      <main className="main-wrap">
-        <Header />
-        <OrderDetailmain orderId={orderId} />
-      </main>
-    </>
-  );
+const OrderDetailScreen = () => {
+  return <OrderDetailmain />;
 };
 
 export default OrderDetailScreen;

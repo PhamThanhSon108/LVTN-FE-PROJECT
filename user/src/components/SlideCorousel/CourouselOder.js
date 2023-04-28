@@ -5,7 +5,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { listAllOrder } from '../../Redux/Actions/OrderActions';
+import { listAllOrder } from '../../Redux/Actions/orderActions';
 import { useEffect, useState } from 'react';
 import { Card, CardActions, CardContent, CardMedia, Divider, Skeleton, Typography } from '@mui/material';
 import { Button } from 'react-bootstrap';
@@ -57,7 +57,7 @@ export default function CorouselOder() {
     };
 
     return (
-        <div className="container " style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '20px' }}>
             <div className="row divider-custom">
                 <span>Best seller</span>
             </div>

@@ -1,38 +1,193 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Toast from './../LoadingError/Toast';
-import Loading, { FormLoading } from './../LoadingError/Loading';
+import { FormLoading } from './../LoadingError/Loading';
 import { updateUserPassword, updateUserProfile } from '../../Redux/Actions/userActions';
 import isEmpty from 'validator/lib/isEmpty';
+import { addressRequest } from '~/utils/request';
+import { Autocomplete, Button, FormControl, FormControlLabel, Radio, RadioGroup, TextField } from '@mui/material';
+import './Profile.scss';
+import { getListAddress } from '~/Redux/Actions/address';
+import moment from 'moment';
+const FormUpdatePassword = ({
+    uploadPassword,
+    submitUpdatePassword,
+    setOldPassword,
+    oldPassword,
+    objFormPass,
+    setPassword,
+    setConfirmPassword,
+    confirmPassword,
+    refSetPassword,
+    password,
+}) => {
+    return (
+        <div
+            ref={refSetPassword}
+            className={`col-lg-12 col-md-12 col-sm-12 ${uploadPassword ? 'form-update-profile-focus' : ''}`}
+            style={{ display: uploadPassword ? 'block' : 'none' }}
+        >
+            <form className="row  form-container form-update-profile" onSubmit={submitUpdatePassword}>
+                <div className="col-md-12">
+                    <TextField
+                        size="small"
+                        type="password"
+                        label="Current password"
+                        sx={{ width: '100%' }}
+                        variant="outlined"
+                        value={oldPassword}
+                        onChange={(e) => {
+                            objFormPass.oldPassword = ' ';
+                            setOldPassword(e.target.value);
+                        }}
+                    />
+                    <p className="noti-validate">{objFormPass.oldPassword}</p>
+                </div>
 
+                <div className="col-md-12">
+                    <TextField
+                        size="small"
+                        type="password"
+                        label="New password"
+                        sx={{ width: '100%' }}
+                        variant="outlined"
+                        value={password}
+                        onChange={(e) => {
+                            objFormPass.password = ' ';
+                            setPassword(e.target.value);
+                        }}
+                    />
+                    <p className="noti-validate">{objFormPass.password}</p>
+                </div>
+
+                <div className="col-md-12">
+                    <TextField
+                        size="small"
+                        type="password"
+                        label="Confirm new password"
+                        sx={{ width: '100%' }}
+                        variant="outlined"
+                        value={confirmPassword}
+                        onChange={(e) => {
+                            objFormPass.confirmPassword = ' ';
+                            setConfirmPassword(e.target.value);
+                        }}
+                    />
+                    <p className="noti-validate">{objFormPass.confirmPassword}</p>
+                </div>
+
+                <div className=" btn-update-profile">
+                    <Button variant="contained" className="btn btn-primary" type="submit">
+                        Update Password
+                    </Button>
+                </div>
+            </form>
+        </div>
+    );
+};
+
+const ProfileTab = ({ checkSetPassword, checkProfile, checkbox }) => {
+    return (
+        <div className="radio-check">
+            <form className="radio-from">
+                <div className="radio-from__flex">
+                    <label for="profile" className={Number(checkbox) === 0 ? 'form-update-profile-tab-focus' : ''}>
+                        Update Profile
+                    </label>
+                    <input
+                        id="profile"
+                        style={{ display: 'none' }}
+                        name="checkProfilePass"
+                        type="radio"
+                        onClick={checkProfile}
+                    ></input>
+                </div>
+                <div className="radio-from__flex">
+                    <label for="pass" className={Number(checkbox) === 1 ? 'form-update-profile-tab-focus' : ''}>
+                        Set Password
+                    </label>
+                    <input
+                        id="pass"
+                        style={{ display: 'none' }}
+                        name="checkProfilePass"
+                        type="radio"
+                        onClick={checkSetPassword}
+                    ></input>
+                </div>
+            </form>
+        </div>
+    );
+};
 const ProfileTabs = () => {
+    const dispatch = useDispatch();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
+    const [specificAddress, setSpecificAddress] = useState('');
+    const [gender, setGender] = useState('male');
     const [oldPassword, setOldPassword] = useState('');
     const [password, setPassword] = useState('');
-    const [address, setAddress] = useState('');
-    const [city, setCity] = useState('');
-    const [country, setCountry] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [uploadProfile, setUploadProfile] = useState(true); //ghi chú
     const [uploadPassword, setUploadPassword] = useState(false); //ghi chú
     const [checkbox, setCheckbox] = useState('0');
+    const [birthday, setBirthDay] = useState('2023-04-05');
     const refProfile = useRef(); /// ghi chú
     const refSetPassword = useRef(); /// ghi chú
 
-    const dispatch = useDispatch();
+    const [province, setProvince] = useState();
+    const [district, setDistrict] = useState();
+    const [ward, setWard] = useState();
+
+    const [tempAddress, setTemAddress] = useState({
+        provinces: [],
+        wards: [],
+        districts: [],
+    });
+    const handleSuccessGetAddress = (provinces) => {
+        setTemAddress((pre) => ({ ...pre, provinces: provinces }));
+    };
+    const getAddress = async () => {
+        dispatch(getListAddress(handleSuccessGetAddress));
+        // setTemAddress((pre) => ({ ...pre, provinces: provinces.data }));
+        return;
+    };
+    const changeDistrict = ({ district }) => {
+        if (district) {
+            setDistrict(district);
+            const wards = tempAddress.districts.find((tempDistrict) => tempDistrict.name === district)?.wards;
+            setTemAddress((pre) => ({ ...pre, wards: wards }));
+            setWard('');
+            return;
+        }
+    };
+    const changeProvince = ({ province }) => {
+        if (province) {
+            setProvince(province);
+            const districts = tempAddress.provinces.find((tempProvince) => tempProvince.name === province)?.districts;
+            setTemAddress((pre) => ({ ...pre, districts: districts, wards: [] }));
+            setDistrict('');
+            setWard('');
+        }
+    };
+
+    const defaultAddress = ({ district, province, ward }) => {
+        setProvince(province);
+        setDistrict(district);
+        setWard(ward);
+        const districts = provinces.find((tempProvince) => tempProvince.name === province)?.districts || [];
+        const wards = districts.find((tempDistrict) => tempDistrict.name === district)?.wards || [];
+        setTemAddress((pre) => ({ ...pre, districts: districts, wards: wards }));
+    };
+    const {
+        address: { provinces },
+    } = useSelector((state) => state.address);
 
     const userDetails = useSelector((state) => state.userDetails);
     const { loading, error, user } = userDetails;
 
     const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
-    const {
-        successPass: updatesuccessPass,
-        success: updatesuccess,
-        loading: updateLoading,
-        error: errorUpdate,
-    } = userUpdateProfile;
+    const { loading: updateLoading } = userUpdateProfile;
 
     function checkProfile() {
         let x = Number(checkbox);
@@ -62,6 +217,18 @@ const ProfileTabs = () => {
     const [objProfile, setObjProfile] = useState({});
     function checkObjProfile() {
         const profileObj = {};
+        if (isEmpty(specificAddress)) {
+            profileObj.specificAddress = 'Please input your specific address';
+        }
+        if (isEmpty(province)) {
+            profileObj.province = 'Please input your province';
+        }
+        if (isEmpty(ward)) {
+            profileObj.ward = 'Please input your ward';
+        }
+        if (isEmpty(district)) {
+            profileObj.district = 'Please input your district';
+        }
         if (isEmpty(name)) {
             profileObj.name = 'Please input your phone';
         }
@@ -72,21 +239,19 @@ const ProfileTabs = () => {
                 profileObj.phone = 'Incorrect phone number';
             }
         }
-        if (isEmpty(address)) {
-            profileObj.address = 'Please input your address';
-        }
-        if (isEmpty(city)) {
-            profileObj.city = 'Please input your city';
-        }
-        if (isEmpty(country)) {
-            profileObj.country = 'Please input your country';
-        }
+
         setObjProfile(profileObj);
         if (Object.keys(profileObj).length > 0) return false;
         return true;
     }
     // xử lý login validate profile upload
     const [objFormPass, setObjFromPass] = useState({});
+
+    const handleAfterFetch = {
+        success: () => {},
+        error: () => {},
+        finally: () => {},
+    };
     function checkPassword() {
         const passObj = {};
         if (isEmpty(oldPassword)) {
@@ -114,232 +279,280 @@ const ProfileTabs = () => {
         if (Object.keys(passObj).length > 0) return false;
         return true;
     }
+
+    useEffect(() => {
+        if (!provinces || provinces?.length === 0) {
+            getAddress();
+        } else {
+            handleSuccessGetAddress(provinces);
+        }
+    }, []);
+
     useEffect(() => {
         if (user) {
-            setName(user.name);
-            setEmail(user.email);
-            setPhone(user.phone);
-            setAddress(user.address);
-            setCity(user.city);
-            setCountry(user.country);
+            defaultAddress({
+                province: user?.address?.province,
+                district: user?.address?.district,
+                ward: user?.address?.ward,
+            });
+            if (user.name) setName(user.name);
+            if (user.email) setEmail(user.email);
+            if (user.phone) setPhone(user.phone);
+            if (user.gender) setGender(user.gender);
+            if (user?.address?.specificAddress) setSpecificAddress(user?.address?.specificAddress || '');
+            if (user.birthday) setBirthDay(moment(user.birthday).format('YYYY-MM-DD'));
         }
     }, [dispatch, user]);
 
     const submitUpdateProfile = (e) => {
         e.preventDefault();
         if (!checkObjProfile()) return;
-        dispatch(updateUserProfile({ id: user._id, name, email, phone, country, city, address }));
+        dispatch(
+            updateUserProfile({
+                id: user._id,
+                name,
+                email,
+                phone,
+                address: { province, district, ward, specificAddress },
+                gender,
+                birthday,
+            }),
+        );
     };
 
-    const submitUpdatePassword = (e) => {
-        e.preventDefault();
-        if (!checkPassword()) return; // check funtion check pass để kiểm tra xem có các trường bị rổng hay không
-        dispatch(updateUserPassword({ currentPassword: oldPassword, newPassword: password }));
+    const handleSuccessUpdatePassword = () => {
         setOldPassword('');
         setPassword('');
         setConfirmPassword('');
     };
+    const submitUpdatePassword = (e) => {
+        e.preventDefault();
+        if (!checkPassword()) return; // check funtion check pass để kiểm tra xem có các trường bị rổng hay không
+        dispatch(
+            updateUserPassword({ currentPassword: oldPassword, newPassword: password }, handleSuccessUpdatePassword),
+        );
+    };
+
     return (
-        <>
+        <Fragment>
             <Toast />
-            {/* {error && <Message variant="alert-danger">{error}</Message>} */}
             <div className="row form-container" style={{ position: 'relative' }}>
-                {/*Update profile*/}
-                {/* nut check radio */}
                 {loading && <FormLoading />}
                 {updateLoading && <FormLoading />}
-                <div className="radio-check">
-                    <from className="radio-from">
-                        <div className="radio-from__flex">
-                            <label for="profile" className={Number(checkbox) === 0 ? 'color' : ''}>
-                                Update Profile
-                            </label>
-                            <input
-                                id="profile"
-                                style={{ display: 'none' }}
-                                name="checkProfilePass"
-                                type="radio"
-                                onClick={checkProfile}
-                            ></input>
-                        </div>
-                        <div className="radio-from__flex">
-                            <label for="pass" className={Number(checkbox) === 1 ? 'color' : ''}>
-                                Set Password
-                            </label>
-                            <input
-                                id="pass"
-                                style={{ display: 'none' }}
-                                name="checkProfilePass"
-                                type="radio"
-                                onClick={checkSetPassword}
-                            ></input>
-                        </div>
-                    </from>
-                </div>
+                <ProfileTab checkProfile={checkProfile} checkSetPassword={checkSetPassword} checkbox={checkbox} />
+
                 <div
                     ref={refProfile}
-                    className={uploadProfile ? 'col-lg-12 col-md-12 col-sm-12 color' : 'col-lg-12 col-md-12 col-sm-12'}
+                    className={`col-lg-12 col-md-12 col-sm-12 ${uploadProfile ? 'form-update-profile-focus' : ''}`}
                     style={{ display: uploadProfile ? 'block' : 'none', position: 'relative' }}
                 >
                     <form
-                        className="row  form-container"
+                        className="row form-container form-update-profile"
                         onSubmit={submitUpdateProfile}
                         style={{ position: 'relative' }}
                     >
                         <div className="col-md-12">
-                            <div className="form">
-                                <label for="account-fn">UserName</label>
-                                <input
-                                    className="form-control"
-                                    type="text"
-                                    // required
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                />
-                                <p className="noti-validate">{objProfile.name}</p>
-                            </div>
+                            <TextField
+                                size="small"
+                                onChange={(e) => setName(e.target.value)}
+                                id="outlined-basic"
+                                label="Username"
+                                sx={{ width: '100%' }}
+                                variant="outlined"
+                                value={name}
+                            />
+                            <p className="noti-validate">{objProfile.name}</p>
                         </div>
 
-                        <div className="col-md-12">
-                            <div className="form">
-                                <label for="account-email">E-mail Address</label>
-                                <input
-                                    className="form-control"
-                                    type="email"
+                        <div className="col-md-12 d-flex form-update-profile-item">
+                            <div className="wrap-input-inline col-2-item">
+                                <TextField
+                                    size="small"
                                     disabled
+                                    id="outlined-basic"
+                                    label="Email"
+                                    sx={{ width: '100%' }}
+                                    variant="outlined"
                                     value={email}
-                                    // required
-                                    onChange={(e) => setEmail(e.target.value)}
                                 />
                                 <p className="noti-validate"></p>
                             </div>
-                        </div>
-
-                        <div className="col-md-12">
-                            <div className="form">
-                                <label>Phone</label>
-                                <input
-                                    className="form-control"
-                                    type="text"
-                                    value={phone}
-                                    // required
+                            <div className="wrap-input-inline col-2-item">
+                                <TextField
+                                    size="small"
+                                    type={'text'}
                                     onChange={(e) => setPhone(e.target.value)}
+                                    id="outlined-basic"
+                                    label="Phone"
+                                    sx={{ width: '100%' }}
+                                    variant="outlined"
+                                    value={phone}
                                 />
                                 <p className="noti-validate">{objProfile.phone}</p>
                             </div>
                         </div>
 
-                        <div className="col-md-12">
-                            <div className="form">
-                                <label>Address</label>
-                                <input
-                                    className="form-control"
-                                    type="text"
-                                    value={address}
-                                    // required
-                                    onChange={(e) => setAddress(e.target.value)}
-                                />
-                                <p className="noti-validate">{objProfile.address}</p>
+                        <div className="col-md-12 d-flex form-update-profile-item">
+                            <div className="wrap-input-inline col-2-item">
+                                <FormControl className="d-flex align-content-center">
+                                    <div className="form-update-profile-item-label">
+                                        <label>Giới tính</label>
+                                    </div>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="demo-controlled-radio-buttons-group"
+                                        name="controlled-radio-buttons-group"
+                                        value={gender}
+                                        onChange={(e) => setGender(e.target.value)}
+                                    >
+                                        <FormControlLabel value="male" control={<Radio size="small" />} label="Nam" />
+                                        <FormControlLabel value="female" control={<Radio size="small" />} label="Nữ" />
+                                    </RadioGroup>
+                                </FormControl>
+                                <p className="noti-validate"></p>
+                            </div>
+
+                            <div className="wrap-input-inline col-2-item">
+                                <FormControl className="d-flex align-content-center">
+                                    <div className="form-update-profile-item-label">
+                                        <label>Giới tính</label>
+                                    </div>
+                                    <input
+                                        type="date"
+                                        value={birthday}
+                                        onChange={(e) => {
+                                            setBirthDay(e.target.value);
+                                        }}
+                                    />
+                                </FormControl>
+                                <p className="noti-validate"></p>
                             </div>
                         </div>
 
-                        <div className="col-md-12">
-                            <div className="form">
-                                <label>City</label>
-                                <input
-                                    className="form-control"
-                                    type="text"
-                                    value={city}
-                                    // required
-                                    onChange={(e) => setCity(e.target.value)}
+                        <div
+                            className="col-md-12 d-flex justify-content-lg-between form-update-profile-item"
+                            style={{ width: '100%' }}
+                        >
+                            <div className="wrap-input-inline col-3-item">
+                                <Autocomplete
+                                    size="small"
+                                    sx={{ width: '100%' }}
+                                    value={
+                                        tempAddress?.provinces?.find((item) => item.name === province) || { name: '' }
+                                    }
+                                    fullWidth={true}
+                                    options={tempAddress.provinces}
+                                    getOptionLabel={(option) => option.name}
+                                    onChange={(e, value) => {
+                                        changeProvince({ province: value.name });
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            required
+                                            {...params}
+                                            label="Tỉnh/Thành phố"
+                                            inputProps={{
+                                                ...params.inputProps,
+                                            }}
+                                        />
+                                    )}
                                 />
-                                <p className="noti-validate">{objProfile.city}</p>
+                                <p className="noti-validate">{objProfile.province}</p>
+                            </div>
+
+                            <div className="wrap-input-inline col-3-item">
+                                <Autocomplete
+                                    size="small"
+                                    sx={{ width: '100%' }}
+                                    value={
+                                        tempAddress?.districts?.find((item) => item.name === district) || { name: '' }
+                                    }
+                                    fullWidth={true}
+                                    disabled={!province}
+                                    options={tempAddress.districts}
+                                    getOptionLabel={(option) => option.name}
+                                    onChange={(e, value) => {
+                                        changeDistrict({ district: value.name });
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            required
+                                            {...params}
+                                            label="Quận/ Huyện"
+                                            inputProps={{
+                                                ...params.inputProps,
+                                            }}
+                                        />
+                                    )}
+                                />
+                                <p className="noti-validate">{objProfile.district}</p>
+                            </div>
+                            <div className="wrap-input-inline col-3-item">
+                                <Autocomplete
+                                    size="small"
+                                    sx={{ width: '100%' }}
+                                    value={tempAddress?.wards?.find((item) => item.name === ward) || { name: '' }}
+                                    fullWidth={true}
+                                    options={tempAddress.wards}
+                                    getOptionLabel={(option) => option.name}
+                                    onChange={(e, value) => {
+                                        setWard(value.name);
+                                    }}
+                                    disabled={!district}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            required
+                                            {...params}
+                                            label="Phường/ Xã"
+                                            inputProps={{
+                                                ...params.inputProps,
+                                            }}
+                                        />
+                                    )}
+                                />
+                                <p className="noti-validate">{objProfile.ward}</p>
+                            </div>
+                        </div>
+                        <div className="col-md-12 d-flex form-update-profile-item">
+                            <div className="wrap-input-inline col-1-item">
+                                <TextField
+                                    size="small"
+                                    id="outlined-basic"
+                                    label="Địa chỉ chi tiết"
+                                    sx={{ width: '100%' }}
+                                    variant="outlined"
+                                    value={specificAddress}
+                                    onChange={(e) => {
+                                        setSpecificAddress(e.target.value);
+                                    }}
+                                />
+                                <p className="noti-validate">{objProfile.specificAddress}</p>
                             </div>
                         </div>
 
-                        <div className="col-md-12">
-                            <div className="form">
-                                <label>country</label>
-                                <input
-                                    className="form-control"
-                                    type="text"
-                                    value={country}
-                                    // required
-                                    onChange={(e) => setCountry(e.target.value)}
-                                />
-                                <p className="noti-validate">{objProfile.country}</p>
-                            </div>
-                        </div>
-                        <div className="button-submit">
-                            <button type="submit">Update Profile</button>
+                        <div className=" btn-update-profile">
+                            <Button variant="contained" className="btn btn-primary" type="submit">
+                                Update Profile
+                            </Button>
                         </div>
                     </form>
                 </div>
 
                 {/*Update password*/}
-                <div
-                    ref={refSetPassword}
-                    className={uploadPassword ? 'col-lg-12 col-md-12 col-sm-12 color' : 'col-lg-12 col-md-12 col-sm-12'}
-                    style={{ display: uploadPassword ? 'block' : 'none' }}
-                >
-                    {/* dòng này sơn nó in ra thống báo lỗi sơn nhớ sửa lại nhá */}
-                    {/* {errorUpdate && <Message variant="alert-danger">{errorUpdate}</Message>} */}
-                    <form className="row  form-container" onSubmit={submitUpdatePassword}>
-                        <div className="col-md-12">
-                            <div className="form">
-                                <label for="account-pass">Old Password</label>
-                                <input
-                                    className="form-control"
-                                    type="password"
-                                    value={oldPassword}
-                                    onChange={(e) => {
-                                        objFormPass.oldPassword = ' ';
-                                        setOldPassword(e.target.value);
-                                    }}
-                                />
-                                <p className="noti-validate">{objFormPass.oldPassword}</p>
-                            </div>
-                        </div>
-
-                        <div className="col-md-12">
-                            <div className="form">
-                                <label for="account-pass">New Password</label>
-                                <input
-                                    className="form-control"
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => {
-                                        objFormPass.password = ' ';
-                                        setPassword(e.target.value);
-                                    }}
-                                />
-                                <p className="noti-validate">{objFormPass.password}</p>
-                            </div>
-                        </div>
-
-                        <div className="col-md-12">
-                            <div className="form">
-                                <label for="account-confirm-pass">Confirm Password</label>
-                                <input
-                                    className="form-control"
-                                    type="password"
-                                    value={confirmPassword}
-                                    onChange={(e) => {
-                                        objFormPass.confirmPassword = ' ';
-                                        setConfirmPassword(e.target.value);
-                                    }}
-                                />
-                                <p className="noti-validate">{objFormPass.confirmPassword}</p>
-                            </div>
-                        </div>
-
-                        <div className="button-submit">
-                            <button type="submit">Update Password</button>
-                        </div>
-                    </form>
-                </div>
+                <FormUpdatePassword
+                    confirmPassword={confirmPassword}
+                    objFormPass={objFormPass}
+                    oldPassword={oldPassword}
+                    password={password}
+                    refSetPassword={refSetPassword}
+                    setConfirmPassword={setConfirmPassword}
+                    setOldPassword={setOldPassword}
+                    setPassword={setPassword}
+                    submitUpdatePassword={submitUpdatePassword}
+                    uploadPassword={uploadPassword}
+                />
             </div>
-        </>
+        </Fragment>
     );
 };
 

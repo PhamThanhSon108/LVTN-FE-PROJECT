@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import $ from 'jquery';
 import { useDispatch } from 'react-redux';
-import { logout } from '../Redux/Actions/userActions';
+import { logout } from '../Redux/Actions/UserActions';
 
 const Header = () => {
     const dispatch = useDispatch();

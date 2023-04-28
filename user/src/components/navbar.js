@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { ListCategory } from '../Redux/Actions/categoryActions';
-import { listProduct } from '../Redux/Actions/ProductActions';
+import { listProduct } from '../Redux/Actions/productActions';
 
 export default function NavBar({ onRemove }) {
     const dispatch = useDispatch();

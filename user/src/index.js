@@ -7,10 +7,6 @@ import BackToTop from './components/Button/BackToTop';
 
 ReactDOM.render(
     <Provider store={store}>
-        <div class="pyro">
-            <div class="before"></div>
-            <div class="after"></div>
-        </div>
         <BackToTop />
         <App />
     </Provider>,
