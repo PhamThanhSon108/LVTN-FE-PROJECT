@@ -1,0 +1,26 @@
+.products {
+  width: 100%;
+  height: 500px;
+  padding: var(--space-16) 0;
+
+  .productsHeader {
+    display: flex;
+    align-items: end;
+  }
+
+  .productsHeaderFilter {
+    display: flex;
+    align-items: end;
+  }
+
+  .searchProducts {
+    margin-right: var(--space-16);
+    min-width: 250px;
+  }
+}
+.container {
+  width: 100%;
+  .productsWrapper {
+    width: 50%;
+  }
+}

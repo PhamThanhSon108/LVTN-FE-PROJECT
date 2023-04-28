@@ -140,16 +140,6 @@ const EditProductMain = (props) => {
   };
   const submitHandler = (data, e) => {
     e.preventDefault();
-    console.log(
-      handleUpdateStatusPreUpdate(
-        product?.variants,
-        data.variants.reduce((variants, variant) => {
-          variants = variants.concat(variant.field);
-          return variants;
-        }, []),
-      ),
-      'submit',
-    );
     if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
       toast.error('Name of classify cannot be duplicated!!', ToastObjects);
       return;
