@@ -29,8 +29,6 @@ export const listProducts =
     try {
       dispatch({ type: PRODUCT_LIST_REQUEST });
       const { data } = await request.get(`/products?category=${category}&keyword=${keyword}&pageNumber=${pageNumber}`);
-
-      console.log(data, 'data');
       dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
     } catch (error) {
       const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -102,6 +100,22 @@ export const updateProduct = (product) => async (dispatch) => {
     toast.error(message, ToastObjects);
     dispatch({
       type: PRODUCT_UPDATE_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const allProducts = (fetchAllProduct) => async (dispatch) => {
+  try {
+    dispatch({ type: PRODUCT_LIST_REQUEST });
+    const { data } = await request.get(`/products/admin`);
+
+    dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data || { products: [] } });
+    fetchAllProduct.success(data.products || []);
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+    dispatch({
+      type: PRODUCT_LIST_FAIL,
       payload: message,
     });
   }

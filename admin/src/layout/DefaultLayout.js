@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import Sidebar from '../components/sidebar';
 import Header from '../components/Header';
-import { LocalizationProvider } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 export default function DefaultLayout({ children = <Fragment />, header = true, sidebar = true }) {
