@@ -16,7 +16,6 @@ import {
   PRODUCT_UPDATE_SUCCESS,
 } from '../Constants/ProductConstants';
 import request from '../../utils/request';
-import { logout } from './userActions';
 import { toast } from 'react-toastify';
 const ToastObjects = {
   pauseOnFocusLoss: false,
@@ -26,30 +25,15 @@ const ToastObjects = {
 };
 export const listProducts =
   (category = '', keyword = '', pageNumber = '') =>
-  async (dispatch, getState) => {
+  async (dispatch) => {
     try {
       dispatch({ type: PRODUCT_LIST_REQUEST });
+      const { data } = await request.get(`/products?category=${category}&keyword=${keyword}&pageNumber=${pageNumber}`);
 
-      const {
-        userLogin: { userInfo },
-      } = getState();
-      const config = {
-        headers: {
-          Authorization: `Bearer ${userInfo.accessToken}`,
-        },
-      };
-
-      const { data } = await request.get(
-        `/product?category=${category}&keyword=${keyword}&pageNumber=${pageNumber}`,
-        config,
-      );
-
+      console.log(data, 'data');
       dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
     } catch (error) {
       const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-      if (message === 'Not authorized, token failed') {
-        dispatch(logout());
-      }
       dispatch({
         type: PRODUCT_LIST_FAIL,
         payload: message,
@@ -58,27 +42,14 @@ export const listProducts =
   };
 
 // DELETE PRODUCT
-export const deleteProduct = (id) => async (dispatch, getState) => {
+export const deleteProduct = (id) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_DELETE_REQUEST });
-
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.accessToken}`,
-      },
-    };
-    await request.delete(`/product/${id}`, config);
+    await request.delete(`/products/${id}`);
     toast.success('Product was deleted', ToastObjects);
     dispatch({ type: PRODUCT_DELETE_SUCCESS });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-    if (message === 'Not authorized, token failed') {
-      dispatch(logout());
-    }
     dispatch({
       type: PRODUCT_DELETE_FAIL,
       payload: message,
@@ -87,61 +58,15 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
 };
 
 // CREATE PRODUCT
-// export const createProduct =
-//   ({ name, description, category, image, variants }) =>
-//   async (dispatch, getState) => {
-//     try {
-//       dispatch({ type: PRODUCT_CREATE_REQUEST });
-
-//       const {
-//         userLogin: { userInfo },
-//       } = getState();
-//       const config = {
-//         headers: {
-//           Authorization: `Bearer ${userInfo.accessToken}`,
-//           // 'content-type': 'multipart/form-data',
-//         },
-//       };
-
-//       const { data } = await request.post(`/product/`, { name, description, category, image, variants }, config);
-
-//       dispatch({ type: PRODUCT_CREATE_SUCCESS, payload: data });
-//     } catch (error) {
-//       const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-//       if (message === 'Not authorized, token failed') {
-//         dispatch(logout());
-//       }
-//       dispatch({
-//         type: PRODUCT_CREATE_FAIL,
-//         payload: message,
-//       });
-//     }
-//   };
-
-// CREATE PRODUCT
-export const createProduct = (newProduct) => async (dispatch, getState) => {
+export const createProduct = (newProduct) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_CREATE_REQUEST });
-
-    const {
-      userLogin: { userInfo },
-    } = getState();
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.accessToken}`,
-        // 'content-type': 'multipart/form-data',
-      },
-    };
-
-    const { data } = await request.post(`/product/`, newProduct, config);
+    const { data } = await request.post(`/products/`, newProduct);
     toast.success('Add product success', ToastObjects);
     dispatch({ type: PRODUCT_CREATE_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
     toast.success(message, ToastObjects);
-    if (message === 'Not authorized, token failed') {
-      dispatch(logout());
-    }
     dispatch({
       type: PRODUCT_CREATE_FAIL,
       payload: message,
@@ -149,16 +74,14 @@ export const createProduct = (newProduct) => async (dispatch, getState) => {
   }
 };
 // EDIT PRODUCT
-export const editProduct = (id) => async (dispatch) => {
+export const fetchProductToEdit = (id, fetchProduct) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_EDIT_REQUEST });
-    const { data } = await request.get(`/product/${id}`);
-    dispatch({ type: PRODUCT_EDIT_SUCCESS, payload: data });
+    const { data } = await request.get(`/products/${id}`);
+    dispatch({ type: PRODUCT_EDIT_SUCCESS, payload: data?.data?.product || {} });
+    fetchProduct?.success(data?.data?.product || {});
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-    if (message === 'Not authorized, token failed') {
-      dispatch(logout());
-    }
     dispatch({
       type: PRODUCT_EDIT_FAIL,
       payload: message,
@@ -167,32 +90,16 @@ export const editProduct = (id) => async (dispatch) => {
 };
 
 // UPDATE PRODUCT
-export const updateProduct = (product) => async (dispatch, getState) => {
+export const updateProduct = (product) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_UPDATE_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${userInfo.accessToken}`,
-      },
-    };
-
-    const { data } = await request.put(`/product/${product.get('_id')}`, product, config);
+    await request.put(`/products/${product.get('_id')}`, product);
     toast.success('Success update', ToastObjects);
     dispatch({ type: PRODUCT_UPDATE_SUCCESS });
-    // dispatch({ type: PRODUCT_EDIT_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
     toast.error(message, ToastObjects);
-
-    if (message === 'Not authorized, token failed') {
-      dispatch(logout());
-    }
     dispatch({
       type: PRODUCT_UPDATE_FAIL,
       payload: message,

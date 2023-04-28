@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Toast from '../LoadingError/Toast';
 import Loading from '../LoadingError/Loading';
 import { useDispatch, useSelector } from 'react-redux';
-import { UpdateCurrentCategory } from '../../Redux/Actions/categoryActions';
+import { UpdateCurrentCategory } from '../../Redux/Actions/CategoryActions';
 import { toast } from 'react-toastify';
 import { CATEGORY_UPDATE_RESET } from '../../Redux/Constants/CategoryConstants';
 

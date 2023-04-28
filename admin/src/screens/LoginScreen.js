@@ -2,28 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../components/LoadingError/Loading';
 import Toast from '../components/LoadingError/Toast';
-import { login } from '../Redux/Actions/userActions';
+import { login } from '../Redux/Actions/UserActions';
 import Message from './../components/LoadingError/Error';
+import { useHistory } from 'react-router-dom';
 
-const Login = ({ history }) => {
+const Login = () => {
   window.scrollTo(0, 0);
+  const history = useHistory();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
-  const { error, loading, userInfo } = userLogin;
+  const { error, loading } = userLogin;
 
-  useEffect(() => {
-    if (userInfo) {
+  const handleLogin = {
+    success: () => {
       history.push('/');
-    }
-  }, [userInfo]);
+    },
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(login(email, password));
+    dispatch(login(email, password, handleLogin));
   };
   return (
     <>

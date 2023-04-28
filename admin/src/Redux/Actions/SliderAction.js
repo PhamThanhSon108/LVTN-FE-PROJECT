@@ -13,7 +13,7 @@ import {
   SLIDER_LIST_REQUEST,
   SLIDER_LIST_SUCCESS,
 } from '../Constants/SliderConstants';
-import { logout } from './userActions';
+import { logout } from './UserActions';
 const ToastObjects = {
   pauseOnFocusLoss: false,
   draggable: false,

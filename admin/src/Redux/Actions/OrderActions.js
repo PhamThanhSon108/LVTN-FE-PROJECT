@@ -15,7 +15,7 @@ import {
   ORDER_UPDATE_STATUS_REQUEST,
   ORDER_UPDATE_STATUS_SUCCESS,
 } from '../Constants/OrderConstants';
-import { logout } from './userActions';
+import { logout } from './UserActions';
 import request from '../../utils/request';
 import { toast } from 'react-toastify';
 import { ToastObject } from '../../components/LoadingError/ToastObject';

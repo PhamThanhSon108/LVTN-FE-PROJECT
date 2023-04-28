@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { DeleteCategory, ListCategory } from '../../Redux/Actions/categoryActions';
+import { DeleteCategory, ListCategory } from '../../Redux/Actions/CategoryActions';
 import Loading from '../LoadingError/Loading';
 import { toast } from 'react-toastify';
 import Toast from '../LoadingError/Toast';
@@ -69,7 +69,7 @@ const CategoriesTable = ({ handleEditInfo, handleCurrentCategory }) => {
                 {/* Table Data */}
                 <tbody>
                     {categories &&
-                        categories.map((category, index) => (
+                        categories?.map((category, index) => (
                             <tr>
                                 <td className="">
                                     {/* <div className="form-check">

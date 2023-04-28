@@ -1,19 +1,9 @@
-import React from "react";
-import Sidebar from "./../components/sidebar";
-import Header from "./../components/Header";
+import React from 'react';
 
-import Slidermain from "../components/slider/Slidermain";
+import Slidermain from '../components/Slider/Slidermain';
 
 const SliderScreen = () => {
-  return (
-    <>
-      <Sidebar />
-      <main className="main-wrap">
-        <Header />
-        <Slidermain />
-      </main>
-    </>
-  );
+  return <Slidermain />;
 };
 
 export default SliderScreen;

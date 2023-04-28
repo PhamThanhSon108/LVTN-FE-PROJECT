@@ -1,0 +1,18 @@
+.voucherContainer {
+  display: flex;
+  flex-direction: column;
+}
+.voucherWrapper {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-12) var(--space-24);
+}
+
+.voucherForm {
+  display: flex;
+  flex-direction: column;
+  .voucherFormItem {
+    margin-bottom: var(--space-8);
+    height: var(--height-input);
+  }
+}

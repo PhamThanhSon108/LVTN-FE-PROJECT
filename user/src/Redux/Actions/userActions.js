@@ -15,7 +15,6 @@ import {
     USER_LOGOUT,
     USER_REGISTER_FAIL,
     USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
     USER_REGISTER_VERIFY,
     USER_UPDATE_PASSWORD_SUCCESS,
     USER_UPDATE_PROFILE_FAIL,
@@ -153,7 +152,7 @@ export const resetPassWord = (resetPasswordToken, data, history) => async (dispa
     try {
         dispatch({ type: RESET_PASSWORD_REQUEST });
 
-        const dataApi = await request.patch(`api/users/auth/reset-password?resetPasswordToken=${resetPasswordToken}`, {
+        const dataApi = await request.patch(`/users/auth/reset-password?resetPasswordToken=${resetPasswordToken}`, {
             ...data,
         });
         dispatch({ type: RESET_PASSWORD_SUCCESS, payload: dataApi });

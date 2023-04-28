@@ -9,7 +9,7 @@ import Slide from '@mui/material/Slide';
 import { useDispatch } from 'react-redux';
 import { createSlider, updateSlider } from '../Redux/Actions/SliderAction';
 import { Image } from 'primereact/image';
-import AddSlider from '../components/slider/AddSlider';
+import AddSlider from '../components/Slider/AddSlider';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

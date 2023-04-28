@@ -1,18 +1,37 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect, Fragment } from 'react';
 import Toast from './../LoadingError/Toast';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { editProduct, updateProduct } from './../../Redux/Actions/ProductActions';
-import { PRODUCT_UPDATE_RESET } from '../../Redux/Constants/ProductConstants';
+import { fetchProductToEdit, updateProduct } from './../../Redux/Actions/ProductActions';
 import { toast } from 'react-toastify';
-import Message from '../LoadingError/Error';
 import Loading from '../LoadingError/Loading';
-import { ListCategory } from '../../Redux/Actions/categoryActions';
+import { ListCategory } from '../../Redux/Actions/CategoryActions';
 import { Controller, useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 import { FileUploadDemo } from './UploadImage';
 import { Image } from 'primereact/image';
-import CropImage from './cropimage';
+import { Button } from 'primereact/button';
+
+const MainLayout = ({ children }) => {
+  return (
+    <section className="content-main" style={{ maxWidth: '1200px' }}>
+      <div className="content-header">
+        <Link to="/product" className="btn btn-danger text-white">
+          <i className="fas fa-arrow-left" />
+        </Link>
+        <h2 className="content-title">Cập nhật sản phẩm</h2>
+      </div>
+      <div className="row mb-4">
+        <div className="col-xl-12 col-lg-12">
+          <div className="card mb-4 shadow-sm">
+            <div className="card-body">{children}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const ToastObjects = {
   pauseOnFocusLoss: false,
@@ -20,105 +39,96 @@ const ToastObjects = {
   pauseOnHover: false,
   autoClose: 2000,
 };
+
+const methodToChange = {
+  add: 1,
+  update: 0,
+  delete: -1,
+};
+
+const handleUpdateStatusPreUpdate = (oldVariants = [], variants = []) => {
+  const variantsIsDeleted = oldVariants.reduce((variantTarget, oldVariant) => {
+    if (!variants.find((variant) => oldVariant?._id === variant?._id && variant?.status === methodToChange.update)) {
+      variantTarget.push({ ...oldVariant, status: methodToChange.delete });
+    }
+    return variantTarget;
+  }, []);
+  return variants.concat(variantsIsDeleted);
+};
 const EditProductMain = (props) => {
   const [changeForALL, setChangForAll] = useState(false);
-
   const { productId } = props;
   const [category, setCategory] = useState('');
   const [name, setName] = useState('');
-  const [price, setPrice] = useState(0);
   const [image, setImage] = useState('');
   const [newImage, setNewImage] = useState('');
-  const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState('');
+  const [classifyValue, setClassifyValue] = useState();
 
   const dispatch = useDispatch();
   const productEdit = useSelector((state) => state.productEdit);
-  const { loading, error, success: successGetProduct, product } = productEdit;
-  const defaultColor =
-    product.variants?.reduce((color, value) => {
-      if (!color.includes(value.color)) color.push(value.color);
-      return color;
-    }, []) || [];
+  const { loading, error, product } = productEdit;
 
-  const defaultSize =
-    product.variants?.reduce((sizes, value) => {
-      if (!sizes.includes(value.size)) sizes.push(value.size);
-      return sizes;
-    }, []) || [];
-
-  const defaultVariants = defaultSize?.map((value, index) =>
-    product.variants.reduce(
-      (variants, variant, i) => {
-        if (variant.size === value) variants = { field: [...variants.field, variant] };
-        return variants;
-      },
-      { field: [] },
-    ),
-  );
   const defaultGroupProduct = {
-    option: ['size', 'color'],
-    size: defaultSize,
-
-    color: defaultColor,
-
-    variants: defaultVariants,
+    option: ['firstOption', 'secondOption'],
+    secondOption: [],
+    firstOption: [],
+    variants: [],
   };
-  const [size, setSize] = useState([]);
-  const [color, setColor] = useState([]);
-  const {
-    getValues,
-    setValue,
-    register,
-    handleSubmit,
-    watch,
-    reset,
-    unregister,
-    control,
-    formState: { errors, touchedFields },
-  } = useForm({
+
+  const { getValues, setValue, register, handleSubmit, watch, control } = useForm({
     defaultValues: defaultGroupProduct,
     shouldUseNativeValidation: true,
   });
 
-  const productUpdate = useSelector((state) => state.productUpdate);
-  const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = productUpdate;
+  const fetchProduct = {
+    success: (product) => {
+      const defaultFirstValue =
+        product?.variants?.reduce((storeVariant, value) => {
+          const valueInStoreVariant = storeVariant.includes(value?.attributes?.[0]?.value);
+          if (!valueInStoreVariant) storeVariant.push(value?.attributes?.[0]?.value);
+          return storeVariant;
+        }, []) || [];
 
-  const lcategories = useSelector((state) => state.CategoryList);
-  const { categories } = lcategories;
+      const defaultSecondValue =
+        product?.variants?.reduce((storeVariant, value) => {
+          const valueInStoreVariant = storeVariant.includes(value?.attributes?.[1]?.value);
+          if (!valueInStoreVariant) storeVariant.push(value?.attributes?.[1]?.value);
+          return storeVariant;
+        }, []) || [];
+
+      const defaultVariants = defaultFirstValue?.map((value, index) =>
+        product.variants.reduce(
+          (variants, variant, i) => {
+            if (variant.attributes[0].value === value)
+              variants = { field: [...variants.field, { ...variant, status: methodToChange.update }] };
+            return variants;
+          },
+          { field: [] },
+        ),
+      );
+
+      setValue('firstOption', defaultFirstValue);
+      setValue('secondOption', defaultSecondValue);
+      setValue('variants', defaultVariants);
+      setName(product.name);
+      setDescription(product.description);
+      setCategory(product.category);
+      setImage(product.images?.[0]);
+    },
+  };
+
   useEffect(() => {
     dispatch(ListCategory());
-    if (successUpdate) {
-      dispatch(editProduct(productId));
-      dispatch({ type: PRODUCT_UPDATE_RESET });
-      // toast.success('Product Updated', ToastObjects);
-    } else {
-      if (!product.name || product._id !== productId) {
-        dispatch(editProduct(productId));
-      } else {
-        setName(product.name);
-        setDescription(product.description);
-        setCountInStock(product.countInStock);
-        setCategory(product.category);
-        setImage(product.image);
-        setPrice(product.price);
-      }
-    }
-  }, [product, dispatch, productId, successUpdate]);
+    dispatch(fetchProductToEdit(productId, fetchProduct));
+  }, [productId, dispatch]);
 
-  useEffect(() => {
-    dispatch(editProduct(productId));
-  }, [productId]);
+  const productUpdate = useSelector((state) => state.productUpdate);
+  const { loading: loadingUpdate } = productUpdate;
 
-  useEffect(() => {
-    if (successGetProduct) {
-      setValue('size', defaultSize);
-      setValue('color', defaultColor);
-      setValue('variants', defaultVariants);
-      setColor(defaultColor);
-      setSize(defaultSize);
-    }
-  }, [successGetProduct, product]);
+  const categoriesInStore = useSelector((state) => state.CategoryList);
+  const { categories } = categoriesInStore;
+
   const checkSameValue = (arrValue) => {
     return (
       arrValue?.length ===
@@ -130,11 +140,21 @@ const EditProductMain = (props) => {
   };
   const submitHandler = (data, e) => {
     e.preventDefault();
-    if (!checkSameValue(data.color) || !checkSameValue(data.size)) {
+    console.log(
+      handleUpdateStatusPreUpdate(
+        product?.variants,
+        data.variants.reduce((variants, variant) => {
+          variants = variants.concat(variant.field);
+          return variants;
+        }, []),
+      ),
+      'submit',
+    );
+    if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
       toast.error('Name of classify cannot be duplicated!!', ToastObjects);
       return;
     }
-    if (category != -1) {
+    if (category !== -1) {
       let newProduct = new FormData();
       newProduct.append('_id', productId);
       newProduct.append('name', name);
@@ -143,364 +163,357 @@ const EditProductMain = (props) => {
       newProduct.append(
         'variants',
         JSON.stringify(
-          data.variants.reduce((variants, variant) => {
-            variants = variants.concat(variant.field);
-            return variants;
-          }, []),
+          product?.variants,
+          handleUpdateStatusPreUpdate(
+            data.variants.reduce((variants, variant) => {
+              variants = variants.concat(variant.field);
+              return variants;
+            }, []),
+          ),
         ),
       );
       newImage ? newProduct.append('productImage', newImage) : newProduct.append('productImage', image);
-      // dispatch(
-      //   updateProduct({
-      //     _id: productId,
-      //     name,
-      //     category,
-      //     description,
-      //     image,
-      //     variants: data.variants.reduce((variants, variant) => {
-      //       variants = variants.concat(variant.field);
-      //       return variants;
-      //     }, []),
-      //   }),
-      // );
       dispatch(updateProduct(newProduct));
     }
   };
 
+  if (loading) {
+    return (
+      <MainLayout>
+        <Loading />
+      </MainLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <MainLayout>
+        <Fragment />
+      </MainLayout>
+    );
+  }
+
+  const labelOfFirstOption = product?.variants?.[0]?.attributes?.[0]?.name || '';
+  const labelOfSecondOption = product?.variants?.[1]?.attributes?.[1]?.name || '';
   return (
     <>
       <Toast />
       <section className="content-main" style={{ maxWidth: '1200px' }}>
         <form onSubmit={handleSubmit(submitHandler)}>
           <div className="content-header">
-            <Link to="/product" className="btn btn-danger text-white">
-              Go to products
+            <Link to="/products" className="btn btn-danger text-white">
+              <i className="fas fa-arrow-left" />
             </Link>
-            <h2 className="content-title">Update Product</h2>
+            <h2 className="content-title">Cập nhật sản phẩm</h2>
           </div>
 
           <div className="row mb-4">
             <div className="col-xl-12 col-lg-12">
               <div className="card mb-4 shadow-sm">
                 <div className="card-body">
-                  {/* {loadingUpdate && <Loading />} */}
-                  {loading ? (
-                    <Loading />
-                  ) : error ? (
-                    <></>
-                  ) : (
-                    <>
+                  <div className="mb-4">
+                    <label htmlFor="product_title" className="form-label">
+                      Tên sản phẩm
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Type here"
+                      className="form-control"
+                      id="product_title"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label htmlFor="product_category" className="form-label">
+                      Thể loại
+                    </label>
+                    <select
+                      type="text"
+                      id="product_category"
+                      className="form-select"
+                      placeholder="Category"
+                      required
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                    >
+                      <option value={-1} selected>
+                        Chọn thể loại
+                      </option>
+                      {categories?.map((cate, index) => (
+                        <option key={cate._id} value={cate._id}>
+                          {cate.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="form-label">Mô tả</label>
+                    <textarea
+                      placeholder="Nhập mô tả"
+                      className="form-control"
+                      rows="7"
+                      required
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                    ></textarea>
+                  </div>
+                  <div className="mb-4">
+                    <label className="form-label">Ảnh cũ của sản phẩm</label>
+
+                    <Image src={image} template="Preview Content" alt="Image Text" preview width="40px" />
+
+                    <FileUploadDemo setImage={(value) => setNewImage(value)} name={name} />
+                  </div>
+
+                  <div className="card mb-4 shadow-sm">
+                    <div className="card-body">
                       <div className="mb-4">
-                        <label htmlFor="product_title" className="form-label">
-                          Product title
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Type here"
-                          className="form-control"
-                          id="product_title"
-                          required
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                        />
+                        <h3>Thông tin bán hàng</h3>
                       </div>
 
-                      <div className="mb-4">
-                        <label htmlFor="product_category" className="form-label">
-                          Category
-                        </label>
-                        <select
-                          type="text"
-                          id="product_category"
-                          className="form-select"
-                          placeholder="Category"
-                          required
-                          value={category}
-                          onChange={(e) => setCategory(e.target.value)}
-                        >
-                          <option value={-1} selected>
-                            Please select category
-                          </option>
-                          {categories.map((cate, index) => (
-                            <option key={index} value={cate._id}>
-                              {cate.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div className="mb-4">
-                        <label className="form-label">Description</label>
-                        <textarea
-                          placeholder="Type here"
-                          className="form-control"
-                          rows="7"
-                          required
-                          value={description}
-                          onChange={(e) => setDescription(e.target.value)}
-                        ></textarea>
-                      </div>
-                      <div className="mb-4">
-                        <label className="form-label">Old Images</label>
-
-                        <Image src={image} template="Preview Content" alt="Image Text" preview width="40px" />
-
-                        <FileUploadDemo setImage={(value) => setNewImage(value)} name={name} />
-                      </div>
-
-                      <div className="card mb-4 shadow-sm">
-                        <div className="card-body">
-                          <div className="mb-4">
-                            <h3>Information sales</h3>
-                          </div>
-
-                          {getValues('option')?.map((valueOption, index) => {
-                            //Tránh ko bị rerender 2 lần trong setState
-                            let dem = 0;
-                            let demDelete = 0;
-                            return (
-                              <>
-                                <div className="mb-4 d-flex" key={uuidv4()}>
-                                  <div className="col-1 col-md-2">{index == 0 ? 'Size' : 'Color'}</div>
-                                  <div className="card-body shadow-sm col-11">
-                                    {getValues(valueOption)?.map((valueField, i) => (
-                                      <div className="col-mb-11 d-flex" key={uuidv4()} style={{ marginTop: '15px' }}>
-                                        <label className="col-2 text-start ">Name of classify</label>
-                                        <div className="col-10 d-flex">
-                                          {/* <input
-                                            {...register(`${valueOption}.${i}`, {
-                                              required: 'This is required',
-                                            })}
+                      {getValues('option')?.map((valueOption, index) => {
+                        let dem = 0;
+                        return (
+                          <>
+                            <div className="mb-4 d-flex" key={uuidv4()}>
+                              <div className="col-1 col-md-2">{index === 0 ? 'Kích thước' : 'Màu sắc'}</div>
+                              <div className="card-body shadow-sm col-11">
+                                {getValues(valueOption)?.map((valueField, i) => (
+                                  <div className="col-mb-11 d-flex" key={uuidv4()} style={{ marginTop: '15px' }}>
+                                    <label className="col-2 text-start ">Tên của phân loại hàng</label>
+                                    <div className="col-10 d-flex">
+                                      <Controller
+                                        control={control}
+                                        name={`${valueOption}.${i}`}
+                                        render={({ field }) => (
+                                          <input
+                                            {...field}
+                                            onBlur={(e) => {
+                                              setClassifyValue(!classifyValue);
+                                              field.onBlur(e);
+                                            }}
+                                            required
                                             className="flex-grow-1 form-control"
-                                            name={`${valueOption}.${i}`}
-                                            type="text"
-                                            placeholder="Enter name of classify"
-                                            aria-label="Price"
-                                            aria-describedby="basic-addon1"
-                                          ></input>{' '} */}
-                                          <Controller
-                                            control={control}
-                                            name={`${valueOption}.${i}`}
-                                            render={({ field }) => (
-                                              <input {...field} required className="flex-grow-1 form-control" />
-                                            )}
                                           />
-                                          {getValues(valueOption).length > 1 && (
-                                            <span
-                                              onClick={() => {
-                                                if (dem == 0) {
-                                                  if (valueOption === 'size') {
-                                                    setValue(
-                                                      `variants`,
-                                                      getValues(`variants`).filter((value, ind) => ind !== i),
-                                                    );
-                                                    setValue(
-                                                      'size',
-                                                      getValues('size').filter((value, ind) => ind !== i),
-                                                    );
-                                                    setSize((pre) => {
-                                                      //   unregister(`size.${i}`);
-
-                                                      return [...pre.filter((value, ind) => ind !== i)];
-                                                    });
-                                                  } else {
-                                                    setValue(
-                                                      `variants`,
-                                                      getValues(`variants`).map((value) =>
-                                                        value.field.reduce(
-                                                          (variants, variant, i) => {
-                                                            if (variant.color !== valueField)
-                                                              variants = { field: [...variants.field, variant] };
-                                                            return variants;
-                                                          },
-                                                          { field: [] },
-                                                        ),
-                                                      ),
-                                                    );
-                                                    setValue(
-                                                      'color',
-                                                      getValues('color').filter((value, ind) => ind !== i),
-                                                    );
-                                                    setColor((pre) => {
-                                                      return [...pre.filter((value, ind) => ind !== i)];
-                                                    });
-                                                  }
-                                                }
-
-                                                dem++;
-                                              }}
-                                              style={{
-                                                display: 'flex',
-                                                margin: '15px',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                fontWeight: 500,
-                                                cursor: 'pointer',
-                                              }}
-                                            >
-                                              <i className="fas fa-trash-alt" style={{ color: 'red' }}></i>
-                                            </span>
-                                          )}
-                                        </div>
-                                      </div>
-                                    ))}
-                                    {getValues(valueOption).length <= 10 && (
-                                      <div className="mb-4 d-flex">
-                                        <div
-                                          style={{ cursor: 'pointer' }}
-                                          className="flex-grow-1 d-flex justify-content-center"
+                                        )}
+                                      />
+                                      {getValues(valueOption)?.length > 1 && (
+                                        <span
                                           onClick={() => {
-                                            if (index === 0) {
-                                              setValue(valueOption, [...getValues(valueOption), '']);
-                                              setValue(`variants.${getValues('variants').length}`, {
-                                                field: getValues('color').reduce((newArray, value, index) => {
-                                                  newArray.push({ size: '', color: '', price: '', quantity: '' });
-                                                  return newArray;
-                                                }, []),
-                                              });
-
-                                              setSize((pre) => [...pre, '']);
-                                            } else {
-                                              setValue(valueOption, [...getValues(valueOption), '']);
-                                              setValue(
-                                                'variants',
-                                                getValues('variants').map((value, indexOfVarian) => {
-                                                  value.field.push({ size: '', color: '', price: '', quantity: '' });
-                                                  return value;
-                                                }),
-                                              );
-
-                                              setColor((pre) => [...pre, '']);
+                                            if (dem === 0) {
+                                              if (valueOption === 'firstOption') {
+                                                setValue(
+                                                  `variants`,
+                                                  getValues(`variants`).filter((value, ind) => ind !== i),
+                                                );
+                                                setValue(
+                                                  'firstOption',
+                                                  getValues('firstOption').filter((value, ind) => ind !== i),
+                                                );
+                                              } else {
+                                                setValue(
+                                                  `variants`,
+                                                  getValues(`variants`)?.map((value) => ({
+                                                    field: value.field.filter(
+                                                      (variant) => variant.attributes?.[1]?.value !== valueField,
+                                                    ),
+                                                  })),
+                                                );
+                                                setValue(
+                                                  'secondOption',
+                                                  getValues('secondOption').filter((_, ind) => ind !== i),
+                                                );
+                                              }
                                             }
+                                            setClassifyValue(!classifyValue);
+                                            dem++;
+                                          }}
+                                          style={{
+                                            display: 'flex',
+                                            margin: '15px',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            fontWeight: 500,
+                                            cursor: 'pointer',
                                           }}
                                         >
-                                          <i class="icon fas fa-plus m-1"></i>
-                                          <p>Add classify product</p>
-                                        </div>
-                                      </div>
-                                    )}
+                                          <i className="fas fa-trash-alt" style={{ color: 'red' }}></i>
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
-                                </div>
-                              </>
-                            );
-                          })}
-                          <div class="form-check">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              checked={changeForALL}
-                              id="defaultCheck1"
-                              onChange={(e) => {
-                                e.target.checked ? setChangForAll(true) : setChangForAll(false);
-                              }}
-                            />
-                            <label class="form-check-label" for="defaultCheck1">
-                              Apply to all product
-                            </label>
-                          </div>
+                                ))}
+                                {getValues(valueOption)?.length <= 10 && (
+                                  <div className="mb-4 d-flex">
+                                    <div
+                                      style={{ cursor: 'pointer' }}
+                                      className="flex-grow-1 d-flex justify-content-center"
+                                      onClick={() => {
+                                        if (index === 0) {
+                                          setValue(valueOption, [...getValues(valueOption), '']);
+                                          setValue(`variants.${getValues('variants')?.length}`, {
+                                            field: getValues('secondOption').reduce((newArray) => {
+                                              newArray.push({
+                                                price: '',
+                                                quantity: '',
+                                                status: methodToChange.add,
+                                                attributes: [
+                                                  { name: labelOfFirstOption, value: '' },
+                                                  { name: labelOfSecondOption, value: '' },
+                                                ],
+                                              });
+                                              return newArray;
+                                            }, []),
+                                          });
+                                        } else {
+                                          setValue(valueOption, [...getValues(valueOption), '']);
+                                          setValue(
+                                            'variants',
+                                            getValues('variants')?.map((value) => {
+                                              value.field.push({
+                                                price: '',
+                                                quantity: '',
+                                                status: methodToChange.add,
+                                                attributes: [
+                                                  { name: labelOfFirstOption, value: '' },
+                                                  { name: labelOfSecondOption, value: '' },
+                                                ],
+                                              });
+                                              return value;
+                                            }),
+                                          );
+                                        }
+                                        setClassifyValue((pre) => !pre);
+                                      }}
+                                    >
+                                      <i class="icon fas fa-plus m-1"></i>
+                                      <p>Thêm phân loại hàng</p>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </>
+                        );
+                      })}
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          checked={changeForALL}
+                          id="defaultCheck1"
+                          onChange={(e) => {
+                            e.target.checked ? setChangForAll(true) : setChangForAll(false);
+                          }}
+                        />
+                        <label class="form-check-label" for="defaultCheck1">
+                          Áp dụng cho tất cả sản phẩm
+                        </label>
+                      </div>
+                      <table class="table">
+                        {' '}
+                        <thead>
+                          <tr>
+                            <th scope="col">Giá</th>
+                            <th scope="col">Số lượng</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <input
+                                {...register('price')}
+                                className="border-0 input "
+                                placeholder="Nhập giá"
+                                type={'number'}
+                              ></input>
+                            </td>
+                            <td>
+                              <input
+                                className="border-0 input "
+                                type={'number'}
+                                {...register('quantity')}
+                                placeholder="Nhập số lượng"
+                              />{' '}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                      <div className="mb-4 d-flex">
+                        <label className="col-3 text-start ">Danh sách phân loại hàng</label>
+                        <div className="col-9 d-flex">
                           <table class="table">
-                            {' '}
                             <thead>
                               <tr>
-                                <th scope="col">Price</th>
-                                <th scope="col">Quantity</th>
+                                <th scope="col">Kích thước</th>
+
+                                <th scope="col">Màu sắc</th>
+
+                                <th scope="col">Giá</th>
+                                <th scope="col">Số lượng</th>
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
-                                <td>
-                                  <input
-                                    {...register('price')}
-                                    className="border-0 input "
-                                    placeholder="Enter price"
-                                    type={'number'}
-                                  ></input>
-                                </td>
-                                <td>
-                                  <input
-                                    className="border-0 input "
-                                    type={'number'}
-                                    {...register('quantity')}
-                                    placeholder="Enter quantity"
-                                  />{' '}
-                                </td>
-                              </tr>
+                              {getValues('firstOption')?.map((value1, iClass1) => {
+                                return getValues('secondOption')?.map((value2, iClass2) => {
+                                  setValue(`variants.${iClass1}.field.${iClass2}.attributes.0.value`, value1);
+                                  setValue(`variants.${iClass1}.field.${iClass2}.attributes.1.value`, value2);
+                                  if (changeForALL) {
+                                    setValue(`variants.${iClass1}.field.${iClass2}.price`, watch('price'));
+                                    setValue(`variants.${iClass1}.field.${iClass2}.quantity`, watch('quantity'));
+                                  }
+                                  return (
+                                    <tr key={`${value1} + ${value2}`}>
+                                      <td className="col-3">{value1 || '?'}</td>
+                                      <td className="col-3">{value2 || '?'}</td>
+                                      <td className="col-3">
+                                        <input
+                                          type="number"
+                                          className=""
+                                          placeholder="Enter price"
+                                          {...register(`variants.${iClass1}.field.${iClass2}.price`, {
+                                            required: 'This is required',
+                                            validate: {
+                                              positive: (value) => value >= 0 && value < 10000,
+                                            },
+                                          })}
+                                        ></input>
+                                      </td>
+                                      <td className="col-3">
+                                        <input
+                                          type="number"
+                                          className="flex-grow-1"
+                                          placeholder="Enter quantity"
+                                          {...register(`variants.${iClass1}.field.${iClass2}.quantity`, {
+                                            required: 'This is required',
+                                            validate: {
+                                              positive: (value) => value >= 0 && value < 10000,
+                                            },
+                                          })}
+                                        ></input>
+                                      </td>
+                                    </tr>
+                                  );
+                                });
+                              })}
                             </tbody>
                           </table>
-
-                          <div className="mb-4 d-flex">
-                            <label className="col-3 text-start ">List of classify of goods </label>
-                            <div className="col-9 d-flex">
-                              <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Size</th>
-
-                                    <th scope="col">Color</th>
-
-                                    <th scope="col">Price</th>
-                                    <th scope="col">Quantity</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {getValues('size')?.map((value1, iClass1) => {
-                                    return getValues('color')?.map((value2, iClass2) => {
-                                      setValue(`variants.${iClass1}.field.${iClass2}.size`, value1);
-                                      setValue(`variants.${iClass1}.field.${iClass2}.color`, value2);
-                                      if (changeForALL) {
-                                        setValue(`variants.${iClass1}.field.${iClass2}.price`, watch('price'));
-                                        setValue(`variants.${iClass1}.field.${iClass2}.quantity`, watch('quantity'));
-                                      }
-                                      return (
-                                        <tr>
-                                          <td className="col-3">{value1 || '?'}</td>
-                                          <td className="col-3">{value2 || '?'}</td>
-                                          <td className="col-3">
-                                            <input
-                                              type="number"
-                                              className=""
-                                              placeholder="Enter price"
-                                              {...register(`variants.${iClass1}.field.${iClass2}.price`, {
-                                                required: 'This is required',
-                                                validate: {
-                                                  positive: (value) => value >= 0 && value < 10000,
-                                                },
-                                              })}
-                                            ></input>
-                                          </td>
-                                          <td className="col-3">
-                                            <input
-                                              type="number"
-                                              className="flex-grow-1"
-                                              placeholder="Enter quantity"
-                                              {...register(`variants.${iClass1}.field.${iClass2}.quantity`, {
-                                                required: 'This is required',
-                                                validate: {
-                                                  positive: (value) => value >= 0 && value < 10000,
-                                                },
-                                              })}
-                                            ></input>
-                                          </td>
-                                        </tr>
-                                      );
-                                    });
-                                  })}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
                         </div>
                       </div>
-                    </>
-                  )}
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="col-12 ">
-                {loadingUpdate && <Loading />}
                 <div className="d-flex align-content-between justify-content-end">
-                  <button type="submit" className="btn btn-primary col-5">
-                    Update now
-                  </button>
+                  <Button loading={loadingUpdate} type="submit" className="btn btn-primary">
+                    Cập nhật sản phẩm
+                  </Button>
                 </div>
               </div>
             </div>

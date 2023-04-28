@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import OrderDetailProducts from './OrderDetailProducts';
 import OrderDetailInfo from './OrderDetailInfo';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { cancelOrder, deliverOrder, getOrderDetails, updateStatusOrder } from '../../Redux/Actions/OrderActions';
 import Loading from '../LoadingError/Loading';
 import Message from '../LoadingError/Error';
 import moment from 'moment';
-import Toast from '../LoadingError/Toast';
-import { statusAdminUpdate, statusDescription } from './statusDescription';
+import { statusAdminUpdate } from './statusDescription';
 
-const OrderDetailmain = (props) => {
-  const { orderId } = props;
+const OrderDetail = () => {
+  const { orderId } = useParams();
   const dispatch = useDispatch();
 
   const orderDetails = useSelector((state) => state.orderDetails);
@@ -234,4 +233,4 @@ const OrderDetailmain = (props) => {
   );
 };
 
-export default OrderDetailmain;
+export default OrderDetail;
