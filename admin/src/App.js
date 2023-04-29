@@ -10,6 +10,7 @@ import { listUser } from './Redux/Actions/UserActions';
 import { privateRouter, publicRouter } from './router/router';
 import DefaultLayout from './layout/DefaultLayout';
 import './assets/css/spacing.scss';
+import './assets/css/color.scss';
 
 function App() {
   const dispatch = useDispatch();
