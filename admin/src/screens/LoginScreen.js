@@ -19,7 +19,7 @@ const Login = () => {
 
   const handleLogin = {
     success: () => {
-      history.push('/');
+      window.location.href = '/';
     },
   };
 

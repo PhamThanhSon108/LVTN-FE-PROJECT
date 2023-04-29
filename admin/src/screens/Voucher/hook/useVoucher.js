@@ -6,6 +6,7 @@ export default function useVoucher() {
       firstName: '',
       select: {},
       applyFor: '2',
+      discountType: 'price',
     },
   });
   const handleCreateVoucher = (data) => {};

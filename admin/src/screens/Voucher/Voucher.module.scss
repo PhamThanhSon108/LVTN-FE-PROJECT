@@ -1,5 +1,16 @@
 .title {
+}
+.subTitle {
+  margin-bottom: var(--space-20);
+}
+
+.header {
+  display: flex;
+  align-items: center;
   margin-bottom: var(--space-16);
+  .backBtn {
+    margin-right: var(--space-12);
+  }
 }
 .voucherContainer {
   display: flex;
@@ -15,9 +26,10 @@
   display: flex;
   flex-direction: column;
   .voucherFormItem {
-    margin-bottom: var(--space-20);
+    margin-bottom: var(--space-32);
     height: var(--height-input);
-    width: 40%;
+    width: 48%;
+    border-color: red;
   }
 }
 .applyForProductWrapper {
@@ -28,4 +40,29 @@
 
 .divider {
   margin: var(--space-12) 0;
+}
+
+.voucherPropertyArea {
+  padding: var(--space-16);
+  display: flex;
+  flex-direction: column;
+}
+.voucherPropertyArea + .voucherPropertyArea {
+  margin-top: var(--space-16);
+}
+
+.voucherAction {
+  margin-top: var(--space-16);
+  display: flex;
+  justify-content: end;
+  padding: var(--space-16);
+  .cancelBtn {
+    margin-right: var(--space-12);
+  }
+}
+
+.errorMessage {
+  color: var(--error-color);
+  margin-bottom: var(--space-12);
+  display: flex;
 }
