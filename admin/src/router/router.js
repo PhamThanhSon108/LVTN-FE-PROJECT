@@ -11,6 +11,8 @@ import SliderScreen from '../screens/SliderScreen';
 import UsersScreen from '../screens/UsersScreen';
 import Voucher from '../screens/Voucher/Voucher';
 
+import AddVoucher from '../screens/Voucher/components/AddVoucher/AddVoucher';
+
 const privateRouter = [
   {
     path: '/',
@@ -60,6 +62,11 @@ const privateRouter = [
   {
     path: '/vouchers',
     component: <Voucher />,
+    exact: true,
+  },
+  {
+    path: '/vouchers/add',
+    component: <AddVoucher />,
     exact: true,
   },
 ];

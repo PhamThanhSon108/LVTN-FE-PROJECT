@@ -1,68 +1,47 @@
-.title {
+.voucherContainer {
+  padding: var(--space-32);
 }
 .subTitle {
   margin-bottom: var(--space-20);
 }
 
+.title {
+  font-size: var(20px);
+}
+
+.voucherListWrapper {
+  padding: var(--space-12);
+  .voucherList {
+    max-height: 400px;
+  }
+}
 .header {
   display: flex;
   align-items: center;
-  margin-bottom: var(--space-16);
-  .backBtn {
-    margin-right: var(--space-12);
-  }
-}
-.voucherContainer {
-  display: flex;
-  flex-direction: column;
-}
-.voucherWrapper {
-  display: flex;
-  flex-direction: column;
-  padding: var(--space-12) var(--space-24);
-}
-
-.voucherForm {
-  display: flex;
-  flex-direction: column;
-  .voucherFormItem {
-    margin-bottom: var(--space-32);
-    height: var(--height-input);
-    width: 48%;
-    border-color: red;
-  }
-}
-.applyForProductWrapper {
-  display: flex;
-  flex-direction: row;
+  justify-content: space-between;
   margin-bottom: var(--space-16);
 }
 
-.divider {
-  margin: var(--space-12) 0;
+.actionEachVoucher {
+  width: 30px;
 }
 
-.voucherPropertyArea {
-  padding: var(--space-16);
-  display: flex;
-  flex-direction: column;
-}
-.voucherPropertyArea + .voucherPropertyArea {
-  margin-top: var(--space-16);
+.actionEditVoucher {
+  color: var(--primary-color);
 }
 
-.voucherAction {
-  margin-top: var(--space-16);
+.actionDeleteVoucher {
+  color: var(--error-color);
+}
+
+.searchVouchers {
+  width: 200px;
+}
+.searchVouchers + .searchVouchers {
+  margin-left: var(--space-16);
+}
+
+.pagination {
   display: flex;
   justify-content: end;
-  padding: var(--space-16);
-  .cancelBtn {
-    margin-right: var(--space-12);
-  }
-}
-
-.errorMessage {
-  color: var(--error-color);
-  margin-bottom: var(--space-12);
-  display: flex;
 }

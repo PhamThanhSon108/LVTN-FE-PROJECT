@@ -4,7 +4,6 @@ import { FileUpload } from 'primereact/fileupload';
 import { ProgressBar } from 'primereact/progressbar';
 import { Button } from 'primereact/button';
 import { Tooltip } from 'primereact/tooltip';
-import { Tag } from 'primereact/tag';
 
 export const FileUploadDemo = (props) => {
   const { setImage, name, clear } = props;
@@ -15,9 +14,7 @@ export const FileUploadDemo = (props) => {
   useEffect(() => {
     fileUploadRef.current.clear();
   }, [clear]);
-  const onUpload = () => {
-    toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
-  };
+
   const onTemplateSelect = (e) => {
     let _totalSize = e.files[0].size;
     // e?.files.forEach((file) => {
@@ -26,16 +23,6 @@ export const FileUploadDemo = (props) => {
     setImage(e.files[0]);
     setTotalSize(_totalSize);
   };
-
-  // const onTemplateUpload = (e) => {
-  //   let _totalSize = 0;
-  //   e.files.forEach((file) => {
-  //     _totalSize += file.size || 0;
-  //   });
-  //   setValue('picture', e.target.files[0]);
-  //   setTotalSize(_totalSize);
-  //   toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
-  // };
 
   const onTemplateRemove = (file, callback) => {
     setTotalSize(totalSize - file.size);
@@ -48,16 +35,8 @@ export const FileUploadDemo = (props) => {
     setImage('');
   };
 
-  const onBasicUpload = () => {
-    toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded with Basic Mode' });
-  };
-
-  const onBasicUploadAuto = () => {
-    toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded with Auto Mode' });
-  };
-
   const headerTemplate = (options) => {
-    const { className, chooseButton, uploadButton, cancelButton } = options;
+    const { className, chooseButton, cancelButton } = options;
     const value = totalSize / 10000;
     const formatedValue = fileUploadRef && fileUploadRef.current ? fileUploadRef.current.formatSize(totalSize) : '0 B';
 

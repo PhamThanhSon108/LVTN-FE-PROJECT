@@ -132,8 +132,8 @@ export default function AddProductToVoucher() {
               value={searchKey}
               onChange={handleChangeSearch}
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
+                endAdornment: (
+                  <InputAdornment position="end">
                     <i className="fas fa-search" />
                   </InputAdornment>
                 ),
