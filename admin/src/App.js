@@ -13,34 +13,24 @@ import './assets/css/spacing.scss';
 import './assets/css/color.scss';
 
 function App() {
-  const dispatch = useDispatch();
-
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-
-  useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(listOrders());
-      dispatch(listUser());
-    }
-  }, [dispatch, userInfo]);
-
   return (
     <>
       <Router>
         <Switch>
-          {privateRouter.map((option) => (
-            <PrivateRouter
-              key={option.path}
-              {...option}
-              component={<DefaultLayout>{option.component}</DefaultLayout>}
-            />
-          ))}
-
-          {publicRouter.map((option) => {
-            const Component = option.component;
-            return <Route key={option.path} {...option} component={() => Component} />;
-          })}
+          {!userInfo
+            ? publicRouter.map((option) => {
+                const Component = option.component;
+                return <Route key={option.path} {...option} component={() => Component} />;
+              })
+            : privateRouter.map((option) => (
+                <PrivateRouter
+                  key={option.path}
+                  {...option}
+                  component={<DefaultLayout>{option.component}</DefaultLayout>}
+                />
+              ))}
         </Switch>
       </Router>
     </>

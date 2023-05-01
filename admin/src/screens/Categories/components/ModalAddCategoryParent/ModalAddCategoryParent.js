@@ -2,15 +2,20 @@ import * as React from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Modal from '@mui/material/Modal';
 import { Controller, useForm } from 'react-hook-form';
-import { Button, Card, CardActions, CardHeader, TextField, Tooltip, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardHeader, IconButton, TextField, Tooltip, Typography } from '@mui/material';
 import ImageIcon from '@mui/icons-material/Image';
-import { inputPropsConstants } from '../../constants/variants';
-import { renderError } from '../../utils/errorMessage';
-import styles from './Categories.module.scss';
+
+import styles from '../../Categories.module.scss';
 import { useDispatch } from 'react-redux';
-import { AddCategory } from '../../Redux/Actions/CategoryActions';
-import { ToastObject } from '../LoadingError/ToastObject';
+
+import DeleteIcon from '@mui/icons-material/Delete';
+
+import AddIcon from '@mui/icons-material/Add';
 import { toast } from 'react-toastify';
+import { ToastObject } from '../../../../components/LoadingError/ToastObject';
+import { AddCategory } from '../../../../Redux/Actions/CategoryActions';
+import { inputPropsConstants } from '../../../../constants/variants';
+import { renderError } from '../../../../utils/errorMessage';
 
 const style = {
   position: 'absolute',
@@ -122,13 +127,13 @@ export default function ModalAddCategoryParent({ isOpenModal, handleOpenModal })
         aria-describedby="modal-modal-description"
       >
         <Card sx={style}>
-          <Typography noWrap={true} variant="h5" gutterBottom>
+          <Typography noWrap={true} variant="h4" gutterBottom>
             Thêm thể loại
           </Typography>
 
           <form onSubmit={handleSubmit(handleSubmitAddCategory)} className={styles.formWrapper}>
             <Card className={styles.categoryInformation}>
-              <Typography level="h4" fontSize="m" className={styles.titleModal} sx={{ mb: 0.5 }}>
+              <Typography variant="h6" fontSize="xl" className={styles.titleModal} sx={{ mb: 0.5 }}>
                 Thông tin cơ bản
               </Typography>
               <Controller
@@ -194,14 +199,14 @@ export default function ModalAddCategoryParent({ isOpenModal, handleOpenModal })
                   <img className={styles.imageReview} src={imageReview} alt="Hình ảnh" />
                 ) : (
                   <label className={styles.uploadBodyLabel} for="image">
-                    <Card className={styles.uploadBody}>
+                    <div className={styles.uploadBody}>
                       <div className={styles.wrapImageIcon}>
                         <div className={styles.iconPicture}>
                           <ImageIcon color="primary" />
                         </div>
                         <span className={styles.iconSpan}>Kéo thả hình tại đây</span>
                       </div>
-                    </Card>
+                    </div>
                   </label>
                 )}
               </Card>
@@ -209,13 +214,13 @@ export default function ModalAddCategoryParent({ isOpenModal, handleOpenModal })
 
             <Card className={`${styles.categoryInformation} ${styles.subCategories}`} sx={{ overflow: 'auto' }}>
               <div className={styles.subCategoriesHeader}>
-                <Typography level="h5" fontSize="xl" className={styles.titleModal} sx={{ mb: 0.5 }}>
+                <Typography variant="h6" fontSize="xl" className={styles.titleModal} sx={{ mb: 0.5 }}>
                   Thể loại con
                 </Typography>
                 <Tooltip title="Thêm thể loại con">
-                  <Button variant="text" onClick={handleAddCategoryChild}>
-                    <i className="fas fa-plus-circle" />
-                  </Button>
+                  <IconButton variant="text" onClick={handleAddCategoryChild}>
+                    <AddIcon />
+                  </IconButton>
                 </Tooltip>
               </div>
               {watch('children').map((category, index) => (
@@ -226,7 +231,11 @@ export default function ModalAddCategoryParent({ isOpenModal, handleOpenModal })
                         {`Thể loại con thứ ${index + 1}`}
                       </Typography>
                     }
-                    action={<i onClick={() => handleDeleteCategoryChild(index)} className="fas fa-trash-alt" />}
+                    action={
+                      <IconButton size="small" color="error">
+                        <DeleteIcon onClick={() => handleDeleteCategoryChild(index)} />
+                      </IconButton>
+                    }
                   />
 
                   <Controller
@@ -283,8 +292,9 @@ export default function ModalAddCategoryParent({ isOpenModal, handleOpenModal })
                 type="submit"
                 variant={inputPropsConstants.variantContained}
                 size="small"
+                startIcon={<AddIcon />}
               >
-                Tạo
+                Thêm thể loại
               </LoadingButton>
             </CardActions>
           </form>

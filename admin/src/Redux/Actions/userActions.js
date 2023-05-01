@@ -8,8 +8,9 @@ import {
   USER_LOGIN_SUCCESS,
   USER_LOGOUT,
 } from '../Constants/UserContants';
-import request from '../../utils/request';
+import request, { API_FASHIONSHOP } from '../../utils/request';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 // LOGIN
 export const login = (email, password, handleLogin) => async (dispatch) => {
@@ -21,17 +22,9 @@ export const login = (email, password, handleLogin) => async (dispatch) => {
   };
   try {
     dispatch({ type: USER_LOGIN_REQUEST });
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    const { data } = await request.post(`/users/login`, { email, password }, config);
-
+    const { data } = await axios.post(`${API_FASHIONSHOP}users/login`, { email, password });
     if (data?.data?.user?.role !== 'admin') {
-      toast.error('You are not Admin', ToastObjects);
+      toast.error('Bạn không có quyền truy cập', ToastObjects);
       dispatch({
         type: USER_LOGIN_FAIL,
       });
@@ -40,24 +33,22 @@ export const login = (email, password, handleLogin) => async (dispatch) => {
       localStorage.setItem('userInfo', JSON.stringify({ ...data?.data.user, accessToken: data?.data?.accessToken }));
       handleLogin.success();
     }
-
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-    if (message === 'Not authorized, token failed') {
-      dispatch(logout());
-    }
     dispatch({
       type: USER_LOGIN_FAIL,
       payload: message,
     });
+    handleLogin.error(message);
   }
 };
 
 // LOGOUT
-export const logout = () => (dispatch) => {
+export const logout = (history) => (dispatch) => {
   localStorage.removeItem('userInfo');
   dispatch({ type: USER_LOGOUT });
   dispatch({ type: USER_LIST_RESET });
+  history.push('/login');
 };
 
 // ALL USER
@@ -65,19 +56,9 @@ export const listUser = () => async (dispatch, getState) => {
   try {
     dispatch({ type: USER_LIST_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
+    const { data } = await request.get(`/users`);
 
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.accessToken}`,
-      },
-    };
-
-    const { data } = await request.get(`/users`, config);
-
-    dispatch({ type: USER_LIST_SUCCESS, payload: data });
+    dispatch({ type: USER_LIST_SUCCESS, payload: data?.data?.users || [] });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
     if (message === 'Not authorized, token failed') {

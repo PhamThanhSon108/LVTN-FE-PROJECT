@@ -1,5 +1,6 @@
 import AddProduct from '../screens/AddProduct';
-import CategoriesScreen from '../screens/CategoriesScreen';
+import Banner from '../screens/Banner/Banner';
+import Categories from '../screens/Categories/Categories';
 import HomeScreen from '../screens/HomeScreen';
 import Login from '../screens/LoginScreen';
 import NotFound from '../screens/NotFound';
@@ -7,7 +8,6 @@ import OrderDetailScreen from '../screens/OrderDetailScreen';
 import OrderScreen from '../screens/OrderScreen';
 import ProductEditScreen from '../screens/ProductEditScreen';
 import ProductScreen from '../screens/ProductScreen';
-import SliderScreen from '../screens/SliderScreen';
 import UsersScreen from '../screens/UsersScreen';
 import Voucher from '../screens/Voucher/Voucher';
 
@@ -51,12 +51,12 @@ const privateRouter = [
   },
   {
     path: '/categories',
-    component: <CategoriesScreen />,
+    component: <Categories />,
     exact: true,
   },
   {
-    path: '/sliders',
-    component: <SliderScreen />,
+    path: '/banners',
+    component: <Banner />,
     exact: true,
   },
   {
@@ -69,6 +69,11 @@ const privateRouter = [
     component: <AddVoucher />,
     exact: true,
   },
+  {
+    path: '*',
+    component: <NotFound />,
+    exact: true,
+  },
 ];
 
 const publicRouter = [
@@ -79,7 +84,7 @@ const publicRouter = [
   },
   {
     path: '*',
-    component: <NotFound />,
+    component: <Login />,
     exact: true,
   },
 ];

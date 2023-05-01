@@ -1,23 +1,25 @@
 import * as React from 'react';
 
 import Modal from '@mui/material/Modal';
-import { Controller, useForm } from 'react-hook-form';
-import { Button, Card, CardActions, TextField, Tooltip, Typography } from '@mui/material';
-import { inputPropsConstants } from '../../constants/variants';
-import { renderError } from '../../utils/errorMessage';
-import styles from './Categories.module.scss';
-import { toast } from 'react-toastify';
-import { ToastObject } from '../LoadingError/ToastObject';
-import { useDispatch } from 'react-redux';
-import { FetchCategoriesTree, AddCategory } from '../../Redux/Actions/CategoryActions';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
+import { Button, Card, CardActions, TextField, Tooltip, Typography } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+
+import { inputPropsConstants } from '../../../../constants/variants';
+import { renderError } from '../../../../utils/errorMessage';
+import { ToastObject } from '../../../../components/LoadingError/ToastObject';
+import { AddCategory, FetchCategoriesTree } from '../../../../Redux/Actions/CategoryActions';
+import styles from '../../Categories.module.scss';
 
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 500,
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -67,13 +69,12 @@ export default function ModalAddCategoryChild({ isOpenModal, handleOpenModal, cu
         aria-describedby="modal-modal-description"
       >
         <Card sx={style}>
-          <Tooltip title={currentParentCategory?.name || ''}>
-            <Typography noWrap={true} variant="h6" gutterBottom>
-              {currentParentCategory?.name || ''}
-            </Typography>
-          </Tooltip>
           <Typography variant="h6" fontSize="xl" className={styles.titleModal} sx={{ mb: 2 }}>
-            Thêm thể loại
+            <Tooltip title={currentParentCategory?.name || ''}>
+              <Typography noWrap={true} variant="h6" gutterBottom>
+                Thêm thể loại con cho "{currentParentCategory?.name || ''}"
+              </Typography>
+            </Tooltip>
           </Typography>
 
           <form onSubmit={handleSubmit(handleSubmitAddCategory)} className={styles.formWrapper}>
@@ -86,7 +87,7 @@ export default function ModalAddCategoryChild({ isOpenModal, handleOpenModal, cu
                   className={styles.formItem}
                   focused={!!fieldState.error}
                   color={fieldState.error ? 'error' : 'info'}
-                  label="Tên chương trình giảm giá"
+                  label="Tên thể loại"
                   {...field}
                   variant={inputPropsConstants.variantOutLine}
                   size={inputPropsConstants.smallSize}
@@ -105,7 +106,7 @@ export default function ModalAddCategoryChild({ isOpenModal, handleOpenModal, cu
                 <TextField
                   focused={!!fieldState.error}
                   color={fieldState.error ? 'error' : 'info'}
-                  label="Tên chương trình giảm giá"
+                  label="Mô tả về thể loại"
                   {...field}
                   variant={inputPropsConstants.variantOutLine}
                   size={inputPropsConstants.smallSize}
@@ -126,8 +127,9 @@ export default function ModalAddCategoryChild({ isOpenModal, handleOpenModal, cu
                 type="submit"
                 variant={inputPropsConstants.variantContained}
                 size="small"
+                startIcon={<AddIcon />}
               >
-                Tạo
+                Thêm thể loại
               </LoadingButton>
             </CardActions>
           </form>

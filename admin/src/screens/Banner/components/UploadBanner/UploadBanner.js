@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Toast } from 'primereact/toast';
 import { FileUpload } from 'primereact/fileupload';
-import { ProgressBar } from 'primereact/progressbar';
-import { Button } from 'primereact/button';
-import { Tooltip } from 'primereact/tooltip';
-import { Tag } from 'primereact/tag';
 
-export const UploadSlider = (props) => {
-  const { setImage, name, clear } = props;
+import { Button } from 'primereact/button';
+
+export const UploadBanner = (props) => {
+  const { setImage, clear } = props;
   const [totalSize, setTotalSize] = useState(0);
   const toast = useRef(null);
   const fileUploadRef = useRef(null);
@@ -24,19 +22,8 @@ export const UploadSlider = (props) => {
     setTotalSize(_totalSize);
   };
 
-  // const onTemplateUpload = (e) => {
-  //   let _totalSize = 0;
-  //   e.files.forEach((file) => {
-  //     _totalSize += file.size || 0;
-  //   });
-  //   setValue('picture', e.target.files[0]);
-  //   setTotalSize(_totalSize);
-  //   toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
-  // };
-
   const onTemplateRemove = (file, callback) => {
     setTotalSize(totalSize - file.size);
-    // setImage('');
 
     setImage((pre) => pre.filter((item) => item.name !== file.name));
     callback();
@@ -45,14 +32,6 @@ export const UploadSlider = (props) => {
   const onTemplateClear = () => {
     setTotalSize(0);
     setImage([]);
-  };
-
-  const onBasicUpload = () => {
-    toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded with Basic Mode' });
-  };
-
-  const onBasicUploadAuto = () => {
-    toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded with Auto Mode' });
   };
 
   const headerTemplate = (options) => {
@@ -64,11 +43,7 @@ export const UploadSlider = (props) => {
       <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
         {chooseButton}
         {cancelButton}
-        {/* <ProgressBar
-          value={value}
-          displayValueTemplate={() => `${formatedValue} / 1 MB`}
-          style={{ width: '300px', height: '20px', marginLeft: 'auto' }}
-        ></ProgressBar> */}
+
         <div style={{ width: '300px', height: '20px', marginLeft: 'auto' }}></div>
       </div>
     );
@@ -79,25 +54,8 @@ export const UploadSlider = (props) => {
       <div className="flex align-items-center flex-wrap  " style={{ display: 'flex', height: '150px' }}>
         <div className="flex align-items-center  d-flex " style={{ width: '90%', display: 'flex' }}>
           <img alt={file.name} role="presentation" src={file.objectURL} height={150} />
-          {/* <span
-            className="flex  text-left justify-content-start"
-            style={{
-              fontSize: '1.6rem',
-              paddingLeft: '2rem',
-              maxWidth: '60%',
-              minWidth: '60%',
-              textAlign: 'start',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-              // height: '110px',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {`Image of ${name || 'banner'}`}
-          </span> */}
-          {/* <small style={{ paddingLeft: '5px' }}>{new Date().toLocaleDateString()}</small> */}
         </div>
-        {/* <Tag value={props.formatSize} severity="warning" className="px-3 py-2" /> */}
+
         <div style={{ width: '10%' }}>
           <Button
             type="button"

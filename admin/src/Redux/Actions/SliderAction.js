@@ -23,8 +23,8 @@ const ToastObjects = {
 export const ListSlider = () => async (dispatch) => {
   try {
     dispatch({ type: SLIDER_LIST_REQUEST });
-    const { data } = await request.get(`/slider`);
-    dispatch({ type: SLIDER_LIST_SUCCESS, payload: data });
+    const { data } = await request.get(`/banners`);
+    dispatch({ type: SLIDER_LIST_SUCCESS, payload: data?.data?.banners || [] });
   } catch (error) {
     dispatch({
       type: SLIDER_LIST_FAIL,
@@ -37,16 +37,7 @@ export const deleteSlider = (id) => async (dispatch, getState) => {
   try {
     dispatch({ type: SLIDER_DELETE_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.accessToken}`,
-      },
-    };
-    await request.delete(`/slider/${id}`, config);
+    await request.delete(`/banners/${id}`);
     toast.success('Delete banner success', ToastObjects);
     dispatch({ type: SLIDER_DELETE_SUCCESS });
   } catch (error) {
@@ -64,21 +55,10 @@ export const deleteSlider = (id) => async (dispatch, getState) => {
 
 export const createSlider =
   ({ slider }) =>
-  async (dispatch, getState) => {
+  async (dispatch) => {
     try {
       dispatch({ type: SLIDER_CREATE_REQUEST });
-
-      const {
-        userLogin: { userInfo },
-      } = getState();
-      const config = {
-        headers: {
-          Authorization: `Bearer ${userInfo.accessToken}`,
-          headers: { 'Content-Type': 'multipart/form-data' },
-        },
-      };
-
-      const { data } = await request.post(`/slider/`, slider, config);
+      const { data } = await request.post(`/banners/`, slider);
       toast.success('Add banner success', ToastObjects);
       dispatch({ type: SLIDER_CREATE_SUCCESS, payload: data });
     } catch (error) {
@@ -109,10 +89,8 @@ export const updateSlider =
           headers: { 'Content-Type': 'multipart/form-data' },
         },
       };
-
-      const { data } = await request.put(`/slider/${id}`, slider, config);
+      const { data } = await request.put(`/banners/${id}`, slider, config);
       toast.success('Update banner success', ToastObjects);
-
       dispatch({ type: SLIDER_CREATE_SUCCESS, payload: data });
     } catch (error) {
       const message = error.response && error.response.data.message ? error.response.data.message : error.message;

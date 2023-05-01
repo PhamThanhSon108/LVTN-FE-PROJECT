@@ -7,14 +7,14 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { useDispatch } from 'react-redux';
-import { createSlider, updateSlider } from '../Redux/Actions/SliderAction';
-import { Image } from 'primereact/image';
-
+import { updateSlider } from '../../../../Redux/Actions/SliderAction';
+import { IconButton, Tooltip } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default React.memo(function UpDateBannerModal(props) {
+export default React.memo(function ModalUpdateBanner(props) {
   const { id } = props;
   const [open, setOpen] = React.useState(false);
   const [newImage, setNewImage] = React.useState('');
@@ -23,7 +23,6 @@ export default React.memo(function UpDateBannerModal(props) {
     setOpen(true);
   };
   const handleSubmit = () => {
-    // const id = [handleConfirm.key];
     const slider = new FormData();
     slider.append('slider', newImage);
     dispatch(updateSlider({ id, slider }));
@@ -35,9 +34,11 @@ export default React.memo(function UpDateBannerModal(props) {
 
   return (
     <div style={{ width: '250px !important' }}>
-      <div variant="outlined" onClick={handleClickOpen}>
-        <i className="fas fa-pen"></i>
-      </div>
+      <IconButton onClick={handleClickOpen}>
+        <Tooltip title="Chỉnh sửa">
+          <EditIcon />
+        </Tooltip>
+      </IconButton>
       <Dialog
         style={{ minWidth: '250px !important' }}
         open={open}
@@ -46,8 +47,8 @@ export default React.memo(function UpDateBannerModal(props) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{'Are you sure?'}</DialogTitle>
-        <img src={newImage && URL.createObjectURL(newImage)} style={{ maxHeight: '280px', width: '280px' }} />
+        <DialogTitle>{'Cập nhật banner'}</DialogTitle>
+        <img alt="" src={newImage && URL.createObjectURL(newImage)} style={{ maxHeight: '280px', width: '280px' }} />
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">Update this banner?</DialogContentText>
           <input type="file" name="slider" accept="image/*" onChange={(e) => setNewImage(e.target.files[0])} />

@@ -22,6 +22,7 @@ import {
 import useVoucher from './hook/useVoucher';
 import { inputPropsConstants } from '../../constants/variants';
 import { Link } from 'react-router-dom';
+import AddIcon from '@mui/icons-material/Add';
 export default function Voucher() {
   const { control, watch, handleSubmit, handleCreateVoucher } = useVoucher();
   return (
@@ -29,11 +30,7 @@ export default function Voucher() {
       <div className={styles.header}>
         <h2 className={styles.title}>Danh sách mã giảm giá</h2>
         <Link to="/vouchers/add">
-          <Button
-            type="submit"
-            variant={inputPropsConstants.variantContained}
-            startIcon={<i className="fas fa-plus-circle" />}
-          >
+          <Button type="submit" variant={inputPropsConstants.variantContained} startIcon={<AddIcon />}>
             Tạo mã
           </Button>
         </Link>
