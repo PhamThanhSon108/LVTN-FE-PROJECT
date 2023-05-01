@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
 import Toast from '../components/LoadingError/Toast';
@@ -7,15 +7,17 @@ import { login } from '../Redux/Actions/UserActions';
 import { inputPropsConstants } from '../constants/variants';
 import { toast } from 'react-toastify';
 import { ToastObject } from '../components/LoadingError/ToastObject';
+import { useHistory } from 'react-router-dom';
 
 const Login = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
+  const history = useHistory();
 
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
-  const { loading } = userLogin;
+  const { loading, userInfo } = userLogin;
 
   const handleLogin = {
     success: () => {
@@ -30,6 +32,12 @@ const Login = () => {
     e.preventDefault();
     dispatch(login(emailRef.current.value, passwordRef.current.value, handleLogin));
   };
+
+  useEffect(() => {
+    if (userInfo) {
+      history.push('/');
+    }
+  }, []);
   return (
     <>
       <Toast />

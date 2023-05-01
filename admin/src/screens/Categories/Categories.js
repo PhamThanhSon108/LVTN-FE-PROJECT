@@ -79,7 +79,8 @@ const Categories = () => {
   };
 
   useEffect(() => {
-    dispatch(FetchCategoriesTree());
+    if (categories?.length === 0) dispatch(FetchCategoriesTree());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
   return (
     <section className="content-main">
@@ -100,6 +101,7 @@ const Categories = () => {
             variant={inputPropsConstants.variantContained}
             startIcon={<AddIcon />}
             onClick={() => handleOpenModalAddCategoryParent(true)}
+            size="medium"
           >
             Thêm thể loại
           </Button>
@@ -111,6 +113,7 @@ const Categories = () => {
           handleOpenModal={handleOpenModalAddCategory}
           isOpenModal={isOpenModalAddCategory}
         />
+
         <List
           className={styles.voucherList}
           sx={{

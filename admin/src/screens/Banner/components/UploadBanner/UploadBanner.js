@@ -81,7 +81,7 @@ export const UploadBanner = (props) => {
           }}
         ></i>
         <span style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }} className="my-5">
-          Drag and Drop Image Here
+          Kéo và thả hình tại đây
         </span>
       </div>
     );

@@ -11,7 +11,7 @@ const MainLayout = ({ children }) => {
       <div className="content-header">
         <h2 className="content-title">Danh sách người dùng</h2>
       </div>
-      <div className="card mb-4">
+      <div className="card mb-4 main-card-wrapper">
         <div className="card-body">{children}</div>
       </div>
     </section>
@@ -25,7 +25,7 @@ const UserComponent = () => {
   const { loading, error, users } = userList;
 
   useEffect(() => {
-    dispatch(listUser());
+    if (users.length === 0) dispatch(listUser());
   }, [dispatch]);
 
   if (loading) {

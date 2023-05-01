@@ -4,6 +4,9 @@ import {
   CATEGORY_ADD_FAIL,
   CATEGORY_ADD_REQUEST,
   CATEGORY_ADD_SUCCESS,
+  CATEGORY_CHILDREN_FAIL,
+  CATEGORY_CHILDREN_REQUEST,
+  CATEGORY_CHILDREN_SUCCESS,
   CATEGORY_DELETE_FAIL,
   CATEGORY_DELETE_REQUEST,
   CATEGORY_DELETE_SUCCESS,
@@ -21,13 +24,13 @@ export const ListCategory =
   (level = 2) =>
   async (dispatch) => {
     try {
-      dispatch({ type: CATEGORY_REQUEST });
+      dispatch({ type: CATEGORY_CHILDREN_REQUEST });
 
       const { data } = await request.get(`/categories`, { params: { level: level } });
-      dispatch({ type: CATEGORY_SUCCESS, payload: data.data?.categories || [] });
+      dispatch({ type: CATEGORY_CHILDREN_SUCCESS, payload: data.data?.categories || [] });
     } catch (error) {
       dispatch({
-        type: CATEGORY_FAIL,
+        type: CATEGORY_CHILDREN_FAIL,
         payload: error.response && error.response.data.message ? error.response.data.message : error.message,
       });
     }

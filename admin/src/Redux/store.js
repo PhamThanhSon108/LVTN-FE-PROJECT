@@ -19,6 +19,7 @@ import {
 import { sliderCreateReducer, sliderDeleteReducer, sliderListReducer } from './Reducers/SliderListReducers';
 import {
   categoryAddReducer,
+  categoryChildrenReducer,
   categoryDeleteReducer,
   categoryListReducer,
   categoryUpdateReducer,
@@ -41,6 +42,7 @@ const reducer = combineReducers({
   deleteSlider: sliderDeleteReducer,
   sliderCreate: sliderCreateReducer,
   CategoryList: categoryListReducer,
+  CategoryChildren: categoryChildrenReducer,
   CategoryDelete: categoryDeleteReducer,
   CategoryAdd: categoryAddReducer,
   CategoryUpdate: categoryUpdateReducer,

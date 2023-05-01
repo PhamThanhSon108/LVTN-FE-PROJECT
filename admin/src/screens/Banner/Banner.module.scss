@@ -1,0 +1,14 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.thNameOfTable {
+  width: 25%;
+}
+.thTypeOfTable {
+  width: 20%;
+}
+.cardWrapper {
+  padding: var(--space-16);
+}
