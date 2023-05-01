@@ -24,20 +24,8 @@ export const listOrders = (dateOrder, orderStatus, pageNumber) => async (dispatc
   try {
     dispatch({ type: ORDER_LIST_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.accessToken}`,
-      },
-    };
-
     const { data } = await request.get(
-      `/order/all?pageSize=${15}&pageNumber=${pageNumber}&dateOrder=${dateOrder}&orderStatus=${orderStatus}`,
-
-      config,
+      `/orders/all?pageSize=${15}&pageNumber=${pageNumber}&dateOrder=${dateOrder}&orderStatus=${orderStatus}`,
     );
 
     dispatch({ type: ORDER_LIST_SUCCESS, payload: data });
@@ -57,18 +45,7 @@ export const listOrders = (dateOrder, orderStatus, pageNumber) => async (dispatc
 export const getOrderDetails = (id) => async (dispatch, getState) => {
   try {
     dispatch({ type: ORDER_DETAILS_REQUEST });
-
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.accessToken}`,
-      },
-    };
-
-    const { data } = await request.get(`/order/${id}`, config);
+    const { data } = await request.get(`/orders/${id}`);
     dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -87,17 +64,7 @@ export const deliverOrder = (order) => async (dispatch, getState) => {
   try {
     dispatch({ type: ORDER_DELIVERED_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.accessToken}`,
-      },
-    };
-
-    const { data } = await request.put(`/order/${order._id}/delivered`, {}, config);
+    const { data } = await request.put(`/orders/${order._id}/delivered`, {});
     dispatch({ type: ORDER_DELIVERED_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -111,24 +78,14 @@ export const deliverOrder = (order) => async (dispatch, getState) => {
   }
 };
 
-//order PAID
+//orders PAID
 export const updateStatusOrder =
   ({ status, orderId }) =>
   async (dispatch, getState) => {
     try {
       dispatch({ type: ORDER_UPDATE_STATUS_REQUEST });
 
-      const {
-        userLogin: { userInfo },
-      } = getState();
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${userInfo.accessToken}`,
-        },
-      };
-
-      const { data } = await request.patch(`/order/${orderId}`, { status }, config);
+      const { data } = await request.patch(`/orders/${orderId}`, { status });
       toast.success(data?.message, ToastObject);
       dispatch({ type: ORDER_UPDATE_STATUS_SUCCESS, payload: data });
     } catch (error) {
@@ -149,17 +106,7 @@ export const cancelOrder = (order) => async (dispatch, getState) => {
   try {
     dispatch({ type: ORDER_CANCEL_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.accessToken}`,
-      },
-    };
-
-    const { data } = await request.patch(`/order/${order._id}/cancel`, { orderId: order._id }, config);
+    const { data } = await request.patch(`/orders/${order._id}/cancel`, { orderId: order._id });
     dispatch({ type: ORDER_CANCEL_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;

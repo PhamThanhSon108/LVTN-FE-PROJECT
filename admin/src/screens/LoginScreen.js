@@ -1,64 +1,58 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Loading from '../components/LoadingError/Loading';
+import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
 import Toast from '../components/LoadingError/Toast';
 import { login } from '../Redux/Actions/UserActions';
-import Message from './../components/LoadingError/Error';
-import { useHistory } from 'react-router-dom';
+
+import { inputPropsConstants } from '../constants/variants';
+import { toast } from 'react-toastify';
+import { ToastObject } from '../components/LoadingError/ToastObject';
 
 const Login = () => {
-  window.scrollTo(0, 0);
-  const history = useHistory();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const emailRef = useRef();
+  const passwordRef = useRef();
 
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
-  const { error, loading } = userLogin;
+  const { loading } = userLogin;
 
   const handleLogin = {
     success: () => {
       window.location.href = '/';
     },
+    error: (message) => {
+      toast.error(message, ToastObject);
+    },
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(login(email, password, handleLogin));
+    dispatch(login(emailRef.current.value, passwordRef.current.value, handleLogin));
   };
   return (
     <>
       <Toast />
       <div className="card shadow mx-auto" style={{ maxWidth: '380px', marginTop: '100px' }}>
         <div className="card-body">
-          {error && <Message variant="alert-danger">{error}</Message>}
-          {loading && <Loading />}
-          <h4 className="card-title mb-4 text-center">Sign in</h4>
+          <h4 className="card-title mb-4 text-center">Đăng nhập</h4>
           <form onSubmit={submitHandler}>
             <div className="mb-3">
-              <input
-                className="form-control"
-                placeholder="Email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <input required className="form-control" placeholder="Email" type="email" ref={emailRef} />
             </div>
             <div className="mb-3">
-              <input
-                className="form-control"
-                placeholder="Password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <input required className="form-control" placeholder="Password" type="password" ref={passwordRef} />
             </div>
 
             <div className="mb-4">
-              <button type="submit" className="btn btn-primary w-100">
-                Login
-              </button>
+              <LoadingButton
+                loading={loading}
+                type="submit"
+                variant={inputPropsConstants.variantContained}
+                sx={{ width: '100%' }}
+              >
+                Đăng nhập
+              </LoadingButton>
             </div>
           </form>
         </div>

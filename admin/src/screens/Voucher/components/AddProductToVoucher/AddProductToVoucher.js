@@ -26,6 +26,7 @@ import {
 import { ListCategory } from '../../../../Redux/Actions/CategoryActions';
 import styles from './AddProductToVoucher.module.scss';
 import { inputPropsConstants } from '../../../../constants/variants';
+import AddIcon from '@mui/icons-material/Add';
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -174,7 +175,7 @@ export default function AddProductToVoucher() {
             onClick={handleCheckedRight}
             disabled={leftChecked.length === 0}
             aria-label="move selected right"
-            startIcon={<i className="fas fa-plus-circle" />}
+            startIcon={<AddIcon />}
           >
             Thêm
           </Button>

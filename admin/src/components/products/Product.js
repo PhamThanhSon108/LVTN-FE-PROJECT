@@ -20,7 +20,7 @@ const Product = (props) => {
         <Toast />
         <div className="card card-product-grid">
           <Link to={`/products/${product._id}/edit`} className="img-wrap">
-            <img src={product.image} alt="Product" />
+            <img src={product.images?.[0]} alt="Product" />
           </Link>
           <div className="info-wrap">
             <Link
@@ -31,7 +31,7 @@ const Product = (props) => {
               {product.name}
             </Link>
             <div className="countInStock-price" style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div className="price mb-2">Price: ${product.price.toFixed(2)}</div>
+              <div className="price mb-2">Giá: {product.price} VNĐ</div>
             </div>
             <div className="row">
               <div className="d-flex align-content-center justify-content-between">

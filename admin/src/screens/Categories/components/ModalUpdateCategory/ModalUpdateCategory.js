@@ -2,21 +2,25 @@ import * as React from 'react';
 import Modal from '@mui/material/Modal';
 import { Controller, useForm } from 'react-hook-form';
 import { Button, Card, CardActions, TextField, Typography } from '@mui/material';
-import { inputPropsConstants } from '../../constants/variants';
-import { renderError } from '../../utils/errorMessage';
-import styles from './Categories.module.scss';
-import { toast } from 'react-toastify';
-import { ToastObject } from '../LoadingError/ToastObject';
+
+import styles from '../../Categories.module.scss';
+
 import { useDispatch } from 'react-redux';
-import { FetchCategoriesTree, UpdateCategory } from '../../Redux/Actions/CategoryActions';
+
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
+import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
+import { toast } from 'react-toastify';
+import { FetchCategoriesTree, UpdateCategory } from '../../../../Redux/Actions/CategoryActions';
+import { ToastObject } from '../../../../components/LoadingError/ToastObject';
+import { inputPropsConstants } from '../../../../constants/variants';
+import { renderError } from '../../../../utils/errorMessage';
 
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 600,
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -66,6 +70,7 @@ export default function ModalUpdateCategory({ isOpenModal, handleOpenModal, curr
 
   React.useEffect(() => {
     reset(currentCategory);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentCategory?._id]);
   return (
     <div>
@@ -130,6 +135,7 @@ export default function ModalUpdateCategory({ isOpenModal, handleOpenModal, curr
                 type="submit"
                 variant={inputPropsConstants.variantContained}
                 size="small"
+                startIcon={<AutorenewOutlinedIcon />}
               >
                 Cập nhật
               </LoadingButton>

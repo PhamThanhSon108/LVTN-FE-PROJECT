@@ -19,19 +19,11 @@ import {
 
 export const ListCategory =
   (level = 2) =>
-  async (dispatch, getState) => {
+  async (dispatch) => {
     try {
       dispatch({ type: CATEGORY_REQUEST });
-      const {
-        userLogin: { userInfo },
-      } = getState();
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${userInfo.accessToken}`,
-        },
-      };
-      const { data } = await request.get(`/categories`, { params: { level: level } }, config);
+      const { data } = await request.get(`/categories`, { params: { level: level } });
       dispatch({ type: CATEGORY_SUCCESS, payload: data.data?.categories || [] });
     } catch (error) {
       dispatch({
@@ -41,7 +33,7 @@ export const ListCategory =
     }
   };
 
-export const FetchCategoriesTree = () => async (dispatch, getState) => {
+export const FetchCategoriesTree = () => async (dispatch) => {
   try {
     dispatch({ type: CATEGORY_REQUEST });
     const { data } = await request.get('/categories/get-category-tree');
@@ -56,7 +48,7 @@ export const FetchCategoriesTree = () => async (dispatch, getState) => {
 
 export const DeleteCategory =
   ({ id, statusDeleteCategory }) =>
-  async (dispatch, getState) => {
+  async (dispatch) => {
     try {
       dispatch({ type: CATEGORY_DELETE_REQUEST });
 
@@ -100,7 +92,7 @@ export const AddCategory =
   };
 export const UpdateCategory =
   ({ id, category, updateCategoryStatus }) =>
-  async (dispatch, getState) => {
+  async (dispatch) => {
     try {
       dispatch({ type: CATEGORY_UPDATE_REQUEST });
 

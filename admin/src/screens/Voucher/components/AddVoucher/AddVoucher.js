@@ -10,6 +10,7 @@ import useAddVoucher from './hook/useAddVoucher';
 import AddProductToVoucher from '../AddProductToVoucher/AddProductToVoucher';
 import { inputPropsConstants } from '../../../../constants/variants';
 import { renderError } from '../../../../utils/errorMessage';
+import AddIcon from '@mui/icons-material/Add';
 
 const applyVoucherFor = {
   allProducts: '1',
@@ -260,11 +261,7 @@ export default function AddVoucher() {
                 Hủy
               </Button>
             </Link>
-            <Button
-              type="submit"
-              variant={inputPropsConstants.variantContained}
-              startIcon={<i className="fas fa-plus-circle" />}
-            >
+            <Button type="submit" variant={inputPropsConstants.variantContained} startIcon={<AddIcon />}>
               Tạo mã
             </Button>
           </Card>

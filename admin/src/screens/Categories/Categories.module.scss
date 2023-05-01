@@ -4,6 +4,11 @@
   flex-direction: column;
   border-left: 2px solid var(--border-color);
 }
+.mainHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-12);
+}
 .addSubCategoryBtn {
   margin-top: var(--space-8);
 }

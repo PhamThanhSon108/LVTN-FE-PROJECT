@@ -7,6 +7,9 @@ import Loading from '../LoadingError/Loading';
 import Message from '../LoadingError/Error';
 import { ListCategory } from '../../Redux/Actions/CategoryActions';
 import Pagination from '../Home/pagination';
+import { Button } from '@mui/material';
+import { inputPropsConstants } from '../../constants/variants';
+import AddIcon from '@mui/icons-material/Add';
 const RenderProducts = ({ loading, error, products = [] }) => {
   if (loading) {
     return <Loading />;
@@ -66,10 +69,12 @@ const MainProducts = (props) => {
       {/* <Toast /> */}
       <section className="content-main">
         <div className="content-header">
-          <h2 className="content-title">Products</h2>
+          <h2 className="content-title">Danh sách sản phẩm</h2>
           <div>
-            <Link to="/products/add" className="btn btn-primary color-orange">
-              Create new product
+            <Link to="/products/add">
+              <Button type="submit" variant={inputPropsConstants.variantContained} startIcon={<AddIcon />}>
+                Thêm sản phẩm
+              </Button>
             </Link>
           </div>
         </div>
@@ -82,7 +87,7 @@ const MainProducts = (props) => {
                   <div className="input-group">
                     <input
                       type="search"
-                      placeholder="Search..."
+                      placeholder="Nhập sản phẩm cần tìm..."
                       className="form-control p-2"
                       onChange={(e) => {
                         setKewywordSearch(e.target.value);
