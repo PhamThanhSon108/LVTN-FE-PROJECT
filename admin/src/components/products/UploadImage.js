@@ -102,7 +102,7 @@ export const FileUploadDemo = (props) => {
           }}
         ></i>
         <span style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }} className="my-5">
-          Drag and Drop Image Here
+          Kéo và thả hình tại đây
         </span>
       </div>
     );
@@ -132,8 +132,8 @@ export const FileUploadDemo = (props) => {
 
       <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
 
-      <div className="card col-12">
-        <h5>Thêm ảnh</h5>
+      <div className="col-12">
+        <div style={{ marginBottom: '12px' }}>Thêm ảnh</div>
         <FileUpload
           ref={fileUploadRef}
           name="demo[]"

@@ -321,7 +321,7 @@ body.aside-mini .menu-aside .menu-item.has-submenu .menu-link:after {
   font-size: 18px;
 }
 .menu-aside .active .icon {
-  color: #ee2624;
+  color: var(--primary-color);
 }
 .menu-aside .active {
   background-color: #ebf0fd;
@@ -939,7 +939,7 @@ ul.row-sm {
   overflow-y: scroll;
 }
 .header-color {
-  background-color: #ee2624;
+  background-color: var(--primary-color);
 }
 /* pagition */
 .page-item {

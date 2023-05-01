@@ -82,11 +82,6 @@ const publicRouter = [
     component: <Login />,
     exact: true,
   },
-  {
-    path: '*',
-    component: <Login />,
-    exact: true,
-  },
 ];
 
 export { privateRouter, publicRouter };

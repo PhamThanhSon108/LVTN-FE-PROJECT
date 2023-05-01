@@ -22,6 +22,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Typography,
 } from '@mui/material';
 import { ListCategory } from '../../../../Redux/Actions/CategoryActions';
 import styles from './AddProductToVoucher.module.scss';
@@ -47,7 +48,7 @@ export default function AddProductToVoucher() {
   const [currentSelectedProducts, setCurrentSelectedProducts] = React.useState([]);
   const [searchKey, setSearchKey] = React.useState('');
   const [filterByCategory, setFilterByCategory] = React.useState('-1');
-  const lcategories = useSelector((state) => state.CategoryList);
+  const lcategories = useSelector((state) => state.CategoryChildren);
   const { categories } = lcategories;
 
   const productList = useSelector((state) => state.productList);
@@ -223,7 +224,14 @@ export default function AddProductToVoucher() {
 
   const selectedProducts = (title, items) => (
     <Card className={styles.products}>
-      <CardHeader title={title} subheader={`${items.length} đã chọn`} />
+      <CardHeader
+        title={
+          <Typography variant="h6" fontSize="xl" className={styles.titleModal} sx={{ mb: 0.5 }}>
+            {title}
+          </Typography>
+        }
+        subheader={`${items.length} đã chọn`}
+      />
       <Divider />
       <List
         sx={{
