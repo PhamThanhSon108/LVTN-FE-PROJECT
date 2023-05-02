@@ -5,11 +5,16 @@ import Loading from '../LoadingError/Loading';
 import Message from '../LoadingError/Error';
 import { LinearProgress } from '@mui/material';
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children, loading = false }) => {
   return (
-    <section className="content-main">
+    <section>
       <div className="content-header">
         <h2 className="content-title">Danh sách người dùng</h2>
+      </div>
+      <div style={{ height: 2.5 }}>
+        {loading ? (
+          <LinearProgress sx={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, height: '2.5px' }} />
+        ) : null}
       </div>
       <div className="card mb-4 main-card-wrapper">
         <div className="card-body">{children}</div>
@@ -28,14 +33,6 @@ const UserComponent = () => {
     if (users.length === 0) dispatch(listUser());
   }, [dispatch]);
 
-  if (loading) {
-    return (
-      <MainLayout>
-        <LinearProgress />
-      </MainLayout>
-    );
-  }
-
   if (error) {
     return (
       <MainLayout>
@@ -45,7 +42,7 @@ const UserComponent = () => {
   }
 
   return (
-    <MainLayout>
+    <MainLayout loading={loading}>
       <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4">
         {users?.map((user) => (
           <div className="col" key={user._id}>

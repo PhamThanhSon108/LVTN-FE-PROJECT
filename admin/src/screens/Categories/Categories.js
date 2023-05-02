@@ -83,7 +83,7 @@ const Categories = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
   return (
-    <section className="content-main">
+    <section>
       <div className="col-md-12 col-lg-12">
         <ModalAddCategoryParent
           handleOpenModal={handleOpenModalAddCategoryParent}
@@ -123,18 +123,26 @@ const Categories = () => {
           component="div"
           role="list"
         >
-          {loading ? <LinearProgress /> : null}
+          <div style={{ height: 2.5 }}>
+            {loading ? (
+              <LinearProgress sx={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, height: '2.5px' }} />
+            ) : null}
+          </div>
           {categories &&
             categories?.map((value) => (
-              <Accordion key={value?._id}>
+              <Accordion
+                key={value?._id}
+                className={styles.accordionItem}
+                sx={{ bgcolor: 'transparent', boxShadow: 'none' }}
+              >
+                {categoryWantToDelete === value._id ? <LinearProgress sx={{ width: '100%' }} /> : null}
                 <Card>
-                  {categoryWantToDelete === value._id ? <LinearProgress sx={{ width: '100%' }} /> : null}
                   <AccordionSummary
                     className={styles.categoryParent}
                     sx={{ height: 56 }}
                     expandIcon={<ExpandMoreIcon />}
                   >
-                    <ListItem key={value} role="listitem" button>
+                    <ListItem key={value}>
                       <ListItemAvatar>
                         <Avatar alt={value?.name} src={value?.image} />
                       </ListItemAvatar>
@@ -190,7 +198,7 @@ const Categories = () => {
                   </AccordionSummary>
                 </Card>
 
-                <AccordionDetails sx={{ ml: 8, pl: 2, pr: 0 }}>
+                <AccordionDetails sx={{ ml: 8, pl: 2, pr: 0, pb: 0 }}>
                   <Card>
                     <List dense component="div" role="list" className={styles.categoryChildren}>
                       {value?.children &&

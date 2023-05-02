@@ -28,7 +28,7 @@ const OrderMain = (props) => {
     dispatch(listOrders(dateOrder, orderStatus, pageNumber));
   }, [dispatch, orderStatus, dateOrder, pageNumber]);
   return (
-    <section className="content-main">
+    <section>
       <div className="content-header">
         <h2 className="content-title">Orders</h2>
       </div>

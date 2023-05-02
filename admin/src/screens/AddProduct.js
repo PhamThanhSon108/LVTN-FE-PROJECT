@@ -1,8 +1,0 @@
-import React from 'react';
-import AddProductMain from './../components/products/AddProductMain';
-
-const AddProduct = () => {
-  return <AddProductMain />;
-};
-
-export default AddProduct;

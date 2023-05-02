@@ -33,7 +33,7 @@ export default function Banner() {
   return (
     <>
       <Toast />
-      <div className="content-main">
+      <div>
         {loadingDelete && <Loading />}
         <div className={styles.header}>
           <h2 className="content-title">Danh sách Banner</h2>
@@ -41,8 +41,12 @@ export default function Banner() {
         </div>
 
         <div>
+          <div style={{ height: 2.5 }}>
+            {loading ? (
+              <LinearProgress sx={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, height: '2.5px' }} />
+            ) : null}
+          </div>
           <Card className={`${styles.cardWrapper} main-card-wrapper`}>
-            {loading ? <LinearProgress sx={{ width: '100%' }} /> : null}
             <table className="table">
               <thead>
                 <tr>

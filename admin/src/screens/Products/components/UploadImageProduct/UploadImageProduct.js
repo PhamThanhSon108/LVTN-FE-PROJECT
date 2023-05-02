@@ -5,7 +5,7 @@ import { ProgressBar } from 'primereact/progressbar';
 import { Button } from 'primereact/button';
 import { Tooltip } from 'primereact/tooltip';
 
-export const FileUploadDemo = (props) => {
+export const UploadImageProduct = (props) => {
   const { setImage, name, clear } = props;
   const [totalSize, setTotalSize] = useState(0);
   const toast = useRef(null);

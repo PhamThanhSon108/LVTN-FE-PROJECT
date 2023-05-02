@@ -1,18 +1,18 @@
 import { React, useEffect } from 'react';
-import TopTotal from './TopTotal';
-import LatestOrder from './LatestOrder';
-import SaleStatistics from './SalesStatistics';
-import ProductsStatistics from './ProductsStatistics';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../../Redux/Actions/ProductActions';
+import TotalSales from './components/TotalSales/TotalSales';
+import SaleStatistics from './components/SaleStatistics/SaleStatistics';
+import ProductsStatistics from './components/ProductsStatistics/ProductsStatistics';
+import LatestOrder from './components/LatestOrder/LatestOrder';
 
-const Main = () => {
+const Dashboard = () => {
   const dispatch = useDispatch();
-
   const orderList = useSelector((state) => state.orderList);
   const { loading, error, orders } = orderList;
   const productList = useSelector((state) => state.productList);
-  const { products, countProducts } = productList;
+  const { countProducts } = productList;
   const userList = useSelector((state) => state.userList);
   const { users } = userList;
   useEffect(() => {
@@ -21,12 +21,12 @@ const Main = () => {
 
   return (
     <>
-      <section className="content-main">
+      <section>
         <div className="content-header">
           <h2 className="content-title"> Dashboard </h2>
         </div>
         {/* Top Total */}
-        <TopTotal orders={orders} countProducts={countProducts} countUsers={users ? users.length : 0} />
+        <TotalSales orders={orders} countProducts={countProducts} countUsers={users ? users.length : 0} />
 
         <div className="row">
           {/* STATICS */}
@@ -43,4 +43,4 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default Dashboard;

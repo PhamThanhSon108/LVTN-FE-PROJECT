@@ -166,7 +166,7 @@ body.offcanvas-active {
 }
 
 .content-main {
-  padding: 30px 3%;
+  padding: var(--space-12) 3% 30px 3%;
   margin-left: auto;
   margin-right: auto;
 }
