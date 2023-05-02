@@ -13,10 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { allProducts } from '../../../../Redux/Actions/ProductActions';
 import {
   Avatar,
-  CircularProgress,
-  FormControl,
   InputAdornment,
-  InputLabel,
   LinearProgress,
   ListItemAvatar,
   MenuItem,
@@ -150,7 +147,9 @@ export default function AddProductToVoucher() {
             >
               <MenuItem value="-1">Tất cả thể loại</MenuItem>
               {categories.map((category) => (
-                <MenuItem value={category?._id}>{category?.name || ''}</MenuItem>
+                <MenuItem key={category?._id} value={category?._id}>
+                  {category?.name || ''}
+                </MenuItem>
               ))}
             </Select>
           </div>
@@ -184,7 +183,11 @@ export default function AddProductToVoucher() {
         subheader={`${numberOfChecked(items)}/${items.length} đã chọn`}
       />
       <Divider />
-      {loading ? <LinearProgress /> : null}
+      <div style={{ height: 2.5 }}>
+        {loading ? (
+          <LinearProgress sx={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, height: '2.5px' }} />
+        ) : null}
+      </div>
       <List
         sx={{
           bgcolor: 'background.paper',

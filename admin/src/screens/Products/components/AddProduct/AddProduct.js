@@ -1,31 +1,34 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { toast } from 'react-toastify';
+import { ListCategory } from '../../../../Redux/Actions/CategoryActions';
+import { fetchProductToEdit, updateProduct } from '../../../../Redux/Actions/ProductActions';
+import Loading from '../../../../components/LoadingError/Loading';
+import Toast from '../../../../components/LoadingError/Toast';
+import { UploadImageProduct } from '../UploadImageProduct/UploadImageProduct';
+import { inputPropsConstants } from '../../../../constants/variants';
+
 import React, { useState, useEffect, Fragment } from 'react';
-import Toast from './../LoadingError/Toast';
+
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProductToEdit, updateProduct } from './../../Redux/Actions/ProductActions';
-import { toast } from 'react-toastify';
-import Loading from '../LoadingError/Loading';
-import { ListCategory } from '../../Redux/Actions/CategoryActions';
+
 import { Controller, useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
-import { FileUploadDemo } from './UploadImage';
-import { Image } from 'primereact/image';
-import { Button } from 'primereact/button';
+
+import { Button, Card } from '@mui/material';
+
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
-import { inputPropsConstants } from '../../constants/variants';
-import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
-import { Card, IconButton } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
+import AddIcon from '@mui/icons-material/Add';
 
 const MainLayout = ({ children }) => {
   return (
-    <section className="content-main" style={{ maxWidth: '1200px' }}>
+    <section>
       <div className="content-header">
         <Link to="/product" className="btn btn-danger text-white">
-          <i className="fas fa-arrow-left" />
+          Trở về trang danh sách sản phẩm
         </Link>
-        <h2 className="content-title">Cập nhật sản phẩm</h2>
+        <h2 className="content-title">Thêm sản phẩm</h2>
       </div>
       <div className="row mb-4">
         <div className="col-xl-12 col-lg-12">
@@ -51,16 +54,7 @@ const methodToChange = {
   delete: -1,
 };
 
-const handleUpdateStatusPreUpdate = (oldVariants = [], variants = []) => {
-  const variantsIsDeleted = oldVariants.reduce((variantTarget, oldVariant) => {
-    if (!variants.find((variant) => oldVariant?._id === variant?._id && variant?.status === methodToChange.update)) {
-      variantTarget.push({ ...oldVariant, status: methodToChange.delete });
-    }
-    return variantTarget;
-  }, []);
-  return variants.concat(variantsIsDeleted);
-};
-const EditProductMain = (props) => {
+const AddProduct = (props) => {
   const [changeForALL, setChangForAll] = useState(false);
   const { productId } = props;
   const [category, setCategory] = useState('');
@@ -72,12 +66,12 @@ const EditProductMain = (props) => {
 
   const dispatch = useDispatch();
   const productEdit = useSelector((state) => state.productEdit);
-  const { loading, error, product } = productEdit;
+  const { loading, error } = productEdit;
 
   const defaultGroupProduct = {
     option: ['firstOption', 'secondOption'],
-    secondOption: [],
-    firstOption: [],
+    secondOption: [''],
+    firstOption: [''],
     variants: [],
   };
 
@@ -86,46 +80,8 @@ const EditProductMain = (props) => {
     shouldUseNativeValidation: true,
   });
 
-  const fetchProduct = {
-    success: (product) => {
-      const defaultFirstValue =
-        product?.variants?.reduce((storeVariant, value) => {
-          const valueInStoreVariant = storeVariant.includes(value?.attributes?.[0]?.value);
-          if (!valueInStoreVariant) storeVariant.push(value?.attributes?.[0]?.value);
-          return storeVariant;
-        }, []) || [];
-
-      const defaultSecondValue =
-        product?.variants?.reduce((storeVariant, value) => {
-          const valueInStoreVariant = storeVariant.includes(value?.attributes?.[1]?.value);
-          if (!valueInStoreVariant) storeVariant.push(value?.attributes?.[1]?.value);
-          return storeVariant;
-        }, []) || [];
-
-      const defaultVariants = defaultFirstValue?.map((value, index) =>
-        product.variants.reduce(
-          (variants, variant, i) => {
-            if (variant.attributes[0].value === value)
-              variants = { field: [...variants.field, { ...variant, status: methodToChange.update }] };
-            return variants;
-          },
-          { field: [] },
-        ),
-      );
-
-      setValue('firstOption', defaultFirstValue);
-      setValue('secondOption', defaultSecondValue);
-      setValue('variants', defaultVariants);
-      setName(product.name);
-      setDescription(product.description);
-      setCategory(product.category);
-      setImage(product.images?.[0]);
-    },
-  };
-
   useEffect(() => {
     dispatch(ListCategory());
-    dispatch(fetchProductToEdit(productId, fetchProduct));
   }, [productId, dispatch]);
 
   const productUpdate = useSelector((state) => state.productUpdate);
@@ -145,6 +101,7 @@ const EditProductMain = (props) => {
   };
   const submitHandler = (data, e) => {
     e.preventDefault();
+
     if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
       toast.error('Name of classify cannot be duplicated!!', ToastObjects);
       return;
@@ -158,13 +115,10 @@ const EditProductMain = (props) => {
       newProduct.append(
         'variants',
         JSON.stringify(
-          product?.variants,
-          handleUpdateStatusPreUpdate(
-            data.variants.reduce((variants, variant) => {
-              variants = variants.concat(variant.field);
-              return variants;
-            }, []),
-          ),
+          data.variants.reduce((variants, variant) => {
+            variants = variants.concat(variant.field);
+            return variants;
+          }, []),
         ),
       );
       newImage ? newProduct.append('productImage', newImage) : newProduct.append('productImage', image);
@@ -188,35 +142,29 @@ const EditProductMain = (props) => {
     );
   }
 
-  const labelOfFirstOption = product?.variants?.[0]?.attributes?.[0]?.name || '';
-  const labelOfSecondOption = product?.variants?.[1]?.attributes?.[1]?.name || '';
+  const labelOfFirstOption = 'size';
+  const labelOfSecondOption = 'color';
+
   return (
     <>
       <Toast />
-      <section className="content-main" style={{ maxWidth: '1200px' }}>
+
+      <section>
         <form onSubmit={handleSubmit(submitHandler)}>
           <div className="d-flex" style={{ marginBottom: 16 }}>
-            <Link to="/products">
-              <IconButton>
-                <ArrowBackIcon />
-              </IconButton>
-            </Link>
-            <h2 className="content-title">Cập nhật sản phẩm</h2>
+            <h2 className="content-title">Thêm sản phẩm</h2>
           </div>
 
           <div className="row mb-4">
             <div className="col-xl-12 col-lg-12">
               <Card sx={{ padding: 2, mb: 2 }}>
                 <div className="mb-4">
-                  <h5>Thông tin cơ bản</h5>
-                </div>
-                <div className="mb-4">
                   <label htmlFor="product_title" className="form-label">
                     Tên sản phẩm
                   </label>
                   <input
                     type="text"
-                    placeholder="Type here"
+                    placeholder="Nhập tên sản phẩm"
                     className="form-control"
                     id="product_title"
                     required
@@ -239,7 +187,7 @@ const EditProductMain = (props) => {
                     onChange={(e) => setCategory(e.target.value)}
                   >
                     <option value={-1} selected>
-                      Chọn thể loại
+                      Chọn thể loại phù hợp
                     </option>
                     {categories?.map((cate, index) => (
                       <option key={cate._id} value={cate._id}>
@@ -261,11 +209,7 @@ const EditProductMain = (props) => {
                   ></textarea>
                 </div>
                 <div className="mb-4">
-                  <label className="form-label">Ảnh cũ của sản phẩm</label>
-
-                  <Image src={image} template="Preview Content" alt="Image Text" preview width="40px" />
-
-                  <FileUploadDemo setImage={(value) => setNewImage(value)} name={name} />
+                  <UploadImageProduct setImage={(value) => setNewImage(value)} name={name} />
                 </div>
               </Card>
               <Card sx={{ padding: 2, mb: 2 }}>
@@ -274,6 +218,10 @@ const EditProductMain = (props) => {
                 </div>
                 <div className="card mb-4 shadow-sm">
                   <div className="card-body">
+                    <div className="mb-4">
+                      <h6>Thông tin bán hàng</h6>
+                    </div>
+
                     {getValues('option')?.map((valueOption, index) => {
                       let dem = 0;
                       return (
@@ -355,7 +303,7 @@ const EditProductMain = (props) => {
                                       if (index === 0) {
                                         setValue(valueOption, [...getValues(valueOption), '']);
                                         setValue(`variants.${getValues('variants')?.length}`, {
-                                          field: getValues('secondOption').reduce((newArray) => {
+                                          field: getValues('secondOption').reduce((newArray, value, index) => {
                                             newArray.push({
                                               price: '',
                                               quantity: '',
@@ -389,8 +337,9 @@ const EditProductMain = (props) => {
                                       setClassifyValue((pre) => !pre);
                                     }}
                                   >
-                                    <i class="icon fas fa-plus m-1"></i>
-                                    <p>Thêm phân loại hàng</p>
+                                    <Button sx={{ mt: 1 }} startIcon={<AddIcon />}>
+                                      Thêm thể loại
+                                    </Button>
                                   </div>
                                 </div>
                               )}
@@ -410,7 +359,7 @@ const EditProductMain = (props) => {
                         }}
                       />
                       <label class="form-check-label" for="defaultCheck1">
-                        Áp dụng cho tất cả sản phẩm
+                        Áp dụng cho tất cả sản phân loại
                       </label>
                     </div>
                     <table class="table">
@@ -515,9 +464,9 @@ const EditProductMain = (props) => {
                       loading={loadingUpdate}
                       type="submit"
                       variant={inputPropsConstants.variantContained}
-                      startIcon={<AutorenewOutlinedIcon />}
+                      startIcon={<AddIcon />}
                     >
-                      Cập nhật sản phẩm
+                      Thêm sản phẩm
                     </LoadingButton>
                   </div>
                 </Card>
@@ -530,4 +479,4 @@ const EditProductMain = (props) => {
   );
 };
 
-export default EditProductMain;
+export default AddProduct;

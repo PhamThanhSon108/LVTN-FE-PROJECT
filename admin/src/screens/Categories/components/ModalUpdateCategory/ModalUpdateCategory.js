@@ -1,12 +1,22 @@
 import * as React from 'react';
 import Modal from '@mui/material/Modal';
 import { Controller, useForm } from 'react-hook-form';
-import { Button, Card, CardActions, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Divider,
+  IconButton,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 import styles from '../../Categories.module.scss';
 
 import { useDispatch } from 'react-redux';
-
+import CloseIcon from '@mui/icons-material/Close';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
 import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
 import { toast } from 'react-toastify';
@@ -22,9 +32,8 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 600,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
   boxShadow: 24,
-  p: 4,
+  p: 1,
 };
 
 export default function ModalUpdateCategory({ isOpenModal, handleOpenModal, currentCategory }) {
@@ -81,66 +90,77 @@ export default function ModalUpdateCategory({ isOpenModal, handleOpenModal, curr
         aria-describedby="modal-modal-description"
       >
         <Card sx={style}>
-          <Typography variant="h5" fontSize="xl" sx={{ mb: 3 }}>
-            Cập nhật thể loại
-          </Typography>
+          <CardHeader
+            title={
+              <Typography variant="h5" fontSize="xl" sx={{ mb: 0 }}>
+                Cập nhật thể loại
+              </Typography>
+            }
+            action={
+              <IconButton onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
+            }
+          />
+          <Divider />
+          <CardContent>
+            <form onSubmit={handleSubmit(handleSubmitUpdateCategory)} className={styles.formWrapper}>
+              <Controller
+                name="name"
+                control={control}
+                rules={{ required: true }}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    className={styles.formItem}
+                    focused={!!fieldState.error}
+                    color={fieldState.error ? 'error' : 'info'}
+                    label="Tên thể loại"
+                    {...field}
+                    variant={inputPropsConstants.variantOutLine}
+                    size={inputPropsConstants.smallSize}
+                    helperText={renderError([
+                      { error: fieldState?.error?.type === 'required', message: 'Bạn chưa nhập trường này' },
+                    ])}
+                  />
+                )}
+              />
 
-          <form onSubmit={handleSubmit(handleSubmitUpdateCategory)} className={styles.formWrapper}>
-            <Controller
-              name="name"
-              control={control}
-              rules={{ required: true }}
-              render={({ field, fieldState }) => (
-                <TextField
-                  className={styles.formItem}
-                  focused={!!fieldState.error}
-                  color={fieldState.error ? 'error' : 'info'}
-                  label="Tên thể loại"
-                  {...field}
-                  variant={inputPropsConstants.variantOutLine}
-                  size={inputPropsConstants.smallSize}
-                  helperText={renderError([
-                    { error: fieldState?.error?.type === 'required', message: 'Bạn chưa nhập trường này' },
-                  ])}
-                />
-              )}
-            />
-
-            <Controller
-              name="description"
-              control={control}
-              rules={{ required: true }}
-              render={({ field, fieldState }) => (
-                <TextField
-                  focused={!!fieldState.error}
-                  color={fieldState.error ? 'error' : 'info'}
-                  label="Mô tả thể loại"
-                  {...field}
-                  variant={inputPropsConstants.variantOutLine}
-                  size={inputPropsConstants.smallSize}
-                  helperText={renderError([
-                    { error: fieldState?.error?.type === 'required', message: 'Bạn chưa nhập trường này' },
-                  ])}
-                  multiline
-                  rows={4}
-                />
-              )}
-            />
-            <CardActions className={styles.actionWrapper}>
-              <Button variant={inputPropsConstants.variantOutLine} size="small" onClick={handleClose}>
-                Hủy
-              </Button>
-              <LoadingButton
-                loading={isLoadingAddCategory}
-                type="submit"
-                variant={inputPropsConstants.variantContained}
-                size="small"
-                startIcon={<AutorenewOutlinedIcon />}
-              >
-                Cập nhật
-              </LoadingButton>
-            </CardActions>
-          </form>
+              <Controller
+                name="description"
+                control={control}
+                rules={{ required: true }}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    focused={!!fieldState.error}
+                    color={fieldState.error ? 'error' : 'info'}
+                    label="Mô tả thể loại"
+                    {...field}
+                    variant={inputPropsConstants.variantOutLine}
+                    size={inputPropsConstants.smallSize}
+                    helperText={renderError([
+                      { error: fieldState?.error?.type === 'required', message: 'Bạn chưa nhập trường này' },
+                    ])}
+                    multiline
+                    rows={4}
+                  />
+                )}
+              />
+              <CardActions className={styles.actionWrapper}>
+                <Button variant={inputPropsConstants.variantOutLine} size="small" onClick={handleClose}>
+                  Hủy
+                </Button>
+                <LoadingButton
+                  loading={isLoadingAddCategory}
+                  type="submit"
+                  variant={inputPropsConstants.variantContained}
+                  size="small"
+                  startIcon={<AutorenewOutlinedIcon />}
+                >
+                  Cập nhật
+                </LoadingButton>
+              </CardActions>
+            </form>
+          </CardContent>
         </Card>
       </Modal>
     </div>

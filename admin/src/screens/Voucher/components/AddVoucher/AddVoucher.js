@@ -28,11 +28,8 @@ export default function AddVoucher() {
   const { control, watch, handleSubmit, handleCreateVoucher } = useAddVoucher();
   return (
     <div className={styles.voucherContainer}>
-      <Card className={styles.voucherWrapper}>
+      <div className={styles.voucherWrapper}>
         <div className={styles.header}>
-          <Link to="/vouchers" className={styles.backBtn}>
-            <i className="fas fa-arrow-left" />
-          </Link>
           <h2 className={styles.title}>Tạo Mã giảm giá</h2>
         </div>
         <form className={styles.voucherForm} onSubmit={handleSubmit(handleCreateVoucher)}>
@@ -266,7 +263,7 @@ export default function AddVoucher() {
             </Button>
           </Card>
         </form>
-      </Card>
+      </div>
     </div>
   );
 }

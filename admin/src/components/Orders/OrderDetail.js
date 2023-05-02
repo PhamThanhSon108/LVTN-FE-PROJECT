@@ -55,7 +55,7 @@ const OrderDetail = () => {
   };
 
   return (
-    <section className="content-main">
+    <section>
       {/* <Toast /> */}
       <div className="content-header">
         <Link to="/orders" className="btn btn-dark text-white">

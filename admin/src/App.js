@@ -24,7 +24,7 @@ function App() {
             <PrivateRouter
               key={option.path}
               {...option}
-              component={<DefaultLayout>{option.component}</DefaultLayout>}
+              component={<DefaultLayout name={option.name || 'Admin'}>{option.component}</DefaultLayout>}
             />
           ))}
         </Switch>

@@ -1,10 +1,13 @@
 import React from 'react';
 
-const TopTotal = (props) => {
-  const { orders, countProducts, countUsers } = props;
+const TotalSales = (props) => {
+  const { orders, countProducts } = props;
   let totalSale = 0;
   if (orders) {
-    orders?.orders?.map((order) => (order.status === 'Completed' ? (totalSale = totalSale + order.totalPrice) : null));
+    orders?.orders?.reduce((totalSale, order) => {
+      if (order.status === 'Completed') return totalSale + order.totalPrice;
+      return totalSale;
+    }, 0);
   }
   return (
     <div className="row">
@@ -56,4 +59,4 @@ const TopTotal = (props) => {
   );
 };
 
-export default TopTotal;
+export default TotalSales;

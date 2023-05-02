@@ -13,9 +13,6 @@ export const UploadBanner = (props) => {
   useEffect(() => {
     fileUploadRef.current.clear();
   }, [clear]);
-  const onUpload = () => {
-    toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
-  };
   const onTemplateSelect = (e) => {
     let _totalSize = e.files[0].size;
     setImage((pre) => [...pre, ...e.files]);
@@ -35,10 +32,7 @@ export const UploadBanner = (props) => {
   };
 
   const headerTemplate = (options) => {
-    const { className, chooseButton, uploadButton, cancelButton } = options;
-    const value = totalSize / 10000;
-    const formatedValue = fileUploadRef && fileUploadRef.current ? fileUploadRef.current.formatSize(totalSize) : '0 B';
-
+    const { className, chooseButton, cancelButton } = options;
     return (
       <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
         {chooseButton}
@@ -92,11 +86,7 @@ export const UploadBanner = (props) => {
     iconOnly: true,
     className: 'custom-choose-btn p-button-rounded p-button-outlined',
   };
-  const uploadOptions = {
-    icon: 'pi pi-fw pi-cloud-upload',
-    iconOnly: true,
-    className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined',
-  };
+
   const cancelOptions = {
     icon: 'pi pi-fw pi-times',
     iconOnly: true,
@@ -112,7 +102,7 @@ export const UploadBanner = (props) => {
       <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" /> */}
 
       <div className="card">
-        <h5 style={{ padding: '15px' }}>New banner</h5>
+        <h5 style={{ padding: '15px' }}>Thêm banner</h5>
         <FileUpload
           ref={fileUploadRef}
           name="demo[]"

@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import Product from './Product';
+
 import { useDispatch, useSelector } from 'react-redux';
-import { listProducts } from '../../Redux/Actions/ProductActions';
-import Loading from '../LoadingError/Loading';
-import Message from '../LoadingError/Error';
-import { ListCategory } from '../../Redux/Actions/CategoryActions';
-import Pagination from '../Home/pagination';
-import { Button } from '@mui/material';
-import { inputPropsConstants } from '../../constants/variants';
+
+import { Button, LinearProgress, List, Pagination } from '@mui/material';
+
 import AddIcon from '@mui/icons-material/Add';
 import { debounce } from 'lodash';
-import NotFoundResult from '../NotFoundResult/NotFoundResult';
-const RenderProducts = ({ loading, error, products = [] }) => {
-  if (loading) {
-    return <Loading />;
-  }
-  if (error) return <Message variant="alert-danger">{error}</Message>;
+import Message from '../../components/LoadingError/Error';
+import NotFoundResult from '../../components/NotFoundResult/NotFoundResult';
+import Product from './components/Product';
+import { listProducts } from '../../Redux/Actions/ProductActions';
+import { ListCategory } from '../../Redux/Actions/CategoryActions';
+import { inputPropsConstants } from '../../constants/variants';
 
-  if (products.length === 0) {
+const RenderProducts = ({ loading, error, products = [] }) => {
+  if (error && !loading) return <Message variant="alert-danger">{error}</Message>;
+
+  if (products.length === 0 && !loading) {
     return (
       <div className="row">
         <NotFoundResult title="Không tìm thấy sản phẩm" />
@@ -27,21 +26,25 @@ const RenderProducts = ({ loading, error, products = [] }) => {
   }
   return (
     <div className="row">
-      {products?.map((product) => (
-        <Product product={product} key={product._id} />
-      ))}
+      <List dense component="div" role="list">
+        {products?.map((product) => (
+          <Product product={product} key={product._id} />
+        ))}
+      </List>
     </div>
   );
 };
 
-const MainProducts = () => {
+const Products = () => {
   const dispatch = useDispatch();
   let history = useHistory();
   const location = useLocation();
+
   const searchParams = new URLSearchParams(location.search);
+
   const [keyword] = useState(searchParams.get('search') || '');
   const [category] = useState(searchParams.get('category') || '');
-  const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumber] = useState(searchParams.get('page') || 1);
 
   const productList = useSelector((state) => state.productList);
   const { loading, error, products, page, pages } = productList;
@@ -54,13 +57,17 @@ const MainProducts = () => {
 
   const debouncedSearch = React.useRef(
     debounce(async (criteria) => {
-      history.replace(`?search=${criteria.trim()}&category=${searchParams.get('category') || ''}`);
+      searchParams.set('search', criteria);
+      searchParams.set('page', 1);
+      history.replace(`?${searchParams.toString()}`);
     }, 500),
   ).current;
 
   const handleCategory = (e) => {
     if (e.target.value !== undefined) {
-      history.replace(`?category=${e.target.value?.trim()}&search=${searchParams.get('search') || ''}`);
+      searchParams.set('category', e.target.value);
+      searchParams.set('page', 1);
+      history.replace(`?${searchParams.toString()}`);
     }
   };
 
@@ -82,12 +89,9 @@ const MainProducts = () => {
       debouncedSearch?.cancel();
     };
   }, [debouncedSearch]);
-
   return (
     <>
-      {/* <Toast /> */}
-
-      <section className="content-main">
+      <section>
         <div className="content-header">
           <h2 className="content-title">Danh sách sản phẩm</h2>
           <div>
@@ -98,7 +102,11 @@ const MainProducts = () => {
             </Link>
           </div>
         </div>
-
+        <div style={{ height: 2.5 }}>
+          {loading ? (
+            <LinearProgress sx={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, height: '2.5px' }} />
+          ) : null}
+        </div>
         <div className="card mb-4 shadow-sm main-card-wrapper">
           <header className="card-header bg-white ">
             <div className="row gx-3 py-3">
@@ -141,14 +149,8 @@ const MainProducts = () => {
           </header>
 
           <div className="card-body">
-            {errorDelete && <Message variant="alert-danger">{errorDelete}</Message>}
             <RenderProducts products={products} error={error} loading={loading} />
-            <Pagination
-              pages={pages}
-              page={page}
-              category={category ? category : ''}
-              keyword={keyword ? keyword : ''}
-            ></Pagination>
+            {pages > 1 ? <Pagination count={pages} page={page} color="primary" /> : null}
           </div>
         </div>
       </section>
@@ -156,4 +158,4 @@ const MainProducts = () => {
   );
 };
 
-export default MainProducts;
+export default Products;
