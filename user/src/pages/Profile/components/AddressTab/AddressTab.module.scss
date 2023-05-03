@@ -1,0 +1,49 @@
+.rowWrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.wrapInput {
+    width: 49%;
+}
+
+.wrapCol1 {
+    width: 100%;
+}
+
+.wrapCol3 {
+    width: 30%;
+}
+
+.actionWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+
+    .btn {
+        font-size: 12px;
+        cursor: pointer;
+        color: var(--primary-color);
+    }
+    .btn + .btn {
+        margin-left: var(--space-12);
+    }
+}
+.setDefaultAction {
+    cursor: pointer;
+    font-size: 10px;
+    border: 1px solid var(--border-color);
+    padding: var(--space-4) var(--space-8);
+    line-height: 1rem;
+    margin-top: var(--space-8);
+}
+
+.defaultAddressChip {
+    margin-left: var(--space-16);
+    margin-bottom: var(--space-16);
+}
+
+.addressListWrapper {
+    max-height: calc(100vh - 350px);
+    overflow: auto;
+}

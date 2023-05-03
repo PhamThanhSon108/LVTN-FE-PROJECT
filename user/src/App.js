@@ -20,6 +20,8 @@ import VerifyRegisterSuccess from './pages/VerifyRegisterSuccess';
 import ForgotPass from './pages/ForgotPass';
 import ResetPass from './pages/ResetPass';
 import TodayProduct from './pages/TodayProduct';
+import './assets/css/color.scss';
+import './assets/css/spacing.scss';
 
 const App = () => {
     return (

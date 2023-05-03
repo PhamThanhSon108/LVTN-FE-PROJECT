@@ -1,6 +1,6 @@
 const { default: request } = require('~/utils/request');
 
 const getCategories = async () => {
-    return request.get(`/categories/get_category_tree/`);
+    return request.get(`/categories/get-category-tree/`);
 };
 export { getCategories };

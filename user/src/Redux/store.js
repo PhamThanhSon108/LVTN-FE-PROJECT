@@ -34,7 +34,7 @@ import {
 } from './Reducers/OrderReducres';
 import { Sliderload } from './Reducers/SliderReducer';
 import { categoryListReducer } from './Reducers/CategoryReducers';
-import { AddressReducer } from './Reducers/AddressReducers';
+import { AddressReducer } from './Reducers/DeliveryReducers';
 
 const reducer = combineReducers({
     listAllOrder: productbestseller,
