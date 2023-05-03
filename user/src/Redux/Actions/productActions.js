@@ -55,7 +55,7 @@ export const listProduct =
                 priceOrder,
                 pageSize,
             });
-            dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+            dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data.data });
         } catch (error) {
             dispatch({
                 type: PRODUCT_LIST_FAIL,

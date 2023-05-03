@@ -9,82 +9,7 @@ import { Autocomplete, Button, FormControl, FormControlLabel, Radio, RadioGroup,
 import './Profile.scss';
 import { getListAddress } from '~/Redux/Actions/address';
 import moment from 'moment';
-const FormUpdatePassword = ({
-    uploadPassword,
-    submitUpdatePassword,
-    setOldPassword,
-    oldPassword,
-    objFormPass,
-    setPassword,
-    setConfirmPassword,
-    confirmPassword,
-    refSetPassword,
-    password,
-}) => {
-    return (
-        <div
-            ref={refSetPassword}
-            className={`col-lg-12 col-md-12 col-sm-12 ${uploadPassword ? 'form-update-profile-focus' : ''}`}
-            style={{ display: uploadPassword ? 'block' : 'none' }}
-        >
-            <form className="row  form-container form-update-profile" onSubmit={submitUpdatePassword}>
-                <div className="col-md-12">
-                    <TextField
-                        size="small"
-                        type="password"
-                        label="Current password"
-                        sx={{ width: '100%' }}
-                        variant="outlined"
-                        value={oldPassword}
-                        onChange={(e) => {
-                            objFormPass.oldPassword = ' ';
-                            setOldPassword(e.target.value);
-                        }}
-                    />
-                    <p className="noti-validate">{objFormPass.oldPassword}</p>
-                </div>
-
-                <div className="col-md-12">
-                    <TextField
-                        size="small"
-                        type="password"
-                        label="New password"
-                        sx={{ width: '100%' }}
-                        variant="outlined"
-                        value={password}
-                        onChange={(e) => {
-                            objFormPass.password = ' ';
-                            setPassword(e.target.value);
-                        }}
-                    />
-                    <p className="noti-validate">{objFormPass.password}</p>
-                </div>
-
-                <div className="col-md-12">
-                    <TextField
-                        size="small"
-                        type="password"
-                        label="Confirm new password"
-                        sx={{ width: '100%' }}
-                        variant="outlined"
-                        value={confirmPassword}
-                        onChange={(e) => {
-                            objFormPass.confirmPassword = ' ';
-                            setConfirmPassword(e.target.value);
-                        }}
-                    />
-                    <p className="noti-validate">{objFormPass.confirmPassword}</p>
-                </div>
-
-                <div className=" btn-update-profile">
-                    <Button variant="contained" className="btn btn-primary" type="submit">
-                        Update Password
-                    </Button>
-                </div>
-            </form>
-        </div>
-    );
-};
+import { getProvinces } from '~/Redux/Actions/deliveryAction';
 
 const ProfileTab = ({ checkSetPassword, checkProfile, checkbox }) => {
     return (
@@ -144,41 +69,11 @@ const ProfileTabs = () => {
         wards: [],
         districts: [],
     });
-    const handleSuccessGetAddress = (provinces) => {
-        setTemAddress((pre) => ({ ...pre, provinces: provinces }));
-    };
-    const getAddress = async () => {
-        dispatch(getListAddress(handleSuccessGetAddress));
-        // setTemAddress((pre) => ({ ...pre, provinces: provinces.data }));
-        return;
-    };
-    const changeDistrict = ({ district }) => {
-        if (district) {
-            setDistrict(district);
-            const wards = tempAddress.districts.find((tempDistrict) => tempDistrict.name === district)?.wards;
-            setTemAddress((pre) => ({ ...pre, wards: wards }));
-            setWard('');
-            return;
-        }
-    };
-    const changeProvince = ({ province }) => {
-        if (province) {
-            setProvince(province);
-            const districts = tempAddress.provinces.find((tempProvince) => tempProvince.name === province)?.districts;
-            setTemAddress((pre) => ({ ...pre, districts: districts, wards: [] }));
-            setDistrict('');
-            setWard('');
-        }
-    };
 
-    const defaultAddress = ({ district, province, ward }) => {
-        setProvince(province);
-        setDistrict(district);
-        setWard(ward);
-        const districts = provinces.find((tempProvince) => tempProvince.name === province)?.districts || [];
-        const wards = districts.find((tempDistrict) => tempDistrict.name === district)?.wards || [];
-        setTemAddress((pre) => ({ ...pre, districts: districts, wards: wards }));
-    };
+    const changeDistrict = ({ district }) => {};
+    const changeProvince = ({ province }) => {};
+
+    const defaultAddress = ({ district, province, ward }) => {};
     const {
         address: { provinces },
     } = useSelector((state) => state.address);
@@ -281,14 +176,6 @@ const ProfileTabs = () => {
     }
 
     useEffect(() => {
-        if (!provinces || provinces?.length === 0) {
-            getAddress();
-        } else {
-            handleSuccessGetAddress(provinces);
-        }
-    }, []);
-
-    useEffect(() => {
         if (user) {
             defaultAddress({
                 province: user?.address?.province,
@@ -302,6 +189,7 @@ const ProfileTabs = () => {
             if (user?.address?.specificAddress) setSpecificAddress(user?.address?.specificAddress || '');
             if (user.birthday) setBirthDay(moment(user.birthday).format('YYYY-MM-DD'));
         }
+        dispatch(getProvinces());
     }, [dispatch, user]);
 
     const submitUpdateProfile = (e) => {
@@ -335,7 +223,7 @@ const ProfileTabs = () => {
 
     return (
         <Fragment>
-            <Toast />
+            {/* <Toast /> */}
             <div className="row form-container" style={{ position: 'relative' }}>
                 {loading && <FormLoading />}
                 {updateLoading && <FormLoading />}
@@ -441,8 +329,8 @@ const ProfileTabs = () => {
                                         tempAddress?.provinces?.find((item) => item.name === province) || { name: '' }
                                     }
                                     fullWidth={true}
-                                    options={tempAddress.provinces}
-                                    getOptionLabel={(option) => option.name}
+                                    options={provinces}
+                                    getOptionLabel={(option) => option.ProvinceName}
                                     onChange={(e, value) => {
                                         changeProvince({ province: value.name });
                                     }}

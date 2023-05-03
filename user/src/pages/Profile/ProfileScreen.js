@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from '../../components/Header';
-import ProfileTabs from '../../components/profileComponents/ProfileTabs';
+
 import { getUserDetails } from '../../Redux/Actions/userActions';
 import Orders from '../../components/profileComponents/Orders';
 import moment from 'moment';
 import { listMyOrders } from '../../Redux/Actions/orderActions';
 import './Profile.scss';
+import MyAccount from './components/MyAccount/MyAccount';
 
 const ProfileScreen = () => {
     window.scrollTo(0, 0);
@@ -67,7 +68,7 @@ const ProfileScreen = () => {
                                 }}
                                 className={`wrap-profile-menu-item ${buleanProfile ? 'active-menu' : ''}`}
                             >
-                                <span>Profile Settings</span>
+                                <span>Thông tin của tôi</span>
                             </div>
                             <div
                                 className={`wrap-profile-menu-item ${!buleanProfile ? 'active-menu' : ''}`}
@@ -75,7 +76,7 @@ const ProfileScreen = () => {
                                     setBuleanProfile(false);
                                 }}
                             >
-                                <span>Orders List</span>
+                                <span>Đơn mua</span>
                                 <div className="number-my-order d-flex justify-content-center align-item-center">
                                     <span>{orders?.length || 0}</span>
                                 </div>
@@ -86,7 +87,7 @@ const ProfileScreen = () => {
                     {/* panels */}
                     <div class="tab-content col-lg-8 pb-5 pt-lg-0 pt-3" id="v-pills-tabContent">
                         {buleanProfile ? (
-                            <ProfileTabs />
+                            <MyAccount />
                         ) : (
                             <Orders
                                 orders={orders}

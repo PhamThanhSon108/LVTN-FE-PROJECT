@@ -1,0 +1,24 @@
+:root {
+  --space-0: 0px;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-28: 28px;
+  --space-32: 32px;
+  --space-36: 36px;
+
+  --height-input: 40px;
+}
+
+html {
+  .main-card-wrapper {
+    min-height: calc(100vh - 190px);
+    padding: var(--space-4) var(--space-12);
+  }
+  .breadcrumbs-custom {
+    height: 24px;
+  }
+}
