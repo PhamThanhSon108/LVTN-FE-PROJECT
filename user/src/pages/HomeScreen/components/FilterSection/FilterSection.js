@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ListCategory } from '../../Redux/Actions/categoryActions';
+
 import { useHistory } from 'react-router-dom';
 import isEmpty from 'validator/lib/isEmpty';
-import Rating from './Rating';
+
 import { TreeItem, TreeView, treeItemClasses } from '@mui/lab';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { Typography, styled } from '@mui/material';
+import Rating from '../Rating/Rating';
+import { ListCategory } from '~/Redux/Actions/categoryActions';
+import styles from './FilterSection.module.scss';
 
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
     color: theme.palette.text.secondary,

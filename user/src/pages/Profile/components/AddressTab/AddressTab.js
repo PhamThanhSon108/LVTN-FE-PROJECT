@@ -73,7 +73,7 @@ const AddressTab = () => {
 
                 <div className={styles.addressListWrapper}>
                     {[1, 2, 3, 4, 5].map((value) => (
-                        <Fragment>
+                        <Fragment key={value?._id}>
                             <ListItem
                                 alignItems="flex-start"
                                 secondaryAction={

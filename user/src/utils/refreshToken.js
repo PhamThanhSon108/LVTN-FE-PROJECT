@@ -29,7 +29,7 @@ const onResponseSuccess = (response) => {
     return response;
 };
 const onResponseError = (error) => {
-    if (error.response?.status !== 401) {
+    if (error.response?.status !== 401 || window.location.pathname === '/login') {
         const errMessage = error.response?.data || error?.response || error;
         return Promise.reject(errMessage);
     }

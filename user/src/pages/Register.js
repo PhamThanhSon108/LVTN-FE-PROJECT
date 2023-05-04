@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import isEmpty from 'validator/lib/isEmpty';
-import Message from '../components/LoadingError/Error';
-import Loading, { FormLoading } from '../components/LoadingError/Loading';
-import Toast from '../components/LoadingError/Toast';
-import { register } from '../Redux/Actions/userActions';
-import Header from '../components/Header';
 
-const Register = ({ location, history }) => {
+import { FormLoading } from '../components/LoadingError/Loading';
+
+import { register } from '../Redux/Actions/userActions';
+import { Button, TextField, Typography } from '@mui/material';
+
+const Register = () => {
     window.scrollTo(0, 0);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -18,10 +18,12 @@ const Register = ({ location, history }) => {
 
     const [checkValidate, setCheckValidate] = useState({}); // tao một usestate mới để check from
     const dispatch = useDispatch();
+    const location = useLocation();
+    const history = useHistory();
     const redirect = location.search ? location.search.split('=')[1] : '/';
 
     const userRegister = useSelector((state) => state.userRegister);
-    const { error, loading, userInfo } = userRegister;
+    const { loading, userInfo } = userRegister;
 
     useEffect(() => {
         if (userInfo) {
@@ -104,139 +106,149 @@ const Register = ({ location, history }) => {
     };
 
     return (
-        <>
-            <Header />
-            <Toast />
-            <div className="container d-flex flex-column justify-content-center align-items-center login-center">
-                {/* {error && <Message variant="alert-danger">{error}</Message>} */}
-                <form className="Login col-md-6 col-lg-4 col-10" onSubmit={submitHandler}>
-                    {loading && <FormLoading />}
-                    <div className="Login-from">
-                        <input
-                            type="text"
-                            className={checkValidate.borderRed1}
-                            //placeholder="Username"
-                            value={name}
-                            onClick={() => {
-                                setCheckValidate((object) => {
-                                    const x = { ...object };
-                                    x.borderRed1 = ' ';
-                                    x.colorRed1 = ' ';
-                                    x.name = ' ';
-                                    return x;
-                                });
-                            }}
-                            onChange={(e) => {
-                                setName(e.target.value);
-                            }}
-                        />
-                        <p className="noti-validate">{checkValidate.name}</p>
-                        <p className={`Login-from__name ${checkValidate.colorRed1}`}>Username</p>
-                    </div>
+        <div className="mt-3 container d-flex flex-column justify-content-center align-items-center login-center">
+            {/* {error && <Message variant="alert-danger">{error}</Message>} */}
+            <form className="Login col-md-6 col-lg-4 col-10" onSubmit={submitHandler}>
+                {loading && <FormLoading />}
+                <div className="Login-from">
+                    <TextField
+                        sx={{ width: '100%', mt: 2 }}
+                        size="small"
+                        label="Họ & Tên"
+                        value={name}
+                        onClick={() => {
+                            setCheckValidate((object) => {
+                                const x = { ...object };
+                                x.borderRed1 = ' ';
+                                x.colorRed1 = ' ';
+                                x.name = ' ';
+                                return x;
+                            });
+                        }}
+                        onChange={(e) => {
+                            setName(e.target.value);
+                        }}
+                    />
+                    <Typography noWrap variant="body2" color="red" sx={{ mt: 1, mb: 0, textAlign: 'start' }}>
+                        {checkValidate.name || ''}
+                    </Typography>
+                </div>
 
-                    <div className="Login-from">
-                        <input
-                            type="email"
-                            //placeholder="Email"
-                            className={checkValidate.borderRed2}
-                            value={email}
-                            onClick={() => {
-                                setCheckValidate((object) => {
-                                    const x = { ...object };
-                                    x.borderRed2 = ' ';
-                                    x.colorRed2 = ' ';
-                                    x.email = ' ';
-                                    return x;
-                                });
-                            }}
-                            onChange={(e) => {
-                                setEmail(e.target.value);
-                            }}
-                        />
-                        <p className="noti-validate">{checkValidate.email}</p>
-                        <p className={`Login-from__email ${checkValidate.colorRed2}`}>Email</p>
-                    </div>
+                <div className="Login-from">
+                    <TextField
+                        sx={{ width: '100%', mt: 2 }}
+                        size="small"
+                        label="Email"
+                        value={email}
+                        onClick={() => {
+                            setCheckValidate((object) => {
+                                const x = { ...object };
+                                x.borderRed2 = ' ';
+                                x.colorRed2 = ' ';
+                                x.email = ' ';
+                                return x;
+                            });
+                        }}
+                        onChange={(e) => {
+                            setEmail(e.target.value);
+                        }}
+                        inputProps={{ type: 'email' }}
+                    />
+                    <Typography noWrap variant="body2" color="red" sx={{ mt: 1, mb: 0, textAlign: 'start' }}>
+                        {checkValidate.email || ''}
+                    </Typography>
+                </div>
 
-                    <div className="Login-from">
-                        <input
-                            type="text"
-                            className={checkValidate.borderRed3}
-                            //placeholder="Phone"
-                            value={phone}
-                            onClick={() => {
-                                setCheckValidate((object) => {
-                                    const x = { ...object };
-                                    x.borderRed3 = ' ';
-                                    x.colorRed3 = ' ';
-                                    x.phone = ' ';
-                                    return x;
-                                });
-                            }}
-                            onChange={(e) => {
-                                setPhone(e.target.value);
-                            }}
-                        />
-                        <p className="noti-validate">{checkValidate.phone}</p>
-                        <p className={`Login-from__phone ${checkValidate.colorRed3}`}>Phone</p>
-                    </div>
+                <div className="Login-from">
+                    <TextField
+                        sx={{ width: '100%', mt: 2 }}
+                        size="small"
+                        label="Số điện thoại"
+                        value={phone}
+                        onClick={() => {
+                            setCheckValidate((object) => {
+                                const x = { ...object };
+                                x.borderRed3 = ' ';
+                                x.colorRed3 = ' ';
+                                x.phone = ' ';
+                                return x;
+                            });
+                        }}
+                        onChange={(e) => {
+                            setPhone(e.target.value);
+                        }}
+                    />
+                    <Typography noWrap variant="body2" color="red" sx={{ mt: 1, mb: 0, textAlign: 'start' }}>
+                        {checkValidate.phone || ''}
+                    </Typography>
+                </div>
 
-                    <div className="Login-from">
-                        <input
-                            type="password"
-                            className={checkValidate.borderRed4}
-                            //placeholder="Password"
-                            value={password}
-                            onClick={() => {
-                                setCheckValidate((object) => {
-                                    const x = { ...object };
-                                    x.borderRed4 = ' ';
-                                    x.colorRed4 = ' ';
-                                    x.password = ' ';
-                                    return x;
-                                });
-                            }}
-                            onChange={(e) => {
-                                setPassword(e.target.value);
-                            }}
-                        />
-                        <p className="noti-validate">{checkValidate.password}</p>
-                        <p className={`Login-from__password ${checkValidate.colorRed4}`}>Password</p>
-                    </div>
+                <div className="Login-from">
+                    <TextField
+                        sx={{ width: '100%', mt: 2 }}
+                        size="small"
+                        label="Mật khẩu"
+                        value={password}
+                        onClick={() => {
+                            setCheckValidate((object) => {
+                                const x = { ...object };
+                                x.borderRed4 = ' ';
+                                x.colorRed4 = ' ';
+                                x.password = ' ';
+                                return x;
+                            });
+                        }}
+                        onChange={(e) => {
+                            setPassword(e.target.value);
+                        }}
+                        inputProps={{ type: 'password' }}
+                    />
+                    <Typography noWrap variant="body2" color="red" sx={{ mt: 1, mb: 0, textAlign: 'start' }}>
+                        {checkValidate.password || ''}
+                    </Typography>
+                </div>
 
-                    <div className="Login-from">
-                        <input
-                            type="password"
-                            className={checkValidate.borderRed5}
-                            //placeholder="Cfpassword"
-                            value={cfpassword}
-                            onClick={() => {
-                                setCheckValidate((object) => {
-                                    const x = { ...object };
-                                    x.borderRed5 = ' ';
-                                    x.colorRed5 = ' ';
-                                    x.cfpassword = ' ';
-                                    return x;
-                                });
-                            }}
-                            onChange={(e) => {
-                                setCfPassword(e.target.value);
-                            }}
-                        />
-                        <p className="noti-validate">{checkValidate.cfpassword}</p>
-                        <p style={{ width: '150px' }} className={`Login-from__cfpassword ${checkValidate.colorRed5}`}>
-                            Confirm password
-                        </p>
-                    </div>
+                <div className="Login-from">
+                    <TextField
+                        sx={{ width: '100%', mt: 2 }}
+                        size="small"
+                        label="Nhập lại mật khẩu"
+                        value={cfpassword}
+                        onClick={() => {
+                            setCheckValidate((object) => {
+                                const x = { ...object };
+                                x.borderRed5 = ' ';
+                                x.colorRed5 = ' ';
+                                x.cfpassword = ' ';
+                                return x;
+                            });
+                        }}
+                        onChange={(e) => {
+                            setCfPassword(e.target.value);
+                        }}
+                        inputProps={{ type: 'password' }}
+                    />
+                    <Typography noWrap variant="body2" color="red" sx={{ mt: 1, mb: 2, textAlign: 'start' }}>
+                        {checkValidate.cfpassword || ''}
+                    </Typography>
+                </div>
 
-                    <button type="submit">Register</button>
-                    <p>
-                        <Link to={redirect ? `/login?redirect=${redirect}` : '/login'}>
-                            I Have Account <strong>Login</strong>
-                        </Link>
-                    </p>
-                </form>
-            </div>
-        </>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    sx={{ width: '100%', mt: 1, mb: 1 }}
+                >
+                    ĐĂNG KÝ
+                </Button>
+                <p>
+                    <Link to={redirect ? `/login?redirect=${redirect}` : '/login'}>
+                        Bạn đã có tài khoản <strong>Đăng nhập</strong>
+                    </Link>
+                </p>
+            </form>
+        </div>
     );
 };
 

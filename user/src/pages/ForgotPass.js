@@ -6,6 +6,7 @@ import Toast from '../components/LoadingError/Toast';
 import { Controller, useForm } from 'react-hook-form';
 import image from '~/assets/images/index.js';
 import { forGotPassWord } from '~/Redux/Actions/userActions';
+import { Button, TextField, Typography } from '@mui/material';
 
 export default function ForgotPass({ history }) {
     const dispatch = useDispatch();
@@ -24,63 +25,69 @@ export default function ForgotPass({ history }) {
         dispatch(forGotPassWord(data, history));
     };
     return (
-        <>
-            <Header />
-            <Toast />
-            <div className="container d-flex flex-column justify-content-center align-items-center login-center">
-                <form className="Login col-md-6 col-lg-4 col-10" onSubmit={handleSubmit(onSubmit)}>
-                    {/* {loading && <FormLoading />} */}
+        <div className="mt-3 container d-flex flex-column justify-content-center align-items-center login-center">
+            <form className="Login col-md-6 col-lg-4 col-10" onSubmit={handleSubmit(onSubmit)}>
+                {loadingForgot && <FormLoading />}
 
-                    {loadingForgot && <FormLoading />}
-
-                    <div
+                <div
+                    style={{
+                        height: '40px',
+                    }}
+                >
+                    <img
+                        alt="Logo"
+                        src={image.logo}
                         style={{
-                            height: '40px',
-                        }}
-                    >
-                        <img
-                            src={image.logo}
-                            style={{
-                                height: '100%',
-                            }}
-                        />
-                    </div>
-                    <h5 className="d-block" style={{ margin: '15px' }}>
-                        RESET PASSWORD
-                    </h5>
-
-                    <div
-                        style={{
-                            padding: '10px 10px 30px 10px',
-                        }}
-                    >
-                        <span>
-                            To reset your password, enter your email below and submit. An email will be sent to you with
-                            instructions about how to complete the process.
-                        </span>
-                    </div>
-                    <Controller
-                        name="emailReset"
-                        control={control}
-                        render={({ field }) => <input {...field} placeholder="Enter your address" />}
-                        rules={{
-                            required: true,
-                            pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+                            height: '100%',
                         }}
                     />
-                    {errors.emailReset && (
-                        <p className="text-danger">'Wrong or Invalid email address. Please correct and try again'</p>
-                    )}
-                    {successForgot ? (
-                        <p className="text-success">Verify email to reset password is sent, please check your inbox</p>
-                    ) : (
-                        <button className="btn btn-outline-danger btn__login" type="submit">
-                            Reset password
-                        </button>
-                    )}
-                    <label></label>
-                </form>
-            </div>
-        </>
+                </div>
+
+                <Typography variant="h6" color="caption" sx={{ mt: 2 }}>
+                    QUÊN MẬT KHẨU
+                </Typography>
+
+                <div
+                    style={{
+                        padding: '10px 10px 10px 10px',
+                    }}
+                >
+                    <Typography variant="caption" color="caption">
+                        Để lấy lại mật khẩu bạn vui lòng điền email, nhấn nút bên dưới. Hệ thống sẽ gửi thông tin để đặt
+                        lại mật khẩu mới vào email của bạn
+                    </Typography>
+                    <span></span>
+                </div>
+                <Controller
+                    name="emailReset"
+                    control={control}
+                    render={({ field }) => <TextField {...field} sx={{ width: '100%' }} size="small" label="Email" />}
+                    rules={{
+                        required: true,
+                        pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+                    }}
+                />
+                {errors.emailReset && (
+                    <Typography variant="caption" color="red">
+                        Email không hợp lệ
+                    </Typography>
+                )}
+                {successForgot ? (
+                    <Typography variant="caption" color="green">
+                        Email xác nhận đã được gửi bạn vui lòng kiểm tra tin nhắn của mình
+                    </Typography>
+                ) : (
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        sx={{ width: '100%', mt: 2 }}
+                    >
+                        LẤY LẠI MẬT KHẨU
+                    </Button>
+                )}
+            </form>
+        </div>
     );
 }

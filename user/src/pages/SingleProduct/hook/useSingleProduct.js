@@ -5,17 +5,19 @@ import { Toastobjects } from '~/components/LoadingError/Toast';
 import useDebounce from '~/hooks/useDebounce';
 import { addProductOrderInCart, addToCart, listCart } from '~/Redux/Actions/cartActions';
 import { createProductReview, listProductDetails } from '~/Redux/Actions/productActions';
-import { logout } from '~/Redux/Actions/userActions';
 import { PRODUCT_CREATE_REVIEW_RESET } from '~/Redux/Constants/ProductConstants';
 import CART_CONST from '~/Redux/Constants/CartConstants';
-export default function useSingleProduct({ history, match }) {
+import { useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+export default function useSingleProduct() {
     const [qty, setQty] = useState(1);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
     const [value1, setValue1] = useState(0);
     const [value2, setValue2] = useState('');
-    const productId = match.params.id;
+    const { id: productId } = useParams();
     const dispatch = useDispatch();
+    const history = useHistory();
     const deBounce = useDebounce(qty, 500);
     const productDetails = useSelector((state) => state.productDetails);
     const { loading, error, product } = productDetails;

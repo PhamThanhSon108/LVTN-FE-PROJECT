@@ -91,281 +91,277 @@ const OrderScreen = ({ match }) => {
     };
 
     return (
-        <>
-            <Toast />
-            <Header />
-            <div className="container">
-                {loading ? (
-                    <Loading />
-                ) : error ? (
-                    <Message variant="alert-danger">{error}</Message>
-                ) : (
-                    <>
-                        <div className="content-header"></div>
-                        <div
-                            className="row shadow-sm d-flex justify-content-center align-content-center "
+        <div className="container">
+            {loading ? (
+                <Loading />
+            ) : error ? (
+                <Message variant="alert-danger">{error}</Message>
+            ) : (
+                <>
+                    <div className="content-header"></div>
+                    <div
+                        className="row shadow-sm d-flex justify-content-center align-content-center "
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            width: '100wh',
+                            justifyItems: 'center',
+                            position: 'relative',
+                            backgroundColor: '#fff',
+                        }}
+                    >
+                        <span
                             style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                width: '100wh',
-                                justifyItems: 'center',
-                                position: 'relative',
-                                backgroundColor: '#fff',
+                                position: 'absolute',
+                                top: '10px',
                             }}
                         >
-                            <span
+                            HISTORY STATUS
+                        </span>
+                        <ul
+                            className="d-flex align-content-between d-flex justify-content-center "
+                            style={{ padding: '15px' }}
+                        >
+                            {order.statusHistory.map((status, i) => (
+                                <li className="d-flex" style={{ position: 'relative', justifyItems: 'center' }}>
+                                    <div
+                                        className=""
+                                        style={{
+                                            padding: '15PX 60px',
+                                            display: 'flex',
+                                            justifyItems: 'center',
+                                            height: '5rem',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <img
+                                            style={{
+                                                height: '100%',
+                                                zIndex: '2',
+                                            }}
+                                            src={imageOrder[`${status.status}`]}
+                                        />
+                                        <div style={{ marginTop: '15px', fontSize: '1.2rem' }}>{status.status}</div>
+                                    </div>
+                                    {i < order.statusHistory.length - 1 && (
+                                        <div className="order-status-history-line"></div>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div className="row  order-detail shadow-sm">
+                        <div className="d-flex justify-content-between " style={{ padding: '20px 24px 0px' }}>
+                            <h5
+                                className="row d-block"
                                 style={{
-                                    position: 'absolute',
-                                    top: '10px',
+                                    borderBottom: '1px solid rgba(0, 0, 0, 0.09)',
                                 }}
                             >
-                                HISTORY STATUS
-                            </span>
-                            <ul
-                                className="d-flex align-content-between d-flex justify-content-center "
-                                style={{ padding: '15px' }}
+                                DELIVERY ADDRESS
+                            </h5>
+                            <h6
+                                className="row d-block"
+                                style={{
+                                    // marginBottom: '25px',
+                                    borderBottom: '1px solid rgba(0, 0, 0, 0.09)',
+                                }}
                             >
-                                {order.statusHistory.map((status, i) => (
-                                    <li className="d-flex" style={{ position: 'relative', justifyItems: 'center' }}>
-                                        <div
-                                            className=""
-                                            style={{
-                                                padding: '15PX 60px',
-                                                display: 'flex',
-                                                justifyItems: 'center',
-                                                height: '5rem',
-                                                flexDirection: 'column',
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            <img
-                                                style={{
-                                                    height: '100%',
-                                                    zIndex: '2',
-                                                }}
-                                                src={imageOrder[`${status.status}`]}
-                                            />
-                                            <div style={{ marginTop: '15px', fontSize: '1.2rem' }}>{status.status}</div>
-                                        </div>
-                                        {i < order.statusHistory.length - 1 && (
-                                            <div className="order-status-history-line"></div>
-                                        )}
+                                {`Order id: ${order._id} `}
+                            </h6>
+                        </div>
+                        <div
+                            className="d-flex align-content-between"
+                            style={{
+                                margin: '2rem',
+                                width: '6rem',
+                            }}
+                        >
+                            <img
+                                src={image.orderUser}
+                                alt="userprofileimage"
+                                style={{ height: '6rem', width: '65rem' }}
+                                className="fix-none"
+                            />
+                        </div>
+
+                        <div
+                            className="col-lg-3 col-sm-3 mb-lg-3 mb-3 mb-sm-3 fix-bottom p-3  "
+                            style={{ margin: '0px 15px 0px 15px' }}
+                        >
+                            <p className="order-name-customer ">{order?.username}</p>
+                            <p className="order-address-custommer">{order?.contactInformation?.phone}</p>
+                            <p className="order-address-custommer">{order?.user?.name}</p>
+
+                            <p className="order-address-custommer">
+                                {' '}
+                                {`${order?.shippingAddress?.address}, ${order?.shippingAddress?.city}, ${order?.shippingAddress?.country}`}
+                            </p>
+                        </div>
+                        <div className="col-lg-5 col-sm-5 mb-lg-5 mb-5 mb-sm-5 d-flex align-content-lg-start">
+                            <ul className="order-history-status-ul" style={{ minHeight: '130px' }}>
+                                {order.statusHistory?.reverse()?.map((item) => (
+                                    <li className="d-flex order-history-status-li ">
+                                        <div style={{ paddingRight: '15px' }}> o</div>
+                                        <div className={``}>{`${item.status} ${moment(
+                                            item.updatedAt,
+                                        ).calendar()}`}</div>
                                     </li>
                                 ))}
                             </ul>
                         </div>
-                        <div className="row  order-detail shadow-sm">
-                            <div className="d-flex justify-content-between " style={{ padding: '20px 24px 0px' }}>
-                                <h5
-                                    className="row d-block"
-                                    style={{
-                                        borderBottom: '1px solid rgba(0, 0, 0, 0.09)',
-                                    }}
-                                >
-                                    DELIVERY ADDRESS
-                                </h5>
-                                <h6
-                                    className="row d-block"
-                                    style={{
-                                        // marginBottom: '25px',
-                                        borderBottom: '1px solid rgba(0, 0, 0, 0.09)',
-                                    }}
-                                >
-                                    {`Order id: ${order._id} `}
-                                </h6>
-                            </div>
-                            <div
-                                className="d-flex align-content-between"
-                                style={{
-                                    margin: '2rem',
-                                    width: '6rem',
-                                }}
-                            >
-                                <img
-                                    src={image.orderUser}
-                                    alt="userprofileimage"
-                                    style={{ height: '6rem', width: '65rem' }}
-                                    className="fix-none"
-                                />
-                            </div>
 
-                            <div
-                                className="col-lg-3 col-sm-3 mb-lg-3 mb-3 mb-sm-3 fix-bottom p-3  "
-                                style={{ margin: '0px 15px 0px 15px' }}
-                            >
-                                <p className="order-name-customer ">{order?.username}</p>
-                                <p className="order-address-custommer">{order?.contactInformation?.phone}</p>
-                                <p className="order-address-custommer">{order?.user?.name}</p>
-
-                                <p className="order-address-custommer">
-                                    {' '}
-                                    {`${order?.shippingAddress?.address}, ${order?.shippingAddress?.city}, ${order?.shippingAddress?.country}`}
-                                </p>
-                            </div>
-                            <div className="col-lg-5 col-sm-5 mb-lg-5 mb-5 mb-sm-5 d-flex align-content-lg-start">
-                                <ul className="order-history-status-ul" style={{ minHeight: '130px' }}>
-                                    {order.statusHistory?.reverse()?.map((item) => (
-                                        <li className="d-flex order-history-status-li ">
-                                            <div style={{ paddingRight: '15px' }}> o</div>
-                                            <div className={``}>{`${item.status} ${moment(
-                                                item.updatedAt,
-                                            ).calendar()}`}</div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-
-                            {/* <div className={`order-${order.status}`}></div> */}
-                            <div
-                                className="col-2"
-                                style={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    height: '5rem',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                }}
-                            >
-                                <img
-                                    style={{
-                                        height: '100%',
-                                    }}
-                                    src={imageOrder[`${order.status}`]}
-                                />
-                                <div style={{ marginTop: '15px', fontSize: '1.2rem' }}>{order.status}</div>
-                            </div>
-
-                            {/* 2 */}
-                        </div>
+                        {/* <div className={`order-${order.status}`}></div> */}
                         <div
-                            className="row order-products justify-content-between"
-                            style={{ marginBottom: '30px', backgroundColor: '#fff', padding: '0.8rem' }}
+                            className="col-2"
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                height: '5rem',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                            }}
                         >
-                            <div className="col-lg-8 fix-padding cart-scroll">
-                                {order.orderItems.length === 0 ? (
-                                    <Message variant="alert-info mt-5">Your order is empty</Message>
-                                ) : (
-                                    <>
-                                        {order.orderItems.map((item, index) => (
-                                            <div className="order-product row shadow-sm" key={index}>
-                                                <div className="col-md-2 col-2">
-                                                    <img src={item?.image} alt={item?.name} />
-                                                </div>
-                                                <div className="col-md-5 col-3 d-flex align-items-center">
-                                                    <Link to={`/product/${item?.product}`}>
-                                                        <h6>{item?.name}</h6>
-                                                    </Link>
-                                                </div>
-                                                <div className="mt-1 mt-md-1 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
-                                                    <h4>QUANTITY</h4>
-                                                    <h6>{item?.quantity}</h6>
-                                                </div>
-                                                <div className="mt-1 mt-md-1 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
-                                                    <h4>SIZE</h4>
-                                                    <h6>{item?.size}</h6>
-                                                </div>
-                                                <div className="mt-1 mt-md-1 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
-                                                    <h4>COLOR</h4>
-                                                    <h6>{item?.color}</h6>
-                                                </div>
-                                                <div className="mt-2 mt-md-2 col-md-2 col-2 align-items-end  d-flex flex-column justify-content-center ">
-                                                    <h4>SUBTOTAL</h4>
-                                                    <h6>${item?.quantity * item?.price}</h6>
-                                                </div>
-                                                {item?.isAbleToReview &&
-                                                    order.status === 'Completed' &&
-                                                    order?.orderItems?.length >= 1 && (
-                                                        <div
-                                                            className="d-flex justify-content-end col-12"
-                                                            style={{ marginTop: '10px' }}
-                                                        >
-                                                            <ReviewDialog order={item} OrderId={order._id} />
-                                                        </div>
-                                                    )}
-                                            </div>
-                                        ))}
-                                    </>
-                                )}
-                            </div>
-                            {/* total */}
-                            <div
-                                className="col-4"
+                            <img
                                 style={{
-                                    borderLeft: '1px solid rgba(0, 0, 0, .09)',
+                                    height: '100%',
+                                }}
+                                src={imageOrder[`${order.status}`]}
+                            />
+                            <div style={{ marginTop: '15px', fontSize: '1.2rem' }}>{order.status}</div>
+                        </div>
+
+                        {/* 2 */}
+                    </div>
+                    <div
+                        className="row order-products justify-content-between"
+                        style={{ marginBottom: '30px', backgroundColor: '#fff', padding: '0.8rem' }}
+                    >
+                        <div className="col-lg-8 fix-padding cart-scroll">
+                            {order.orderItems.length === 0 ? (
+                                <Message variant="alert-info mt-5">Your order is empty</Message>
+                            ) : (
+                                <>
+                                    {order.orderItems.map((item, index) => (
+                                        <div className="order-product row shadow-sm" key={index}>
+                                            <div className="col-md-2 col-2">
+                                                <img src={item?.image} alt={item?.name} />
+                                            </div>
+                                            <div className="col-md-5 col-3 d-flex align-items-center">
+                                                <Link to={`/product/${item?.product}`}>
+                                                    <h6>{item?.name}</h6>
+                                                </Link>
+                                            </div>
+                                            <div className="mt-1 mt-md-1 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
+                                                <h4>QUANTITY</h4>
+                                                <h6>{item?.quantity}</h6>
+                                            </div>
+                                            <div className="mt-1 mt-md-1 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
+                                                <h4>SIZE</h4>
+                                                <h6>{item?.size}</h6>
+                                            </div>
+                                            <div className="mt-1 mt-md-1 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
+                                                <h4>COLOR</h4>
+                                                <h6>{item?.color}</h6>
+                                            </div>
+                                            <div className="mt-2 mt-md-2 col-md-2 col-2 align-items-end  d-flex flex-column justify-content-center ">
+                                                <h4>SUBTOTAL</h4>
+                                                <h6>${item?.quantity * item?.price}</h6>
+                                            </div>
+                                            {item?.isAbleToReview &&
+                                                order.status === 'Completed' &&
+                                                order?.orderItems?.length >= 1 && (
+                                                    <div
+                                                        className="d-flex justify-content-end col-12"
+                                                        style={{ marginTop: '10px' }}
+                                                    >
+                                                        <ReviewDialog order={item} OrderId={order._id} />
+                                                    </div>
+                                                )}
+                                        </div>
+                                    ))}
+                                </>
+                            )}
+                        </div>
+                        {/* total */}
+                        <div
+                            className="col-4"
+                            style={{
+                                borderLeft: '1px solid rgba(0, 0, 0, .09)',
+                                backgroundColor: '#fff',
+                                paddingLeft: '15px',
+                            }}
+                        >
+                            <table
+                                className="table table-bordered"
+                                style={{
                                     backgroundColor: '#fff',
-                                    paddingLeft: '15px',
                                 }}
                             >
-                                <table
-                                    className="table table-bordered"
-                                    style={{
-                                        backgroundColor: '#fff',
-                                    }}
-                                >
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <strong>Products</strong>
-                                            </td>
-                                            <td>${itemsPrice}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>Shipping</strong>
-                                            </td>
-                                            <td>${order.shippingPrice}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>Tax</strong>
-                                            </td>
-                                            <td>${order.taxPrice}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>Total</strong>
-                                            </td>
-                                            <td>${order.totalPrice}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                {order.status === 'Placed' && (
-                                    <div className="col-lg-12 " style={{ paddingTop: '10px' }}>
-                                        <LoadingButton
-                                            disabled={order.status === 'Cancelled'}
-                                            onClick={cancelOrderHandler}
-                                            className="btn col-12"
-                                            style={{
-                                                marginBottom: '-10px',
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <strong>Products</strong>
+                                        </td>
+                                        <td>${itemsPrice}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Shipping</strong>
+                                        </td>
+                                        <td>${order.shippingPrice}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Tax</strong>
+                                        </td>
+                                        <td>${order.taxPrice}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Total</strong>
+                                        </td>
+                                        <td>${order.totalPrice}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            {order.status === 'Placed' && (
+                                <div className="col-lg-12 " style={{ paddingTop: '10px' }}>
+                                    <LoadingButton
+                                        disabled={order.status === 'Cancelled'}
+                                        onClick={cancelOrderHandler}
+                                        className="btn col-12"
+                                        style={{
+                                            marginBottom: '-10px',
 
-                                                color: 'red',
-                                            }}
-                                            variant="outlined"
-                                            loading={loadingCancel}
-                                            loadingPosition="start"
-                                        >
-                                            CANCEL THIS ORDER
-                                        </LoadingButton>
-                                    </div>
-                                )}
-                                {order.status === 'Delivering' && (
-                                    <div className="col-lg-12 " style={{ paddingTop: '10px' }}>
-                                        <button
-                                            disabled={order.status === 'Cancelled'}
-                                            onClick={handlePaid}
-                                            className="btn btn-danger col-12"
-                                            style={{ marginBottom: '-10px' }}
-                                        >
-                                            Paid Confirmation
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
+                                            color: 'red',
+                                        }}
+                                        variant="outlined"
+                                        loading={loadingCancel}
+                                        loadingPosition="start"
+                                    >
+                                        CANCEL THIS ORDER
+                                    </LoadingButton>
+                                </div>
+                            )}
+                            {order.status === 'Delivering' && (
+                                <div className="col-lg-12 " style={{ paddingTop: '10px' }}>
+                                    <button
+                                        disabled={order.status === 'Cancelled'}
+                                        onClick={handlePaid}
+                                        className="btn btn-danger col-12"
+                                        style={{ marginBottom: '-10px' }}
+                                    >
+                                        Paid Confirmation
+                                    </button>
+                                </div>
+                            )}
                         </div>
-                    </>
-                )}
-            </div>
-        </>
+                    </div>
+                </>
+            )}
+        </div>
     );
 };
 

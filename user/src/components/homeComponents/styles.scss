@@ -1,54 +1,54 @@
-.filter-custom-wrap {
-    display: flex;
-    align-items: center;
-    height: 50px;
-    background: rgba(0, 0, 0, 0.03);
-    span {
-        padding-right: 15px;
-    }
-    .form-select {
-        border: none;
-    }
-}
-.MuiPagination-ul {
-    display: flex;
-    justify-content: center;
-}
+// .filter-custom-wrap {
+//     display: flex;
+//     align-items: center;
+//     height: 50px;
+//     background: rgba(0, 0, 0, 0.03);
+//     span {
+//         padding-right: 15px;
+//     }
+//     .form-select {
+//         border: none;
+//     }
+// }
+// .MuiPagination-ul {
+//     display: flex;
+//     justify-content: center;
+// }
 
-.infor-area-text {
-    color: var(--default-background-color);
-}
+// .infor-area-text {
+//     color: var(--default-background-color);
+// }
 
-.shop-section-container {
-    width: 100%;
-    .section {
-        // .row > * {
-        //     padding-right: 0;
-        //     padding-left: 0;
-        // }
-    }
-}
-.shop-section-container {
-    width: 100%;
-    .loading-each-product {
-        width: 25%;
-    }
-    .row .col-lg-12 {
-        padding-left: 0;
-        padding-right: 0;
-    }
-}
+// .shop-section-container {
+//     width: 100%;
+//     .section {
+//         // .row > * {
+//         //     padding-right: 0;
+//         //     padding-left: 0;
+//         // }
+//     }
+// }
+// .shop-section-container {
+//     width: 100%;
+//     .loading-each-product {
+//         width: 25%;
+//     }
+//     .row .col-lg-12 {
+//         padding-left: 0;
+//         padding-right: 0;
+//     }
+// }
 
-.container-today-product {
-    display: flex;
-    justify-content: center;
-    .section {
-        max-width: var(--default-width-screen);
-        .row {
-            .col-lg-12 {
-                padding-left: 0;
-                padding-right: 0;
-            }
-        }
-    }
-}
+// .container-today-product {
+//     display: flex;
+//     justify-content: center;
+//     .section {
+//         max-width: var(--default-width-screen);
+//         .row {
+//             .col-lg-12 {
+//                 padding-left: 0;
+//                 padding-right: 0;
+//             }
+//         }
+//     }
+// }

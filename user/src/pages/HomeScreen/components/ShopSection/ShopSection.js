@@ -1,16 +1,18 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Rating from './Rating';
+
 import { useDispatch, useSelector } from 'react-redux';
-import { listProduct } from '../../Redux/Actions/productActions';
-import Message from '../LoadingError/Error';
-import FilterSection from './FilterSection';
-import { Button, Skeleton, Typography } from '@mui/material';
-import './styles.scss';
-import Pagination from './pagination';
+
+import { Button, Pagination, Skeleton, Typography } from '@mui/material';
+
+import { Message } from '@mui/icons-material';
+import FilterSection from '../FilterSection/FilterSection';
+import { listProduct } from '~/Redux/Actions/productActions';
+import Rating from '../Rating/Rating';
+import styles from './ShopSection.module.scss';
 const LoadingEachProduct = () => {
     return (
-        <div className="loading-each-product" style={{ margin: '15px 7.9px' }}>
+        <div className={styles.loadingEachProduct} style={{ margin: '15px 7.9px' }}>
             <Skeleton variant="rectangular" width={'100%'} height={209} />
             <Skeleton />
             <Skeleton />
@@ -49,8 +51,8 @@ const ShopSection = (props) => {
 
     return (
         <>
-            <div className="shop-section-container">
-                <div className="section">
+            <div className={styles.shopSectionContainer}>
+                <div className={styles.section}>
                     <div className="row">
                         {keyword || category ? (
                             <FilterSection
@@ -110,7 +112,7 @@ const ShopSection = (props) => {
                                                 marginBottom: '10px',
                                                 marginRight: '20px',
                                             }}
-                                            className="filter-custom-wrap"
+                                            className={styles.filterCustomWrap}
                                         >
                                             <Typography noWrap variant="body1" color="text.secondary">
                                                 Sắp xếp theo
@@ -126,7 +128,7 @@ const ShopSection = (props) => {
                                             <div className="" style={{ cursor: 'pointer', zIndex: '2' }}>
                                                 <select
                                                     tabIndex={-2}
-                                                    className="form-select"
+                                                    className={styles.formSelect}
                                                     value={priceOrder}
                                                     style={{ cursor: 'pointer', zIndex: '10' }}
                                                     onChange={(e) => {
@@ -173,7 +175,10 @@ const ShopSection = (props) => {
 
                                 {/* Pagination */}
 
-                                <div className="row d-flex justify-content-center" style={{ paddingTop: '18px' }}>
+                                <div
+                                    className="row d-flex justify-content-center"
+                                    style={{ paddingTop: '18px', marginBottom: '16px' }}
+                                >
                                     {keyword || category ? (
                                         <Pagination
                                             pages={pages}
