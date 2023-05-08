@@ -1,0 +1,56 @@
+.quantity-label-products-avalable {
+    padding-left: 8px;
+}
+.btn-buy-single-product {
+    background-color: var(--primary-btn-color);
+}
+
+.priceWrapper {
+    border-radius: none;
+    background: #fafafa;
+    padding: var(--space-16) var(--space-8);
+}
+.descriptionWrapper {
+    background: #fafafa;
+    padding: var(--space-16) var(--space-8);
+    margin-bottom: var(--space-4);
+}
+.chipDiscount {
+    color: white;
+    background-color: #d32f2f;
+
+    padding: var(--space-0) var(--space-4);
+    p {
+        font-size: 0.7rem;
+    }
+}
+
+.ratingWrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--space-12);
+}
+
+.imageWrapper {
+    height: 500px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    img {
+        width: 100%;
+        object-fit: cover;
+    }
+}
+
+.description {
+    margin-top: var(--space-8);
+    background-color: white;
+    padding: var(--space-16);
+}
+
+.productInfoToBuyWrapper {
+    height: 100%;
+    padding-bottom: var(--space-16);
+    display: flex;
+    flex-direction: column;
+}

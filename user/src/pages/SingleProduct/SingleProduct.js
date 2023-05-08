@@ -1,54 +1,58 @@
 import React, { Fragment } from 'react';
-import Header from '../../components/Header';
-import Rating from '../../components/homeComponents/Rating';
-import { Link } from 'react-router-dom';
+
 import Message from '../../components/LoadingError/Error';
-import Loading from '../../components/LoadingError/Loading';
-import moment from 'moment';
-import image from '~/assets/images';
-import Toast from '~/components/LoadingError/Toast';
+
 import { LoadingButton } from '@mui/lab';
 import useSingleProduct from './hook/useSingleProduct';
-import './SingleProduct.scss';
+import styles from './SingleProduct.module.scss';
+import { Button, Chip, Rating, Typography, styled } from '@mui/material';
+import GppGoodIcon from '@mui/icons-material/GppGood';
+import { formatMoney } from '~/utils/formatMoney';
+import Review from './components/Review/Review';
 
-const OPTION_SELECT_RATING = [
-    { value: 1, label: 'Select...' },
-    { value: 2, label: '2 - Fair' },
-    { value: 3, label: '3 - Good' },
-    { value: 4, label: '4 - Very Good' },
-    { value: 5, label: '5 - Excellent' },
-];
+const StyledRating = styled(Rating)({
+    '& .MuiRating-iconFilled': {
+        color: 'red',
+    },
+    '& .MuiRating-iconHover': {
+        color: '#ff3d47',
+    },
+});
 const RenderPrice = ({ product, value1, value2 }) => {
     return (
-        <div>
-            <span>
-                <span>$</span>
-                {product?.variants
-                    ?.find((value) => value.attributes?.[0].value == value1 && value.attributes?.[1].value == value2)
-                    ?.price?.toFixed(2) || product.price?.toFixed(2)}
-            </span>
-        </div>
+        <Fragment>
+            {formatMoney(
+                product?.variants?.find(
+                    (value) => value.attributes?.[0].value === value1 && value.attributes?.[1].value === value2,
+                )?.priceSale ||
+                    product.priceSale ||
+                    0,
+            )}
+        </Fragment>
     );
 };
 const RenderStatus = ({ value1, value2, product }) => {
-    return !value1 || !value2 ? (
-        product?.variants?.reduce((count, value) => count + value.quantity, 0) > 0 ? (
-            <span>In Stock</span>
-        ) : (
-            <span>Unavailable</span>
-        )
-    ) : product?.variants?.find(
-          (value) => value.attributes?.[0].value === value1 && value.attributes?.[1].value === value2,
-      )?.quantity > 0 ? (
-        <span>In Stock</span>
-    ) : (
-        <span>Unavailable</span>
-    );
+    if (!value1 || !value2) {
+        if (product?.variants?.reduce((count, value) => count + value.quantity, 0) > 0)
+            return <Chip label="Có sẵn" color="primary" sx={{ color: 'white ' }} />;
+        else
+            return <Chip label="Tạm thời hết hàng" color="error" sx={{ color: 'white', backgroundColor: '#d32f2f' }} />;
+    } else {
+        if (
+            product?.variants?.find(
+                (value) => value.attributes?.[0].value === value1 && value.attributes?.[1].value === value2,
+            )?.quantity > 0
+        ) {
+            return <Chip label="Có sẵn" color="primary" sx={{ color: 'white ' }} />;
+        } else {
+            return <Chip label="Tạm thời hết hàng" color="error" sx={{ color: 'white', backgroundColor: '#d32f2f' }} />;
+        }
+    }
 };
 
 const SingleProduct = () => {
     const {
-        submitHandler,
+        currentVariant,
         buyProductHandle,
         AddToCartHandle,
         defaultValue1,
@@ -57,30 +61,25 @@ const SingleProduct = () => {
         product,
         qty,
         setQty,
-        rating,
-        setComment,
-        loadingCreateReview,
-        userInfo,
-        loading,
+        percentDiscount,
         setValue1,
         setValue2,
         quantity,
         value1,
         value2,
         loadingAddtoCart,
-        setRating,
-        comment,
+
         haveQuantityOfCurrentVariant,
     } = useSingleProduct();
 
-    if (loading)
-        return (
-            <Fragment>
-                <div className="container single-product">
-                    <Loading />;
-                </div>
-            </Fragment>
-        );
+    // if (loading)
+    //     return (
+    //         <Fragment>
+    //             <div className="container single-product">
+    //                 <Loading />;
+    //             </div>
+    //         </Fragment>
+    //     );
 
     if (error)
         return (
@@ -91,42 +90,109 @@ const SingleProduct = () => {
             </Fragment>
         );
     return (
-        <div className="container single-product">
+        <div className="container single-product p-3">
             <div className="row">
                 <div className="col-md-12 product-avatar">
                     <div className="row">
                         <div className="col-md-5">
-                            <div className="single-image">
+                            <div className={styles.imageWrapper}>
                                 <img src={product.images?.[0]} alt={product.name} />
                             </div>
                         </div>
                         <div className="col-md-7 product-postion">
-                            <div className="product-dtl">
-                                <div className="product-info">
-                                    <div className="product-name">{product.name}</div>
-                                </div>
-                                <div className="product-baner">
-                                    <img style={{ width: '100%' }} src={image.imgInSigleProduct} alt=""></img>
-                                </div>
-                                <div className="product-count col-lg-12 ">
-                                    <div className="flex-box d-flex justify-content-start align-items-center">
-                                        <h4 className="col-3">Price</h4>
-
-                                        <RenderPrice product={product} value1={value1} value2={value2} />
+                            <div className={styles.productInfoToBuyWrapper}>
+                                <div className="product-count col-lg-12 pt-3">
+                                    <div className="">
+                                        <Typography noWrap variant="h6" color="black">
+                                            {product.name}
+                                        </Typography>
+                                        <div className={styles.ratingWrapper}>
+                                            <Typography
+                                                noWrap
+                                                variant="body2"
+                                                color="error"
+                                                sx={{
+                                                    textDecoration: 'underline',
+                                                    mr: 1,
+                                                }}
+                                            >
+                                                {product.rating}
+                                            </Typography>
+                                            <StyledRating
+                                                size="small"
+                                                name="read-only"
+                                                value={product.rating || 2}
+                                                readOnly
+                                                sx={{
+                                                    pr: 1,
+                                                    mr: 1,
+                                                    borderRight: '1px solid var(--border-color)',
+                                                    color: 'red',
+                                                }}
+                                            />
+                                            <Typography
+                                                noWrap
+                                                variant="body2"
+                                                color="black"
+                                                sx={{
+                                                    textDecoration: 'underline',
+                                                    mr: 1,
+                                                }}
+                                            >
+                                                {product?.reviews?.length || 0}
+                                            </Typography>
+                                            <Typography
+                                                noWrap
+                                                variant="body2"
+                                                color="black"
+                                                sx={{
+                                                    mr: 1,
+                                                }}
+                                            >
+                                                đánh giá
+                                            </Typography>
+                                        </div>
                                     </div>
-                                    <div className="flex-box d-flex justify-content-start align-items-center">
-                                        <h6 className="col-3">Status</h6>
+                                    <div className={styles.priceWrapper}>
+                                        <div className="flex-box d-flex justify-content-start align-items-center">
+                                            {percentDiscount > 0 ? (
+                                                <Typography
+                                                    sx={{ textDecoration: 'line-through', mr: 2 }}
+                                                    noWrap
+                                                    variant="body1"
+                                                    color="text.secondary"
+                                                >
+                                                    {formatMoney(currentVariant?.price || product.price || 0)}
+                                                </Typography>
+                                            ) : null}
+
+                                            <Typography noWrap variant="h5" color="red" sx={{ mr: 2 }}>
+                                                <RenderPrice product={product} value1={value1} value2={value2} />
+                                            </Typography>
+                                            {percentDiscount > 0 ? (
+                                                <div className={styles.chipDiscount}>
+                                                    <Typography fontSize={10} noWrap variant="inherit" color="white">
+                                                        {percentDiscount} % giảm
+                                                    </Typography>
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    </div>
+                                    <div className="flex-box d-flex justify-content-start align-items-center mt-2">
+                                        <Typography noWrap variant="body1" color="text.secondary" className="col-3">
+                                            Trạng thái:
+                                        </Typography>
                                         <RenderStatus product={product} value1={value1} value2={value2} />
                                     </div>
-                                    <div className="flex-box d-flex justify-content-start align-items-center flex-wrap">
-                                        <h6 className="col-3">Reviews</h6>
-                                        <Rating value={product.rating} text={`${product?.reviews?.length} reviews`} />
-                                    </div>
-                                    <div className="flex-box d-flex justify-content-start align-items-center flex-wrap">
-                                        <h6 className="col-3">Size</h6>
+
+                                    <div className="flex-box d-flex justify-content-start align-items-center flex-wrap mt-2">
+                                        <Typography noWrap variant="body1" color="text.secondary" className="col-3">
+                                            Kích thước:
+                                        </Typography>
                                         <div className="col-9">
                                             {defaultValue1?.map((value, index) => (
                                                 <button
+                                                    key={value}
                                                     onClick={() => {
                                                         setValue1(value);
                                                     }}
@@ -139,25 +205,35 @@ const SingleProduct = () => {
                                             ))}
                                         </div>
                                     </div>
-                                    <div className="flex-box d-flex justify-content-start align-items-center flex-wrap">
-                                        <h6 className="col-3">Color</h6>
+                                    <div className="flex-box d-flex justify-content-start align-items-center flex-wrap mt-2">
+                                        <Typography noWrap variant="body1" color="text.secondary" className="col-3">
+                                            Màu sắc:
+                                        </Typography>
                                         {defaultValue2?.map((value, index) => (
                                             <button
+                                                key={value}
                                                 onClick={() => {
                                                     setValue2(value);
                                                 }}
                                                 className={`btn text-md-start btn__product-option ${
-                                                    value == value2 && 'active'
+                                                    value === value2 && 'active'
                                                 }`}
                                             >
                                                 {value}
                                             </button>
                                         ))}
                                     </div>
-                                    {haveQuantityOfCurrentVariant ? (
+                                    {haveQuantityOfCurrentVariant > 0 ? (
                                         <>
-                                            <div className="flex-box d-flex justify-content-start align-items-center">
-                                                <h6 className="col-3">Quantity</h6>
+                                            <div className="flex-box d-flex justify-content-start align-items-center mt-2">
+                                                <Typography
+                                                    noWrap
+                                                    variant="body1"
+                                                    color="text.secondary"
+                                                    className="col-3"
+                                                >
+                                                    Số lượng:
+                                                </Typography>
                                                 <div className="col-9 d-flex align-items-center">
                                                     <i
                                                         class="far fa-minus input-quantity icon"
@@ -194,12 +270,21 @@ const SingleProduct = () => {
                                                             (count, value) => count + value.quantity,
                                                             0,
                                                         )}
-                                                    <span className="quantity-label-products-avalable">
-                                                        products available
-                                                    </span>
+
+                                                    <Typography
+                                                        noWrap
+                                                        variant="caption"
+                                                        color="text.secondary"
+                                                        sx={{ ml: 1 }}
+                                                    >
+                                                        sản phẩm có sẵn
+                                                    </Typography>
                                                 </div>
                                             </div>
-                                            <div className="d-flex" style={{ marginTop: '10px', marginLeft: '25px' }}>
+                                            <div
+                                                className="d-flex mt-4"
+                                                style={{ marginTop: '10px', marginLeft: '25px' }}
+                                            >
                                                 <LoadingButton
                                                     variant="outlined"
                                                     loading={loadingAddtoCart}
@@ -208,113 +293,54 @@ const SingleProduct = () => {
                                                     className="col-4 btn text-primary"
                                                     loadingPosition="start"
                                                 >
-                                                    Add To Cart
+                                                    Thêm vào giỏ hàng
                                                 </LoadingButton>
-                                                <button
+                                                <Button
+                                                    variant="contained"
                                                     style={{ minWidth: 120 }}
                                                     onClick={buyProductHandle}
                                                     className="col-2 btn btn-primary btn-buy-single-product"
                                                 >
-                                                    Buy product
-                                                </button>
+                                                    Mua ngay
+                                                </Button>
                                             </div>
                                         </>
                                     ) : null}
+                                </div>
+                                <div
+                                    className="d-flex flex-grow-1 mt-3 align-items-end"
+                                    style={{ marginTop: '10px', marginLeft: '25px' }}
+                                >
+                                    <Typography
+                                        noWrap
+                                        variant="caption"
+                                        color="primary"
+                                        sx={{
+                                            borderTop: '1px solid var(--border-color)',
+                                            mr: 1,
+                                            pt: 1,
+                                        }}
+                                    >
+                                        <GppGoodIcon fontSize="1.5" /> Hàng chính hãng 100%
+                                    </Typography>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="product-description">
-                    <h2>Description</h2>
-                    <p>{product.description}</p>
+                <div className={styles.description}>
+                    <div className={styles.descriptionWrapper}>
+                        <Typography noWrap variant="h6" color="black">
+                            Mô tả
+                        </Typography>
+                    </div>
+
+                    <Typography variant="caption" color="black">
+                        {product.description}
+                    </Typography>
                 </div>
                 {/* RATING */}
-                <div className="col-md-12 product-rating" style={{ paddingTop: '20px' }}>
-                    <div className="row">
-                        <div className="col-md-6">
-                            <h6 className="mb-3">REVIEWS</h6>
-                            <div className="rating-review">
-                                {product?.reviews?.length === 0 && (
-                                    <Message variant={'alert-info mt-3'}>No Reviews</Message>
-                                )}
-                                {product?.reviews?.map((review) => (
-                                    <div key={review._id} className="mb-5 mb-md-3 bg-light p-3 shadow-sm rounded">
-                                        <div style={{ display: 'flex' }}>
-                                            <div className="rating-review__flex">
-                                                <p>{review.name.slice(0, 1)}</p>
-                                            </div>
-                                            <div style={{ paddingLeft: '10px' }}>
-                                                <div
-                                                    className="review-rating"
-                                                    style={{
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        lineHeight: '0.1',
-                                                    }}
-                                                >
-                                                    <strong>{review.name}</strong>
-                                                    <Rating value={review.rating} />
-                                                </div>
-                                                <span>{moment(review.createdAt).calendar()}</span>
-                                            </div>
-                                        </div>
-                                        <div className="alert alert-info mt-3">{review.comment}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="col-md-6">
-                            <div style={{ paddingLeft: '10px' }}>
-                                <h6 className="write-review">WRITE A CUSTOMER REVIEW</h6>
-                                <div className="my-4">{loadingCreateReview && <Loading />}</div>
-                                {userInfo ? (
-                                    <form onSubmit={submitHandler}>
-                                        <div className="my-4">
-                                            <strong>Rating</strong>
-                                            <select
-                                                value={rating}
-                                                onChange={(e) => setRating(e.target.value)}
-                                                className="col-12 bg-light p-3 mt-2 border-0 rounded"
-                                            >
-                                                {OPTION_SELECT_RATING.map((item) => (
-                                                    <option value={item.value} label={item.label}></option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div className="my-4">
-                                            <strong>Comment</strong>
-                                            <textarea
-                                                row="3"
-                                                value={comment}
-                                                onChange={(e) => setComment(e.target.value)}
-                                                className="col-12 bg-light p-3 mt-2 border-0 rounded"
-                                            ></textarea>
-                                        </div>
-                                        <div className="my-3">
-                                            <button
-                                                disabled={loadingCreateReview}
-                                                className="col-12 bg-orange border-0 p-3 rounded text-white"
-                                            >
-                                                SUBMIT
-                                            </button>
-                                        </div>
-                                    </form>
-                                ) : (
-                                    <div className="my-3">
-                                        <Message variant={'alert-warning'}>
-                                            Please{' '}
-                                            <Link to="/login">
-                                                " <strong>Login</strong> "
-                                            </Link>{' '}
-                                            and buy this product to write a review{' '}
-                                        </Message>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <Review />
             </div>
         </div>
     );

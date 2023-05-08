@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getUserDetails } from '../../Redux/Actions/userActions';
+import { getShippingAddresses, getUserDetails } from '../../Redux/Actions/userActions';
 import Orders from '../../components/profileComponents/Orders';
 import moment from 'moment';
 import { listMyOrders } from '../../Redux/Actions/orderActions';
@@ -21,6 +21,7 @@ const ProfileScreen = () => {
     const [pageNumber, setPageNumber] = useState(1);
 
     useEffect(() => {
+        dispatch(getShippingAddresses());
         dispatch(getUserDetails('profile'));
     }, [dispatch]);
 

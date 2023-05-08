@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Fragment, useEffect } from 'react';
-import { updateUserProfile } from '~/Redux/Actions/userActions';
+import { AddShippingAddress, UpdateShippingAddress, updateUserProfile } from '~/Redux/Actions/userActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Controller, useForm } from 'react-hook-form';
 import { getDistricts, getProvinces, getWards } from '~/Redux/Actions/deliveryAction';
@@ -23,6 +23,7 @@ import { renderError } from '~/utils/errorMessage';
 import { inputPropsConstants } from '~/constant/variants';
 import { LoadingButton } from '@mui/lab';
 import SaveIcon from '@mui/icons-material/Save';
+import { toast } from 'react-toastify';
 
 const style = {
     position: 'absolute',
@@ -35,25 +36,26 @@ const style = {
     boxShadow: 24,
     p: 1,
 };
-export default function ModalUpdateAddress({
-    isOpenModal,
-    handleOpenModal,
-    currentParentCategory,
-    variant = 'update',
-}) {
+export default function ModalUpdateAddress({ isOpenModal, handleOpenModal, address, variant = 'update' }) {
     const handleClose = () => {
+        reset(defaultFormAddress);
         handleOpenModal(false);
     };
     const dispatch = useDispatch();
-    const { setValue, reset, control, watch, getValues, handleSubmit } = useForm({
-        defaultValues: {
-            address: {
-                district: '',
-                ward: '',
-                province: '',
-                specificAddress: '',
-            },
+    const defaultFormAddress = {
+        address: {
+            province: { ProvinceName: '', ProvinceID: '' },
+            district: { DistrictName: '', DistrictID: '' },
+            ward: { WardName: '', WardID: '' },
+            specificAddress: '',
+            name: '',
+            phone: '',
+
+            isDefault: false,
         },
+    };
+    const { setValue, reset, control, watch, getValues, handleSubmit } = useForm({
+        defaultValues: defaultFormAddress,
     });
 
     const {
@@ -62,48 +64,52 @@ export default function ModalUpdateAddress({
         loadingProvinces,
         loadingWards,
     } = useSelector((state) => state.address);
-
+    const addressReducer = useSelector((state) => state.shippingAddress);
+    const { loading } = addressReducer;
     const userDetails = useSelector((state) => state.userDetails);
     const { user } = userDetails;
-
-    const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
-    const { loading: updateLoading } = userUpdateProfile;
+    const handleAfterFetch = {
+        success: (message) => {
+            handleOpenModal(false);
+            toast.success(message);
+            reset(defaultFormAddress);
+        },
+        error: (message) => {
+            toast.error(message);
+        },
+    };
     const submitUpdateProfile = (data) => {
-        dispatch(
-            updateUserProfile({
-                ...data,
-            }),
-        );
+        console.log(data, 'data update');
+        const dataToUpdate = {
+            ...data.address,
+            province: { id: data.address.province.ProvinceID, name: data.address.province.ProvinceName },
+            district: { id: data.address.district.DistrictID, name: data.address.district.DistrictName },
+            ward: { id: data.address.ward.WardCode, name: data.address.ward.WardName },
+        };
+        if (variant === 'add') {
+            dispatch(AddShippingAddress(dataToUpdate, handleAfterFetch));
+        }
+        if (variant === 'update') {
+            dispatch(UpdateShippingAddress(address?._id, dataToUpdate, handleAfterFetch));
+        }
     };
 
     useEffect(() => {
-        if (user) {
+        if (address) {
             reset({
-                ...user,
                 address: {
-                    province: { ProvinceName: '' },
-                    district: { DistrictName: '' },
-                    ward: { WardName: '' },
+                    ...address,
+                    province: { ProvinceName: address?.province.name, ProvinceID: address?.province.id },
+                    district: { DistrictName: address?.district.name, DistrictID: address?.district.id },
+                    ward: { WardName: address?.ward.name, WardCode: address?.ward?.id },
                 },
             });
+            if (address?.province?.id) dispatch(getDistricts(address.province.id));
+            if (address?.district?.id) dispatch(getWards(address.district.id));
         }
         dispatch(getProvinces());
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, user]);
-
-    useEffect(() => {
-        if (getValues('address.province')?.ProvinceID) {
-            dispatch(getDistricts(getValues('address.province').ProvinceID));
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, watch('address.province')?.ProvinceID, watch, getValues]);
-
-    useEffect(() => {
-        if (getValues('address.district')?.DistrictID) {
-            dispatch(getWards(getValues('address.district').DistrictID));
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, watch('address.district')?.DistrictID]);
+    }, [dispatch, address]);
 
     return (
         <Modal open={isOpenModal} onClose={handleClose}>
@@ -125,6 +131,68 @@ export default function ModalUpdateAddress({
                 <Divider />
                 <div className={styles.modalBody}>
                     <form className="row" onSubmit={handleSubmit(submitUpdateProfile)}>
+                        <div className="col-md-12 d-flex align-content-between form-update-profile-item">
+                            <div className={styles.wrapCol1}>
+                                <Controller
+                                    name="address.name"
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field, fieldState }) => (
+                                        <Fragment>
+                                            <TextField
+                                                sx={{ width: '100%', pr: 1 }}
+                                                focused={!!fieldState.error}
+                                                color={fieldState.error ? 'error' : 'info'}
+                                                label="Tên người nhận"
+                                                {...field}
+                                                variant={inputPropsConstants.variantOutLine}
+                                                size={inputPropsConstants.smallSize}
+                                            />
+                                            <p className="noti-validate">
+                                                {renderError([
+                                                    {
+                                                        error: fieldState?.error?.type === 'required',
+                                                        message: 'Bạn chưa nhập trường này',
+                                                    },
+                                                ])}
+                                            </p>
+                                        </Fragment>
+                                    )}
+                                />
+                            </div>
+                            <div className={styles.wrapCol1}>
+                                <Controller
+                                    name="address.phone"
+                                    control={control}
+                                    rules={{ required: true, pattern: /^0\d{9}$/ }}
+                                    render={({ field, fieldState }) => (
+                                        <Fragment>
+                                            <TextField
+                                                sx={{ width: '100%' }}
+                                                focused={!!fieldState.error}
+                                                color={fieldState.error ? 'error' : 'info'}
+                                                label="Điện thoại"
+                                                {...field}
+                                                variant={inputPropsConstants.variantOutLine}
+                                                size={inputPropsConstants.smallSize}
+                                            />
+                                            <p className="noti-validate">
+                                                {renderError([
+                                                    {
+                                                        error: fieldState?.error?.type === 'required',
+                                                        message: 'Bạn chưa nhập trường này',
+                                                    },
+                                                    {
+                                                        error: fieldState?.error?.type === 'pattern',
+                                                        message: 'Số điện thoại không hợp lệ',
+                                                    },
+                                                ])}
+                                            </p>
+                                        </Fragment>
+                                    )}
+                                />
+                            </div>
+                        </div>
                         <div
                             className="col-md-12 d-flex align-content-between justify-content-lg-between form-update-profile-item"
                             style={{ width: '100%' }}
@@ -147,6 +215,7 @@ export default function ModalUpdateAddress({
                                                 setValue('address.district', { DistrictName: '' });
                                                 setValue('address.ward', { WardName: '' });
                                                 field.onChange(value);
+                                                dispatch(getDistricts(value.ProvinceID));
                                             }}
                                             getOptionSelected={(option, value) =>
                                                 option.ProvinceName === value.ProvinceName
@@ -200,6 +269,7 @@ export default function ModalUpdateAddress({
                                             onChange={(e, value) => {
                                                 setValue('address.ward', { WardName: '' });
                                                 field.onChange(value);
+                                                dispatch(getWards(value.DistrictID));
                                             }}
                                             getOptionSelected={(option, value) =>
                                                 option.DistrictName === value.DistrictName
@@ -319,15 +389,25 @@ export default function ModalUpdateAddress({
                         <div className="col-md-12 d-flex align-content-between form-update-profile-item">
                             <div className={styles.wrapCol1}>
                                 <Controller
-                                    name="defaultAddress"
+                                    name="address.isDefault"
                                     control={control}
-                                    rules={{ required: true }}
-                                    render={({ field, fieldState }) => (
-                                        <FormControlLabel
-                                            {...field}
-                                            control={<Checkbox defaultChecked />}
-                                            label="Đặt làm địa chỉ mặc định"
-                                        />
+                                    render={({ field }) => (
+                                        <Fragment>
+                                            <Tooltip
+                                                title={
+                                                    address?.isDefault
+                                                        ? 'Bạn không thể xóa nhãn địa chỉ mặc định. Hãy đặt địa chỉ khác làm địa chỉ mặc định của bạn nhé'
+                                                        : null
+                                                }
+                                            >
+                                                <FormControlLabel
+                                                    {...field}
+                                                    disabled={address?.isDefault}
+                                                    control={<Checkbox checked={getValues('address.isDefault')} />}
+                                                    label="Đặt làm địa chỉ mặc định"
+                                                />
+                                            </Tooltip>
+                                        </Fragment>
                                     )}
                                 />
                             </div>
@@ -339,7 +419,7 @@ export default function ModalUpdateAddress({
                             </Button>
                             <LoadingButton
                                 sx={{ width: '30%', ml: 1 }}
-                                loading={updateLoading}
+                                loading={loading}
                                 type="submit"
                                 variant={inputPropsConstants.variantContained}
                                 size="medium"

@@ -33,7 +33,7 @@ export default function CategorySlider() {
             />
             <Divider />
             <StyledCardContent sx={{ padding: 0, pb: '0px' }} className={styles.listCategoryWrapper}>
-                {[...categories]?.map((category, index) => {
+                {categories?.map((category, index) => {
                     return (
                         <Link key={category._id} to={`search?category=${category._id}`} className={styles.categoryLink}>
                             <Tooltip title={category?.name}>

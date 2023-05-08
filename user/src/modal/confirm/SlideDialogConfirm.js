@@ -29,7 +29,7 @@ export default function SlideDialogConfirm(props) {
     return (
         <div style={{ minWidth: '400px !important' }}>
             <div variant="outlined" onClick={handleClickOpen}>
-                Remove
+                Xóa
             </div>
             <Dialog
                 style={{ minWidth: '400px !important' }}
@@ -42,12 +42,12 @@ export default function SlideDialogConfirm(props) {
                 <DialogTitle style={{ width: '350px' }}>{'Are you sure?'}</DialogTitle>
                 <DialogContent style={{ width: '350px' }}>
                     <DialogContentText style={{ width: '250px' }} id="alert-dialog-slide-description">
-                        Remove this item?
+                        Xóa sản phẩm
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleSubmit}>Remove</Button>
+                    <Button onClick={handleClose}>Hủy</Button>
+                    <Button onClick={handleSubmit}>Xóa</Button>
                 </DialogActions>
             </Dialog>
         </div>

@@ -1,10 +1,14 @@
 import {
+    ADD_SHIPPING_ADDRESS_SUCCESS,
     FORGOT_PASSWORD_FAIL,
     FORGOT_PASSWORD_REQUEST,
     FORGOT_PASSWORD_SUCCESS,
     RESET_PASSWORD_FAIL,
     RESET_PASSWORD_REQUEST,
     RESET_PASSWORD_SUCCESS,
+    SHIPPING_ADDRESS_FAIL,
+    SHIPPING_ADDRESS_REQUEST,
+    SHIPPING_ADDRESS_SUCCESS,
     USER_DETAILS_FAIL,
     USER_DETAILS_REQUEST,
     USER_DETAILS_RESET,
@@ -243,3 +247,116 @@ export const updateUserPassword = (user, handleSuccessUpdatePassword) => async (
         toast.error(message, Toastobjects);
     }
 };
+
+export const getShippingAddresses = (handleAfterFetchAddress) => async (dispatch, getState) => {
+    try {
+        dispatch({ type: SHIPPING_ADDRESS_REQUEST });
+        const { data } = await request.get(`/users/address/get-user-address-list`);
+        handleAfterFetchAddress?.success(data?.data?.addressList.find((address) => address?.isDefault));
+        dispatch({ type: SHIPPING_ADDRESS_SUCCESS, payload: data?.data?.addressList || [] });
+    } catch (error) {
+        const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+
+        dispatch({
+            type: SHIPPING_ADDRESS_FAIL,
+            payload: message,
+        });
+    }
+};
+
+export const AddShippingAddress =
+    (
+        address = {
+            province: {
+                id: '',
+                name: '',
+            },
+            district: {
+                id: '',
+                name: '',
+            },
+            ward: {
+                id: '',
+                name: '',
+            },
+            name: '',
+            phone: '',
+            specificAddress: '',
+            isDefault: false,
+            _id: '',
+        },
+        handleAfterFetch = {},
+    ) =>
+    async (dispatch) => {
+        try {
+            dispatch({ type: SHIPPING_ADDRESS_REQUEST });
+            const { data } = await request.post(`/users/address/add-user-address`, address);
+            handleAfterFetch.success('Thêm địa chỉ giao hàng thành công');
+            dispatch({ type: SHIPPING_ADDRESS_SUCCESS, payload: data?.data?.addressList || [] });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+            handleAfterFetch.error(message);
+            dispatch({
+                type: SHIPPING_ADDRESS_FAIL,
+                payload: message,
+            });
+        }
+    };
+
+export const UpdateShippingAddress =
+    (
+        id,
+        address = {
+            province: {
+                id: '',
+                name: '',
+            },
+            district: {
+                id: '',
+                name: '',
+            },
+            ward: {
+                id: '',
+                name: '',
+            },
+            name: '',
+            phone: '',
+            specificAddress: '',
+            isDefault: false,
+            _id: '',
+        },
+        handleAfterFetch = {},
+    ) =>
+    async (dispatch) => {
+        try {
+            dispatch({ type: SHIPPING_ADDRESS_REQUEST });
+            const { data } = await request.put(`/users/address/${id}/update-user-address`, address);
+            handleAfterFetch.success('Cập nhật địa chỉ giao hàng thành công');
+            dispatch({ type: SHIPPING_ADDRESS_SUCCESS, payload: data?.data?.addressList || [] });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+            handleAfterFetch.error(message);
+            dispatch({
+                type: SHIPPING_ADDRESS_FAIL,
+                payload: message,
+            });
+        }
+    };
+
+export const RemoveShippingAddress =
+    (id, handleAfterFetch = {}) =>
+    async (dispatch) => {
+        try {
+            dispatch({ type: SHIPPING_ADDRESS_REQUEST });
+            const { data } = await request.delete(`/users/address/${id}/remove-user-address`);
+            handleAfterFetch.success('Xóa địa chỉ giao hàng thành công');
+            dispatch({ type: SHIPPING_ADDRESS_SUCCESS, payload: data?.data?.addressList || [] });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+            handleAfterFetch.error(message);
+            dispatch({
+                type: SHIPPING_ADDRESS_FAIL,
+                payload: message,
+            });
+        }
+    };

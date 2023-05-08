@@ -92,7 +92,7 @@ const privateRouter = [
     },
     {
         name: 'Giỏ hàng',
-        path: '/cart/:id',
+        path: '/cart',
         component: <CartScreen />,
         exact: true,
     },

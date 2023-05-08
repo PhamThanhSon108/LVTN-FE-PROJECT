@@ -1,0 +1,103 @@
+.container {
+    display: flex;
+
+    margin: var(--space-8) var(--space-8);
+}
+
+.voucherTemplate {
+    height: 118px;
+    width: 118px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+    background-color: white;
+
+    .cornerBadge {
+        background-color: var(--vc-corner-badge-bg-color, #999);
+        position: absolute;
+        left: -0.25rem;
+        top: 0.5125rem;
+        border-radius: 0.125rem 0.125rem 0.125rem 0;
+        color: #fff;
+        display: flex;
+        font-size: 0.625rem;
+        line-height: 0.75rem;
+        padding: 0.125rem 0.25rem;
+
+        &::after {
+            border: 0.1875rem solid transparent;
+            content: '';
+            height: 0;
+            left: 0.0625rem;
+            position: absolute;
+            top: calc(100% + 0.0625rem);
+            transform: rotate(-45deg) translate(50%, -50%);
+            width: 0;
+            border-left: 0.1875rem solid #999;
+        }
+    }
+    .cardLeft {
+        z-index: 0;
+
+        border-bottom: 0.0625rem solid #fff;
+        border-bottom-left-radius: 0.125rem;
+        border-top: 0.0625rem solid #fff;
+        border-top-left-radius: 0.125rem;
+        box-sizing: border-box;
+        height: 100%;
+        left: 0;
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        width: var(--vc-card-height, 7.375rem);
+        background: linear-gradient(
+                    180deg,
+                    #fff 0.25rem,
+                    transparent 0,
+                    transparent calc(100% - 0.25rem),
+                    #fff calc(100% - 0.25rem)
+                )
+                0 0 /0.0625rem 100% no-repeat,
+            linear-gradient(
+                    180deg,
+                    var(--vc-card-left-fill-color, #fff) 0.25rem,
+                    transparent 0,
+                    transparent calc(100% - 0.25rem),
+                    var(--vc-card-left-fill-color, #fff) calc(100% - 0.25rem)
+                )
+                0 0/100% 100% no-repeat;
+        .cardSawToot {
+            background: linear-gradient(180deg, transparent calc(0.25rem * 2), var(--default-background-color, red) 0) 0
+                    0.0625rem /0.0625rem calc(0.25rem * 2 + 0.125rem) repeat-y,
+                radial-gradient(
+                        circle at 0 0.25rem,
+                        transparent 0,
+                        transparent calc(0.25rem - 0.0625rem),
+                        var(--default-background-color, red) 0,
+                        var(--default-background-color, red) 0.25rem,
+                        var(--default-background-color, red) 0
+                    )
+                    0 0.0625rem /100% calc(0.25rem * 2 + 0.125rem) repeat-y;
+            bottom: calc(0.25rem - 0.0625rem);
+            position: absolute;
+            top: calc(0.25rem - 0.0625rem);
+            width: 100%;
+        }
+    }
+}
+.voucherImageWrapper {
+    z-index: 1;
+    height: 30px;
+    width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        object-fit: cover;
+        width: 100%;
+    }
+}

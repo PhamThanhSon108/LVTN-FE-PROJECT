@@ -17,6 +17,7 @@ import {
 import {
     forgotPasswordReducer,
     resetPasswordReducer,
+    shippingAddress,
     userDetailsReducer,
     userLoginReducer,
     userRegisterReducer,
@@ -34,7 +35,8 @@ import {
 } from './Reducers/OrderReducres';
 import { Sliderload } from './Reducers/SliderReducer';
 import { categoryListReducer } from './Reducers/CategoryReducers';
-import { AddressReducer } from './Reducers/DeliveryReducers';
+import { AddressReducer, ShippingFeeReducer } from './Reducers/DeliveryReducers';
+import { myVouchers } from './Reducers/VoucherReducers';
 
 const reducer = combineReducers({
     listAllOrder: productbestseller,
@@ -66,6 +68,10 @@ const reducer = combineReducers({
     CategoryList: categoryListReducer,
 
     address: AddressReducer,
+    shippingFee: ShippingFeeReducer,
+    shippingAddress: shippingAddress,
+
+    myVouchers: myVouchers,
 });
 
 const cartOrderItemsFromLocalStorage = localStorage.getItem('cartOrderItems')

@@ -27,9 +27,22 @@ export default function useSingleProduct() {
     const [loadingAddtoCart, setLoadingAddtoCart] = useState(false);
     const { loading: loadingCreateReview, success: successCreateReview } = productReviewCreate;
     const haveQuantityOfCurrentVariant = product?.variants?.find(
-        (value) => value.attributes?.[0].value == value1 && value.attributes?.[1].value === value2,
+        (value) => value.attributes?.[0].value === value1 && value.attributes?.[1].value === value2,
     )?.quantity;
-
+    const currentVariant = product?.variants?.find(
+        (value) => value.attributes?.[0].value === value1 && value.attributes?.[1].value === value2,
+    );
+    const percentDiscount = (
+        ((currentVariant?.price - currentVariant?.priceSale) * 100) / currentVariant?.price ||
+        ((product?.price - product?.priceSale) * 100) / product?.price ||
+        0
+    ).toFixed();
+    console.log(
+        percentDiscount,
+        product,
+        (((currentVariant?.price - currentVariant?.priceSale) * 100) / currentVariant?.price)?.toFixed(),
+        (((product?.price - product?.priceSale) * 100) / product?.price).toFixed(),
+    );
     const defaultValue1 =
         product?.variants?.reduce((values, value) => {
             if (!values.includes(value.attributes[0].value)) values.push(value.attributes[0].value);
@@ -51,7 +64,7 @@ export default function useSingleProduct() {
 
     const handleOnSuccessAddProductToCart = async () => {
         dispatch(listCart());
-        toast.success('Product added to cart', Toastobjects);
+        toast.success('Sản phẩm đã được thêm vào giỏ hàng', Toastobjects);
     };
 
     const handleOnErrorAddProductToCart = ({ message }) => {
@@ -127,6 +140,8 @@ export default function useSingleProduct() {
         dispatch(listProductDetails(productId));
     }, [dispatch, productId, successCreateReview]);
     return {
+        currentVariant,
+        percentDiscount,
         submitHandler,
         buyProductHandle,
         AddToCartHandle,

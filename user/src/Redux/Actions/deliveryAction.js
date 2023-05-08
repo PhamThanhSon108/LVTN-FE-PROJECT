@@ -9,6 +9,9 @@ import {
     ADDRESS_WARD_LIST_FAIL,
     ADDRESS_WARD_LIST_REQUEST,
     ADDRESS_WARD_LIST_SUCCESS,
+    SHIPPING_FEE_FAIL,
+    SHIPPING_FEE_REQUEST,
+    SHIPPING_FEE_SUCCESS,
 } from '../Constants/DeliveryConstants';
 
 export const getProvinces = (handleSuccessGetAddress) => async (dispatch) => {
@@ -58,3 +61,34 @@ export const getWards = (district, handleSuccessGetAddress) => async (dispatch) 
         });
     }
 };
+
+export const getShippingFee =
+    (
+        address = {
+            from_district_id: '',
+            service_id: '',
+            service_type_id: null,
+            to_district_id: '',
+            to_ward_code: '',
+            height: 0,
+            length: 0,
+            weight: 0,
+            width: 0,
+            insurance_value: null,
+            coupon: null,
+        },
+        handleAfterFetch = { success: () => {} },
+    ) =>
+    async (dispatch) => {
+        try {
+            dispatch({ type: SHIPPING_FEE_REQUEST });
+            const { data } = await request.post('/deliveries/shipping-order/fee', address);
+
+            dispatch({ type: SHIPPING_FEE_SUCCESS, payload: data?.data?.districts });
+        } catch (error) {
+            dispatch({
+                type: SHIPPING_FEE_FAIL,
+                payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+            });
+        }
+    };

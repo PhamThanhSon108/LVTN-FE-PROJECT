@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button, Pagination, Skeleton, Typography } from '@mui/material';
+import { Button, FormControl, InputLabel, MenuItem, Pagination, Select, Skeleton, Typography } from '@mui/material';
 
 import { Message } from '@mui/icons-material';
 import FilterSection from '../FilterSection/FilterSection';
 import { listProduct } from '~/Redux/Actions/productActions';
 import Rating from '../Rating/Rating';
 import styles from './ShopSection.module.scss';
+import Product from '~/components/Product/Product';
 const LoadingEachProduct = () => {
     return (
         <div className={styles.loadingEachProduct} style={{ margin: '15px 7.9px' }}>
@@ -114,7 +115,7 @@ const ShopSection = (props) => {
                                             }}
                                             className={styles.filterCustomWrap}
                                         >
-                                            <Typography noWrap variant="body1" color="text.secondary">
+                                            <Typography noWrap variant="body1" color="text.secondary" sx={{ mr: 1 }}>
                                                 Sắp xếp theo
                                             </Typography>
                                             <Button
@@ -122,23 +123,27 @@ const ShopSection = (props) => {
                                                     setPriceOrder(e.target.value);
                                                 }}
                                                 type="ghost"
+                                                sx={{ mr: 1 }}
                                             >
                                                 Mới nhất
                                             </Button>
                                             <div className="" style={{ cursor: 'pointer', zIndex: '2' }}>
-                                                <select
-                                                    tabIndex={-2}
-                                                    className={styles.formSelect}
-                                                    value={priceOrder}
-                                                    style={{ cursor: 'pointer', zIndex: '10' }}
-                                                    onChange={(e) => {
-                                                        setPriceOrder(e.target.value);
-                                                    }}
-                                                >
-                                                    <option>Giá</option>
-                                                    <option value="asc">Giá tăng dần</option>
-                                                    <option value="desc">Giá giảm dần</option>
-                                                </select>
+                                                <FormControl size="small" fullWidth sx={{ minWidth: '8rem' }}>
+                                                    <InputLabel id="sort-by-price-select-label">Giá</InputLabel>
+                                                    <Select
+                                                        labelId="sort-by-price-select-label"
+                                                        id="demo-simple-select"
+                                                        value={priceOrder}
+                                                        label="Giá"
+                                                        onChange={(e) => {
+                                                            setPriceOrder(e.target.value);
+                                                        }}
+                                                    >
+                                                        <MenuItem>Giá</MenuItem>
+                                                        <MenuItem value="asc">Giá tăng dần</MenuItem>
+                                                        <MenuItem value="desc">Giá giảm dần</MenuItem>
+                                                    </Select>
+                                                </FormControl>
                                             </div>
                                         </div>
                                     </ShowFilter>
@@ -149,27 +154,7 @@ const ShopSection = (props) => {
                                         </div>
                                     ) : null}
                                     {products?.map((product) => (
-                                        <div className="col-lg-2 col-md-6 col-sm-6 product-card-wrap" key={product._id}>
-                                            <div className="border-product product-card-item">
-                                                <Link to={`/product/${product._id}`}>
-                                                    <div className="product-card-item-img-wrap">
-                                                        <img src={product?.images?.[0]} alt={product.name} />
-                                                    </div>
-                                                </Link>
-
-                                                <div className="shoptext">
-                                                    <p>
-                                                        <Link to={`/product/${product._id}`}>{product.name}</Link>
-                                                    </p>
-
-                                                    <Rating
-                                                        value={product.rating}
-                                                        text={`${product.numReviews} reviews`}
-                                                    />
-                                                    <h3>${product.price.toFixed(2)}</h3>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <Product product={product} />
                                     ))}
                                 </RenderProduct>
 
