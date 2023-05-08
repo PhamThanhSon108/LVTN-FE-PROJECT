@@ -1,11 +1,9 @@
-import React, { useEffect, useState, useRef, useCallback, useMemo, Fragment } from 'react';
-import Header from '../../components/Header';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState, useRef, useCallback, Fragment } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addProductOrderInCart, listCart, removefromcart, updateCart } from '../../Redux/Actions/cartActions';
 
 import WrapConfirmModal from '~/components/Modal/WrapConfirmModal';
-import Toast from '~/components/LoadingError/Toast';
 import { FormLoading } from '~/components/LoadingError/Loading';
 import SlideDialogConfirm from '~/modal/confirm/SlideDialogConfirm';
 
@@ -24,8 +22,9 @@ export const RenderAttributes = ({ attributes }) => {
     } else return <Fragment />;
 };
 
-const CartScreen = ({ match, location, history }) => {
+const CartScreen = () => {
     const dispatch = useDispatch();
+    const history = useHistory();
     const cart = useSelector((state) => state.cart);
     const { cartItems, loading: loadListCart } = cart;
     const [cartChoise, setCartChoise] = useState({});
@@ -45,9 +44,13 @@ const CartScreen = ({ match, location, history }) => {
               .reduce((a, i) => a + i.quantity * i.variant?.price, 0)
               .toFixed(2)
         : 0;
+    const handleAfterFetch = {
+        success: () => {
+            history.push('/login?redirect=placeorder');
+        },
+    };
     const checkOutHandler = () => {
-        dispatch(addProductOrderInCart(Object.values(cartChoise)));
-        history.push('/login?redirect=shipping');
+        dispatch(addProductOrderInCart(Object.values(cartChoise), handleAfterFetch));
     };
 
     const removeFromCartHandle = (id, setCartChoise) => {
@@ -58,7 +61,7 @@ const CartScreen = ({ match, location, history }) => {
     }, [cartChoise]);
 
     const createContent = useCallback(() => {
-        return { title: 'Remove product in cart', body: 'Are you sure' };
+        return { title: 'Xóa sản phẩm khỏi giỏ hàng', body: 'Bạn có chắc?' };
     });
     useEffect(() => {
         dispatch(listCart());
@@ -73,18 +76,18 @@ const CartScreen = ({ match, location, history }) => {
     const [isMobile] = useState(window.innerWidth < 540);
     return (
         <>
-            <Toast />
-            <Header />
             <div className="container ">
                 {loadListCart && <FormLoading />}
                 {cartItems?.length === 0 || !cartItems ? (
-                    <div className=" alert alert-info text-center mt-3 position-relative">
-                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div className=" alert alert-info text-center mt-3 position-relative ">
+                        <div className="mb-1" style={{ display: 'flex', flexDirection: 'column' }}>
                             <img
+                                className="mb-1"
+                                alt="Không tìm thấy sản phẩm nào"
                                 style={{ width: '100px', height: '100px', margin: '0 auto' }}
                                 src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/cart/9bdd8040b334d31946f49e36beaf32db.png"
                             ></img>
-                            Your shopping cart is empty
+                            Giỏ hàng của bạn chưa có sản phẩm nào
                         </div>
                         <Link
                             className="btn btn-success mx-5 px-5 py-3"
@@ -93,7 +96,7 @@ const CartScreen = ({ match, location, history }) => {
                                 fontSize: '12px',
                             }}
                         >
-                            SHOPPING NOW
+                            Mua hàng ngay
                         </Link>
                     </div>
                 ) : (
@@ -101,11 +104,11 @@ const CartScreen = ({ match, location, history }) => {
                         <div className="backTo" style={{ paddingTop: '10px' }}>
                             <Link to="/" className="col-md-6 ">
                                 <i class="fas fa-undo" style={{ paddingRight: '5px' }}></i>
-                                Back To Shop
+                                Trở lại trang chủ
                             </Link>
                         </div>
                         <div className=" alert alert-info text-center mt-3">
-                            Total Cart Products
+                            Tổng số sản phẩm
                             <Link className="text-success mx-2" to="/cart">
                                 ({cartItems?.length ?? 0})
                             </Link>
@@ -154,18 +157,18 @@ const CartScreen = ({ match, location, history }) => {
                                                     ></input>
                                                 ) : (
                                                     <span className="text-danger  col-4">
-                                                        {`Not available 
-                                                        ${item?.quantity} products`}
+                                                        {`Không có sẵn
+                                                        ${item?.quantity} sản phẩm`}
                                                     </span>
                                                 )
                                             ) : (
-                                                <span className="text-danger"> Unavailable</span>
+                                                <span className="text-danger">Hết hàng</span>
                                             )}
                                         </div>
                                     ) : (
                                         <div className="col-1 cart-check">
                                             <span className="span" style={{ fontSize: '12px', color: 'red' }}>
-                                                Unavailable
+                                                Hết hàng
                                             </span>
                                         </div>
                                     )}
@@ -223,7 +226,7 @@ const CartScreen = ({ match, location, history }) => {
                                         className="cart-price col-12 col-sm-3 col-lg-1 align-items-sm-end align-items-start  d-flex flex-column justify-content-center quantity-css"
                                         style={isMobile ? { width: 90, marginRight: '20%' } : null}
                                     >
-                                        <h6>Price</h6>
+                                        <h6>Giá</h6>
                                         <h6 className="text-danger">${item?.variant?.price}</h6>
                                     </div>
 
@@ -259,7 +262,7 @@ const CartScreen = ({ match, location, history }) => {
                             <div className="total col-md-3">
                                 {Object.keys(cartChoise).length > 0 && (
                                     <WrapConfirmModal content={createContent()} handleSubmit={handleDeleteAll}>
-                                        <span>Remove</span>
+                                        <span>Xóa</span>
                                     </WrapConfirmModal>
                                 )}
                             </div>
@@ -270,7 +273,7 @@ const CartScreen = ({ match, location, history }) => {
                                         // data-bs-target="#staticBackdrop"
                                         onClick={checkOutHandler}
                                     >
-                                        Checkout
+                                        Mua ngay
                                     </button>
                                 </div>
                             )}

@@ -3,31 +3,19 @@ import './App.css';
 import './responsive.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import HomeScreen from './pages/HomeScreen/HomeScreen';
-import SingleProduct from './pages/SingleProduct/SingleProduct';
-import CartScreen from './pages/Cart/CartScreen';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import ShippingScreen from './pages/ShippingScreen';
-import ProfileScreen from './pages/Profile/ProfileScreen';
-import PaymentScreen from './pages/PaymentScreen';
-import PlaceOrderScreen from './pages/PlaceOrder/PlaceOrderScreen';
-import OrderScreen from './pages/OrderScreen';
-import NotFound from './pages/NotFound';
-import PrivateRouter from './PrivateRouter';
-import ConfirmRegister from './pages/ConfirmRegister';
-import VerifyRegisterSuccess from './pages/VerifyRegisterSuccess';
-import ForgotPass from './pages/ForgotPass';
-import ResetPass from './pages/ResetPass';
-import TodayProduct from './pages/TodayProduct';
+
 import './assets/css/color.scss';
 import './assets/css/spacing.scss';
+import TodayProduct from './pages/TodayProduct';
+import { privateRouter, publicRouter } from './router/router';
+import DefaultLayout from './layout/DefaultLayout';
+import PrivateRouter from './PrivateRouter';
 
 const App = () => {
     return (
         <Router>
             <Switch>
-                <Route path="/" component={HomeScreen} exact />
+                {/* <Route path="/" component={HomeScreen} exact />
                 <Route path="/today-product" component={TodayProduct} exact />
                 <Route path="/search" component={HomeScreen} exact />
                 <Route path="/product/:id" component={SingleProduct} />
@@ -44,8 +32,22 @@ const App = () => {
                 <Route path="/forgotpassword" component={ForgotPass} />
                 <Route path="/reset" component={ResetPass} exact />
 
-                <Route path="*" component={NotFound} />
+                <Route path="*" component={NotFound} /> */}
                 {/* </Suspense> */}
+
+                {privateRouter.map((option) => (
+                    <PrivateRouter
+                        key={option.path}
+                        {...option}
+                        component={<DefaultLayout name={option.name || 'Admin'}>{option.component}</DefaultLayout>}
+                    />
+                ))}
+                {publicRouter.map((option) => {
+                    const renderComponent = () => (
+                        <DefaultLayout name={option.name || 'Admin'}>{option.component}</DefaultLayout>
+                    );
+                    return <Route key={option.path} {...option} component={renderComponent} />;
+                })}
             </Switch>
         </Router>
     );

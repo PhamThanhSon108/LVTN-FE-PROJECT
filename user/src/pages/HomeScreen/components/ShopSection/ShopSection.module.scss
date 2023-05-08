@@ -1,0 +1,48 @@
+.filterCustomWrap {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.03);
+    span {
+        padding-right: 15px;
+    }
+    .formSelect {
+        border: none;
+    }
+}
+
+.shopSectionContainer {
+    width: 100%;
+    .section {
+        // .row > * {
+        //     padding-right: 0;
+        //     padding-left: 0;
+        // }
+    }
+}
+.shopSectionContainer {
+    margin-top: var(--space-16);
+    margin-bottom: var(--space-16);
+    width: 100%;
+    .loadingEachProduct {
+        width: 25%;
+    }
+    .row .col-lg-12 {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+.containerTodayProduct {
+    display: flex;
+    justify-content: center;
+    .section {
+        max-width: var(--default-width-screen);
+        .row {
+            .col-lg-12 {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+    }
+}

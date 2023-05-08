@@ -5,17 +5,19 @@ import { Toastobjects } from '~/components/LoadingError/Toast';
 import useDebounce from '~/hooks/useDebounce';
 import { addProductOrderInCart, addToCart, listCart } from '~/Redux/Actions/cartActions';
 import { createProductReview, listProductDetails } from '~/Redux/Actions/productActions';
-import { logout } from '~/Redux/Actions/userActions';
 import { PRODUCT_CREATE_REVIEW_RESET } from '~/Redux/Constants/ProductConstants';
 import CART_CONST from '~/Redux/Constants/CartConstants';
-export default function useSingleProduct({ history, match }) {
+import { useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+export default function useSingleProduct() {
     const [qty, setQty] = useState(1);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
     const [value1, setValue1] = useState(0);
     const [value2, setValue2] = useState('');
-    const productId = match.params.id;
+    const { id: productId } = useParams();
     const dispatch = useDispatch();
+    const history = useHistory();
     const deBounce = useDebounce(qty, 500);
     const productDetails = useSelector((state) => state.productDetails);
     const { loading, error, product } = productDetails;
@@ -25,9 +27,22 @@ export default function useSingleProduct({ history, match }) {
     const [loadingAddtoCart, setLoadingAddtoCart] = useState(false);
     const { loading: loadingCreateReview, success: successCreateReview } = productReviewCreate;
     const haveQuantityOfCurrentVariant = product?.variants?.find(
-        (value) => value.attributes?.[0].value == value1 && value.attributes?.[1].value === value2,
+        (value) => value.attributes?.[0].value === value1 && value.attributes?.[1].value === value2,
     )?.quantity;
-
+    const currentVariant = product?.variants?.find(
+        (value) => value.attributes?.[0].value === value1 && value.attributes?.[1].value === value2,
+    );
+    const percentDiscount = (
+        ((currentVariant?.price - currentVariant?.priceSale) * 100) / currentVariant?.price ||
+        ((product?.price - product?.priceSale) * 100) / product?.price ||
+        0
+    ).toFixed();
+    console.log(
+        percentDiscount,
+        product,
+        (((currentVariant?.price - currentVariant?.priceSale) * 100) / currentVariant?.price)?.toFixed(),
+        (((product?.price - product?.priceSale) * 100) / product?.price).toFixed(),
+    );
     const defaultValue1 =
         product?.variants?.reduce((values, value) => {
             if (!values.includes(value.attributes[0].value)) values.push(value.attributes[0].value);
@@ -49,7 +64,7 @@ export default function useSingleProduct({ history, match }) {
 
     const handleOnSuccessAddProductToCart = async () => {
         dispatch(listCart());
-        toast.success('Product added to cart', Toastobjects);
+        toast.success('Sản phẩm đã được thêm vào giỏ hàng', Toastobjects);
     };
 
     const handleOnErrorAddProductToCart = ({ message }) => {
@@ -125,6 +140,8 @@ export default function useSingleProduct({ history, match }) {
         dispatch(listProductDetails(productId));
     }, [dispatch, productId, successCreateReview]);
     return {
+        currentVariant,
+        percentDiscount,
         submitHandler,
         buyProductHandle,
         AddToCartHandle,

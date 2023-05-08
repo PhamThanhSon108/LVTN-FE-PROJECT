@@ -15,25 +15,22 @@ export default function ConfirmRegister({ location, history }) {
         dispatch(cancelRegister(emailVerificationToken.toString(), history));
     };
     return (
-        <>
-            <Toast />
-            <div
-                className="container d-flex flex-column justify-content-center align-items-center login-center"
-                style={{ height: '80VH' }}
-            >
-                <form className="Login col-md-6 col-lg-4 col-10">
-                    <h4 style={{ marginBottom: '15PX' }}>Do you want to register account in Fashionshop?</h4>
-                    <div className="d-flex justify-content-between">
-                        <div className="btn btn-outline-danger btn__login" onClick={handleCancel}>
-                            NO
-                        </div>
-                        <div className="btn"></div>
-                        <div className="btn btn-outline-primary btn__login" onClick={handleConfirm}>
-                            YES
-                        </div>
+        <div
+            className="container d-flex flex-column justify-content-center align-items-center login-center"
+            style={{ height: '80VH' }}
+        >
+            <form className="Login col-md-6 col-lg-4 col-10">
+                <h4 style={{ marginBottom: '15PX' }}>Do you want to register account in Fashionshop?</h4>
+                <div className="d-flex justify-content-between">
+                    <div className="btn btn-outline-danger btn__login" onClick={handleCancel}>
+                        NO
                     </div>
-                </form>
-            </div>
-        </>
+                    <div className="btn"></div>
+                    <div className="btn btn-outline-primary btn__login" onClick={handleConfirm}>
+                        YES
+                    </div>
+                </div>
+            </form>
+        </div>
     );
 }

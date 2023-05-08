@@ -32,84 +32,79 @@ export default function ResetPass({ location, history }) {
     };
 
     return (
-        <>
-            <Toast />
-            <div className="container d-flex flex-column justify-content-center align-items-center login-center">
-                <form className="Login col-md-6 col-lg-4 col-10" onSubmit={handleSubmit(submitResetPassword)}>
-                    {loading && <FormLoading />}
-                    <div className="d-flex align-content-center justify-content-center h-25-l">
-                        <img src={image.logo}></img>
-                    </div>
-                    <h4>CREATE NEW PASSWORD</h4>
-                    <Controller
-                        name="emailReset"
-                        control={control}
-                        defaultValue=""
-                        rules={{
-                            required: 'Please enter your email',
-                            pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                        }}
-                        render={({ field }) => <input {...field} placeholder="Enter your email" />}
-                    />
+        <div className="container d-flex flex-column justify-content-center align-items-center login-center">
+            <form className="Login col-md-6 col-lg-4 col-10" onSubmit={handleSubmit(submitResetPassword)}>
+                {loading && <FormLoading />}
+                <div className="d-flex align-content-center justify-content-center h-25-l">
+                    <img src={image.logo}></img>
+                </div>
+                <h4>CREATE NEW PASSWORD</h4>
+                <Controller
+                    name="emailReset"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                        required: 'Please enter your email',
+                        pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+                    }}
+                    render={({ field }) => <input {...field} placeholder="Enter your email" />}
+                />
 
-                    {/* <ErrorMessage errors={errors} name="emailReset" render={({ message }) => <p>{message}</p>} /> */}
-                    {errors.emailReset && errors.emailReset.type == 'required' && (
-                        <p className="text-danger m-0">{errors.emailReset.message}</p>
+                {/* <ErrorMessage errors={errors} name="emailReset" render={({ message }) => <p>{message}</p>} /> */}
+                {errors.emailReset && errors.emailReset.type == 'required' && (
+                    <p className="text-danger m-0">{errors.emailReset.message}</p>
+                )}
+                {errors.emailReset && errors.emailReset.type == 'pattern' ? (
+                    <p className="text-danger m-0">Invalid email</p>
+                ) : null}
+
+                <Controller
+                    name="newPassword"
+                    defaultValue=""
+                    control={control}
+                    render={({ field }) => <input type={'password'} {...field} placeholder="Enter your new password" />}
+                    rules={{
+                        minLength: 6,
+                        required: 'Please your password',
+                    }}
+                />
+                {errors.newPassword && errors.newPassword.type == 'required' ? (
+                    <p className="text-danger m-0">{errors.newPassword.message}</p>
+                ) : null}
+
+                {errors.newPassword && errors.newPassword.type == 'minLength' ? (
+                    <p className="text-danger m-0">Password must be at least 6 characters</p>
+                ) : null}
+
+                <Controller
+                    name="newPassConfirm"
+                    defaultValue=""
+                    control={control}
+                    render={({ field }) => (
+                        <input type={'password'} {...field} placeholder="Enter your confirm password" />
                     )}
-                    {errors.emailReset && errors.emailReset.type == 'pattern' ? (
-                        <p className="text-danger m-0">Invalid email</p>
-                    ) : null}
+                    rules={{
+                        required: 'Please enter confirm password',
+                        // pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+                        validate: (value) => value === watch('newPassword'),
+                    }}
+                />
 
-                    <Controller
-                        name="newPassword"
-                        defaultValue=""
-                        control={control}
-                        render={({ field }) => (
-                            <input type={'password'} {...field} placeholder="Enter your new password" />
-                        )}
-                        rules={{
-                            minLength: 6,
-                            required: 'Please your password',
-                        }}
-                    />
-                    {errors.newPassword && errors.newPassword.type == 'required' ? (
-                        <p className="text-danger m-0">{errors.newPassword.message}</p>
-                    ) : null}
+                {errors.newPassConfirm && errors.newPassConfirm.type === 'validate' ? (
+                    <p className="text-danger m-0">
+                        'Wrong or invalid confirm new password. Please correct and try again'
+                    </p>
+                ) : null}
 
-                    {errors.newPassword && errors.newPassword.type == 'minLength' ? (
-                        <p className="text-danger m-0">Password must be at least 6 characters</p>
-                    ) : null}
-
-                    <Controller
-                        name="newPassConfirm"
-                        defaultValue=""
-                        control={control}
-                        render={({ field }) => (
-                            <input type={'password'} {...field} placeholder="Enter your confirm password" />
-                        )}
-                        rules={{
-                            required: 'Please enter confirm password',
-                            // pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                            validate: (value) => value === watch('newPassword'),
-                        }}
-                    />
-
-                    {errors.newPassConfirm && errors.newPassConfirm.type === 'validate' ? (
-                        <p className="text-danger m-0">
-                            'Wrong or invalid confirm new password. Please correct and try again'
-                        </p>
-                    ) : null}
-
-                    {errors.newPassConfirm && errors.newPassConfirm.type === 'required' ? (
-                        <p className="text-danger m-0">
-                            'Wrong or invalid confirm new password. Please correct and try again'
-                        </p>
-                    ) : null}
-                    <button className="btn btn-outline-danger btn__login" type="submit">
-                        Save password
-                    </button>
-                </form>
-            </div>
-        </>
+                {errors.newPassConfirm && errors.newPassConfirm.type === 'required' ? (
+                    <p className="text-danger m-0">
+                        'Wrong or invalid confirm new password. Please correct and try again'
+                    </p>
+                ) : null}
+                <button className="btn btn-outline-danger btn__login" type="submit">
+                    Save password
+                </button>
+            </form>
+        </div>
     );
 }

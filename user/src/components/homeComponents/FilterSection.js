@@ -1,31 +1,52 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ListCategory } from '../../Redux/Actions/categoryActions';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import isEmpty from 'validator/lib/isEmpty';
 import Rating from './Rating';
-import { useLocation } from 'react-router-dom';
+import { TreeItem, TreeView, treeItemClasses } from '@mui/lab';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import { Typography, styled } from '@mui/material';
 
-export default function FilterSection({
-    setRating,
-    setMinPrice,
-    setCategory,
-    setMaxPrice,
-    rating,
-    categoryCurrent,
-    keyword,
-}) {
-    const location = useLocation();
+const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
+    color: theme.palette.text.secondary,
+    [`& .${treeItemClasses.content}`]: {
+        color: theme.palette.text.secondary,
+
+        paddingRight: theme.spacing(1),
+        padding: '4px 4px',
+
+        '&.Mui-expanded': {
+            fontWeight: theme.typography.fontWeightRegular,
+        },
+        '&:hover': {
+            backgroundColor: theme.palette.action.hover,
+        },
+        '&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused': {
+            backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action.selected})`,
+            color: 'var(--tree-view-color)',
+        },
+        [`& .${treeItemClasses.label}`]: {
+            fontWeight: 'inherit',
+            color: 'inherit',
+        },
+    },
+    [`& .${treeItemClasses.group}`]: {
+        marginLeft: 0,
+        [`& .${treeItemClasses.content}`]: {
+            paddingLeft: theme.spacing(2),
+        },
+    },
+}));
+
+export default function FilterSection({ setRating, setMinPrice, setCategory, setMaxPrice, rating, keyword }) {
     const dispatch = useDispatch();
     const history = useHistory();
     const lcategories = useSelector((state) => state.CategoryList);
     const { categories } = lcategories;
     const [curentMinPrice, setCurentMinPrice] = useState('');
     const [curentMaxPrice, setCurentMaxPrice] = useState('');
-
-    // if (rating) {
-    //     setRating(rating);
-    // }
 
     //xủ lí logic check form
     const [price, SetPrice] = useState({});
@@ -82,37 +103,53 @@ export default function FilterSection({
         <div className="section-div col-lg-2 col-md-3">
             <div className="Category-section">
                 <div className="section-flex">
-                    <i class="fas fa-align-left"></i>
-                    <h2 className="Category-section__h2">Category</h2>
+                    <Typography noWrap variant="button" color="text.secondary">
+                        DANH MỤC
+                    </Typography>
                 </div>
-                <ul className="Category-section__list">
+
+                <TreeView
+                    aria-label="file system navigator"
+                    defaultCollapseIcon={<ArrowDropDownIcon />}
+                    defaultExpandIcon={<ArrowRightIcon />}
+                    sx={{ flexGrow: 1, overflowY: 'auto', mb: 2 }}
+                    disabledItemsFocusable={true}
+                >
                     {categories?.map((category) => (
-                        <li className="Category-section__li">
-                            <span
-                                style={
-                                    categoryCurrent === category._id
-                                        ? { color: 'red', cursor: 'pointer' }
-                                        : { cursor: 'pointer' }
-                                }
-                                onClick={() => {
-                                    history.push(`?keyword=${keyword}?category=${category._id}`);
-                                    setCategory(category._id);
-                                }}
-                            >
-                                {category.name}
-                            </span>
-                        </li>
+                        <StyledTreeItemRoot
+                            onClick={() => {
+                                history.push(`?keyword=${keyword}?category=${category._id}`);
+                                setCategory(category._id);
+                            }}
+                            key={category._id}
+                            nodeId={category._id}
+                            label={category.name}
+                            sx={{ mb: '4px' }}
+                        >
+                            {category?.children.length > 0
+                                ? category.children.map((childrenCategory) => (
+                                      <StyledTreeItemRoot
+                                          key={childrenCategory._id}
+                                          nodeId={childrenCategory._id}
+                                          label={childrenCategory.name}
+                                      />
+                                  ))
+                                : null}
+                        </StyledTreeItemRoot>
                     ))}
-                </ul>
+                </TreeView>
             </div>
             <div className="Category-search">
                 <div className="section-flex">
-                    <i class="fas fa-filter "></i>
-                    <h2 className="Category-section__h2 Category-search__h2">Filter</h2>
+                    <Typography noWrap variant="button" color="text.secondary">
+                        LỌC
+                    </Typography>
                 </div>
 
                 <div className="distance-price">
-                    <p className="distance-price__p">Price range</p>
+                    <Typography noWrap variant="body1" color="text.secondary">
+                        Khoảng giá
+                    </Typography>
                     <div className="distance-price__flex" style={{ display: 'flex', alignItems: 'center' }}>
                         <input
                             type="number"
@@ -132,11 +169,13 @@ export default function FilterSection({
                     </div>
                     <p style={{ fontSize: '14px', color: 'red' }}>{price.name}</p>
                     <button className="distance-price__submit" onClick={ApplyHandler}>
-                        APPLY
+                        Áp dụng
                     </button>
                 </div>
                 <div className="assess-star">
-                    <p className="distance-price__p">Review</p>
+                    <Typography sx={{ mt: 1 }} noWrap variant="body1" color="text.secondary">
+                        Đánh giá
+                    </Typography>
                     <div className="assess-star__div">
                         <div display={{ display: 'flex', alignItems: 'center' }}>
                             <input
@@ -148,10 +187,9 @@ export default function FilterSection({
                                 value={'5'}
                                 onClick={(e) => {
                                     setRating(e.target.value);
-                                    // history.push('/');
                                 }}
                             ></input>
-                            <label for="five" className={rating == '5' ? 'rating-color' : ' '}>
+                            <label for="five" className={rating === '5' ? 'rating-color' : ' '}>
                                 <Rating value="5"></Rating>
                             </label>
                         </div>
@@ -232,7 +270,7 @@ export default function FilterSection({
                             style={{ fontSize: '0.85rem', color: '#fff' }}
                             onClick={ClearHandle}
                         >
-                            CLEAR ALL FILTER
+                            Xóa tất cả
                         </span>
                     </button>
                 </div>

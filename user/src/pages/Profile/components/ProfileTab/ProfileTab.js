@@ -85,12 +85,6 @@ const ProfileTab = () => {
                                     {...field}
                                     variant={inputPropsConstants.variantOutLine}
                                     size={inputPropsConstants.smallSize}
-                                    helperText={renderError([
-                                        {
-                                            error: fieldState?.error?.type === 'required',
-                                            message: 'Bạn chưa nhập trường này',
-                                        },
-                                    ])}
                                 />
                                 <p className="noti-validate">
                                     {renderError([

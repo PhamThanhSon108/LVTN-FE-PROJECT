@@ -1,10 +1,15 @@
 import {
+    ADD_SHIPPING_ADDRESS_SUCCESS,
     FORGOT_PASSWORD_FAIL,
     FORGOT_PASSWORD_REQUEST,
     FORGOT_PASSWORD_SUCCESS,
     RESET_PASSWORD_FAIL,
     RESET_PASSWORD_REQUEST,
     RESET_PASSWORD_SUCCESS,
+    SHIPPING_ADDRESS_FAIL,
+    SHIPPING_ADDRESS_REQUEST,
+    SHIPPING_ADDRESS_SUCCESS,
+    UPDATE_SHIPPING_ADDRESS_SUCCESS,
     USER_DETAILS_FAIL,
     USER_DETAILS_REQUEST,
     USER_DETAILS_RESET,
@@ -111,6 +116,28 @@ export const userUpdateProfileReducer = (state = {}, action) => {
             return { loading: false, successPass: true, userInfo: { ...action.payload } };
         case USER_UPDATE_PROFILE_FAIL:
             return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+export const shippingAddress = (
+    state = {
+        listAddress: [],
+    },
+    action,
+) => {
+    switch (action.type) {
+        case SHIPPING_ADDRESS_REQUEST:
+            return { ...state, loading: true };
+        case SHIPPING_ADDRESS_SUCCESS:
+            return {
+                loading: false,
+                success: true,
+                listAddress: action.payload,
+            };
+        case SHIPPING_ADDRESS_FAIL:
+            return { ...state, loading: false, success: false };
         default:
             return state;
     }

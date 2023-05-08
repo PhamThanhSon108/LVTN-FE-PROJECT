@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import isEmpty from 'validator/lib/isEmpty';
-import Footer from '../components/Footer';
-import Message from '../components/LoadingError/Error';
-import Loading, { FormLoading } from '../components/LoadingError/Loading';
 import Toast from '../components/LoadingError/Toast';
-import Header from '../components/Header';
-import { login } from '../Redux/Actions/userActions';
 
-const Login = ({ location, history }) => {
+import { login } from '../Redux/Actions/userActions';
+import { FormLoading } from '~/components/LoadingError/Loading';
+import { Button, Divider, TextField, Typography } from '@mui/material';
+
+const Login = () => {
     window.scrollTo(0, 0);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loginCheck, setLoginCheck] = useState('');
 
     const dispatch = useDispatch();
+    const location = useLocation();
+    const history = useHistory();
     const redirect = location.search ? location.search.split('=')[1] : '/';
 
     const userLogin = useSelector((state) => state.userLogin);
@@ -30,23 +31,23 @@ const Login = ({ location, history }) => {
         const msg = {};
         let re = /\S+@\S+\.\S+/;
         if (isEmpty(email)) {
-            msg.email = 'Plesae input your email';
+            msg.email = 'Bạn chưa nhập email';
             msg.borderRed1 = 'border-red';
             msg.colorRed1 = 'color-red';
         } else {
             if (!re.test(email)) {
-                msg.email = 'Incorrect Email';
+                msg.email = 'Định dạng email không hợp lệ';
                 msg.borderRed1 = 'border-red';
                 msg.colorRed1 = 'color-red';
             }
         }
         if (isEmpty(password)) {
-            msg.password = 'Please input your password';
+            msg.password = 'Bạn chưa nhập mật khẩu';
             msg.borderRed2 = 'border-red';
             msg.colorRed2 = 'color-red';
         } else {
             if (password.length < 6) {
-                msg.password = 'Password must be at least 6 characters';
+                msg.password = 'Mật khẩu phải ít nhất 6 ký tự';
                 msg.borderRed2 = 'border-red';
                 msg.colorRed2 = 'color-red';
             }
@@ -64,74 +65,75 @@ const Login = ({ location, history }) => {
     };
 
     return (
-        <>
-            <Header />
-            <Toast />
-            <div className="container d-flex flex-column justify-content-center align-items-center login-center">
-                {/* {error && <Message variant="alert-danger">{error}</Message>} */}
-                <form className="Login col-md-6 col-lg-4 col-10" onSubmit={submitHandler}>
-                    {loading && <FormLoading />}
+        <div className="mt-3 container d-flex flex-column justify-content-center align-items-center login-center">
+            {/* {error && <Message variant="alert-danger">{error}</Message>} */}
+            <form className="Login col-md-6 col-lg-4 col-10" onSubmit={submitHandler}>
+                {loading && <FormLoading />}
+                <TextField
+                    sx={{ width: '100%', mt: 2 }}
+                    size="small"
+                    label="Tài khoản"
+                    value={email}
+                    onClick={() => {
+                        setLoginCheck((object) => {
+                            const x = { ...object };
+                            x.borderRed1 = ' ';
+                            x.colorRed1 = ' ';
+                            x.email = ' ';
+                            return x;
+                        });
+                    }}
+                    onChange={(e) => setEmail(e.target.value)}
+                    inputProps={{ type: 'email' }}
+                />
+                <Typography noWrap variant="body2" color="red" sx={{ mt: 1, mb: 2, textAlign: 'start' }}>
+                    {loginCheck.email || ''}
+                </Typography>
 
-                    <div className="Login-from from-login">
-                        <input
-                            type="email"
-                            //placeholder="Email"
-                            className={loginCheck.borderRed1}
-                            value={email}
-                            onClick={() => {
-                                setLoginCheck((object) => {
-                                    const x = { ...object };
-                                    x.borderRed1 = ' ';
-                                    x.colorRed1 = ' ';
-                                    x.email = ' ';
-                                    return x;
-                                });
-                            }}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <p className="from-login__email-pass noti-validate">{loginCheck.email}</p>
-                        <p className={`from-login__email-pass-color Login-from__email ${loginCheck.colorRed1}`}>
-                            Email
-                        </p>
-                    </div>
-                    <div className="Login-from from-login">
-                        <input
-                            type="password"
-                            //placeholder="Password"
-                            className={loginCheck.borderRed2}
-                            value={password}
-                            onClick={() => {
-                                setLoginCheck((object) => {
-                                    const x = { ...object };
-                                    x.borderRed2 = ' ';
-                                    x.colorRed2 = ' ';
-                                    x.password = ' ';
-                                    return x;
-                                });
-                            }}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <p className="from-login__email-pass noti-validate">{loginCheck.password}</p>
-                        <p className={`from-login__email-pass-color1 Login-from__password ${loginCheck.colorRed2}`}>
-                            Password
-                        </p>
-                    </div>
-                    <button type="submit" className="btn btn-outline-danger btn__login">
-                        Login
-                    </button>
-                    <p className="d-flex justify-content-end btn__fogot-pass">
-                        <Link to={'/forgotpassword'}>Fogot password</Link>
-                    </p>
-                    <div class="form-login__line-center-register">
-                        <p>New to Fashionshop?</p>
-                    </div>
+                <TextField
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label="Mật khẩu"
+                    value={password}
+                    onClick={() => {
+                        setLoginCheck((object) => {
+                            const x = { ...object };
+                            x.borderRed2 = ' ';
+                            x.colorRed2 = ' ';
+                            x.password = ' ';
+                            return x;
+                        });
+                    }}
+                    inputProps={{ type: 'password' }}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Mật khẩu"
+                />
+                <Typography noWrap variant="body2" color="red" sx={{ mt: 1, mb: 1, textAlign: 'start' }}>
+                    {loginCheck.password || ''}
+                </Typography>
 
-                    <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>
-                        <div className="btn btn-outline-primary btn__register">Create account</div>
+                <Button type="submit" variant="contained" color="primary" size="large" sx={{ width: '100%', mt: 1 }}>
+                    ĐĂNG NHẬP
+                </Button>
+                <p className="d-flex justify-content-end btn__fogot-pass">
+                    <Link to={'/forgotpassword'}>
+                        <Typography noWrap variant="body2" color="red" sx={{ mt: 1, mb: 2 }}>
+                            Quên mật khẩu
+                        </Typography>
                     </Link>
-                </form>
-            </div>
-        </>
+                </p>
+                <Divider sx={{ mt: 1, mb: 2 }}>
+                    <Typography noWrap variant="body2" color="text.secondary">
+                        Bạn lần đầu tới Fashionshop?
+                    </Typography>
+                </Divider>
+                <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>
+                    <Button variant="outlined" size="medium">
+                        Tạo tài khoản
+                    </Button>
+                </Link>
+            </form>
+        </div>
     );
 };
 

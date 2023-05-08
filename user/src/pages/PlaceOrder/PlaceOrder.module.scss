@@ -1,0 +1,75 @@
+.address {
+    color: var(--error-color);
+    margin: var(--space-8) var(--space-0);
+    padding: var(--space-16);
+    .addressHeader {
+        display: flex;
+        margin-bottom: var(--space-8);
+        align-items: center;
+    }
+    .addressBody {
+        margin-top: var(--space-8);
+        display: flex;
+        align-items: center;
+    }
+    .defaultAddress {
+        border: 1px solid var(--error-color);
+        font-size: 1rem;
+        padding: var(--space-4);
+        line-height: 1rem;
+    }
+}
+
+.voucher {
+    padding: var(--space-16);
+    margin-top: var(--space-16);
+
+    .voucherHeader {
+        display: flex;
+        padding-bottom: var(--space-8);
+        font-size: 1.5rem;
+        justify-content: space-between;
+        .title {
+            align-items: center;
+            display: flex;
+        }
+    }
+}
+
+.product {
+    margin-top: var(--space-16);
+    padding: var(--space-16);
+    .productBody {
+        width: 100%;
+    }
+    .totalPriceProduct {
+        display: flex;
+        justify-content: end;
+        width: 100%;
+        background-color: var(--neutral-1);
+        padding: var(--space-16) var(--space-0);
+    }
+    .shipping {
+        display: flex;
+        margin-left: 264px;
+        padding: var(--space-16) var(--space-0);
+    }
+}
+.totalFee {
+    padding: var(--space-16) var(--space-0);
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    justify-content: end;
+    .totalFeeItem {
+        display: flex;
+        width: 25%;
+        justify-content: space-between;
+        margin-top: var(--space-8);
+        align-items: end;
+    }
+}
+
+.addressBody {
+    width: 100%;
+}

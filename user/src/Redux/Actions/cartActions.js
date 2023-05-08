@@ -129,11 +129,12 @@ export const savePaymentMethod = (data) => (dispatch) => {
     setLocalStorage('paymentMethod', data);
 };
 
-export const addProductOrderInCart = (data) => (dispatch) => {
+export const addProductOrderInCart = (data, handleAfterFetch) => (dispatch) => {
     dispatch({
         type: CART_CONST?.CART_ADD_PRODUCT_ORDER_SUCCESS,
         payload: data,
     });
+    handleAfterFetch?.success();
     setLocalStorage('cartOrderItems', data);
 };
 

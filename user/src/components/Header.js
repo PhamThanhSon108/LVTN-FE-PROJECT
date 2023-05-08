@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../Redux/Actions/userActions';
 import Search from './homeComponents/Search';
 import { listCart } from '~/Redux/Actions/cartActions';
+import { Typography } from '@mui/material';
 
 const Header = () => {
     const dispatch = useDispatch();
@@ -131,14 +132,14 @@ const Header = () => {
                                                 <div className="btn-group">
                                                     <Link
                                                         className="text-info"
-                                                        style={{ width: 50, marginRight: 0 }}
+                                                        style={{ width: 80, marginRight: 0 }}
                                                         to="/login"
                                                     >
-                                                        Login
+                                                        Đăng nhập
                                                     </Link>
 
                                                     <Link className="text-danger" to="/register">
-                                                        Register
+                                                        Đăng ký
                                                     </Link>
                                                 </div>
                                             )}
@@ -208,8 +209,16 @@ const Header = () => {
                                         </div>
                                     ) : (
                                         <>
-                                            <Link to="/register">Register</Link>
-                                            <Link to="/login">Login</Link>
+                                            <Link to="/register">
+                                                <Typography noWrap variant="body2" color="InfoText">
+                                                    Đăng ký
+                                                </Typography>
+                                            </Link>
+                                            <Link to="/login">
+                                                <Typography noWrap variant="body2" color="primary">
+                                                    Đăng nhập
+                                                </Typography>
+                                            </Link>
                                         </>
                                     )}
 

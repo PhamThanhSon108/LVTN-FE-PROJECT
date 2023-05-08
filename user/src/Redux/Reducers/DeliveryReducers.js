@@ -8,6 +8,9 @@ import {
     ADDRESS_WARD_LIST_FAIL,
     ADDRESS_WARD_LIST_REQUEST,
     ADDRESS_WARD_LIST_SUCCESS,
+    SHIPPING_FEE_FAIL,
+    SHIPPING_FEE_REQUEST,
+    SHIPPING_FEE_SUCCESS,
 } from '../Constants/DeliveryConstants';
 
 export const AddressReducer = (state = { address: { provinces: [], districts: [], wards: [] } }, action) => {
@@ -44,6 +47,42 @@ export const AddressReducer = (state = { address: { provinces: [], districts: []
             };
         case ADDRESS_WARD_LIST_FAIL:
             return { ...state, loadingWards: false, error: action.payload };
+
+        default:
+            return state;
+    }
+};
+
+export const ShippingFeeReducer = (
+    state = {
+        shippingFee: {
+            total: 0,
+            service_fee: 0,
+            insurance_fee: 0,
+            pick_station_fee: 0,
+            coupon_value: 0,
+            r2s_fee: 0,
+            document_return: 0,
+            double_check: 0,
+            cod_fee: 0,
+            pick_remote_areas_fee: 0,
+            deliver_remote_areas_fee: 0,
+            cod_failed_fee: 0,
+        },
+    },
+    action,
+) => {
+    switch (action.type) {
+        //province
+        case SHIPPING_FEE_REQUEST:
+            return { loading: true, address: { ...state.address } };
+        case SHIPPING_FEE_SUCCESS:
+            return {
+                loading: false,
+                shippingFee: action.payload,
+            };
+        case SHIPPING_FEE_FAIL:
+            return { ...state, loading: false, error: action.payload };
 
         default:
             return state;

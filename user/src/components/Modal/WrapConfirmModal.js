@@ -5,13 +5,7 @@ function WrapConfirmModal({ children, ...data }) {
     return (
         <>
             <ConfirmModal {...data} />
-            <div
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdrop"
-                className="btn-delete-noline btn-outline-danger"
-            >
-                {children}
-            </div>
+            <div className="d-flex justify-content-end">{children}</div>
         </>
     );
 }

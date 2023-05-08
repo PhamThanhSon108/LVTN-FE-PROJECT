@@ -1,14 +1,15 @@
 import React, { Suspense } from 'react';
 import Header from '../../components/Header';
-import ShopSection from '../../components/homeComponents/ShopSection';
 import ContactInfo from '../../components/homeComponents/ContactInfo';
 import CalltoActionSection from '../../components/homeComponents/CalltoActionSection';
 import Footer from '../../components/Footer';
 import { CircularProgress } from '@mui/material';
-import CategorySlider from '~/components/SlideCorousel/CategorySlider';
+
 import useQuery from '~/hooks/useQuery';
 
 import './HomeScreen.scss';
+import CategorySlider from './components/CategorySlider/CategorySlider';
+import ShopSection from './components/ShopSection';
 
 const Corousel = React.lazy(() => import('../../components/SlideCorousel/Corousel'));
 const CorouselOder = React.lazy(() => import('../../components/SlideCorousel/CourouselOder'));
@@ -22,7 +23,7 @@ const Loading = () => {
     );
 };
 
-const HomeScreen = ({ match }) => {
+const HomeScreen = () => {
     window.scrollTo(0, 0);
     const query = useQuery();
     const category = query.get('category') || '';
@@ -33,7 +34,6 @@ const HomeScreen = ({ match }) => {
     return (
         <Suspense fallback={<Loading></Loading>}>
             <div className="wrap-homescreen">
-                <Header keyword={keyword} />
                 <div className="wrap-homescreen-products">
                     {!category && !keyword ? <Sliders /> : null}
                     {!category && !keyword && <CategorySlider />}

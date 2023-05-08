@@ -1,172 +1,272 @@
-import { Link } from 'react-router-dom';
-import Header from '../../components/Header';
-import Message from '../../components/LoadingError/Error';
 import WrapConfirmModal from '~/components/Modal/WrapConfirmModal';
-import Toast from '~/components/LoadingError/Toast';
 import { LoadingButton } from '@mui/lab';
 import usePlaceOrder from './hook/usePlaceOrder';
 import { Fragment } from 'react';
+import {
+    Avatar,
+    Button,
+    Card,
+    CircularProgress,
+    Divider,
+    FormControl,
+    FormControlLabel,
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    Radio,
+    RadioGroup,
+    Typography,
+} from '@mui/material';
+import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
+import DiscountIcon from '@mui/icons-material/Discount';
+import styles from './PlaceOrder.module.scss';
+import ModalAddress from './components/ModalAddress/ModalAddress';
+import { formatMoney } from '~/utils/formatMoney';
+import ModalVouchers from './components/ModalVouchers/ModalVouchers';
+import Voucher from './components/Voucher/Voucher';
 
 export const RenderAttributes = ({ attributes }) => {
     if (attributes && attributes.length > 0) {
         return attributes?.map((attribute) => (
-            <div
-                key={attribute.value}
-                className="mt-3 mt-md-0 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center"
-                style={{ width: 90, display: 'flex', flexDirection: 'column' }}
-            >
-                <h6>{attribute.name}</h6>
-                <span>{attribute?.value}</span>
-            </div>
+            <ListItemText key={attribute?.value} className="col-1">
+                <Typography variant="body1">
+                    {attribute.name}: {attribute?.value}
+                </Typography>
+            </ListItemText>
         ));
     } else return <Fragment />;
 };
 
 const PlaceOrderScreen = ({ history }) => {
-    const { userInfo, cartOrder, createContent, placeOrderHandler, loading } = usePlaceOrder(history);
+    const {
+        isOpenModalVoucher,
+        voucher,
+        handleApplyVoucher,
+        handleOpenModalVoucher,
+        loadingGetList,
+        address,
+        isOpenModalAddress,
+        loadingShippingFee,
+        handleOpenModalAddress,
+        shippingFee,
+        userInfo,
+        cartOrder,
+        handleChangeAddress,
+        createContent,
+        placeOrderHandler,
+        loading,
+    } = usePlaceOrder(history);
+
     return (
-        <>
-            <Toast />
-            <Header />
-            <div className="container">
-                <div className="row  order-detail">
-                    <div className="col-lg-4 col-sm-4 mb-lg-4 mb-2 mb-sm-0 fix-bottom">
-                        <div className="row " style={{ display: 'flex', alignItems: 'center' }}>
-                            <div className="col-lg-3 col-sm-3 mb-lg-3 center fix-bottom">
-                                <div className="alert-success order-box fix-none">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                            </div>
-                            <div className="col-lg-9 col-sm-9 mb-lg-9 fix-display">
-                                <p>{`Tên: ${userInfo.name}`}</p>
-                                <p>{`Số điện thoại: ${userInfo.phone}`}</p>
-                            </div>
-                        </div>
-                    </div>
-                    {/* 2 */}
-                    <div className="col-lg-4 col-sm-4 mb-lg-4 mb-2 mb-sm-0 fix-bottom">
-                        <div
-                            className="row"
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}
-                        >
-                            <div className="col-lg-3 col-sm-3 mb-lg-3 center fix-bottom">
-                                <div className="alert-success order-box fix-none">
-                                    <i className="fas fa-map-marker-alt"></i>
-                                </div>
-                            </div>
-                            <div className="col-lg-9 col-sm-9 mb-lg-9">
-                                <p>
-                                    Địa chỉ:{' '}
-                                    {` ${userInfo?.address?.specificAddress}, ${userInfo?.address?.ward}, ${userInfo?.address?.district},  ${userInfo?.address?.province}`}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    {/* 3 */}
-                    <div className="col-lg-4 col-sm-4 mb-lg-4 mb-2 mb-sm-0 fix-bottom">
-                        <div className="row" style={{ display: 'flex', alignItems: 'center' }}>
-                            <div className="col-lg-3 col-sm-3 mb-lg-3 center fix-bottom">
-                                <div className="alert-success order-box fix-none">
-                                    <i class="fab fa-pa"></i>
-                                </div>
-                            </div>
-                            <div className="col-lg-9 col-sm-9 mb-lg-9">
-                                <p>
-                                    <p>Phương thức: {'Thanh toán khi nhận hàng'}</p>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+        <div className="container">
+            <ModalAddress
+                isOpenModal={isOpenModalAddress}
+                handleClose={handleOpenModalAddress}
+                handleChangeAddress={handleChangeAddress}
+            />
+            <ModalVouchers
+                isOpenModal={isOpenModalVoucher}
+                handleClose={handleOpenModalVoucher}
+                handleApplyVoucher={handleApplyVoucher}
+            />
+            <Card className={styles.address}>
+                <div className={styles.addressHeader}>
+                    <WhereToVoteIcon sx={{ color: 'red' }} />
+                    <Typography variant="h6" sx={{ color: 'red' }}>
+                        Địa chỉ nhận hàng
+                    </Typography>
                 </div>
-
-                <div className="row order-products justify-content-between">
-                    <div className="col-lg-12 fix-padding cart-scroll">
-                        {cartOrder.cartOrderItems?.length === 0 ? (
-                            <Message variant="alert-info mt-5">No product is selected</Message>
+                <Divider />
+                <div className={styles.addressBody}>
+                    <Typography variant="body1" color={'InfoText'} className="col-3" sx={{ fontWeight: 600, pl: 1 }}>
+                        {loadingGetList ? (
+                            <CircularProgress size={15} />
                         ) : (
-                            <>
-                                {cartOrder.cartOrderItems?.map((item) => (
-                                    <div className="order-product row" key={item.id}>
-                                        <div className="col-md-3 col-3" style={{ width: '20%' }}>
-                                            <img
-                                                className="col-md-3 col-3"
-                                                src={item.variant.product.images?.[0]}
-                                                alt={item.variant.product.name}
-                                            />
-                                        </div>
-                                        <div className="col-md-5 col-5 d-flex align-items-center">
-                                            <Link to={`/product/${item.variant.product._id}`}>
-                                                <h6>{item.variant.product.name}</h6>
-                                            </Link>
-                                        </div>
-                                        <RenderAttributes attributes={item?.attributes} />
-
-                                        <div className="mt-3 mt-md-0 col-md-1 col-1  d-flex align-items-center flex-column justify-content-center ">
-                                            <h4>QUANTITY</h4>
-                                            <h6>{item?.quantity}</h6>
-                                        </div>
-                                        <div className="mt-3 mt-md-0 col-md-1 col-1 align-items-end  d-flex flex-column justify-content-center ">
-                                            <h4>SUBTOTAL</h4>
-                                            <h6>${item?.quantity * item?.variant?.price}</h6>
-                                        </div>
-                                    </div>
-                                ))}
-                            </>
+                            `${address?.name || userInfo?.name} | ${address?.phone || userInfo?.phone}`
                         )}
+                    </Typography>
+
+                    <Typography variant="caption" color={'InfoText'} className="col-6">
+                        {loadingGetList ? (
+                            <CircularProgress size={15} />
+                        ) : (
+                            `${address?.specificAddress}, ${address?.ward?.name}, ${address?.district?.name}, ${address?.province?.name}`
+                        )}
+                    </Typography>
+                    <div className="col-1">
+                        {address?.isDefault ? (
+                            <Button size="small" variant="outlined" color="error" sx={{ fontSize: '0.6rem' }}>
+                                Mặc định
+                            </Button>
+                        ) : null}
+                    </div>
+                    <div className="d-flex justify-content-end col-2">
+                        <Button variant="text" sx={{ pr: 0 }} onClick={() => handleOpenModalAddress(true)}>
+                            Thay đổi
+                        </Button>
                     </div>
                 </div>
-                <div className="row d-flex" style={{ padding: '10px 0', backgroundColor: '#fff', marginTop: '10px' }}>
-                    {/* total */}
-                    <div className="col-9 d-flex align-items-end flex-column subtotal-order">
-                        <table className="table table-bordered fix-bottom">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <strong>Products</strong>
-                                    </td>
-                                    <td>${cartOrder.itemsPrice}</td>
-                                    <td>
-                                        <strong>Tax</strong>
-                                    </td>
-                                    <td>${cartOrder.taxPrice}</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Shipping</strong>
-                                    </td>
-                                    <td>${cartOrder.shippingPrice}</td>
+            </Card>
 
-                                    <td>
-                                        <strong>Total</strong>
-                                    </td>
-                                    <td>${cartOrder.totalPrice}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <Card className={styles.product}>
+                <div className={styles.productHeader}>
+                    <div className={styles.title}>
+                        <Typography variant="h6">Sản phẩm</Typography>
+                    </div>
+                </div>
+                <Divider />
+                <div className={styles.productBody}>
+                    <List className="row" sx={{ width: '100%', bgcolor: 'background.paper', pr: 0 }}>
+                        {cartOrder.cartOrderItems?.map((product) => (
+                            <ListItem key={product?._id} sx={{ width: '100%', pr: 0 }}>
+                                <ListItemAvatar>
+                                    <Avatar
+                                        src={product.variant.product.images?.[0]}
+                                        alt={product.variant.product.name}
+                                    />
+                                </ListItemAvatar>
+                                <ListItemText className="col-5">
+                                    <Typography variant="body1">{product.variant.product.name}</Typography>
+                                </ListItemText>
+
+                                <RenderAttributes attributes={product.attributes} />
+
+                                <ListItemText>
+                                    <Typography variant="body1">x{product.quantity}</Typography>
+                                </ListItemText>
+                                <ListItemText className="d-flex justify-content-end">
+                                    <Typography variant="body1" sx={{ textAlign: 'end' }}>
+                                        Tổng tiền: {product?.quantity * product?.variant?.price}
+                                    </Typography>
+                                </ListItemText>
+                            </ListItem>
+                        ))}
+                    </List>
+                </div>
+                <Divider />
+                <div className={styles.shipping}>
+                    <Typography className="col-4" variant="body1" sx={{ color: 'var(--neutral-5)' }}>
+                        Đơn vị vận chuyển
+                    </Typography>
+                    <div className="col-5">
+                        <Typography variant="body1">Giao hàng nhanh</Typography>
+                        <Typography variant="caption">Nhận hàng dự kiến vào</Typography>
                     </div>
 
-                    <div className="col-3 d-flex justify-content-center align-content-center flex-column ">
-                        <div style={{ fontWeight: '600', height: '50%', textAlign: 'center', lineHeight: '2.5rem' }}>
-                            Total: ${cartOrder.totalPrice}
+                    <Typography sx={{ textAlign: 'end' }} className="col-3 align-content-end" variant="body1">
+                        Phí giao hàng:{' '}
+                        {loadingShippingFee ? <CircularProgress size={15} /> : formatMoney(shippingFee?.total || 0)}
+                    </Typography>
+                </div>
+                <div className={styles.totalPriceProduct}>
+                    <Typography variant="body1">
+                        Tổng tiền {`(${cartOrder.cartOrderItems.length} sản phẩm)`}:{' '}
+                        {formatMoney(cartOrder.itemsPrice || 0)}
+                    </Typography>
+                </div>
+            </Card>
+
+            <Card className={styles.voucher}>
+                <div className={styles.voucherHeader}>
+                    <div className={styles.title}>
+                        <DiscountIcon color="primary" />
+                        <Typography variant="h6">Voucher</Typography>
+                    </div>
+
+                    <Button onClick={() => handleOpenModalVoucher(true)} variant="outlined">
+                        Thêm
+                    </Button>
+                </div>
+                <Divider />
+                <div className={styles.voucherBody}>{voucher ? <Voucher voucher={voucher} /> : null}</div>
+            </Card>
+
+            <Card className={styles.voucher}>
+                <div className={styles.voucherHeader}>
+                    <div className={styles.title}>
+                        <Typography variant="h6">Phương thức thanh toán</Typography>
+                    </div>
+                </div>
+                <Divider />
+                <div className={styles.voucherBody}>
+                    <FormControl>
+                        <RadioGroup defaultValue="paywithcash" row sx={{ p: 'var(--space-16) var(--space-0)' }}>
+                            <FormControlLabel
+                                value="paywithcash"
+                                control={<Radio size="small" />}
+                                label="Thanh toán khi nhận hàng"
+                            />
+                            <FormControlLabel
+                                color="#d32f2f"
+                                value="paywithmomo"
+                                control={<Radio size="small" />}
+                                label="Thanh toán qua momo"
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                    <Divider />
+                    <div className={styles.totalFee}>
+                        <div className={styles.totalFeeItem}>
+                            <Typography sx={{ textAlign: 'end', pr: 1 }} variant="body1">
+                                Tổng tiền hàng:
+                            </Typography>
+                            <Typography sx={{ textAlign: 'end' }} variant="body1">
+                                {formatMoney(cartOrder.itemsPrice || 0)}
+                            </Typography>
                         </div>
-                        {cartOrder.cartOrderItems?.length === 0 ? null : (
-                            <WrapConfirmModal content={createContent()} handleSubmit={placeOrderHandler}>
-                                <LoadingButton
-                                    type="submit"
-                                    class="btn btn-primary pay-button col-12"
-                                    variant="outlined"
-                                    loading={loading}
-                                    loadingPosition="start"
-                                    style={{ height: '100%', width: '100%' }}
-                                >
-                                    PLACE ORDER
-                                </LoadingButton>
-                            </WrapConfirmModal>
-                        )}
+
+                        <div className={styles.totalFeeItem}>
+                            <Typography sx={{ textAlign: 'end', pr: 1 }} variant="body1">
+                                Phí vận chuyển:
+                            </Typography>
+                            <Typography sx={{ textAlign: 'end' }} variant="body1">
+                                {loadingShippingFee ? (
+                                    <CircularProgress size={15} />
+                                ) : (
+                                    formatMoney(shippingFee?.total || 0)
+                                )}
+                            </Typography>
+                        </div>
+                        <div className={styles.totalFeeItem}>
+                            <Typography sx={{ textAlign: 'end', pr: 1 }} variant="body1">
+                                Khuyến mãi:
+                            </Typography>
+                            <Typography sx={{ textAlign: 'end' }} variant="body1">
+                                100.000
+                            </Typography>
+                        </div>
+                        <div className={styles.totalFeeItem}>
+                            <Typography sx={{ textAlign: 'end', pr: 1 }} variant="body1">
+                                Tổng thanh toán:
+                            </Typography>
+                            <Typography sx={{ textAlign: 'end', color: 'red' }} variant="h6">
+                                100.000
+                            </Typography>
+                        </div>
                     </div>
                 </div>
+            </Card>
+
+            <div
+                className="row d-flex justify-items-end"
+                style={{ padding: '24px 0', backgroundColor: '#fff', marginTop: '10px', justifyContent: 'end' }}
+            >
+                {/* total */}
+
+                <WrapConfirmModal content={createContent()} handleSubmit={placeOrderHandler}>
+                    <LoadingButton
+                        sx={{ width: '30%' }}
+                        type="submit"
+                        color="primary"
+                        variant="contained"
+                        loading={loading}
+                    >
+                        ĐẶT HÀNG
+                    </LoadingButton>
+                </WrapConfirmModal>
             </div>
-        </>
+        </div>
     );
 };
 
