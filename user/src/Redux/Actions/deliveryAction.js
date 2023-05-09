@@ -84,7 +84,7 @@ export const getShippingFee =
             dispatch({ type: SHIPPING_FEE_REQUEST });
             const { data } = await request.post('/deliveries/shipping-order/fee', address);
 
-            dispatch({ type: SHIPPING_FEE_SUCCESS, payload: data?.data?.districts });
+            dispatch({ type: SHIPPING_FEE_SUCCESS, payload: data?.data || { fee: {}, leadTime: {} } });
         } catch (error) {
             dispatch({
                 type: SHIPPING_FEE_FAIL,

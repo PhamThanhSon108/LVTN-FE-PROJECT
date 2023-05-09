@@ -43,7 +43,7 @@ const style = {
     boxShadow: 24,
     p: 1,
 };
-const ModalVouchers = ({ isOpenModal, handleClose, handleApplyVoucher }) => {
+const ModalVouchers = ({ voucherToApply, isOpenModal, handleClose, handleApplyVoucher }) => {
     const [openModalUpdate, setOpenModalUpdate] = useState('');
     const [currentVoucher, setCurrentVoucher] = useState();
     const dispatch = useDispatch();
@@ -89,12 +89,14 @@ const ModalVouchers = ({ isOpenModal, handleClose, handleApplyVoucher }) => {
                             <div className={stylesProfile.addressListWrapper}>
                                 {vouchers.map((voucher) => (
                                     <label
-                                        onClick={() => setCurrentVoucher(voucher)}
+                                        onClick={(e) => {
+                                            setCurrentVoucher(voucher);
+                                        }}
                                         key={voucher?._id}
                                         for={voucher?.id}
                                         style={{ cursor: 'pointer', width: '100%' }}
                                     >
-                                        <Voucher voucher={voucher} />
+                                        <Voucher voucher={voucher} voucherToApply={voucherToApply} />
                                     </label>
                                 ))}
                             </div>

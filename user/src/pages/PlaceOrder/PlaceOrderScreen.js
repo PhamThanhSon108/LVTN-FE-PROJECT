@@ -25,6 +25,7 @@ import ModalAddress from './components/ModalAddress/ModalAddress';
 import { formatMoney } from '~/utils/formatMoney';
 import ModalVouchers from './components/ModalVouchers/ModalVouchers';
 import Voucher from './components/Voucher/Voucher';
+import moment from 'moment';
 
 export const RenderAttributes = ({ attributes }) => {
     if (attributes && attributes.length > 0) {
@@ -66,6 +67,7 @@ const PlaceOrderScreen = ({ history }) => {
                 handleChangeAddress={handleChangeAddress}
             />
             <ModalVouchers
+                voucherToApply={voucher}
                 isOpenModal={isOpenModalVoucher}
                 handleClose={handleOpenModalVoucher}
                 handleApplyVoucher={handleApplyVoucher}
@@ -137,7 +139,12 @@ const PlaceOrderScreen = ({ history }) => {
                                 </ListItemText>
                                 <ListItemText className="d-flex justify-content-end">
                                     <Typography variant="body1" sx={{ textAlign: 'end' }}>
-                                        Tổng tiền: {product?.quantity * product?.variant?.price}
+                                        Tổng tiền:{' '}
+                                        {loadingGetList || loadingShippingFee ? (
+                                            <CircularProgress size={15} />
+                                        ) : (
+                                            formatMoney(cartOrder.priceOfProducts || 0)
+                                        )}
                                     </Typography>
                                 </ListItemText>
                             </ListItem>
@@ -151,18 +158,33 @@ const PlaceOrderScreen = ({ history }) => {
                     </Typography>
                     <div className="col-5">
                         <Typography variant="body1">Giao hàng nhanh</Typography>
-                        <Typography variant="caption">Nhận hàng dự kiến vào</Typography>
+                        <Typography variant="caption" color="error">
+                            Nhận hàng dự kiến vào{' '}
+                            {loadingGetList || loadingShippingFee ? (
+                                <CircularProgress size={15} />
+                            ) : (
+                                moment(shippingFee?.leadTime?.leadtime * 1000).format('L')
+                            )}
+                        </Typography>
                     </div>
 
                     <Typography sx={{ textAlign: 'end' }} className="col-3 align-content-end" variant="body1">
                         Phí giao hàng:{' '}
-                        {loadingShippingFee ? <CircularProgress size={15} /> : formatMoney(shippingFee?.total || 0)}
+                        {loadingGetList || loadingShippingFee ? (
+                            <CircularProgress size={15} />
+                        ) : (
+                            formatMoney(cartOrder.shippingFee || 0)
+                        )}
                     </Typography>
                 </div>
                 <div className={styles.totalPriceProduct}>
                     <Typography variant="body1">
                         Tổng tiền {`(${cartOrder.cartOrderItems.length} sản phẩm)`}:{' '}
-                        {formatMoney(cartOrder.itemsPrice || 0)}
+                        {loadingGetList || loadingShippingFee ? (
+                            <CircularProgress size={15} />
+                        ) : (
+                            formatMoney(cartOrder.totalBeforeApplyVoucher || 0)
+                        )}
                     </Typography>
                 </div>
             </Card>
@@ -179,7 +201,9 @@ const PlaceOrderScreen = ({ history }) => {
                     </Button>
                 </div>
                 <Divider />
-                <div className={styles.voucherBody}>{voucher ? <Voucher voucher={voucher} /> : null}</div>
+                <div className={styles.voucherBody}>
+                    {voucher ? <Voucher voucher={voucher} handleApplyVoucher={handleApplyVoucher} canRemove /> : null}
+                </div>
             </Card>
 
             <Card className={styles.voucher}>
@@ -212,7 +236,7 @@ const PlaceOrderScreen = ({ history }) => {
                                 Tổng tiền hàng:
                             </Typography>
                             <Typography sx={{ textAlign: 'end' }} variant="body1">
-                                {formatMoney(cartOrder.itemsPrice || 0)}
+                                {formatMoney(cartOrder.priceOfProducts || 0)}
                             </Typography>
                         </div>
 
@@ -224,7 +248,7 @@ const PlaceOrderScreen = ({ history }) => {
                                 {loadingShippingFee ? (
                                     <CircularProgress size={15} />
                                 ) : (
-                                    formatMoney(shippingFee?.total || 0)
+                                    formatMoney(cartOrder.shippingFee || 0)
                                 )}
                             </Typography>
                         </div>
@@ -233,7 +257,7 @@ const PlaceOrderScreen = ({ history }) => {
                                 Khuyến mãi:
                             </Typography>
                             <Typography sx={{ textAlign: 'end' }} variant="body1">
-                                100.000
+                                -{formatMoney(voucher?.discount || 0)}
                             </Typography>
                         </div>
                         <div className={styles.totalFeeItem}>
@@ -241,7 +265,7 @@ const PlaceOrderScreen = ({ history }) => {
                                 Tổng thanh toán:
                             </Typography>
                             <Typography sx={{ textAlign: 'end', color: 'red' }} variant="h6">
-                                100.000
+                                {formatMoney(cartOrder.total)}
                             </Typography>
                         </div>
                     </div>
