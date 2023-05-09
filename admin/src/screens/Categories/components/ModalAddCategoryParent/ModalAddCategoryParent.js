@@ -29,19 +29,19 @@ const style = {
   p: 4,
 };
 
-function convertFileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
-      resolve(base64String);
-    };
-    reader.onerror = (error) => {
-      reject(error);
-    };
-  });
-}
+// function convertFileToBase64(file) {
+//   return new Promise((resolve, reject) => {
+//     const reader = new FileReader();
+//     reader.readAsDataURL(file);
+//     reader.onload = () => {
+//       const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+//       resolve(base64String);
+//     };
+//     reader.onerror = (error) => {
+//       reject(error);
+//     };
+//   });
+// }
 
 export default function ModalAddCategoryParent({ isOpenModal, handleOpenModal }) {
   const dispatch = useDispatch();
@@ -87,30 +87,30 @@ export default function ModalAddCategoryParent({ isOpenModal, handleOpenModal })
   };
   const handleSubmitAddCategory = async (data) => {
     setIsLoadingAddCategory(true);
+    const newCategory = new FormData();
+    newCategory.append('name', data.name);
+    newCategory.append('description', data.description);
+
+    newCategory.append('children', data.children);
+
+    newCategory.append('level', data.level);
+
     if (image) {
-      await convertFileToBase64(image)
-        .then((base64String) => {
-          dispatch(
-            AddCategory({
-              category: {
-                ...data,
-                image: base64String,
-              },
-              createCategoryStatus,
-            }),
-          );
-        })
-        .catch(() => {
-          toast.error('Có lỗi trong quá trình xử lý ảnh vui lòng chọn ảnh khác hoặc tải lại', ToastObject);
-        });
-    } else {
+      newCategory.append('imageFile', image);
       dispatch(
         AddCategory({
-          category: {
-            ...data,
-            image:
-              'https://www.google.com/url?sa=i&url=https%3A%2F%2Funsplash.com%2Fs%2Fphotos%2Fimage&psig=AOvVaw0HwuKBHYyQFXJElgig-E5x&ust=1682958113837000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCKiE5tWB0v4CFQAAAAAdAAAAABAE',
-          },
+          category: newCategory,
+          createCategoryStatus,
+        }),
+      );
+    } else {
+      newCategory.append(
+        'imageFile',
+        'https://www.google.com/url?sa=i&url=https%3A%2F%2Funsplash.com%2Fs%2Fphotos%2Fimage&psig=AOvVaw0HwuKBHYyQFXJElgig-E5x&ust=1682958113837000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCKiE5tWB0v4CFQAAAAAdAAAAABAE',
+      );
+      dispatch(
+        AddCategory({
+          category: newCategory,
           createCategoryStatus,
         }),
       );
