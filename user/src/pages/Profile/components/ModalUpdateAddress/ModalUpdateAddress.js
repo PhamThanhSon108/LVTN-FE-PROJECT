@@ -79,7 +79,6 @@ export default function ModalUpdateAddress({ isOpenModal, handleOpenModal, addre
         },
     };
     const submitUpdateProfile = (data) => {
-        console.log(data, 'data update');
         const dataToUpdate = {
             ...data.address,
             province: { id: data.address.province.ProvinceID, name: data.address.province.ProvinceName },

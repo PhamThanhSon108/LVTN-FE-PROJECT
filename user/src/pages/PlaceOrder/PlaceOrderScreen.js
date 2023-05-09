@@ -1,6 +1,6 @@
 import WrapConfirmModal from '~/components/Modal/WrapConfirmModal';
 import { LoadingButton } from '@mui/lab';
-import usePlaceOrder from './hook/usePlaceOrder';
+import usePlaceOrder, { PAY_WITH_CASH, PAY_WITH_MOMO } from './hook/usePlaceOrder';
 import { Fragment } from 'react';
 import {
     Avatar,
@@ -41,6 +41,8 @@ export const RenderAttributes = ({ attributes }) => {
 
 const PlaceOrderScreen = ({ history }) => {
     const {
+        paymentMethod,
+        setPaymentMethod,
         isOpenModalVoucher,
         voucher,
         handleApplyVoucher,
@@ -215,15 +217,22 @@ const PlaceOrderScreen = ({ history }) => {
                 <Divider />
                 <div className={styles.voucherBody}>
                     <FormControl>
-                        <RadioGroup defaultValue="paywithcash" row sx={{ p: 'var(--space-16) var(--space-0)' }}>
+                        <RadioGroup
+                            value={paymentMethod}
+                            onChange={(e) => {
+                                setPaymentMethod(e.target.value);
+                            }}
+                            row
+                            sx={{ p: 'var(--space-16) var(--space-0)' }}
+                        >
                             <FormControlLabel
-                                value="paywithcash"
+                                value={PAY_WITH_CASH}
                                 control={<Radio size="small" />}
                                 label="Thanh toán khi nhận hàng"
                             />
                             <FormControlLabel
                                 color="#d32f2f"
-                                value="paywithmomo"
+                                value={PAY_WITH_MOMO}
                                 control={<Radio size="small" />}
                                 label="Thanh toán qua momo"
                             />
@@ -278,17 +287,16 @@ const PlaceOrderScreen = ({ history }) => {
             >
                 {/* total */}
 
-                <WrapConfirmModal content={createContent()} handleSubmit={placeOrderHandler}>
-                    <LoadingButton
-                        sx={{ width: '30%' }}
-                        type="submit"
-                        color="primary"
-                        variant="contained"
-                        loading={loading}
-                    >
-                        ĐẶT HÀNG
-                    </LoadingButton>
-                </WrapConfirmModal>
+                <LoadingButton
+                    sx={{ width: '30%' }}
+                    type="submit"
+                    color="primary"
+                    variant="contained"
+                    loading={loading}
+                    onClick={placeOrderHandler}
+                >
+                    ĐẶT HÀNG
+                </LoadingButton>
             </div>
         </div>
     );

@@ -37,12 +37,7 @@ export default function useSingleProduct() {
         ((product?.price - product?.priceSale) * 100) / product?.price ||
         0
     ).toFixed();
-    console.log(
-        percentDiscount,
-        product,
-        (((currentVariant?.price - currentVariant?.priceSale) * 100) / currentVariant?.price)?.toFixed(),
-        (((product?.price - product?.priceSale) * 100) / product?.price).toFixed(),
-    );
+
     const defaultValue1 =
         product?.variants?.reduce((values, value) => {
             if (!values.includes(value.attributes[0].value)) values.push(value.attributes[0].value);

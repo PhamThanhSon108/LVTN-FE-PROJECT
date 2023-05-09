@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { listCart, listOrderCart } from '~/Redux/Actions/cartActions';
 import { getShippingFee } from '~/Redux/Actions/deliveryAction';
 import { createOrder } from '~/Redux/Actions/orderActions';
@@ -12,10 +13,13 @@ const compareAddress = (address1, address2) => {
     if (address1?.ward?.id !== address2?.ward?.id) return false;
     return true;
 };
-export default function usePlaceOrder(history) {
+export const PAY_WITH_MOMO = 2;
+export const PAY_WITH_CASH = 1;
+export default function usePlaceOrder() {
     window.scrollTo(0, 0);
     const dispatch = useDispatch();
-
+    const history = useHistory();
+    const [paymentMethod, setPaymentMethod] = useState(PAY_WITH_MOMO);
     const [isOpenModalVoucher, setIsOpenModalVoucher] = useState(false);
     const [address, setAddress] = useState();
     const [isOpenModalAddress, setIsOpenModalAddress] = useState(false);
@@ -46,11 +50,9 @@ export default function usePlaceOrder(history) {
     const addressReducer = useSelector((state) => state.shippingAddress);
     const { listAddress, loading: loadingGetList } = addressReducer;
     // Calculate Price
-    const addDecimals = (num) => {
-        return (Math.round(num * 100) / 100).toFixed(2);
-    };
+
     cartOrder.priceOfProducts = cartOrder.cartOrderItems?.reduce(
-        (totalPrice, i) => totalPrice + i.quantity * i.variant.price,
+        (totalPrice, i) => totalPrice + i.quantity * (i.variant.priceSale || i.variant.price),
         0,
     );
 
@@ -66,12 +68,10 @@ export default function usePlaceOrder(history) {
           )
         : cartOrder.totalBeforeApplyVoucher;
 
-    const orderCreate = useSelector((state) => state.orderCreate);
-    const { order } = orderCreate;
     const [loading, setLoading] = useState(false);
 
     const handleAfterFetch = {
-        success: () => {
+        success: (order) => {
             dispatch(listCart());
             dispatch(listOrderCart());
             history.push(`/order/${order._id}`);
@@ -89,15 +89,11 @@ export default function usePlaceOrder(history) {
 
             dispatch(
                 getShippingFee({
-                    from_district_id: 1454,
-                    service_id: 53320,
-                    service_type_id: null,
                     to_district_id: newAddress.district.id,
                     to_ward_code: newAddress.ward.id.toString(),
-                    height: 50,
-                    length: 20,
-                    weight: 20,
-                    width: 20,
+
+                    weight: 1,
+
                     insurance_value: null,
                     coupon: null,
                 }),
@@ -113,21 +109,19 @@ export default function usePlaceOrder(history) {
         dispatch(
             createOrder(
                 {
-                    orderItems: currentCartItems,
                     shippingAddress: {
-                        receiver: userInfo.name,
-                        email: userInfo.email,
-                        phone: userInfo.phone,
-                        province: userInfo.address.province,
-                        ward: userInfo.address.ward,
-                        district: userInfo.address.district,
-                        specificAddress: userInfo.address.specificAddress,
+                        to_name: defaultAddress.name,
+                        to_phone: defaultAddress.phone,
+                        to_province_id: defaultAddress.province.id,
+                        to_district_id: defaultAddress.district.id,
+                        to_ward_code: defaultAddress.ward.id,
+                        to_address: defaultAddress.specificAddress,
                     },
-
-                    paymentMethod: 'payment-with-momo',
-                    taxPrice: cartOrder.taxPrice,
-                    shippingPrice: cartOrder.shippingPrice,
-                    totalPrice: cartOrder.totalPrice,
+                    orderItems: cartOrder.cartOrderItems.map((variant) => ({
+                        variant: variant.variant._id,
+                        quantity: variant.quantity,
+                    })),
+                    paymentMethod: Number(paymentMethod),
                 },
                 handleAfterFetch,
             ),
@@ -158,6 +152,8 @@ export default function usePlaceOrder(history) {
     }, []);
 
     return {
+        paymentMethod,
+        setPaymentMethod,
         isOpenModalVoucher,
         voucher,
         handleApplyVoucher,

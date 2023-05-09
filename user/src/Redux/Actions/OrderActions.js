@@ -35,11 +35,10 @@ import { clearLocalStorage } from '~/utils/localStorage';
 // CREATE ORDER
 export const createOrder = (order, handleAfterFetch) => async (dispatch, getState) => {
     try {
-        const { userInfo } = getState();
         dispatch({ type: ORDER_CREATE_REQUEST });
-        const { data } = addOrder(order);
-        handleAfterFetch.success();
-        toast.success('Successful order', Toastobjects);
+        const { data } = await addOrder(order);
+        handleAfterFetch.success(data.data.newOrder);
+
         dispatch({ type: ORDER_CREATE_SUCCESS, payload: data });
         dispatch({ type: CART_CONST?.CART_ORDER_RESET });
         clearLocalStorage('cartOrderItems');

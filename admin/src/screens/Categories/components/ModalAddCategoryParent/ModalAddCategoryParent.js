@@ -2,7 +2,7 @@ import * as React from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Modal from '@mui/material/Modal';
 import { Controller, useForm } from 'react-hook-form';
-import { Button, Card, CardActions, CardHeader, IconButton, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Card, CardActions, CardHeader, IconButton, TextField, Tooltip, Typography } from '@mui/material';
 import ImageIcon from '@mui/icons-material/Image';
 
 import styles from '../../Categories.module.scss';
@@ -21,6 +21,7 @@ const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
+
   transform: 'translate(-50%, -50%)',
   width: 700,
   bgcolor: 'background.paper',
@@ -91,7 +92,7 @@ export default function ModalAddCategoryParent({ isOpenModal, handleOpenModal })
     newCategory.append('name', data.name);
     newCategory.append('description', data.description);
 
-    newCategory.append('children', data.children);
+    newCategory.append('children', JSON.stringify(data.children));
 
     newCategory.append('level', data.level);
 
@@ -132,156 +133,158 @@ export default function ModalAddCategoryParent({ isOpenModal, handleOpenModal })
           </Typography>
 
           <form onSubmit={handleSubmit(handleSubmitAddCategory)} className={styles.formWrapper}>
-            <Card className={styles.categoryInformation}>
-              <Typography variant="h6" fontSize="xl" className={styles.titleModal} sx={{ mb: 0.5 }}>
-                Thông tin cơ bản
-              </Typography>
-              <Controller
-                name="name"
-                control={control}
-                rules={{ required: true }}
-                render={({ field, fieldState }) => (
-                  <TextField
-                    className={styles.formItem}
-                    focused={!!fieldState.error}
-                    color={fieldState.error ? 'error' : 'info'}
-                    label="Tên thể loại"
-                    {...field}
-                    variant={inputPropsConstants.variantOutLine}
-                    size={inputPropsConstants.smallSize}
-                    helperText={renderError([
-                      { error: fieldState?.error?.type === 'required', message: 'Bạn chưa nhập trường này' },
-                    ])}
-                  />
-                )}
-              />
-
-              <Controller
-                name="description"
-                control={control}
-                rules={{ required: true }}
-                render={({ field, fieldState }) => (
-                  <TextField
-                    className={styles.formItem}
-                    focused={!!fieldState.error}
-                    color={fieldState.error ? 'error' : 'info'}
-                    label="Mô tả về thể loại"
-                    {...field}
-                    variant={inputPropsConstants.variantOutLine}
-                    size={inputPropsConstants.smallSize}
-                    helperText={renderError([
-                      { error: fieldState?.error?.type === 'required', message: 'Bạn chưa nhập trường này' },
-                    ])}
-                    multiline
-                    rows={2}
-                  />
-                )}
-              />
-              <Card className={styles.wrapperUpload}>
-                <div className={styles.uploadHeader}>
-                  <label className={styles.labelImage}>Thêm ảnh</label>
-                  {image ? (
-                    <Button onClick={() => setImage('')} variant="text">
-                      Xóa ảnh
-                    </Button>
-                  ) : null}
-                </div>
-                <input
-                  onChange={(e) => {
-                    setImage(e.target.files?.[0]);
-                  }}
-                  className={styles.image}
-                  id="image"
-                  type="file"
-                  accept=".jpg, .jpeg, .png"
-                />
-                {image ? (
-                  <img className={styles.imageReview} src={imageReview} alt="Hình ảnh" />
-                ) : (
-                  <label className={styles.uploadBodyLabel} for="image">
-                    <div className={styles.uploadBody}>
-                      <div className={styles.wrapImageIcon}>
-                        <div className={styles.iconPicture}>
-                          <ImageIcon color="primary" />
-                        </div>
-                        <span className={styles.iconSpan}>Kéo thả hình tại đây</span>
-                      </div>
-                    </div>
-                  </label>
-                )}
-              </Card>
-            </Card>
-
-            <Card className={`${styles.categoryInformation} ${styles.subCategories}`} sx={{ overflow: 'auto' }}>
-              <div className={styles.subCategoriesHeader}>
+            <Box sx={{ maxHeight: '70vh', overflow: 'auto' }}>
+              <Card className={styles.categoryInformation}>
                 <Typography variant="h6" fontSize="xl" className={styles.titleModal} sx={{ mb: 0.5 }}>
-                  Thể loại con
+                  Thông tin cơ bản
                 </Typography>
-                <Tooltip title="Thêm thể loại con">
-                  <IconButton variant="text" onClick={handleAddCategoryChild}>
-                    <AddIcon />
-                  </IconButton>
-                </Tooltip>
-              </div>
-              {watch('children').map((category, index) => (
-                <Card key={category?._id} className={styles.categoryInformation}>
-                  <CardHeader
-                    title={
-                      <Typography level="h5" fontSize="xl" className={styles.titleModal} sx={{ mb: 0.5 }}>
-                        {`Thể loại con thứ ${index + 1}`}
-                      </Typography>
-                    }
-                    action={
-                      <IconButton size="small" color="error">
-                        <DeleteIcon onClick={() => handleDeleteCategoryChild(index)} />
-                      </IconButton>
-                    }
-                  />
+                <Controller
+                  name="name"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      className={styles.formItem}
+                      focused={!!fieldState.error}
+                      color={fieldState.error ? 'error' : 'info'}
+                      label="Tên thể loại"
+                      {...field}
+                      variant={inputPropsConstants.variantOutLine}
+                      size={inputPropsConstants.smallSize}
+                      helperText={renderError([
+                        { error: fieldState?.error?.type === 'required', message: 'Bạn chưa nhập trường này' },
+                      ])}
+                    />
+                  )}
+                />
 
-                  <Controller
-                    name={`children.${index}.name`}
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field, fieldState }) => (
-                      <TextField
-                        className={styles.formItem}
-                        focused={!!fieldState.error}
-                        color={fieldState.error ? 'error' : 'info'}
-                        label="Tên thể loại"
-                        {...field}
-                        variant={inputPropsConstants.variantOutLine}
-                        size={inputPropsConstants.smallSize}
-                        helperText={renderError([
-                          { error: fieldState?.error?.type === 'required', message: 'Bạn chưa nhập trường này' },
-                        ])}
-                      />
-                    )}
+                <Controller
+                  name="description"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      className={styles.formItem}
+                      focused={!!fieldState.error}
+                      color={fieldState.error ? 'error' : 'info'}
+                      label="Mô tả về thể loại"
+                      {...field}
+                      variant={inputPropsConstants.variantOutLine}
+                      size={inputPropsConstants.smallSize}
+                      helperText={renderError([
+                        { error: fieldState?.error?.type === 'required', message: 'Bạn chưa nhập trường này' },
+                      ])}
+                      multiline
+                      rows={2}
+                    />
+                  )}
+                />
+                <Card className={styles.wrapperUpload}>
+                  <div className={styles.uploadHeader}>
+                    <label className={styles.labelImage}>Thêm ảnh</label>
+                    {image ? (
+                      <Button onClick={() => setImage('')} variant="text">
+                        Xóa ảnh
+                      </Button>
+                    ) : null}
+                  </div>
+                  <input
+                    onChange={(e) => {
+                      setImage(e.target.files?.[0]);
+                    }}
+                    className={styles.image}
+                    id="image"
+                    type="file"
+                    accept=".jpg, .jpeg, .png"
                   />
-
-                  <Controller
-                    name={`children.${index}.description`}
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field, fieldState }) => (
-                      <TextField
-                        className={styles.formItem}
-                        focused={!!fieldState.error}
-                        color={fieldState.error ? 'error' : 'info'}
-                        label="Mô tả về thể loại"
-                        {...field}
-                        variant={inputPropsConstants.variantOutLine}
-                        size={inputPropsConstants.smallSize}
-                        helperText={renderError([
-                          { error: fieldState?.error?.type === 'required', message: 'Bạn chưa nhập trường này' },
-                        ])}
-                        multiline
-                        rows={2}
-                      />
-                    )}
-                  />
+                  {image ? (
+                    <img className={styles.imageReview} src={imageReview} alt="Hình ảnh" />
+                  ) : (
+                    <label className={styles.uploadBodyLabel} for="image">
+                      <div className={styles.uploadBody}>
+                        <div className={styles.wrapImageIcon}>
+                          <div className={styles.iconPicture}>
+                            <ImageIcon color="primary" />
+                          </div>
+                          <span className={styles.iconSpan}>Kéo thả hình tại đây</span>
+                        </div>
+                      </div>
+                    </label>
+                  )}
                 </Card>
-              ))}
-            </Card>
+              </Card>
+
+              <Card className={`${styles.categoryInformation} ${styles.subCategories}`} sx={{ overflow: 'auto' }}>
+                <div className={styles.subCategoriesHeader}>
+                  <Typography variant="h6" fontSize="xl" className={styles.titleModal} sx={{ mb: 0.5 }}>
+                    Thể loại con
+                  </Typography>
+                  <Tooltip title="Thêm thể loại con">
+                    <IconButton variant="text" onClick={handleAddCategoryChild}>
+                      <AddIcon />
+                    </IconButton>
+                  </Tooltip>
+                </div>
+                {watch('children').map((category, index) => (
+                  <Card key={category?._id} className={styles.categoryInformation}>
+                    <CardHeader
+                      title={
+                        <Typography level="h5" fontSize="xl" className={styles.titleModal} sx={{ mb: 0.5 }}>
+                          {`Thể loại con thứ ${index + 1}`}
+                        </Typography>
+                      }
+                      action={
+                        <IconButton size="small" color="error">
+                          <DeleteIcon onClick={() => handleDeleteCategoryChild(index)} />
+                        </IconButton>
+                      }
+                    />
+
+                    <Controller
+                      name={`children.${index}.name`}
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field, fieldState }) => (
+                        <TextField
+                          className={styles.formItem}
+                          focused={!!fieldState.error}
+                          color={fieldState.error ? 'error' : 'info'}
+                          label="Tên thể loại"
+                          {...field}
+                          variant={inputPropsConstants.variantOutLine}
+                          size={inputPropsConstants.smallSize}
+                          helperText={renderError([
+                            { error: fieldState?.error?.type === 'required', message: 'Bạn chưa nhập trường này' },
+                          ])}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      name={`children.${index}.description`}
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field, fieldState }) => (
+                        <TextField
+                          className={styles.formItem}
+                          focused={!!fieldState.error}
+                          color={fieldState.error ? 'error' : 'info'}
+                          label="Mô tả về thể loại"
+                          {...field}
+                          variant={inputPropsConstants.variantOutLine}
+                          size={inputPropsConstants.smallSize}
+                          helperText={renderError([
+                            { error: fieldState?.error?.type === 'required', message: 'Bạn chưa nhập trường này' },
+                          ])}
+                          multiline
+                          rows={2}
+                        />
+                      )}
+                    />
+                  </Card>
+                ))}
+              </Card>
+            </Box>
 
             <CardActions className={styles.actionWrapper}>
               <Button variant={inputPropsConstants.variantOutLine} size="small" onClick={handleClose}>

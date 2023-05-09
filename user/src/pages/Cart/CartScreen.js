@@ -6,6 +6,7 @@ import { addProductOrderInCart, listCart, removefromcart, updateCart } from '../
 import WrapConfirmModal from '~/components/Modal/WrapConfirmModal';
 import { FormLoading } from '~/components/LoadingError/Loading';
 import SlideDialogConfirm from '~/modal/confirm/SlideDialogConfirm';
+import { formatMoney } from '~/utils/formatMoney';
 
 export const RenderAttributes = ({ attributes }) => {
     if (attributes && attributes.length > 0) {
@@ -227,7 +228,9 @@ const CartScreen = () => {
                                         style={isMobile ? { width: 90, marginRight: '20%' } : null}
                                     >
                                         <h6>Giá</h6>
-                                        <h6 className="text-danger">${item?.variant?.price}</h6>
+                                        <h6 className="text-danger">
+                                            {formatMoney(item?.variant?.priceSale || item?.variant?.price)}
+                                        </h6>
                                     </div>
 
                                     <div
