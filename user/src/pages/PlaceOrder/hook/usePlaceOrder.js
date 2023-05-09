@@ -49,17 +49,22 @@ export default function usePlaceOrder(history) {
     const addDecimals = (num) => {
         return (Math.round(num * 100) / 100).toFixed(2);
     };
-    cartOrder.itemsPrice = cartOrder.cartOrderItems?.reduce(
+    cartOrder.priceOfProducts = cartOrder.cartOrderItems?.reduce(
         (totalPrice, i) => totalPrice + i.quantity * i.variant.price,
         0,
     );
 
-    cartOrder.shippingPrice = addDecimals(cartOrder.itemsPrice > 0 ? (cartOrder.itemsPrice > 100 ? 0 : 20) : 0);
-    cartOrder.taxPrice = addDecimals(Number((0.15 * cartOrder.itemsPrice).toFixed(2)));
-    cartOrder.totalPrice =
-        cartOrder?.cartOrderItems?.length > 0
-            ? (Number(cartOrder.itemsPrice) + Number(cartOrder.shippingPrice) + Number(cartOrder.taxPrice)).toFixed(2)
-            : 0;
+    cartOrder.shippingFee = shippingFee?.fee?.total || 20000;
+
+    cartOrder.totalBeforeApplyVoucher = cartOrder.priceOfProducts + cartOrder.shippingFee;
+    cartOrder.total = voucher
+        ? Math.max(
+              voucher?.discountType === 'money'
+                  ? cartOrder.totalBeforeApplyVoucher - voucher?.discount
+                  : cartOrder.totalBeforeApplyVoucher - (cartOrder.totalBeforeApplyVoucher * voucher?.discount) / 100,
+              0,
+          )
+        : cartOrder.totalBeforeApplyVoucher;
 
     const orderCreate = useSelector((state) => state.orderCreate);
     const { order } = orderCreate;
