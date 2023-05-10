@@ -29,7 +29,7 @@ export const listProducts =
     try {
       dispatch({ type: PRODUCT_LIST_REQUEST });
       const { data } = await request.get(`/products?category=${category}&keyword=${keyword}&pageNumber=${pageNumber}`);
-      dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+      dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data.data });
     } catch (error) {
       const message = error.response && error.response.data.message ? error.response.data.message : error.message;
       dispatch({
@@ -64,7 +64,7 @@ export const createProduct = (newProduct) => async (dispatch) => {
     dispatch({ type: PRODUCT_CREATE_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-    toast.success(message, ToastObjects);
+    toast.error(message, ToastObjects);
     dispatch({
       type: PRODUCT_CREATE_FAIL,
       payload: message,
@@ -108,10 +108,10 @@ export const updateProduct = (product) => async (dispatch) => {
 export const allProducts = (fetchAllProduct) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_LIST_REQUEST });
-    const { data } = await request.get(`/products/admin`);
+    const { data } = await request.get(`/products/all-products`);
 
-    dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data || { products: [] } });
-    fetchAllProduct.success(data.products || []);
+    dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data.data || { products: [] } });
+    fetchAllProduct.success(data?.data.products || []);
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
     dispatch({

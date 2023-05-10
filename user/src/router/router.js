@@ -1,5 +1,6 @@
 import CartScreen from '~/pages/Cart/CartScreen';
 import ConfirmRegister from '~/pages/ConfirmRegister';
+import DetailOrder from '~/pages/DetailOrder/DetailOrder';
 import ForgotPass from '~/pages/ForgotPass';
 import HomeScreen from '~/pages/HomeScreen/HomeScreen';
 import Login from '~/pages/Login';
@@ -117,7 +118,7 @@ const privateRouter = [
     {
         name: 'Xem đơn',
         path: '/order/:id',
-        component: <OrderScreen />,
+        component: <DetailOrder />,
         exact: true,
     },
 ];

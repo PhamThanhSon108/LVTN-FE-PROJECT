@@ -15,3 +15,23 @@ export const getMyVouchers = () => async (dispatch) => {
         });
     }
 };
+
+export const getPriceIsReducedAfterApplyVoucher =
+    ({ discountCode, orderItems, afterFetchPriceIsReduced }) =>
+    async (dispatch) => {
+        try {
+            const { data } = await request.post('/discount-codes/discount-calculation', {
+                discountCode,
+                orderItems,
+            });
+            afterFetchPriceIsReduced?.success(data.data);
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+            dispatch({
+                type: MY_VOUCHER_FAIL,
+                payload: message,
+            });
+        } finally {
+            afterFetchPriceIsReduced.finally();
+        }
+    };

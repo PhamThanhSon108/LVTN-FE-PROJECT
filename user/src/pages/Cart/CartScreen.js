@@ -6,19 +6,18 @@ import { addProductOrderInCart, listCart, removefromcart, updateCart } from '../
 import WrapConfirmModal from '~/components/Modal/WrapConfirmModal';
 import { FormLoading } from '~/components/LoadingError/Loading';
 import SlideDialogConfirm from '~/modal/confirm/SlideDialogConfirm';
+import { formatMoney } from '~/utils/formatMoney';
+import { Typography } from '@mui/material';
 
 export const RenderAttributes = ({ attributes }) => {
     if (attributes && attributes.length > 0) {
-        return attributes?.map((attribute) => (
-            <div
-                key={attribute.value}
-                className="cart-image col-sm-3 col-lg-1 col-md-1 d-flex flex-column justify-content-center"
-                style={{ width: 90, display: 'flex', flexDirection: 'column' }}
-            >
-                <h6>{attribute.name}</h6>
-                <span>{attribute?.value}</span>
-            </div>
-        ));
+        return (
+            <Typography component="div" variant="body2" color="text.primary">
+                {attributes?.map(
+                    (attribute, index) => `${attribute?.value}${index === attributes.length - 1 ? '' : ','} `,
+                )}
+            </Typography>
+        );
     } else return <Fragment />;
 };
 
@@ -40,9 +39,7 @@ const CartScreen = () => {
     const refItem = useRef();
 
     const total = cartChoise
-        ? Object.values(cartChoise)
-              .reduce((a, i) => a + i.quantity * i.variant?.price, 0)
-              .toFixed(2)
+        ? Object.values(cartChoise).reduce((a, i) => a + i.quantity * i.variant?.priceSale || i.variant?.price, 0)
         : 0;
     const handleAfterFetch = {
         success: () => {
@@ -123,7 +120,7 @@ const CartScreen = () => {
                                     ref={refItem}
                                     style={{
                                         height: '100%',
-                                        lineHeight: '22px',
+
                                         alignItems: 'center',
                                         display: 'flex',
                                     }}
@@ -134,36 +131,42 @@ const CartScreen = () => {
                                         "
                                             style={{
                                                 height: '100%',
-                                                lineHeight: '22px',
+
                                                 alignItems: 'center',
                                                 display: 'flex',
                                             }}
                                         >
-                                            {item.variant.quantity > 0 ? (
-                                                item.quantity <= item.variant.quantity ? (
-                                                    <input
-                                                        style={{ height: '100%' }}
-                                                        type="checkbox"
-                                                        checked={cartChoise[item?.variant?._id] != undefined}
-                                                        onChange={(e) => {
-                                                            setCartChoise((pre) => {
-                                                                if (pre[item?.variant?._id] === undefined)
-                                                                    pre[item?.variant?._id] = item;
-                                                                else delete pre[item?.variant?._id];
-                                                                return { ...pre };
-                                                            });
-                                                            refItem.current.focus();
-                                                        }}
-                                                    ></input>
-                                                ) : (
-                                                    <span className="text-danger  col-4">
-                                                        {`Không có sẵn
+                                            <label
+                                                for={item?.id}
+                                                style={{ width: '100%', height: '100%', cursor: 'pointer' }}
+                                            >
+                                                {item.variant.quantity > 0 ? (
+                                                    item.quantity <= item.variant.quantity ? (
+                                                        <input
+                                                            id={item?.id}
+                                                            style={{ height: '100%' }}
+                                                            type="checkbox"
+                                                            checked={cartChoise[item?.variant?._id] != undefined}
+                                                            onChange={(e) => {
+                                                                setCartChoise((pre) => {
+                                                                    if (pre[item?.variant?._id] === undefined)
+                                                                        pre[item?.variant?._id] = item;
+                                                                    else delete pre[item?.variant?._id];
+                                                                    return { ...pre };
+                                                                });
+                                                                refItem.current.focus();
+                                                            }}
+                                                        ></input>
+                                                    ) : (
+                                                        <span className="text-danger col-12">
+                                                            {`Không có sẵn
                                                         ${item?.quantity} sản phẩm`}
-                                                    </span>
-                                                )
-                                            ) : (
-                                                <span className="text-danger">Hết hàng</span>
-                                            )}
+                                                        </span>
+                                                    )
+                                                ) : (
+                                                    <span className="text-danger col-12">Hết hàng</span>
+                                                )}
+                                            </label>
                                         </div>
                                     ) : (
                                         <div className="col-1 cart-check">
@@ -183,10 +186,25 @@ const CartScreen = () => {
                                         style={isMobile ? { width: '100%', marginBottom: 15 } : null}
                                     >
                                         <Link to={`/product/${item?.variant?.product?._id}`}>
-                                            <h4>{item?.variant?.product?.name}</h4>
+                                            <Typography
+                                                component="div"
+                                                variant="body1"
+                                                fontWeight={600}
+                                                color="text.primary"
+                                            >
+                                                {item?.variant?.product?.name}
+                                            </Typography>
                                         </Link>
                                     </div>
-                                    <RenderAttributes attributes={item?.attributes} />
+                                    <div
+                                        className="cart-text col-sm-3 col-lg-2 col-5 col-md-3 col-xl-2 d-flex align-items-start flex-column"
+                                        style={isMobile ? { width: '100%', marginBottom: 15 } : null}
+                                    >
+                                        <Typography component="div" variant="body2" color="text.primary">
+                                            Phân loại hàng:
+                                        </Typography>
+                                        <RenderAttributes attributes={item?.attributes} />
+                                    </div>
 
                                     <div
                                         className="cart-qty col-sm-3 col-lg-1 col-5 col-md-3 col-xl-1 flex-column justify-content-center align-content-center d-flex quantity-css"
@@ -226,8 +244,9 @@ const CartScreen = () => {
                                         className="cart-price col-12 col-sm-3 col-lg-1 align-items-sm-end align-items-start  d-flex flex-column justify-content-center quantity-css"
                                         style={isMobile ? { width: 90, marginRight: '20%' } : null}
                                     >
-                                        <h6>Giá</h6>
-                                        <h6 className="text-danger">${item?.variant?.price}</h6>
+                                        <Typography component="div" variant="body2" color="red">
+                                            {formatMoney(item?.variant?.priceSale || item?.variant?.price)}
+                                        </Typography>
                                     </div>
 
                                     <div
@@ -254,9 +273,18 @@ const CartScreen = () => {
                         {/* End of cart iterms */}
                         <hr />
                         <div className="cart-buttons d-flex align-items-center row">
-                            <div className="total col-md-3">
-                                <span className="">{`Total (${Object.keys(cartChoise).length || 0}):  `}</span>
-                                <span className="total-price">{` ${total} `}</span>
+                            <div className="total col-md-4 d-flex align-items-center">
+                                <Typography
+                                    sx={{ display: 'inline', mr: 1 }}
+                                    component="span"
+                                    variant="body1"
+                                >{`Tổng tiền (${Object.keys(cartChoise).length || 0} sản phẩm):  `}</Typography>
+                                <Typography
+                                    sx={{ display: 'inline' }}
+                                    color="error"
+                                    component="span"
+                                    variant="h6"
+                                >{` ${formatMoney(total || 0)} `}</Typography>
                             </div>
 
                             <div className="total col-md-3">
@@ -267,7 +295,7 @@ const CartScreen = () => {
                                 )}
                             </div>
                             {total > 0 && (
-                                <div className="col-md-6 d-flex justify-content-md-end mt-3 mt-md-0">
+                                <div className="col-md-5 d-flex justify-content-md-end mt-3 mt-md-0">
                                     <button
                                         data-bs-toggle="modal"
                                         // data-bs-target="#staticBackdrop"

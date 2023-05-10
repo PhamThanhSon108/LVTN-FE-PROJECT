@@ -1,9 +1,10 @@
 import WrapConfirmModal from '~/components/Modal/WrapConfirmModal';
 import { LoadingButton } from '@mui/lab';
-import usePlaceOrder from './hook/usePlaceOrder';
+import usePlaceOrder, { PAY_WITH_CASH, PAY_WITH_MOMO } from './hook/usePlaceOrder';
 import { Fragment } from 'react';
 import {
     Avatar,
+    Backdrop,
     Button,
     Card,
     CircularProgress,
@@ -41,6 +42,10 @@ export const RenderAttributes = ({ attributes }) => {
 
 const PlaceOrderScreen = ({ history }) => {
     const {
+        loadingApplyVoucher,
+        priceIsReduced,
+        paymentMethod,
+        setPaymentMethod,
         isOpenModalVoucher,
         voucher,
         handleApplyVoucher,
@@ -61,6 +66,9 @@ const PlaceOrderScreen = ({ history }) => {
 
     return (
         <div className="container">
+            <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <ModalAddress
                 isOpenModal={isOpenModalAddress}
                 handleClose={handleOpenModalAddress}
@@ -215,15 +223,22 @@ const PlaceOrderScreen = ({ history }) => {
                 <Divider />
                 <div className={styles.voucherBody}>
                     <FormControl>
-                        <RadioGroup defaultValue="paywithcash" row sx={{ p: 'var(--space-16) var(--space-0)' }}>
+                        <RadioGroup
+                            value={paymentMethod}
+                            onChange={(e) => {
+                                setPaymentMethod(e.target.value);
+                            }}
+                            row
+                            sx={{ p: 'var(--space-16) var(--space-0)' }}
+                        >
                             <FormControlLabel
-                                value="paywithcash"
+                                value={PAY_WITH_CASH}
                                 control={<Radio size="small" />}
                                 label="Thanh toán khi nhận hàng"
                             />
                             <FormControlLabel
                                 color="#d32f2f"
-                                value="paywithmomo"
+                                value={PAY_WITH_MOMO}
                                 control={<Radio size="small" />}
                                 label="Thanh toán qua momo"
                             />
@@ -257,7 +272,12 @@ const PlaceOrderScreen = ({ history }) => {
                                 Khuyến mãi:
                             </Typography>
                             <Typography sx={{ textAlign: 'end' }} variant="body1">
-                                -{formatMoney(voucher?.discount || 0)}
+                                -{' '}
+                                {loadingApplyVoucher ? (
+                                    <CircularProgress size={15} />
+                                ) : (
+                                    formatMoney(priceIsReduced.totalDiscount || 0)
+                                )}
                             </Typography>
                         </div>
                         <div className={styles.totalFeeItem}>
@@ -265,7 +285,7 @@ const PlaceOrderScreen = ({ history }) => {
                                 Tổng thanh toán:
                             </Typography>
                             <Typography sx={{ textAlign: 'end', color: 'red' }} variant="h6">
-                                {formatMoney(cartOrder.total)}
+                                {loadingApplyVoucher ? <CircularProgress size={15} /> : formatMoney(cartOrder.total)}
                             </Typography>
                         </div>
                     </div>
@@ -278,17 +298,16 @@ const PlaceOrderScreen = ({ history }) => {
             >
                 {/* total */}
 
-                <WrapConfirmModal content={createContent()} handleSubmit={placeOrderHandler}>
-                    <LoadingButton
-                        sx={{ width: '30%' }}
-                        type="submit"
-                        color="primary"
-                        variant="contained"
-                        loading={loading}
-                    >
-                        ĐẶT HÀNG
-                    </LoadingButton>
-                </WrapConfirmModal>
+                <LoadingButton
+                    sx={{ width: '30%' }}
+                    type="submit"
+                    color="primary"
+                    variant="contained"
+                    loading={loading}
+                    onClick={placeOrderHandler}
+                >
+                    ĐẶT HÀNG
+                </LoadingButton>
             </div>
         </div>
     );

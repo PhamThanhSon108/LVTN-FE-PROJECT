@@ -146,7 +146,7 @@ export default function AddProductToVoucher() {
               onChange={handleChangeCategory}
             >
               <MenuItem value="-1">Tất cả thể loại</MenuItem>
-              {categories.map((category) => (
+              {categories?.map((category) => (
                 <MenuItem key={category?._id} value={category?._id}>
                   {category?.name || ''}
                 </MenuItem>

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { toast } from 'react-toastify';
 import { ListCategory } from '../../../../Redux/Actions/CategoryActions';
-import { fetchProductToEdit, updateProduct } from '../../../../Redux/Actions/ProductActions';
+import { createProduct, fetchProductToEdit, updateProduct } from '../../../../Redux/Actions/ProductActions';
 import Loading from '../../../../components/LoadingError/Loading';
 import Toast from '../../../../components/LoadingError/Toast';
 import { UploadImageProduct } from '../UploadImageProduct/UploadImageProduct';
@@ -121,8 +121,8 @@ const AddProduct = (props) => {
           }, []),
         ),
       );
-      newImage ? newProduct.append('productImage', newImage) : newProduct.append('productImage', image);
-      dispatch(updateProduct(newProduct));
+      newImage ? newProduct.append('imageFile', newImage) : newProduct.append('imageFile', image);
+      dispatch(createProduct(newProduct));
     }
   };
 
@@ -403,6 +403,7 @@ const AddProduct = (props) => {
                               <th scope="col">Màu sắc</th>
 
                               <th scope="col">Giá</th>
+                              <th scope="col">Giá đặc biệt</th>
                               <th scope="col">Số lượng</th>
                             </tr>
                           </thead>
@@ -419,7 +420,7 @@ const AddProduct = (props) => {
                                   <tr key={`${value1} + ${value2}`}>
                                     <td className="col-3">{value1 || '?'}</td>
                                     <td className="col-3">{value2 || '?'}</td>
-                                    <td className="col-3">
+                                    <td className="col-2">
                                       <input
                                         type="number"
                                         className=""
@@ -427,12 +428,26 @@ const AddProduct = (props) => {
                                         {...register(`variants.${iClass1}.field.${iClass2}.price`, {
                                           required: 'This is required',
                                           validate: {
-                                            positive: (value) => value >= 0 && value < 10000,
+                                            positive: (value) => value >= 0 && value < 100000000000,
                                           },
                                         })}
                                       ></input>
                                     </td>
-                                    <td className="col-3">
+                                    <td className="col-2">
+                                      <input
+                                        type="number"
+                                        className=""
+                                        placeholder="Enter price"
+                                        {...register(`variants.${iClass1}.field.${iClass2}.priceSale`, {
+                                          required: 'This is required',
+                                          validate: {
+                                            positive: (value) =>
+                                              value >= 0 && value < watch(`variants.${iClass1}.field.${iClass2}.price`),
+                                          },
+                                        })}
+                                      ></input>
+                                    </td>
+                                    <td className="col-2">
                                       <input
                                         type="number"
                                         className="flex-grow-1"
@@ -440,7 +455,7 @@ const AddProduct = (props) => {
                                         {...register(`variants.${iClass1}.field.${iClass2}.quantity`, {
                                           required: 'This is required',
                                           validate: {
-                                            positive: (value) => value >= 0 && value < 10000,
+                                            positive: (value) => value >= 0 && value < 100000,
                                           },
                                         })}
                                       ></input>

@@ -35,11 +35,10 @@ import { clearLocalStorage } from '~/utils/localStorage';
 // CREATE ORDER
 export const createOrder = (order, handleAfterFetch) => async (dispatch, getState) => {
     try {
-        const { userInfo } = getState();
         dispatch({ type: ORDER_CREATE_REQUEST });
-        const { data } = addOrder(order);
-        handleAfterFetch.success();
-        toast.success('Successful order', Toastobjects);
+        const { data } = await addOrder(order);
+        handleAfterFetch.success(data.data.newOrder);
+
         dispatch({ type: ORDER_CREATE_SUCCESS, payload: data });
         dispatch({ type: CART_CONST?.CART_ORDER_RESET });
         clearLocalStorage('cartOrderItems');
@@ -61,8 +60,8 @@ export const createOrder = (order, handleAfterFetch) => async (dispatch, getStat
 export const getOrderDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: ORDER_DETAILS_REQUEST });
-        const { data } = getOrder(id);
-        dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data });
+        const { data } = await getOrder(id);
+        dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data.data.order || {} });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
 
@@ -90,13 +89,13 @@ export const payOrder = (orderId, paymentResult) => async (dispatch) => {
 };
 
 // USER ORDERS
-export const listMyOrders =
-    ({ pageNumber }) =>
+export const getMyOrders =
+    ({ pageNumber = 1 }) =>
     async (dispatch, getState) => {
         try {
-            const { userLogin } = getState();
+            const { userDetails } = getState();
             dispatch({ type: ORDER_LIST_MY_REQUEST });
-            const { data } = await getOrdersByUser(userLogin?.userInfo._id, pageNumber);
+            const { data } = await getOrdersByUser(userDetails?.user._id, pageNumber);
             dispatch({ type: ORDER_LIST_MY_SUCCESS, payload: data?.data?.orders || [] });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;

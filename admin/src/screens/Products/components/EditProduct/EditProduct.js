@@ -140,8 +140,8 @@ const EditProduct = () => {
       newProduct.append(
         'variants',
         JSON.stringify(
-          product?.variants,
           handleUpdateStatusPreUpdate(
+            product?.variants,
             data.variants.reduce((variants, variant) => {
               variants = variants.concat(variant.field);
               return variants;
@@ -149,7 +149,7 @@ const EditProduct = () => {
           ),
         ),
       );
-      newImage ? newProduct.append('productImage', newImage) : newProduct.append('productImage', image);
+      newImage ? newProduct.append('imageFile', newImage) : newProduct.append('imageFile', image);
       dispatch(updateProduct(newProduct));
     }
   };
@@ -421,6 +421,7 @@ const EditProduct = () => {
                               <th scope="col">Màu sắc</th>
 
                               <th scope="col">Giá</th>
+                              <th scope="col">Giá đặc biệt</th>
                               <th scope="col">Số lượng</th>
                             </tr>
                           </thead>
@@ -437,7 +438,7 @@ const EditProduct = () => {
                                   <tr key={`${value1} + ${value2}`}>
                                     <td className="col-3">{value1 || '?'}</td>
                                     <td className="col-3">{value2 || '?'}</td>
-                                    <td className="col-3">
+                                    <td className="col-2">
                                       <input
                                         type="number"
                                         className=""
@@ -445,12 +446,26 @@ const EditProduct = () => {
                                         {...register(`variants.${iClass1}.field.${iClass2}.price`, {
                                           required: 'This is required',
                                           validate: {
-                                            positive: (value) => value >= 0 && value < 10000,
+                                            positive: (value) => value >= 0 && value < 100000000000,
                                           },
                                         })}
                                       ></input>
                                     </td>
-                                    <td className="col-3">
+                                    <td className="col-2">
+                                      <input
+                                        type="number"
+                                        className=""
+                                        placeholder="Enter price"
+                                        {...register(`variants.${iClass1}.field.${iClass2}.priceSale`, {
+                                          required: 'This is required',
+                                          validate: {
+                                            positive: (value) =>
+                                              value >= 0 && value < watch(`variants.${iClass1}.field.${iClass2}.price`),
+                                          },
+                                        })}
+                                      ></input>
+                                    </td>
+                                    <td className="col-2">
                                       <input
                                         type="number"
                                         className="flex-grow-1"

@@ -85,15 +85,19 @@ const Categories = () => {
   return (
     <section>
       <div className="col-md-12 col-lg-12">
-        <ModalAddCategoryParent
-          handleOpenModal={handleOpenModalAddCategoryParent}
-          isOpenModal={isOpenAddCategoryParent}
-        />
-        <ModalUpdateCategory
-          isOpenModal={!!currentCategoryWantToUpdate}
-          currentCategory={currentCategoryWantToUpdate}
-          handleOpenModal={handleOpenModalUpdateCategory}
-        />
+        {isOpenAddCategoryParent ? (
+          <ModalAddCategoryParent
+            handleOpenModal={handleOpenModalAddCategoryParent}
+            isOpenModal={isOpenAddCategoryParent}
+          />
+        ) : null}
+        {!!currentCategoryWantToUpdate ? (
+          <ModalUpdateCategory
+            isOpenModal={!!currentCategoryWantToUpdate}
+            currentCategory={currentCategoryWantToUpdate}
+            handleOpenModal={handleOpenModalUpdateCategory}
+          />
+        ) : null}
 
         <div className={styles.mainHeader}>
           <h2 className="content-title">Danh sách thể loại</h2>
