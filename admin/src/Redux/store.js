@@ -24,6 +24,7 @@ import {
   categoryListReducer,
   categoryUpdateReducer,
 } from './Reducers/CategoryReducers';
+import { voucherAddReducer } from './Reducers/VoucherReducers';
 
 const reducer = combineReducers({
   userLogin: userLoginReducer,
@@ -46,6 +47,7 @@ const reducer = combineReducers({
   CategoryDelete: categoryDeleteReducer,
   CategoryAdd: categoryAddReducer,
   CategoryUpdate: categoryUpdateReducer,
+  VoucherAdd: voucherAddReducer,
 });
 
 // login
