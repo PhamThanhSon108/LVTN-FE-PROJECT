@@ -1,10 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { listCart, listOrderCart } from '~/Redux/Actions/cartActions';
 import { getShippingFee } from '~/Redux/Actions/deliveryAction';
 import { createOrder } from '~/Redux/Actions/orderActions';
 import { getShippingAddresses } from '~/Redux/Actions/userActions';
+import { getPriceIsReducedAfterApplyVoucher } from '~/Redux/Actions/voucherAction';
+
 import { ORDER_CREATE_RESET } from '~/Redux/Constants/OrderConstants';
 const compareAddress = (address1, address2) => {
     if (address1?._id !== address2?._id) return false;
@@ -20,6 +22,7 @@ export default function usePlaceOrder() {
     const dispatch = useDispatch();
     const history = useHistory();
     const [paymentMethod, setPaymentMethod] = useState(PAY_WITH_MOMO);
+    const [priceIsReduced, setPriceIsReduced] = useState({ totalDiscount: 0 });
     const [isOpenModalVoucher, setIsOpenModalVoucher] = useState(false);
     const [address, setAddress] = useState();
     const [isOpenModalAddress, setIsOpenModalAddress] = useState(false);
@@ -28,6 +31,7 @@ export default function usePlaceOrder() {
     const { shippingFee, loading: loadingShippingFee } = shippingReducer;
     const cartOrder = useSelector((state) => state.cartOrder);
     const { cartOrderItems } = cartOrder;
+    const [loadingApplyVoucher, setLoadingApplyVoucher] = useState(false);
 
     const currentCartItems = cartOrderItems.map((product) => ({
         variant: product.variant._id,
@@ -59,14 +63,7 @@ export default function usePlaceOrder() {
     cartOrder.shippingFee = shippingFee?.fee?.total || 20000;
 
     cartOrder.totalBeforeApplyVoucher = cartOrder.priceOfProducts + cartOrder.shippingFee;
-    cartOrder.total = voucher
-        ? Math.max(
-              voucher?.discountType === 'money'
-                  ? cartOrder.totalBeforeApplyVoucher - voucher?.discount
-                  : cartOrder.totalBeforeApplyVoucher - (cartOrder.totalBeforeApplyVoucher * voucher?.discount) / 100,
-              0,
-          )
-        : cartOrder.totalBeforeApplyVoucher;
+    cartOrder.total = cartOrder.totalBeforeApplyVoucher - priceIsReduced.totalDiscount;
 
     const [loading, setLoading] = useState(false);
 
@@ -100,8 +97,33 @@ export default function usePlaceOrder() {
             );
         }
     };
+    const afterFetchPriceIsReduced = {
+        success: (data) => {
+            setPriceIsReduced(data);
+            setLoadingApplyVoucher(false);
+        },
+        finally: () => {
+            setLoadingApplyVoucher(false);
+        },
+    };
     const handleApplyVoucher = (voucher) => {
         setVoucher(voucher);
+
+        if (voucher) {
+            setLoadingApplyVoucher(true);
+            dispatch(
+                getPriceIsReducedAfterApplyVoucher({
+                    discountCode: voucher?.code,
+                    orderItems: cartOrder.cartOrderItems.map((variant) => ({
+                        variant: variant.variant._id,
+                        quantity: variant.quantity,
+                    })),
+                    afterFetchPriceIsReduced,
+                }),
+            );
+        } else {
+            setPriceIsReduced({ totalDiscount: 0 });
+        }
     };
 
     const placeOrderHandler = () => {
@@ -122,26 +144,26 @@ export default function usePlaceOrder() {
                         quantity: variant.quantity,
                     })),
                     paymentMethod: Number(paymentMethod),
+                    discountCode: priceIsReduced?.discountCode,
                 },
                 handleAfterFetch,
             ),
         );
     };
+    const weightOfProduct = cartOrder.cartOrderItems.reduce(
+        (weight, product) => weight + product.variant.product.weight * product.quantity,
+        0,
+    );
     const handleAfterFetchAddress = {
         success: (address) => {
             dispatch(
                 getShippingFee({
-                    from_district_id: 1454,
-                    service_id: 53320,
-                    service_type_id: null,
                     to_district_id: address.district.id,
                     to_ward_code: address.ward.id.toString(),
-                    height: 50,
-                    length: 20,
-                    weight: 20,
-                    width: 20,
-                    insurance_value: null,
-                    coupon: null,
+                    height: 5,
+                    length: 5,
+                    weight: weightOfProduct,
+                    width: 5,
                 }),
             );
         },
@@ -152,6 +174,8 @@ export default function usePlaceOrder() {
     }, []);
 
     return {
+        loadingApplyVoucher,
+        priceIsReduced,
         paymentMethod,
         setPaymentMethod,
         isOpenModalVoucher,

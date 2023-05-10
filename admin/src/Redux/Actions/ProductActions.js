@@ -64,7 +64,7 @@ export const createProduct = (newProduct) => async (dispatch) => {
     dispatch({ type: PRODUCT_CREATE_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-    toast.success(message, ToastObjects);
+    toast.error(message, ToastObjects);
     dispatch({
       type: PRODUCT_CREATE_FAIL,
       payload: message,

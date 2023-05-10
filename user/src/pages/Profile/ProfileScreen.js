@@ -7,6 +7,7 @@ import moment from 'moment';
 import { listMyOrders } from '../../Redux/Actions/orderActions';
 import './Profile.scss';
 import MyAccount from './components/MyAccount/MyAccount';
+import MyOrders from './components/MyOrders/MyOrder';
 
 const ProfileScreen = () => {
     window.scrollTo(0, 0);
@@ -15,19 +16,14 @@ const ProfileScreen = () => {
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
-    const orderListMy = useSelector((state) => state.orderListMy);
-    const { loading, error, orders } = orderListMy;
+    const myOrders = useSelector((state) => state.myOrders);
+    const { loading, error, orders } = myOrders;
     const [buleanProfile, setBuleanProfile] = useState(true);
-    const [pageNumber, setPageNumber] = useState(1);
 
     useEffect(() => {
         dispatch(getShippingAddresses());
         dispatch(getUserDetails('profile'));
     }, [dispatch]);
-
-    useEffect(() => {
-        dispatch(listMyOrders({ pageNumber }));
-    }, [pageNumber]);
 
     return (
         <div className="container mt-3">
@@ -84,16 +80,7 @@ const ProfileScreen = () => {
 
                 {/* panels */}
                 <div class="tab-content col-lg-8 pb-5 pt-lg-0 pt-3" id="v-pills-tabContent">
-                    {buleanProfile ? (
-                        <MyAccount />
-                    ) : (
-                        <Orders
-                            orders={orders}
-                            loading={loading}
-                            error={error}
-                            setPageNumber={(value) => setPageNumber(value)}
-                        />
-                    )}
+                    {buleanProfile ? <MyAccount /> : <MyOrders />}
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@ import usePlaceOrder, { PAY_WITH_CASH, PAY_WITH_MOMO } from './hook/usePlaceOrde
 import { Fragment } from 'react';
 import {
     Avatar,
+    Backdrop,
     Button,
     Card,
     CircularProgress,
@@ -41,6 +42,8 @@ export const RenderAttributes = ({ attributes }) => {
 
 const PlaceOrderScreen = ({ history }) => {
     const {
+        loadingApplyVoucher,
+        priceIsReduced,
         paymentMethod,
         setPaymentMethod,
         isOpenModalVoucher,
@@ -63,6 +66,9 @@ const PlaceOrderScreen = ({ history }) => {
 
     return (
         <div className="container">
+            <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <ModalAddress
                 isOpenModal={isOpenModalAddress}
                 handleClose={handleOpenModalAddress}
@@ -266,7 +272,12 @@ const PlaceOrderScreen = ({ history }) => {
                                 Khuyến mãi:
                             </Typography>
                             <Typography sx={{ textAlign: 'end' }} variant="body1">
-                                -{formatMoney(voucher?.discount || 0)}
+                                -{' '}
+                                {loadingApplyVoucher ? (
+                                    <CircularProgress size={15} />
+                                ) : (
+                                    formatMoney(priceIsReduced.totalDiscount || 0)
+                                )}
                             </Typography>
                         </div>
                         <div className={styles.totalFeeItem}>
@@ -274,7 +285,7 @@ const PlaceOrderScreen = ({ history }) => {
                                 Tổng thanh toán:
                             </Typography>
                             <Typography sx={{ textAlign: 'end', color: 'red' }} variant="h6">
-                                {formatMoney(cartOrder.total)}
+                                {loadingApplyVoucher ? <CircularProgress size={15} /> : formatMoney(cartOrder.total)}
                             </Typography>
                         </div>
                     </div>

@@ -14,7 +14,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function SlideDialogConfirm(props) {
     const { handleConfirm } = props;
     const [open, setOpen] = React.useState(false);
-    const handleClickOpen = () => {
+    const handleClickOpen = (e) => {
+        e.stopPropagation();
         setOpen(true);
     };
     const handleSubmit = () => {
