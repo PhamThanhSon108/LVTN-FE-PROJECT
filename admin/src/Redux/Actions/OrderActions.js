@@ -25,7 +25,7 @@ export const listOrders = (dateOrder, orderStatus, pageNumber) => async (dispatc
     dispatch({ type: ORDER_LIST_REQUEST });
 
     const { data } = await request.get(
-      `/orders/all?pageSize=${15}&pageNumber=${pageNumber}&dateOrder=${dateOrder}&orderStatus=${orderStatus}`,
+      `/orders?pageSize=${15}&pageNumber=${pageNumber}&dateOrder=${dateOrder}&orderStatus=${orderStatus}`,
     );
 
     dispatch({ type: ORDER_LIST_SUCCESS, payload: data });
@@ -46,7 +46,7 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
   try {
     dispatch({ type: ORDER_DETAILS_REQUEST });
     const { data } = await request.get(`/orders/${id}`);
-    dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data });
+    dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data?.data?.order });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
     if (message === 'Not authorized, token failed') {
@@ -85,7 +85,7 @@ export const updateStatusOrder =
     try {
       dispatch({ type: ORDER_UPDATE_STATUS_REQUEST });
 
-      const { data } = await request.patch(`/orders/${orderId}`, { status });
+      const { data } = await request.patch(`/orders/${orderId}/${status}`);
       toast.success(data?.message, ToastObject);
       dispatch({ type: ORDER_UPDATE_STATUS_SUCCESS, payload: data });
     } catch (error) {
@@ -102,7 +102,7 @@ export const updateStatusOrder =
     }
   };
 
-export const cancelOrder = (order) => async (dispatch, getState) => {
+export const cancelOrder = (order) => async (dispatch) => {
   try {
     dispatch({ type: ORDER_CANCEL_REQUEST });
 

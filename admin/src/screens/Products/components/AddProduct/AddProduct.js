@@ -59,7 +59,6 @@ const AddProduct = (props) => {
   const { productId } = props;
   const [category, setCategory] = useState('');
   const [name, setName] = useState('');
-  const [image, setImage] = useState('');
   const [newImage, setNewImage] = useState('');
   const [description, setDescription] = useState('');
   const [classifyValue, setClassifyValue] = useState();
@@ -101,7 +100,7 @@ const AddProduct = (props) => {
   };
   const submitHandler = (data, e) => {
     e.preventDefault();
-
+    console.log(data, 'data form');
     if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
       toast.error('Name of classify cannot be duplicated!!', ToastObjects);
       return;
@@ -112,16 +111,32 @@ const AddProduct = (props) => {
       newProduct.append('name', name);
       newProduct.append('description', description);
       newProduct.append('category', category);
+      newProduct.append('brand', data.brand);
+      newProduct.append('weight', data.weight);
+      newProduct.append('height', data.height);
+      newProduct.append('width', data.width);
+      newProduct.append('length', data.length);
+      newProduct.append('keywords', JSON.stringify([]));
       newProduct.append(
         'variants',
         JSON.stringify(
-          data.variants.reduce((variants, variant) => {
-            variants = variants.concat(variant.field);
-            return variants;
-          }, []),
+          data.variants
+            .reduce((variants, variant) => {
+              variants = variants.concat(variant.field);
+              return variants;
+            }, [])
+            .map((variant) => ({
+              ...variant,
+              attributes: [
+                { name: 'size', ...variant.attributes[0] },
+                { name: 'color', ...variant.attributes[1] },
+              ],
+            })),
         ),
       );
-      newImage ? newProduct.append('imageFile', newImage) : newProduct.append('imageFile', image);
+      newProduct.append('imageFile', newImage);
+      newProduct.append('imageFile', newImage);
+
       dispatch(createProduct(newProduct));
     }
   };
@@ -195,6 +210,99 @@ const AddProduct = (props) => {
                       </option>
                     ))}
                   </select>
+                </div>
+
+                <div className="mb-4">
+                  <label htmlFor="product_category" className="form-label">
+                    Thương hiệu
+                  </label>
+                  <Controller
+                    control={control}
+                    name="brand"
+                    render={({ field }) => (
+                      <input
+                        type="number"
+                        placeholder="Nhập thương hiệu của sản phẩm"
+                        {...field}
+                        required
+                        className="flex-grow-1 form-control"
+                      />
+                    )}
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label htmlFor="product_category" className="form-label">
+                    Kích thước của sản phẩm
+                  </label>
+                  <div className="d-flex col-12 justify-content-between align-items-center">
+                    <Controller
+                      control={control}
+                      name="weight"
+                      render={({ field }) => (
+                        <input
+                          min={1}
+                          max={20000}
+                          type="number"
+                          placeholder="Trọng lượng(gram)"
+                          {...field}
+                          required
+                          className="form-control col-3"
+                          style={{ width: '23%' }}
+                        />
+                      )}
+                    />
+                    -
+                    <Controller
+                      control={control}
+                      name="height"
+                      render={({ field }) => (
+                        <input
+                          min={1}
+                          max={200}
+                          type="number"
+                          placeholder="Chiều cao(cm)"
+                          {...field}
+                          required
+                          className="form-control col-3"
+                          style={{ width: '23%' }}
+                        />
+                      )}
+                    />
+                    -
+                    <Controller
+                      control={control}
+                      name="width"
+                      render={({ field }) => (
+                        <input
+                          min={1}
+                          max={200}
+                          type="number"
+                          placeholder="Chiều rộng(cm)"
+                          {...field}
+                          required
+                          className="form-control"
+                          style={{ width: '23%' }}
+                        />
+                      )}
+                    />
+                    -
+                    <Controller
+                      control={control}
+                      name="length"
+                      render={({ field }) => (
+                        <input
+                          min={1}
+                          max={200}
+                          placeholder="Chiều dài(cm)"
+                          {...field}
+                          required
+                          className="form-control"
+                          style={{ width: '23%' }}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
 
                 <div className="mb-4">

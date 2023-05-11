@@ -3,8 +3,9 @@ import Categories from '../screens/Categories/Categories';
 import Dashboard from '../screens/Dashboard/Dashboard';
 import Login from '../screens/LoginScreen';
 import NotFound from '../screens/NotFound';
+import OrderDetail from '../screens/OrderDetail/OrderDetail';
 import OrderDetailScreen from '../screens/OrderDetailScreen';
-import OrderScreen from '../screens/OrderScreen';
+import OrdersScreen from '../screens/Orders/OrdersScreen';
 
 import Products from '../screens/Products/Products';
 import AddProduct from '../screens/Products/components/AddProduct/AddProduct';
@@ -42,12 +43,12 @@ const privateRouter = [
   },
   {
     path: '/orders',
-    component: <OrderScreen />,
+    component: <OrdersScreen />,
     exact: true,
   },
   {
     path: '/orders/:orderId',
-    component: <OrderDetailScreen />,
+    component: <OrderDetail />,
     exact: true,
   },
   {

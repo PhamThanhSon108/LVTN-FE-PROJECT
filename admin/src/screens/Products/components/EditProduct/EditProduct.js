@@ -61,9 +61,14 @@ const EditProduct = () => {
     secondOption: [],
     firstOption: [],
     variants: [],
+    weight: 0,
+    height: 0,
+    width: 0,
+    length: 0,
+    brand: '',
   };
 
-  const { getValues, setValue, register, handleSubmit, watch, control } = useForm({
+  const { reset, getValues, setValue, register, handleSubmit, watch, control } = useForm({
     defaultValues: defaultGroupProduct,
     shouldUseNativeValidation: true,
   });
@@ -95,6 +100,12 @@ const EditProduct = () => {
         ),
       );
 
+      setValue('height', product?.height);
+      setValue('weight', product?.weight);
+      setValue('width', product?.width);
+      setValue('length', product?.length);
+      setValue('brand', product?.brand);
+
       setValue('firstOption', defaultFirstValue);
       setValue('secondOption', defaultSecondValue);
       setValue('variants', defaultVariants);
@@ -125,6 +136,12 @@ const EditProduct = () => {
       }, [])?.length
     );
   };
+  const handleAfterUpdate = {
+    success: () => {
+      toast.success('Success update', ToastObjects);
+      dispatch(fetchProductToEdit(productId, fetchProduct));
+    },
+  };
   const submitHandler = (data, e) => {
     e.preventDefault();
     if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
@@ -137,6 +154,13 @@ const EditProduct = () => {
       newProduct.append('name', name);
       newProduct.append('description', description);
       newProduct.append('category', category);
+      newProduct.append('brand', data.brand);
+      newProduct.append('weight', data.weight);
+      newProduct.append('height', data.height);
+      newProduct.append('width', data.width);
+      newProduct.append('length', data.length);
+      newProduct.append('keywords', JSON.stringify([]));
+      newProduct.append('images', JSON.stringify(product.images));
       newProduct.append(
         'variants',
         JSON.stringify(
@@ -146,11 +170,17 @@ const EditProduct = () => {
               variants = variants.concat(variant.field);
               return variants;
             }, []),
-          ),
+          ).map((variant) => ({
+            ...variant,
+            attributes: [
+              { ...variant.attributes[0], name: 'size' },
+              { ...variant.attributes[1], name: 'color' },
+            ],
+          })),
         ),
       );
       newImage ? newProduct.append('imageFile', newImage) : newProduct.append('imageFile', image);
-      dispatch(updateProduct(newProduct));
+      dispatch(updateProduct(newProduct, handleAfterUpdate));
     }
   };
 
@@ -213,6 +243,98 @@ const EditProduct = () => {
                       </option>
                     ))}
                   </select>
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="product_category" className="form-label">
+                    Thương hiệu
+                  </label>
+                  <Controller
+                    control={control}
+                    name="brand"
+                    render={({ field }) => (
+                      <input
+                        type="number"
+                        placeholder="Nhập thương hiệu của sản phẩm"
+                        {...field}
+                        required
+                        className="flex-grow-1 form-control"
+                      />
+                    )}
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label htmlFor="product_category" className="form-label">
+                    Kích thước của sản phẩm
+                  </label>
+                  <div className="d-flex col-12 justify-content-between align-items-center">
+                    <Controller
+                      control={control}
+                      name="weight"
+                      render={({ field }) => (
+                        <input
+                          min={1}
+                          max={20000}
+                          type="number"
+                          placeholder="Trọng lượng(gram)"
+                          {...field}
+                          required
+                          className="form-control col-3"
+                          style={{ width: '23%' }}
+                        />
+                      )}
+                    />
+                    -
+                    <Controller
+                      control={control}
+                      name="height"
+                      render={({ field }) => (
+                        <input
+                          min={1}
+                          max={200}
+                          type="number"
+                          placeholder="Chiều cao(cm)"
+                          {...field}
+                          required
+                          className="form-control col-3"
+                          style={{ width: '23%' }}
+                        />
+                      )}
+                    />
+                    -
+                    <Controller
+                      control={control}
+                      name="width"
+                      render={({ field }) => (
+                        <input
+                          min={1}
+                          max={200}
+                          type="number"
+                          placeholder="Chiều rộng(cm)"
+                          {...field}
+                          required
+                          className="form-control"
+                          style={{ width: '23%' }}
+                        />
+                      )}
+                    />
+                    -
+                    <Controller
+                      control={control}
+                      name="length"
+                      render={({ field }) => (
+                        <input
+                          min={1}
+                          max={200}
+                          placeholder="Chiều dài(cm)"
+                          {...field}
+                          required
+                          className="form-control"
+                          style={{ width: '23%' }}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
 
                 <div className="mb-4">
