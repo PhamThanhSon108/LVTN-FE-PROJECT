@@ -188,7 +188,8 @@ const DetailOrder = () => {
     const successPaymentHandler = (paymentResult) => {
         dispatch(payOrder(orderId, paymentResult));
     };
-    const lastStatus = order?.statusHistory?.[order?.statusHistory?.length - 1]?.status;
+    const lastStatus = order?.statusHistory?.at(-1)?.status;
+    console.log(lastStatus, 'las status');
     const paymentMethod = order?.paymentInformation?.paymentMethod;
     const stepperNoCancelStatus = paymentMethod === 1 ? stepperPayWithCash : stepperPayWithMomo;
     const stepper =
@@ -199,7 +200,7 @@ const DetailOrder = () => {
                       return stepper;
                   }
                   const step = stepperNoCancelStatus?.find((currentStatus) =>
-                      currentStatus.step.find((step) => step === status?.status),
+                      currentStatus.step.find((step) => step === lastStatus),
                   );
                   if (step) {
                       if (step.step[0] === status?.status) {
@@ -249,8 +250,7 @@ const DetailOrder = () => {
                                     status.step.find((step) => step === historyStatus?.status),
                                 );
                                 const isCompledStatus =
-                                    status.step.find((step) => step === order?.status) ||
-                                    status?.step[0] === 'cancelled';
+                                    status.step.find((step) => step === lastStatus) || status?.step[0] === 'cancelled';
 
                                 return (
                                     <Step completed={isCompledStatus} active={currentStatus} key={status?.step[0]}>
@@ -288,7 +288,10 @@ const DetailOrder = () => {
 
             <Card className="mt-2">
                 <Box className="d-flex justify-content-between align-items-center p-3 ">
-                    <Typography>Ngày nhận hàng dự kiến</Typography>
+                    <Typography>
+                        Ngày nhận hàng dự kiến:{' '}
+                        {order?.delivery?.leadTime && moment(order?.delivery?.leadTime).format('DD/MM/YYYY')}
+                    </Typography>
                     <Button onClick={handlePaid} variant="contained">
                         Đã nhận hàng
                     </Button>
@@ -410,6 +413,19 @@ const DetailOrder = () => {
                                 <td>
                                     <Typography component="div" variant="body1" color="error">
                                         {formatMoney(order?.totalPayment || 0)}
+                                    </Typography>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <Typography component="div" variant="body1" color="text.primary">
+                                        Phương thức thanh toán
+                                    </Typography>
+                                </td>
+                                <td>
+                                    <Typography component="div" variant="body1" color="error">
+                                        {order?.paymentInformation?.paymentMethod === '2' ? 'Momo' : 'Tiền mặt'}
                                     </Typography>
                                 </td>
                             </tr>

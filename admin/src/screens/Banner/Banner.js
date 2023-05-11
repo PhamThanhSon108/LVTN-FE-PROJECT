@@ -32,7 +32,6 @@ export default function Banner() {
 
   return (
     <>
-      <Toast />
       <div>
         {loadingDelete && <Loading />}
         <div className={styles.header}>

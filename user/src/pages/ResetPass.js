@@ -6,10 +6,14 @@ import { FormLoading } from '../components/LoadingError/Loading';
 import image from '~/assets/images';
 import { resetPassWord } from '~/Redux/Actions/userActions';
 
-import Toast from '../components/LoadingError/Toast';
+import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
-export default function ResetPass({ location, history }) {
-    const resetPasswordToken = location.search ? location.search.split('=')[1] : 1;
+export default function ResetPass() {
+    const location = useLocation();
+    const history = useHistory();
+    const searchParams = new URLSearchParams(location.search);
+    const resetPasswordToken = searchParams?.get('resetPasswordToken');
 
     const dispatch = useDispatch();
     const { loading } = useSelector((state) => state.resetPassword);
@@ -38,7 +42,7 @@ export default function ResetPass({ location, history }) {
                 <div className="d-flex align-content-center justify-content-center h-25-l">
                     <img src={image.logo}></img>
                 </div>
-                <h4>CREATE NEW PASSWORD</h4>
+                <h4>Tạo mật khẩu mới</h4>
                 <Controller
                     name="emailReset"
                     control={control}

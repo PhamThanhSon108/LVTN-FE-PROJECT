@@ -28,7 +28,9 @@ export const listProducts =
   async (dispatch) => {
     try {
       dispatch({ type: PRODUCT_LIST_REQUEST });
-      const { data } = await request.get(`/products?category=${category}&keyword=${keyword}&pageNumber=${pageNumber}`);
+      const { data } = await request.get(
+        `/products/admin?category=${category}&keyword=${keyword}&page=${pageNumber - 1}`,
+      );
       dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data.data });
     } catch (error) {
       const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -88,12 +90,13 @@ export const fetchProductToEdit = (id, fetchProduct) => async (dispatch) => {
 };
 
 // UPDATE PRODUCT
-export const updateProduct = (product) => async (dispatch) => {
+export const updateProduct = (product, handleAfterUpdate) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_UPDATE_REQUEST });
 
     await request.put(`/products/${product.get('_id')}`, product);
-    toast.success('Success update', ToastObjects);
+
+    handleAfterUpdate?.success();
     dispatch({ type: PRODUCT_UPDATE_SUCCESS });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
