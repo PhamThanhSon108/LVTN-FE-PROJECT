@@ -3,9 +3,8 @@ import * as React from 'react';
 import Dialog from '@mui/material/Dialog';
 
 import Slide from '@mui/material/Slide';
-import { useDispatch } from 'react-redux';
 import AddBanner from '../AddBanner/AddBanner';
-import { Button } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { inputPropsConstants } from '../../../../constants/variants';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -15,22 +14,37 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 function ModalAddBanner(props) {
   const [open, setOpen] = React.useState(false);
-  const dispatch = useDispatch();
-  const handleClickOpen = () => {
+
+  const handleClickOpen = (e) => {
+    e.stopPropagation();
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = (e) => {
+    e.stopPropagation();
     setOpen(false);
   };
+
+  if (!open)
+    return (
+      <div style={{ width: '250px !important' }}>
+        <div variant="outlined">
+          <div style={{ padding: '15px 0' }} className="col-12 d-flex justify-content-end">
+            <IconButton variant={inputPropsConstants.variantContained} onClick={handleClickOpen}>
+              <AddIcon />
+            </IconButton>
+          </div>
+        </div>{' '}
+      </div>
+    );
 
   return (
     <div style={{ width: '250px !important' }}>
       <div variant="outlined">
         <div style={{ padding: '15px 0' }} className="col-12 d-flex justify-content-end">
-          <Button variant={inputPropsConstants.variantContained} startIcon={<AddIcon />} onClick={handleClickOpen}>
-            Thêm Banner
-          </Button>
+          <IconButton variant={inputPropsConstants.variantContained} onClick={handleClickOpen}>
+            <AddIcon />
+          </IconButton>
         </div>
       </div>
       <Dialog

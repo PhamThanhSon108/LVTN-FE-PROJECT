@@ -6,7 +6,7 @@ import { formatMoney } from '~/utils/formatMoney';
 export default function Product({ product }) {
     const percentDiscount = (((product.price - product.priceSale) * 100) / product.price).toFixed();
     return (
-        <div className="col-lg-2 col-md-6 col-sm-6 product-card-wrap" key={product._id}>
+        <div className="col-lg-2 col-md-3 col-sm-6  mb-3" style={{ paddingLeft: 4, paddingRight: 4 }} key={product._id}>
             <Link to={`/product/${product._id}`}>
                 <div className={`border-product product-card-item ${styles.productWrapper}`}>
                     <div className={styles.imageWrapper}>

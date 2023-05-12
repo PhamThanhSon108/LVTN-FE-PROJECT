@@ -7,7 +7,7 @@ import { Image } from 'primereact/image';
 import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
-import { Button, Card, LinearProgress } from '@mui/material';
+import { Box, Button, Card, CardHeader, Divider, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -18,7 +18,9 @@ import Toast from '../../../../components/LoadingError/Toast';
 import { UploadImageProduct } from '../UploadImageProduct/UploadImageProduct';
 import { inputPropsConstants } from '../../../../constants/variants';
 import { useParams } from 'react-router-dom';
-
+import ReactQuill from 'react-quill';
+import { toolbarOptions } from '../../../../constants/productsConstants';
+import DeleteIcon from '@mui/icons-material/Delete';
 const ToastObjects = {
   pauseOnFocusLoss: false,
   draggable: false,
@@ -47,8 +49,8 @@ const EditProduct = () => {
   const [changeForALL, setChangForAll] = useState(false);
   const [category, setCategory] = useState('');
   const [name, setName] = useState('');
-  const [image, setImage] = useState('');
-  const [newImage, setNewImage] = useState('');
+  const [images, setImages] = useState([]);
+  const [newImages, setNewImages] = useState('');
   const [description, setDescription] = useState('');
   const [classifyValue, setClassifyValue] = useState();
 
@@ -56,6 +58,11 @@ const EditProduct = () => {
   const productEdit = useSelector((state) => state.productEdit);
   const { loading, product } = productEdit;
 
+  const productUpdate = useSelector((state) => state.productUpdate);
+  const { loading: loadingUpdate } = productUpdate;
+
+  const categoriesInStore = useSelector((state) => state.CategoryChildren);
+  const { categories } = categoriesInStore;
   const defaultGroupProduct = {
     option: ['firstOption', 'secondOption'],
     secondOption: [],
@@ -112,20 +119,9 @@ const EditProduct = () => {
       setName(product.name);
       setDescription(product.description);
       setCategory(product.category);
-      setImage(product.images?.[0]);
+      setImages(product.images);
     },
   };
-
-  useEffect(() => {
-    dispatch(ListCategory());
-    dispatch(fetchProductToEdit(productId, fetchProduct));
-  }, [productId, dispatch]);
-
-  const productUpdate = useSelector((state) => state.productUpdate);
-  const { loading: loadingUpdate } = productUpdate;
-
-  const categoriesInStore = useSelector((state) => state.CategoryChildren);
-  const { categories } = categoriesInStore;
 
   const checkSameValue = (arrValue) => {
     return (
@@ -136,16 +132,22 @@ const EditProduct = () => {
       }, [])?.length
     );
   };
+
   const handleAfterUpdate = {
     success: () => {
-      toast.success('Success update', ToastObjects);
+      toast.success('Cập nhật sản phẩm thành công', ToastObjects);
       dispatch(fetchProductToEdit(productId, fetchProduct));
     },
   };
+
   const submitHandler = (data, e) => {
     e.preventDefault();
     if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
-      toast.error('Name of classify cannot be duplicated!!', ToastObjects);
+      toast.error('Tên của phân loại hàng không được trùng nhau', ToastObjects);
+      return;
+    }
+    if (images.length === 0 && newImages.length === 0) {
+      toast.error('Sản phẩm phải có ít nhất một hình ảnh', ToastObjects);
       return;
     }
     if (category !== -1) {
@@ -160,7 +162,7 @@ const EditProduct = () => {
       newProduct.append('width', data.width);
       newProduct.append('length', data.length);
       newProduct.append('keywords', JSON.stringify([]));
-      newProduct.append('images', JSON.stringify(product.images));
+      newProduct.append('images', JSON.stringify(images));
       newProduct.append(
         'variants',
         JSON.stringify(
@@ -179,13 +181,28 @@ const EditProduct = () => {
           })),
         ),
       );
-      newImage ? newProduct.append('imageFile', newImage) : newProduct.append('imageFile', image);
+
+      if (newImages.length > 0) {
+        newImages.forEach((image) => {
+          newProduct.append('imageFile', image);
+        });
+      }
       dispatch(updateProduct(newProduct, handleAfterUpdate));
     }
   };
 
+  const handleDeleteOldImage = (imageWantToDelete) => {
+    setImages(images.filter((image) => image !== imageWantToDelete));
+  };
+
   const labelOfFirstOption = product?.variants?.[0]?.attributes?.[0]?.name || '';
   const labelOfSecondOption = product?.variants?.[1]?.attributes?.[1]?.name || '';
+
+  useEffect(() => {
+    dispatch(ListCategory());
+    dispatch(fetchProductToEdit(productId, fetchProduct));
+  }, [productId, dispatch]);
+
   return (
     <>
       <Toast />
@@ -339,21 +356,52 @@ const EditProduct = () => {
 
                 <div className="mb-4">
                   <label className="form-label">Mô tả</label>
-                  <textarea
-                    placeholder="Nhập mô tả"
-                    className="form-control"
-                    rows="7"
-                    required
+
+                  <ReactQuill
+                    modules={{
+                      toolbar: toolbarOptions,
+                    }}
+                    style={{ minHeight: '200px' }}
+                    theme="snow"
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  ></textarea>
+                    onChange={setDescription}
+                  />
                 </div>
                 <div className="mb-4">
                   <label className="form-label">Ảnh cũ của sản phẩm</label>
+                  <Box sx={{ mb: 2, display: 'flex' }}>
+                    {images.length > 0 ? (
+                      images?.map((image, index) => (
+                        <Card style={{ marginRight: '16px', padding: '0px 8px 8px' }} key={image}>
+                          <CardHeader
+                            sx={{ pl: 0, pr: 0, pb: '4px' }}
+                            subheader={`Ảnh ${index + 1}`}
+                            action={
+                              <Tooltip title="Xóa hình ảnh">
+                                <IconButton size="small" color="error" onClick={() => handleDeleteOldImage(image)}>
+                                  <DeleteIcon fontSize="10px" />
+                                </IconButton>
+                              </Tooltip>
+                            }
+                          />
+                          <Divider />
+                          <Image
+                            style={{ marginTop: '8px' }}
+                            key={image}
+                            src={image}
+                            template="Xem ảnh"
+                            alt={`Ảnh của ${name}`}
+                            preview
+                            width="100rem"
+                          />
+                        </Card>
+                      ))
+                    ) : (
+                      <Typography>Không có ảnh nào</Typography>
+                    )}
+                  </Box>
 
-                  <Image src={image} template="Preview Content" alt="Image Text" preview width="40px" />
-
-                  <UploadImageProduct setImage={(value) => setNewImage(value)} name={name} />
+                  <UploadImageProduct setImages={setNewImages} name={name} />
                 </div>
               </Card>
               <Card sx={{ padding: 2, mb: 2 }}>

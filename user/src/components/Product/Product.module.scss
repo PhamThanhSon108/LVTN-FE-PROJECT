@@ -48,9 +48,10 @@
     padding: var(--space-4);
 }
 .imageWrapper {
-    height: 190px;
-    width: 190px;
+    height: 11.875rem;
+    width: 100%;
     overflow: hidden;
+    padding: 0px var(--space-4);
 }
 .image {
     object-fit: cover;

@@ -17,6 +17,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { deleteProduct } from '../../../../Redux/Actions/ProductActions';
+import { formatMoney } from '../../../../utils/formatMoney';
 
 const Product = (props) => {
   const { product } = props;
@@ -42,20 +43,27 @@ const Product = (props) => {
               </Typography>
             </Tooltip>
           }
+          sx={{ width: '30%', maxWidth: '300px', pr: 2 }}
+        />
+
+        <ListItemText
           sx={{ width: '20%', maxWidth: '300px', pr: 2 }}
+          primary={product?.category?.name || 'Thể loại sản phẩm'}
         />
         <ListItemText
+          sx={{ width: '20%', maxWidth: '300px', pr: 2 }}
           primary={
-            <Tooltip title={product?.description || 'Mô tả về thể loại'}>
-              <Typography noWrap={true} variant="subtitle2" gutterBottom>
-                {product?.description || 'Mô tả về thể loại'}
+            <div className="d-flex align-content-center">
+              <Typography sx={{ textDecoration: 'line-through' }} color="black">
+                {formatMoney(product?.price || 0)}
               </Typography>
-            </Tooltip>
+              <Typography sx={{ pl: 1, pr: 1 }}>-</Typography>
+
+              <Typography color="error">{formatMoney(product?.priceSale || 0)}</Typography>
+            </div>
           }
-          sx={{ width: '20%', maxWidth: 'calc(100% - 350px)', pr: 2 }}
         />
-        <ListItemText primary={product?.category?.name || 'Thể loại sản phẩm'} />
-        <ListItemText primary={product?.price + ' VNĐ' || 'Giá sản phẩm'} />
+        <ListItemText sx={{ width: '10%', maxWidth: '300px', pr: 2 }} primary={`x${product?.quantity || 0}`} />
         <ListItemIcon>
           <Link to={`/products/${product._id}/edit`}>
             <IconButton>

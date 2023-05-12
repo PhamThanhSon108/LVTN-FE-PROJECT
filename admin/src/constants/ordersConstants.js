@@ -14,9 +14,9 @@ export const statusDescription = {
 };
 
 export const statusFilter = [
-  { status: '', description: 'All orders' },
+  { status: '', description: 'Tất cả đơn' },
   { status: 'placed', description: 'Đơn hàng mới' },
-  { status: 'approved', description: 'Đã xác nhận' },
+  { status: 'confirm', description: 'Đã xác nhận' },
   { status: 'delivering', description: 'Đang giao hàng' },
   { status: 'paid', description: 'Đã thanh toán' },
   { status: 'completed', description: 'Hoàn tất' },
@@ -34,7 +34,7 @@ export const statusAdminUpdate = {
 
 export const statusToUpdate = [
   {
-    status: 'approved',
+    status: 'confirm',
     label: 'Đã xác nhận đơn hàng',
   },
   {
@@ -52,8 +52,8 @@ export const statusToUpdate = [
 ];
 
 export const dateFilter = [
-  { status: 'newest', description: 'Newest' },
-  { status: 'latest', description: 'Latest' },
+  { status: 'newest', description: 'Mới nhất' },
+  { status: 'latest', description: 'Cũ tới mới' },
 ];
 
 export const stepShipping = {

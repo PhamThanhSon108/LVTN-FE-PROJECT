@@ -29,21 +29,35 @@ export default function Sliders() {
 
     return (
         <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
-            <div class="slider-container ">
+            <div class="slider-container " style={{ maxHeight: '252px', overflow: 'hidden', objectFit: 'cover' }}>
                 {data?.sliders?.length > 0 ? (
                     <Fragment>
-                        <Slider {...settings} className="slider-left-container">
+                        <Slider
+                            style={{ maxHeight: '252px', overflow: 'hidden', objectFit: 'cover' }}
+                            {...settings}
+                            className="slider-left-container"
+                        >
                             {data?.sliders?.map((value, index) => {
                                 return (
                                     <div key={index} className="slider-left-wrap d-flex align-items-center ">
-                                        <img alt="Banner 01" src={value.imageUrl}></img>
+                                        <img alt="Banner 01" src={value.image}></img>
                                     </div>
                                 );
                             })}
                         </Slider>
                         <div className="slider-right-wrap">
-                            <img className="slider-image" alt="Banner 02" src={data?.sliders?.[0]?.imageUrl}></img>
-                            <img className="slider-image" alt="Banner 03" src={data?.sliders?.[1]?.imageUrl}></img>
+                            <img
+                                style={{ objectFit: 'cover' }}
+                                className="slider-image"
+                                alt="Banner 02"
+                                src={data?.banners?.[0]?.image}
+                            ></img>
+                            <img
+                                style={{ objectFit: 'cover', height: '100%' }}
+                                className="slider-image"
+                                alt="Banner 03"
+                                src={data?.banners?.[1]?.image}
+                            ></img>
                         </div>
                     </Fragment>
                 ) : (

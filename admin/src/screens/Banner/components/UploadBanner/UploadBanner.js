@@ -5,30 +5,27 @@ import { FileUpload } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
 
 export const UploadBanner = (props) => {
-  const { setImage, clear } = props;
+  const { setImage } = props;
   const [totalSize, setTotalSize] = useState(0);
   const toast = useRef(null);
   const fileUploadRef = useRef(null);
 
-  useEffect(() => {
-    fileUploadRef.current.clear();
-  }, [clear]);
   const onTemplateSelect = (e) => {
     let _totalSize = e.files[0].size;
-    setImage((pre) => [...pre, ...e.files]);
+    setImage(e.files[0]);
     setTotalSize(_totalSize);
   };
 
   const onTemplateRemove = (file, callback) => {
     setTotalSize(totalSize - file.size);
 
-    setImage((pre) => pre.filter((item) => item.name !== file.name));
+    setImage('');
     callback();
   };
 
   const onTemplateClear = () => {
     setTotalSize(0);
-    setImage([]);
+    setImage('');
   };
 
   const headerTemplate = (options) => {
@@ -45,9 +42,9 @@ export const UploadBanner = (props) => {
 
   const itemTemplate = (file, props) => {
     return (
-      <div className="flex align-items-center flex-wrap  " style={{ display: 'flex', height: '150px' }}>
+      <div className="flex align-items-center flex-wrap  " style={{ display: 'flex', height: '100px' }}>
         <div className="flex align-items-center  d-flex " style={{ width: '90%', display: 'flex' }}>
-          <img alt={file.name} role="presentation" src={file.objectURL} height={150} />
+          <img alt={file.name} role="presentation" src={file.objectURL} height={80} />
         </div>
 
         <div style={{ width: '10%' }}>
@@ -64,19 +61,17 @@ export const UploadBanner = (props) => {
 
   const emptyTemplate = () => {
     return (
-      <div className="flex align-items-center flex-column" style={{ display: 'flex' }}>
+      <div className="flex align-items-center flex-column" style={{ display: 'flex', height: 100 }}>
         <i
-          className="pi pi-image mt-3 p-5"
+          className="pi pi-image mt-1 p-3 mb-1"
           style={{
-            fontSize: '5em',
+            fontSize: '2em',
             borderRadius: '50%',
             backgroundColor: 'var(--surface-b)',
             color: 'var(--surface-d)',
           }}
         ></i>
-        <span style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }} className="my-5">
-          Kéo và thả hình tại đây
-        </span>
+        <span style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }}>Kéo và thả hình tại đây</span>
       </div>
     );
   };
@@ -102,7 +97,6 @@ export const UploadBanner = (props) => {
       <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" /> */}
 
       <div className="card">
-        <h5 style={{ padding: '15px' }}>Thêm banner</h5>
         <FileUpload
           ref={fileUploadRef}
           name="demo[]"
@@ -118,7 +112,6 @@ export const UploadBanner = (props) => {
           emptyTemplate={emptyTemplate}
           chooseOptions={chooseOptions}
           cancelOptions={cancelOptions}
-          multiple
         />
       </div>
     </div>
