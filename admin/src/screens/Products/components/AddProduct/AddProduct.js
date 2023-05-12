@@ -6,7 +6,8 @@ import Loading from '../../../../components/LoadingError/Loading';
 import Toast from '../../../../components/LoadingError/Toast';
 import { UploadImageProduct } from '../UploadImageProduct/UploadImageProduct';
 import { inputPropsConstants } from '../../../../constants/variants';
-
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import React, { useState, useEffect, Fragment } from 'react';
 
 import { Link } from 'react-router-dom';
@@ -20,6 +21,7 @@ import { Button, Card } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
 
 import AddIcon from '@mui/icons-material/Add';
+import { toolbarOptions } from '../../../../constants/productsConstants';
 
 const MainLayout = ({ children }) => {
   return (
@@ -59,7 +61,7 @@ const AddProduct = (props) => {
   const { productId } = props;
   const [category, setCategory] = useState('');
   const [name, setName] = useState('');
-  const [newImage, setNewImage] = useState('');
+  const [newImages, setNewImages] = useState('');
   const [description, setDescription] = useState('');
   const [classifyValue, setClassifyValue] = useState();
 
@@ -134,8 +136,10 @@ const AddProduct = (props) => {
             })),
         ),
       );
-      newProduct.append('imageFile', newImage);
-      newProduct.append('imageFile', newImage);
+
+      newImages.forEach((image) => {
+        newProduct.append('imageFile', image);
+      });
 
       dispatch(createProduct(newProduct));
     }
@@ -221,7 +225,7 @@ const AddProduct = (props) => {
                     name="brand"
                     render={({ field }) => (
                       <input
-                        type="number"
+                        type="text"
                         placeholder="Nhập thương hiệu của sản phẩm"
                         {...field}
                         required
@@ -307,17 +311,19 @@ const AddProduct = (props) => {
 
                 <div className="mb-4">
                   <label className="form-label">Mô tả</label>
-                  <textarea
-                    placeholder="Nhập mô tả"
-                    className="form-control"
-                    rows="7"
-                    required
+
+                  <ReactQuill
+                    modules={{
+                      toolbar: toolbarOptions,
+                    }}
+                    style={{ minHeight: '200px' }}
+                    theme="snow"
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  ></textarea>
+                    onChange={setDescription}
+                  />
                 </div>
-                <div className="mb-4">
-                  <UploadImageProduct setImage={(value) => setNewImage(value)} name={name} />
+                <div className="mb-4 mt-2">
+                  <UploadImageProduct setImages={setNewImages} name={name} />
                 </div>
               </Card>
               <Card sx={{ padding: 2, mb: 2 }}>

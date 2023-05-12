@@ -153,6 +153,7 @@ const ShopSection = (props) => {
                                             <span>Sản phẩm hôm nay</span>
                                         </div>
                                     ) : null}
+
                                     {products?.map((product) => (
                                         <Product product={product} />
                                     ))}

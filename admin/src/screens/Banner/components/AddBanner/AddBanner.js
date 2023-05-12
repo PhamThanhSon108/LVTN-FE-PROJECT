@@ -7,8 +7,11 @@ import { toast } from 'react-toastify';
 import Toast from '../../../../components/LoadingError/Toast';
 import { UploadBanner } from '../UploadBanner/UploadBanner';
 import { inputPropsConstants } from '../../../../constants/variants';
-import { Button } from '@mui/material';
+import { Button, FormControlLabel, Radio, RadioGroup, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { Controller, useForm } from 'react-hook-form';
+import { renderError } from '../../../../utils/errorMessage';
+import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
 
 const ToastObjects = {
   pauseOnFocusLoss: false,
@@ -16,50 +19,87 @@ const ToastObjects = {
   pauseOnHover: false,
   autoClose: 2000,
 };
+const positionBanner = {
+  top: 0,
+  bottom: 1,
+};
 export default function AddBanner({ setOpen }) {
-  const [image, setImage] = useState();
+  const { control, setValue, handleSubmit } = useForm({
+    defaultValues: {
+      image: '',
+      title: '',
+      type: 'slider',
+      index: 3 || positionBanner.top,
+    },
+  });
+
   const dispatch = useDispatch();
-  const [clear, setClear] = useState(false);
+
   const sliderCreate = useSelector((state) => state.sliderCreate);
-  const { loading, slider, success } = sliderCreate;
-  useEffect(() => {
-    if (slider) {
+  const { loading } = sliderCreate;
+
+  const handleAfterCreate = {
+    success: () => {
+      toast.success('Thêm hình ảnh thành công', ToastObjects);
       setOpen(false);
-      setClear((pre) => !pre);
-    }
-  }, [dispatch, success]);
+    },
+    error: () => {},
+  };
 
-  const submitHandler = (e) => {
-    if (!image || image?.length <= 0) {
-      toast.error('Please choose image', ToastObjects);
+  const submitHandler = async (data) => {
+    if (!data?.image) {
+      toast.error('Bạn chưa chọn hình ảnh', ToastObjects);
       return;
     }
-    if (image?.length > 5) {
-      toast.error('Too many selected images', ToastObjects);
-      return;
-    }
-    e.preventDefault();
+
     const slider = new FormData();
-    slider.append('banner', image);
-    for (let i = 0; i < image.length; i++) {
-      slider.append('banner', image[i]);
-    }
+    slider.append('type', 'slider');
+    slider.append('imageFile', data.image);
+    slider.append('title', data.title);
 
-    dispatch(createSlider({ slider }));
+    dispatch(createSlider({ slider }, handleAfterCreate));
   };
   return (
     <>
-      <Toast />
-      {loading && <Loading />}
-      <div class="input-group col-12">
-        <UploadBanner setImage={setImage} clear={clear} />
-      </div>
-      {/* <p style={{ color: 'red' }}>{valueUrl.url}</p> */}
-      <div style={{ padding: '15px 15px' }} className="col-12 d-flex justify-content-end">
-        <Button variant={inputPropsConstants.variantContained} startIcon={<AddIcon />} onClick={submitHandler}>
-          Thêm Banner
-        </Button>
-      </div>
+      <form onSubmit={handleSubmit(submitHandler)}>
+        <Toast />
+        <div class="input-group col-12 d-flex flex-column p-4">
+          <h5 style={{ paddingBottom: '15px' }}>Thêm slider</h5>
+          <Controller
+            name="title"
+            control={control}
+            rules={{ required: true }}
+            render={({ field, fieldState }) => (
+              <TextField
+                className="pb-2"
+                focused={!!fieldState.error}
+                color={fieldState.error ? 'error' : 'info'}
+                label="Tên banner"
+                {...field}
+                variant={inputPropsConstants.variantOutLine}
+                size={inputPropsConstants.smallSize}
+                helperText={renderError([
+                  { error: fieldState?.error?.type === 'required', message: 'Bạn chưa nhập trường này' },
+                ])}
+              />
+            )}
+          />
+
+          <UploadBanner setImage={(image) => setValue('image', image)} />
+        </div>
+
+        {/* <p style={{ color: 'red' }}>{valueUrl.url}</p> */}
+        <div style={{ padding: '15px 15px' }} className="col-12 d-flex justify-content-end">
+          <LoadingButton
+            loading={loading}
+            type="submit"
+            variant={inputPropsConstants.variantContained}
+            startIcon={<AddIcon />}
+          >
+            Thêm
+          </LoadingButton>
+        </div>
+      </form>
     </>
   );
 }

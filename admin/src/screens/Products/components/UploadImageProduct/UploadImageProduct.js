@@ -4,9 +4,11 @@ import { FileUpload } from 'primereact/fileupload';
 import { ProgressBar } from 'primereact/progressbar';
 import { Button } from 'primereact/button';
 import { Tooltip } from 'primereact/tooltip';
-
+import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 export const UploadImageProduct = (props) => {
-  const { setImage, name, clear } = props;
+  const { setImages, name, clear } = props;
   const [totalSize, setTotalSize] = useState(0);
   const toast = useRef(null);
   const fileUploadRef = useRef(null);
@@ -17,22 +19,20 @@ export const UploadImageProduct = (props) => {
 
   const onTemplateSelect = (e) => {
     let _totalSize = e.files[0].size;
-    // e?.files.forEach((file) => {
-    //   _totalSize += file.size;
-    // });
-    setImage(e.files[0]);
+    setImages((pre) => [...pre, ...e.files]);
     setTotalSize(_totalSize);
   };
 
   const onTemplateRemove = (file, callback) => {
     setTotalSize(totalSize - file.size);
-    setImage('');
+
+    setImages((pre) => pre.filter((item) => item.name !== file.name));
     callback();
   };
 
   const onTemplateClear = () => {
     setTotalSize(0);
-    setImage('');
+    setImages([]);
   };
 
   const headerTemplate = (options) => {
@@ -133,23 +133,38 @@ export const UploadImageProduct = (props) => {
       <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
 
       <div className="col-12">
-        <div style={{ marginBottom: '12px' }}>Thêm ảnh</div>
-        <FileUpload
-          ref={fileUploadRef}
-          name="demo[]"
-          url="https://primefaces.org/primereact/showcase/upload.php"
-          accept="image/*"
-          maxFileSize={1000000}
-          // onUpload={onTemplateUpload}
-          onSelect={onTemplateSelect}
-          onError={onTemplateClear}
-          onClear={onTemplateClear}
-          headerTemplate={headerTemplate}
-          itemTemplate={itemTemplate}
-          emptyTemplate={emptyTemplate}
-          chooseOptions={chooseOptions}
-          cancelOptions={cancelOptions}
-        />
+        <Accordion>
+          <AccordionSummary
+            sx={{ alignItems: 'center' }}
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel2a-content"
+            id="panel2a-header"
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center' }} noWrap variant="body1" color="black">
+              <UploadFileIcon sx={{ fontSize: 20 }} color="action" />
+              <Typography sx={{ ml: 1 }}>Thêm ảnh</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            <FileUpload
+              multiple
+              ref={fileUploadRef}
+              name="demo[]"
+              url="https://primefaces.org/primereact/showcase/upload.php"
+              accept="image/*"
+              maxFileSize={1000000}
+              // onUpload={onTemplateUpload}
+              onSelect={onTemplateSelect}
+              onError={onTemplateClear}
+              onClear={onTemplateClear}
+              headerTemplate={headerTemplate}
+              itemTemplate={itemTemplate}
+              emptyTemplate={emptyTemplate}
+              chooseOptions={chooseOptions}
+              cancelOptions={cancelOptions}
+            />
+          </AccordionDetails>
+        </Accordion>
       </div>
     </div>
   );

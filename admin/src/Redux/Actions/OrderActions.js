@@ -20,26 +20,26 @@ import request from '../../utils/request';
 import { toast } from 'react-toastify';
 import { ToastObject } from '../../components/LoadingError/ToastObject';
 
-export const listOrders = (dateOrder, orderStatus, pageNumber) => async (dispatch, getState) => {
-  try {
-    dispatch({ type: ORDER_LIST_REQUEST });
+export const listOrders =
+  ({ dateOrder, orderStatus, page }) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({ type: ORDER_LIST_REQUEST });
 
-    const { data } = await request.get(
-      `/orders?pageSize=${15}&pageNumber=${pageNumber}&dateOrder=${dateOrder}&orderStatus=${orderStatus}`,
-    );
+      const { data } = await request.get(`/orders?limit=${15}&page=${page}&sortBy=${dateOrder}&status=${orderStatus}`);
 
-    dispatch({ type: ORDER_LIST_SUCCESS, payload: data });
-  } catch (error) {
-    const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-    if (message === 'Not authorized, token failed') {
-      dispatch(logout());
+      dispatch({ type: ORDER_LIST_SUCCESS, payload: data?.data });
+    } catch (error) {
+      const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+      if (message === 'Not authorized, token failed') {
+        dispatch(logout());
+      }
+      dispatch({
+        type: ORDER_LIST_FAIL,
+        payload: message,
+      });
     }
-    dispatch({
-      type: ORDER_LIST_FAIL,
-      payload: message,
-    });
-  }
-};
+  };
 
 // ORDER DETAILS
 export const getOrderDetails = (id) => async (dispatch, getState) => {

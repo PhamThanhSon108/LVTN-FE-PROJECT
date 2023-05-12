@@ -3,7 +3,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button, LinearProgress, List, Pagination } from '@mui/material';
+import { Button, Divider, LinearProgress, List, Pagination } from '@mui/material';
 
 import AddIcon from '@mui/icons-material/Add';
 import { debounce } from 'lodash';
@@ -71,6 +71,11 @@ const Products = () => {
     }
   };
 
+  const handleChangePage = (page) => {
+    if (page !== searchParams.get('page')) searchParams.set('page', page);
+    history.replace(`?${searchParams.toString()}`);
+  };
+
   async function handleChangeSearch(e) {
     debouncedSearch(e.target.value);
   }
@@ -108,7 +113,7 @@ const Products = () => {
           ) : null}
         </div>
         <div className="card mb-4 shadow-sm main-card-wrapper">
-          <header className="card-header bg-white ">
+          <header className="bg-white ">
             <div className="row gx-3 py-3">
               <div className="col-lg-4 col-md-6 me-auto ">
                 {/* <form onSubmit={(e) => handleSearch(e)}> */}
@@ -116,7 +121,7 @@ const Products = () => {
                   <input
                     type="search"
                     placeholder="Nhập sản phẩm cần tìm..."
-                    className="form-control p-2"
+                    className="form-control"
                     onChange={handleChangeSearch}
                     defaultValue={keyword}
                     disabled={loading}
@@ -129,7 +134,7 @@ const Products = () => {
               </div>
               <div className="col-lg-2 col-6 col-md-3">
                 <select
-                  className="form-select"
+                  className="form-select pr-0"
                   value={category}
                   onChange={(e) => {
                     handleCategory(e);
@@ -147,10 +152,19 @@ const Products = () => {
               </div>
             </div>
           </header>
-
+          <Divider />
           <div className="card-body">
             <RenderProducts products={products} error={error} loading={loading} />
-            {pages > 1 ? <Pagination count={pages} page={page} color="primary" /> : null}
+            {pages > 1 ? (
+              <div className="col-12 d-flex justify-content-end mt-2">
+                <Pagination
+                  count={pages}
+                  page={page + 1}
+                  onChange={(e, page) => handleChangePage(page)}
+                  color="primary"
+                />
+              </div>
+            ) : null}
           </div>
         </div>
       </section>

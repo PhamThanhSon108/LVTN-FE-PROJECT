@@ -9,6 +9,7 @@ import { Button, Chip, Rating, Typography, styled } from '@mui/material';
 import GppGoodIcon from '@mui/icons-material/GppGood';
 import { formatMoney } from '~/utils/formatMoney';
 import Review from './components/Review/Review';
+import ReactQuill from 'react-quill';
 
 const StyledRating = styled(Rating)({
     '& .MuiRating-iconFilled': {
@@ -329,15 +330,16 @@ const SingleProduct = () => {
                     </div>
                 </div>
                 <div className={styles.description}>
-                    <div className={styles.descriptionWrapper}>
-                        <Typography noWrap variant="h6" color="black">
-                            Mô tả
-                        </Typography>
-                    </div>
-
-                    <Typography variant="caption" color="black">
-                        {product.description}
+                    <Typography noWrap variant="h6" color="black">
+                        Mô tả
                     </Typography>
+                    <ReactQuill
+                        modules={{ toolbar: false }}
+                        style={{ minHeight: '200px' }}
+                        theme="snow"
+                        value={product?.description}
+                        readOnly
+                    />
                 </div>
                 {/* RATING */}
                 <Review />

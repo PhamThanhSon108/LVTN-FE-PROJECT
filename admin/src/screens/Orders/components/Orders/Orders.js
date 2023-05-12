@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { statusDescription } from '../../../../constants/ordersConstants';
+import { statusDescription, stepShipping } from '../../../../constants/ordersConstants';
 import { formatMoney } from '../../../../utils/formatMoney';
 
 const Orders = (props) => {
@@ -62,7 +62,7 @@ const Orders = (props) => {
                       text-dark`}
                     style={{ fontSize: '15px' }}
                   >
-                    {statusDescription[status]}
+                    {stepShipping[status]?.labelActive}
                   </span>
                 </td>
                 <td className="d-flex justify-content-end align-item-center">

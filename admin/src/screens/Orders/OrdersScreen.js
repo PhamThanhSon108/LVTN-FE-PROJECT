@@ -7,29 +7,46 @@ import Loading from '../../components/LoadingError/Loading';
 import Message from '../../components/LoadingError/Error';
 import Orders from './components/Orders/Orders';
 import { dateFilter, statusFilter } from '../../constants/ordersConstants';
-import { Pagination } from '@mui/material';
+import { Divider, Pagination } from '@mui/material';
+import { useHistory, useLocation } from 'react-router-dom';
 
 const OrdersScreen = (props) => {
   const orderList = useSelector((state) => state.orderList);
   const { loading, error, orders } = orderList;
   const dispatch = useDispatch();
 
-  const [dateOrder, setDateOrder] = useState('');
-  const [orderStatus, setOrderStatus] = useState('');
-  const [pageNumber, setPageNumber] = useState(1);
+  let history = useHistory();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const [page] = useState(searchParams.get('page') || 1);
+
+  const [dateOrder] = useState(searchParams.get('sort-by-date') || '');
+  const [orderStatus] = useState(searchParams.get('status') || '');
+
   const handleOrderStatus = (e) => {
-    setOrderStatus(e.target.value);
+    if (e.target.value !== undefined) {
+      searchParams.set('status', e.target.value);
+      searchParams.set('page', 1);
+      history.replace(`?${searchParams.toString()}`);
+    }
   };
 
   const handleDateOrder = (e) => {
-    setDateOrder(e.target.value);
+    if (e.target.value !== undefined) {
+      searchParams.set('sort-by-date', e.target.value);
+      searchParams.set('page', 1);
+      history.replace(`?${searchParams.toString()}`);
+    }
   };
+
+  const handleChangePage = (page) => {
+    if (page !== searchParams.get('page')) searchParams.set('page', page);
+    history.replace(`?${searchParams.toString()}`);
+  };
+
   useEffect(() => {
-    setPageNumber('1');
-  }, [orderStatus, dateOrder]);
-  useEffect(() => {
-    dispatch(listOrders(dateOrder, orderStatus, pageNumber));
-  }, [dispatch, orderStatus, dateOrder, pageNumber]);
+    dispatch(listOrders({ page: page - 1, orderStatus, dateOrder }));
+  }, [dispatch]);
   return (
     <section>
       <div className="content-header">
@@ -38,7 +55,7 @@ const OrdersScreen = (props) => {
 
       <div className="card mb-4 shadow-sm">
         <div className="card-body">
-          <div className="row d-flex justify-content-end">
+          <div className="row d-flex justify-content-end mb-2">
             <div className="col-lg-2 col-6 col-md-3" style={{ marginBottom: '5px' }}>
               <select className="form-select" value={dateOrder} onChange={handleDateOrder}>
                 {dateFilter?.map((item) => (
@@ -54,6 +71,7 @@ const OrdersScreen = (props) => {
               </select>
             </div>
           </div>
+          <Divider />
           <div className="table-responsive">
             {loading ? (
               <Loading />
@@ -62,25 +80,25 @@ const OrdersScreen = (props) => {
             ) : (
               <Orders orders={orders} />
             )}
+            {!loading && (
+              <div className="col-12 d-flex justify-center" style={{ display: 'flex', justifyContent: 'end' }}>
+                <nav aria-label="...">
+                  <ul class="pagination">
+                    <Pagination
+                      color="primary"
+                      page={orders?.page + 1 || page}
+                      count={orders?.pages}
+                      onChange={(e, page) => {
+                        handleChangePage(page);
+                      }}
+                    />
+                  </ul>
+                </nav>
+              </div>
+            )}
           </div>
         </div>
       </div>
-      {!loading && (
-        <div className="col-12 d-flex justify-center" style={{ display: 'flex', justifyContent: 'center' }}>
-          <nav aria-label="...">
-            <ul class="pagination">
-              <Pagination
-                color="primary"
-                defaultPage={pageNumber || 1}
-                count={orders?.pages}
-                onChange={(e, page) => {
-                  setPageNumber(page);
-                }}
-              />
-            </ul>
-          </nav>
-        </div>
-      )}
     </section>
   );
 };
