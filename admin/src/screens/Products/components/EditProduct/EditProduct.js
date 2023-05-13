@@ -21,6 +21,7 @@ import { useParams } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import { toolbarOptions } from '../../../../constants/productsConstants';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { convertFilesToBase64 } from '../../../../utils/convertBase64';
 const ToastObjects = {
   pauseOnFocusLoss: false,
   draggable: false,
@@ -140,7 +141,7 @@ const EditProduct = () => {
     },
   };
 
-  const submitHandler = (data, e) => {
+  const submitHandler = async (data, e) => {
     e.preventDefault();
     if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
       toast.error('Tên của phân loại hàng không được trùng nhau', ToastObjects);
@@ -181,13 +182,17 @@ const EditProduct = () => {
           })),
         ),
       );
-
       if (newImages.length > 0) {
-        newImages.forEach((image) => {
-          newProduct.append('imageFile', image);
-        });
+        await convertFilesToBase64(
+          newImages,
+          (base64) => {
+            newProduct.append('imageFile', JSON.stringify(base64));
+          },
+          () => {
+            dispatch(updateProduct(newProduct, handleAfterUpdate));
+          },
+        );
       }
-      dispatch(updateProduct(newProduct, handleAfterUpdate));
     }
   };
 

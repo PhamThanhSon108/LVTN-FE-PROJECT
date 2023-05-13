@@ -16,6 +16,7 @@ import { ToastObject } from '../../../../components/LoadingError/ToastObject';
 import { AddCategory } from '../../../../Redux/Actions/CategoryActions';
 import { inputPropsConstants } from '../../../../constants/variants';
 import { renderError } from '../../../../utils/errorMessage';
+import { convertFileToBase64 } from '../../../../utils/convertBase64';
 
 const style = {
   position: 'absolute',
@@ -88,34 +89,34 @@ export default function ModalAddCategoryParent({ isOpenModal, handleOpenModal })
   };
   const handleSubmitAddCategory = async (data) => {
     setIsLoadingAddCategory(true);
-    const newCategory = new FormData();
-    newCategory.append('name', data.name);
-    newCategory.append('description', data.description);
+    convertFileToBase64(image, (base64) => {
+      const newCategory = new FormData();
+      newCategory.append('name', data.name);
+      newCategory.append('description', data.description);
+      newCategory.append('children', JSON.stringify(data.children));
+      newCategory.append('level', data.level);
 
-    newCategory.append('children', JSON.stringify(data.children));
-
-    newCategory.append('level', data.level);
-
-    if (image) {
-      newCategory.append('imageFile', image);
-      dispatch(
-        AddCategory({
-          category: newCategory,
-          createCategoryStatus,
-        }),
-      );
-    } else {
-      newCategory.append(
-        'imageFile',
-        'https://www.google.com/url?sa=i&url=https%3A%2F%2Funsplash.com%2Fs%2Fphotos%2Fimage&psig=AOvVaw0HwuKBHYyQFXJElgig-E5x&ust=1682958113837000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCKiE5tWB0v4CFQAAAAAdAAAAABAE',
-      );
-      dispatch(
-        AddCategory({
-          category: newCategory,
-          createCategoryStatus,
-        }),
-      );
-    }
+      if (image) {
+        newCategory.append('imageFile', JSON.stringify(base64));
+        dispatch(
+          AddCategory({
+            category: newCategory,
+            createCategoryStatus,
+          }),
+        );
+      } else {
+        newCategory.append(
+          'imageFile',
+          'https://www.google.com/url?sa=i&url=https%3A%2F%2Funsplash.com%2Fs%2Fphotos%2Fimage&psig=AOvVaw0HwuKBHYyQFXJElgig-E5x&ust=1682958113837000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCKiE5tWB0v4CFQAAAAAdAAAAABAE',
+        );
+        dispatch(
+          AddCategory({
+            category: newCategory,
+            createCategoryStatus,
+          }),
+        );
+      }
+    });
   };
 
   const imageReview = image ? window.URL.createObjectURL(image) : '';

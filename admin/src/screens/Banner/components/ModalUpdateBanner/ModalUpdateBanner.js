@@ -5,19 +5,19 @@ import Dialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button, TextField, Typography } from '@mui/material';
+import { TextField, Typography } from '@mui/material';
 import { inputPropsConstants } from '../../../../constants/variants';
 import SaveIcon from '@mui/icons-material/Save';
 
 import { updateSlider } from '../../../../Redux/Actions/SliderAction';
 import { Controller, useForm } from 'react-hook-form';
-import Loading from '../../../../components/LoadingError/Loading';
 import { renderError } from '../../../../utils/errorMessage';
 import { UploadBanner } from '../UploadBanner/UploadBanner';
 import { Image } from 'primereact/image';
 import { toast } from 'react-toastify';
 import { ToastObject } from '../../../../components/LoadingError/ToastObject';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
+import { convertFileToBase64 } from '../../../../utils/convertBase64';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -49,21 +49,23 @@ function ModalUpdateBanner({ banner, setBanner }) {
   };
 
   const submitHandler = async (data) => {
-    const slider = new FormData();
-    if (data?.newImage) {
-      slider.append('imageFile', data.newImage);
-    } else {
-      slider.append('image', banner.image);
-    }
-    if (banner?.type === 'slider') {
-      slider.append('type', 'slider');
-    }
-    if (banner?.type === 'banner') {
-      slider.append('type', 'banner');
-    }
-    slider.append('title', data.title);
-    slider.append('index', data.index);
-    dispatch(updateSlider({ slider, id: banner?._id }, handleAfterUpdate));
+    convertFileToBase64(data.newImage, (base64) => {
+      const slider = new FormData();
+      if (data?.newImage) {
+        slider.append('imageFile', JSON.stringify(base64));
+      } else {
+        slider.append('image', banner.image);
+      }
+      if (banner?.type === 'slider') {
+        slider.append('type', 'slider');
+      }
+      if (banner?.type === 'banner') {
+        slider.append('type', 'banner');
+      }
+      slider.append('title', data.title);
+      slider.append('index', data.index);
+      dispatch(updateSlider({ slider, id: banner?._id }, handleAfterUpdate));
+    });
   };
 
   React.useEffect(() => {
