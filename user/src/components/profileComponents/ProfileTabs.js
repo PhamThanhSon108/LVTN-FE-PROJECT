@@ -1,13 +1,10 @@
 import React, { useEffect, useState, useRef, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Toast from './../LoadingError/Toast';
 import { FormLoading } from './../LoadingError/Loading';
-import { updateUserPassword, updateUserProfile } from '../../Redux/Actions/userActions';
+import { updateUserProfile } from '../../Redux/Actions/userActions';
 import isEmpty from 'validator/lib/isEmpty';
-import { addressRequest } from '~/utils/request';
 import { Autocomplete, Button, FormControl, FormControlLabel, Radio, RadioGroup, TextField } from '@mui/material';
 import './Profile.scss';
-import { getListAddress } from '~/Redux/Actions/address';
 import moment from 'moment';
 import { getProvinces } from '~/Redux/Actions/deliveryAction';
 
@@ -187,7 +184,7 @@ const ProfileTabs = () => {
             if (user.phone) setPhone(user.phone);
             if (user.gender) setGender(user.gender);
             if (user?.address?.specificAddress) setSpecificAddress(user?.address?.specificAddress || '');
-            if (user.birthday) setBirthDay(moment(user.birthday).format('YYYY-MM-DD'));
+            if (user?.birthday) setBirthDay(moment(user.birthday).format('DD/MM/YYYY'));
         }
         dispatch(getProvinces());
     }, [dispatch, user]);
@@ -212,13 +209,6 @@ const ProfileTabs = () => {
         setOldPassword('');
         setPassword('');
         setConfirmPassword('');
-    };
-    const submitUpdatePassword = (e) => {
-        e.preventDefault();
-        if (!checkPassword()) return; // check funtion check pass để kiểm tra xem có các trường bị rổng hay không
-        dispatch(
-            updateUserPassword({ currentPassword: oldPassword, newPassword: password }, handleSuccessUpdatePassword),
-        );
     };
 
     return (
@@ -427,18 +417,6 @@ const ProfileTabs = () => {
                 </div>
 
                 {/*Update password*/}
-                <FormUpdatePassword
-                    confirmPassword={confirmPassword}
-                    objFormPass={objFormPass}
-                    oldPassword={oldPassword}
-                    password={password}
-                    refSetPassword={refSetPassword}
-                    setConfirmPassword={setConfirmPassword}
-                    setOldPassword={setOldPassword}
-                    setPassword={setPassword}
-                    submitUpdatePassword={submitUpdatePassword}
-                    uploadPassword={uploadPassword}
-                />
             </div>
         </Fragment>
     );

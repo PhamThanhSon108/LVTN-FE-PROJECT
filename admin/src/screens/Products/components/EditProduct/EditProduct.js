@@ -142,12 +142,16 @@ const EditProduct = () => {
   };
 
   const submitHandler = async (data, e) => {
+    console.log('submit', data);
     e.preventDefault();
     if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
+      console.log('submit1');
+
       toast.error('Tên của phân loại hàng không được trùng nhau', ToastObjects);
       return;
     }
     if (images.length === 0 && newImages.length === 0) {
+      console.log('submit2');
       toast.error('Sản phẩm phải có ít nhất một hình ảnh', ToastObjects);
       return;
     }
@@ -186,12 +190,15 @@ const EditProduct = () => {
         await convertFilesToBase64(
           newImages,
           (base64) => {
-            newProduct.append('imageFile', JSON.stringify(base64));
+            // newProduct.append('imageFile', JSON.stringify(base64));
           },
-          () => {
+          (base64s) => {
+            newProduct.append('imageFile', JSON.stringify(base64s));
             dispatch(updateProduct(newProduct, handleAfterUpdate));
           },
         );
+      } else {
+        dispatch(updateProduct(newProduct, handleAfterUpdate));
       }
     }
   };
@@ -275,7 +282,7 @@ const EditProduct = () => {
                     name="brand"
                     render={({ field }) => (
                       <input
-                        type="number"
+                        type="text"
                         placeholder="Nhập thương hiệu của sản phẩm"
                         {...field}
                         required

@@ -88,20 +88,25 @@ const PlaceOrderScreen = ({ history }) => {
                     </Typography>
                 </div>
                 <Divider />
+
                 <div className={styles.addressBody}>
                     <Typography variant="body1" color={'InfoText'} className="col-3" sx={{ fontWeight: 600, pl: 1 }}>
                         {loadingGetList ? (
                             <CircularProgress size={15} />
                         ) : (
-                            `${address?.name || userInfo?.name} | ${address?.phone || userInfo?.phone}`
+                            `${address?.name || userInfo?.name || 'Bạn chưa có địa chỉ giao hàng vui lòng chọn'} | ${
+                                address?.phone || userInfo?.phone
+                            }`
                         )}
                     </Typography>
 
                     <Typography variant="caption" color={'InfoText'} className="col-6">
                         {loadingGetList ? (
                             <CircularProgress size={15} />
-                        ) : (
+                        ) : address?.province?.name ? (
                             `${address?.specificAddress}, ${address?.ward?.name}, ${address?.district?.name}, ${address?.province?.name}`
+                        ) : (
+                            ''
                         )}
                     </Typography>
                     <div className="col-1">

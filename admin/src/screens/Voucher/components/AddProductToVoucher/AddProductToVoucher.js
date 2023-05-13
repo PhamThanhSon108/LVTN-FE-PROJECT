@@ -38,7 +38,7 @@ function union(a, b) {
   return [...a, ...not(b, a)];
 }
 
-export default function AddProductToVoucher() {
+export default function AddProductToVoucher({ field }) {
   const dispatch = useDispatch();
   const [checked, setChecked] = React.useState([]);
   const [currentProducts, setCurrentProducts] = React.useState([]);
@@ -85,11 +85,13 @@ export default function AddProductToVoucher() {
     setCurrentSelectedProducts(currentSelectedProducts.concat(leftChecked));
     setCurrentProducts(not(currentProducts, leftChecked));
     setChecked(not(checked, leftChecked));
+    field.onChange(currentSelectedProducts.concat(leftChecked));
   };
 
   const handleDeleteSelectedProduct = (product) => {
     setCurrentProducts(currentProducts.concat([product]));
     setCurrentSelectedProducts(not(currentSelectedProducts, [product]));
+    field.onChange(not(currentSelectedProducts, [product]));
   };
 
   const fetchAllProduct = {
