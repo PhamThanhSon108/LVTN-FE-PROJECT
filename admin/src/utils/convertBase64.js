@@ -7,23 +7,6 @@ export const convertFileToBase64 = (file, handleCallAPI) => {
   reader.onerror = function (error) {};
 };
 
-// export const convertFilesToBase64 = async (files, handleCallAPI, handleAfterConvert) => {
-//   let newListBase64 = [];
-//   files.forEach((file) => {
-//     const reader = new FileReader();
-//     reader.readAsDataURL(file);
-//     reader.onload = function () {
-//       console.log(reader.result, newListBase64);
-//       newListBase64 = [...newListBase64, reader.result];
-//       handleCallAPI(reader.result);
-//     };
-//     reader.onerror = function (error) {};
-//   });
-//   console.log(newListBase64, 'conver success');
-//   handleAfterConvert();
-//   return newListBase64;
-// };
-
 export const convertFilesToBase64 = async (files, handleCallAPI, handleAfterConvert) => {
   let newListBase64 = [];
 

@@ -1,28 +1,32 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Header from '../components/Header';
-import Loading, { FormLoading } from '../components/LoadingError/Loading';
-import Toast from '../components/LoadingError/Toast';
 import { Controller, useForm } from 'react-hook-form';
 import image from '~/assets/images/index.js';
 import { forGotPassWord } from '~/Redux/Actions/userActions';
 import { Button, TextField, Typography } from '@mui/material';
+import { FormLoading } from '~/components/LoadingError/Loading';
+import { Toastobjects } from '~/components/LoadingError/Toast';
+import { toast } from 'react-toastify';
 
-export default function ForgotPass({ history }) {
+export default function ForgotPass() {
     const dispatch = useDispatch();
     const {
         handleSubmit,
         control,
         formState: { errors },
     } = useForm();
-    const userLogin = useSelector((state) => state.userLogin);
-    const { error, loading, userInfo } = userLogin;
 
+    const [successSendMail, setSuccessSendMail] = useState(false);
     const forgotPassword = useSelector((state) => state.forgotPassword);
-    const { error: errorForgot, loading: loadingForgot, success: successForgot } = forgotPassword;
-
+    const { loading: loadingForgot, success: successForgot } = forgotPassword;
+    const handleAfterFetch = {
+        success: () => {
+            setSuccessSendMail(true);
+            toast.success('Email xác thực đã được gửi, hãy kiểm tra tin nhắn của bạn', Toastobjects);
+        },
+    };
     const onSubmit = (data) => {
-        dispatch(forGotPassWord(data, history));
+        dispatch(forGotPassWord(data, handleAfterFetch));
     };
     return (
         <div className="mt-3 container d-flex flex-column justify-content-center align-items-center login-center">
@@ -72,9 +76,9 @@ export default function ForgotPass({ history }) {
                         Email không hợp lệ
                     </Typography>
                 )}
-                {successForgot ? (
+                {successSendMail ? (
                     <Typography variant="caption" color="green">
-                        Email xác nhận đã được gửi bạn vui lòng kiểm tra tin nhắn của mình
+                        Email xác nhận đã được gửi bạn vui lòng kiểm tra tin nhắn của bạn
                     </Typography>
                 ) : (
                     <Button

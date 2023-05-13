@@ -137,13 +137,14 @@ const AddProduct = (props) => {
             })),
         ),
       );
-
+      console.log(newImages.length);
       await convertFilesToBase64(
         newImages,
         (base64) => {
-          newProduct.append('imageFile', JSON.stringify(base64));
+          // newProduct.append('imageFile', JSON.stringify(base64));
         },
-        () => {
+        (base64s) => {
+          newProduct.append('imageFile', JSON.stringify(base64s));
           dispatch(createProduct(newProduct));
         },
       );

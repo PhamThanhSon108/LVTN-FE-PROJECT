@@ -36,58 +36,58 @@ const Register = () => {
         const msg = {};
         let re = /\S+@\S+\.\S+/;
         if (isEmpty(name)) {
-            msg.name = 'Please input your name';
+            msg.name = 'Bạn chưa nhập tên';
             msg.borderRed1 = 'border-red';
             msg.colorRed1 = 'color-red';
         }
 
         if (isEmpty(email)) {
-            msg.email = 'Plesae input your email';
+            msg.email = 'Bạn chưa nhập email';
             msg.borderRed2 = 'border-red';
             msg.colorRed2 = 'color-red';
         } else {
             if (!re.test(email)) {
-                msg.email = 'Incorrect Email';
+                msg.email = 'Email không hợp lệ';
                 msg.borderRed2 = 'border-red';
                 msg.colorRed2 = 'color-red';
             }
         }
 
         if (isEmpty(phone)) {
-            msg.phone = 'Plesae input your phone';
+            msg.phone = 'Bạn chưa nhập số điện thoại';
             msg.borderRed3 = 'border-red';
             msg.colorRed3 = 'color-red';
         } else {
             if (isNaN(phone)) {
-                msg.phone = 'Incorrect phone number';
+                msg.phone = 'Số điện thoại không hợp lệ';
                 msg.borderRed3 = 'border-red';
                 msg.colorRed3 = 'color-red';
             }
         }
         if (isEmpty(password)) {
-            msg.password = 'Please input your password';
+            msg.password = 'Bạn chưa nhập password';
             msg.borderRed4 = 'border-red';
             msg.colorRed4 = 'color-red';
         } else {
             if (password.length < 6) {
-                msg.password = 'Password must be at least 6 characters';
+                msg.password = 'Mật khẩu phải có ít nhất 6 ký tự';
                 msg.borderRed4 = 'border-red';
                 msg.colorRed4 = 'color-red';
             }
         }
 
         if (isEmpty(cfpassword)) {
-            msg.cfpassword = 'Please input your cfpassword';
+            msg.cfpassword = 'Bạn chưa nhập lại mật khẩu';
             msg.borderRed5 = 'border-red';
             msg.colorRed5 = 'color-red';
         } else {
             if (cfpassword.length < 6) {
-                msg.cfpassword = 'CfPassword must be at least 6 characters';
+                msg.cfpassword = 'Mật khẩu phải có 6 ký tự';
                 msg.borderRed5 = 'border-red';
                 msg.colorRed5 = 'color-red';
             } else {
                 if (cfpassword !== password) {
-                    msg.cfpassword = 'The password entered is incorrect';
+                    msg.cfpassword = 'Mật khẩu không khớp';
                     msg.borderRed5 = 'border-red';
                     msg.colorRed5 = 'color-red';
                 }
@@ -238,13 +238,21 @@ const Register = () => {
                     variant="contained"
                     color="primary"
                     size="large"
-                    sx={{ width: '100%', mt: 1, mb: 1 }}
+                    sx={{ width: '100%', mt: 1, mb: 2 }}
                 >
                     ĐĂNG KÝ
                 </Button>
                 <p>
-                    <Link to={redirect ? `/login?redirect=${redirect}` : '/login'}>
-                        Bạn đã có tài khoản <strong>Đăng nhập</strong>
+                    <Link
+                        to={redirect ? `/login?redirect=${redirect}` : '/login'}
+                        className="d-flex justify-content-center"
+                    >
+                        <Typography color="primary.text" sx={{ marginRight: 1 }}>
+                            Bạn đã có tài khoản?
+                        </Typography>
+                        <Typography color="primary" className="ml-2">
+                            Đăng nhập
+                        </Typography>
                     </Link>
                 </p>
             </form>

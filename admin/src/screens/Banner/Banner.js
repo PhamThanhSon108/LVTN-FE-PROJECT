@@ -13,7 +13,8 @@ import TabPanel from '@mui/lab/TabPanel';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import ModalUpdateBanner from './components/ModalUpdateBanner/ModalUpdateBanner';
-import useSearchParamsCustom from '../../components/hooks/useSearchParamCustom';
+import useSearchParamsCustom from '../../hooks/useSearchParamCustom';
+
 export default function Banner() {
   const { getParamValue, replaceParams } = useSearchParamsCustom();
   const [bannerWantToUpdate, setBannerWantToUpdate] = useState('');

@@ -11,6 +11,7 @@ import { renderError } from '~/utils/errorMessage';
 import { inputPropsConstants } from '~/constant/variants';
 import { LoadingButton } from '@mui/lab';
 import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
+import moment from 'moment';
 
 const ProfileTab = () => {
     const dispatch = useDispatch();
@@ -20,7 +21,7 @@ const ProfileTab = () => {
             email: '',
             phone: '',
             gender: 'male',
-            birthday: '2001-01-01',
+            birthday: '01-11-2001',
         },
     });
 
@@ -46,8 +47,10 @@ const ProfileTab = () => {
                     district: { DistrictName: '' },
                     ward: { WardName: '' },
                 },
+                birthday: moment(user?.birthday).format('YYYY-MM-DD'),
             });
         }
+        console.log(moment(user?.birthday).format('DD/MM/YYYY'));
         dispatch(getProvinces());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, user]);

@@ -72,7 +72,13 @@ const stepperPayWithMomo = [
     { step: ['delivering', 'delivered'] },
     { step: ['completed'] },
 ];
-const stepperPayWithCash = ['placed', 'confirm', 'delivering', 'delivered', 'paid', 'completed'];
+const stepperPayWithCash = [
+    { step: ['placed'] },
+    { step: ['confirm'] },
+    { step: ['delivering', 'delivered'] },
+    { step: ['paid'] },
+    { step: ['completed'] },
+];
 
 const ColorlibStepIconRoot = styled('div')(({ theme, ownerState }) => ({
     backgroundColor: 'white',
@@ -158,8 +164,6 @@ const DetailOrder = () => {
         success: successCreateReview,
     } = productReviewCreate;
 
-    const itemsPrice = order?.orderItems?.reduce((totalPrice, i) => totalPrice + i.quantity * i?.price, 0).toFixed(2);
-
     const cancelOrderHandler = () => {
         if (window.confirm('Are you sure??')) {
             dispatch(cancelOrder({ orderId: order?._id }));
@@ -188,29 +192,30 @@ const DetailOrder = () => {
     const successPaymentHandler = (paymentResult) => {
         dispatch(payOrder(orderId, paymentResult));
     };
-    const lastStatus = order?.statusHistory?.at(-1)?.status;
-    console.log(lastStatus, 'las status');
+    const lastStatus = order?.statusHistory.at(-1)?.status;
+
     const paymentMethod = order?.paymentInformation?.paymentMethod;
-    const stepperNoCancelStatus = paymentMethod === 1 ? stepperPayWithCash : stepperPayWithMomo;
+    const stepperNoCancelStatus = paymentMethod === '1' ? stepperPayWithCash : stepperPayWithMomo;
+
     const stepper =
         lastStatus === 'cancelled'
             ? order?.statusHistory.reduce((stepper, status) => {
                   if (status.status === 'cancelled') {
-                      stepper.push({ step: ['cancelled'] });
-                      return stepper;
+                      const newStepper = [...stepper, { step: ['cancelled'] }];
+                      return newStepper;
                   }
                   const step = stepperNoCancelStatus?.find((currentStatus) =>
-                      currentStatus.step.find((step) => step === lastStatus),
+                      currentStatus?.step?.find((step) => step === status.status),
                   );
                   if (step) {
                       if (step.step[0] === status?.status) {
                           stepper.push(step);
                       }
-                      return stepper;
                   }
+                  return stepper;
               }, [])
             : stepperNoCancelStatus;
-
+    console.log(stepper, lastStatus === 'cancelled');
     return (
         <div className="container">
             <div className="content-header"></div>
@@ -247,10 +252,11 @@ const DetailOrder = () => {
                         <Stepper alternativeLabel connector={<ColorlibConnector />}>
                             {stepper?.map((status) => {
                                 const currentStatus = order?.statusHistory?.find((historyStatus) =>
-                                    status.step.find((step) => step === historyStatus?.status),
+                                    status?.step?.find((step) => step === historyStatus?.status),
                                 );
                                 const isCompledStatus =
-                                    status.step.find((step) => step === lastStatus) || status?.step[0] === 'cancelled';
+                                    status?.step?.find((step) => step === lastStatus) ||
+                                    status?.step[0] === 'cancelled';
 
                                 return (
                                     <Step completed={isCompledStatus} active={currentStatus} key={status?.step[0]}>
@@ -292,7 +298,7 @@ const DetailOrder = () => {
                         Ngày nhận hàng dự kiến:{' '}
                         {order?.delivery?.leadTime && moment(order?.delivery?.leadTime).format('DD/MM/YYYY')}
                     </Typography>
-                    <Button onClick={handlePaid} variant="contained">
+                    <Button disabled={order?.status === 'cancelled'} onClick={handlePaid} variant="contained">
                         Đã nhận hàng
                     </Button>
                 </Box>
