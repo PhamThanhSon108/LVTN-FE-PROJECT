@@ -7,6 +7,7 @@ import { Tooltip } from 'primereact/tooltip';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import { convertFileToBase64 } from '../../../../utils/convertBase64';
 export const UploadImageProduct = (props) => {
   const { setImages, name, clear } = props;
   const [totalSize, setTotalSize] = useState(0);

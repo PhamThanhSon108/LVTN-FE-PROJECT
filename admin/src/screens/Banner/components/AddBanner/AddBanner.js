@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { createSlider } from '../../../../Redux/Actions/SliderAction';
-import Loading from '../../../../components/LoadingError/Loading';
+
 import { toast } from 'react-toastify';
 import Toast from '../../../../components/LoadingError/Toast';
 import { UploadBanner } from '../UploadBanner/UploadBanner';
 import { inputPropsConstants } from '../../../../constants/variants';
-import { Button, FormControlLabel, Radio, RadioGroup, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Controller, useForm } from 'react-hook-form';
 import { renderError } from '../../../../utils/errorMessage';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
+import { convertFileToBase64 } from '../../../../utils/convertBase64';
 
 const ToastObjects = {
   pauseOnFocusLoss: false,
@@ -51,13 +52,13 @@ export default function AddBanner({ setOpen }) {
       toast.error('Bạn chưa chọn hình ảnh', ToastObjects);
       return;
     }
-
-    const slider = new FormData();
-    slider.append('type', 'slider');
-    slider.append('imageFile', data.image);
-    slider.append('title', data.title);
-
-    dispatch(createSlider({ slider }, handleAfterCreate));
+    convertFileToBase64(data.image, (base64) => {
+      const slider = new FormData();
+      slider.append('type', 'slider');
+      slider.append('title', data.title);
+      slider.append('imageFile', JSON.stringify(base64));
+      dispatch(createSlider({ slider }, handleAfterCreate));
+    });
   };
   return (
     <>

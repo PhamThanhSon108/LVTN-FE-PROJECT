@@ -22,6 +22,7 @@ import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
 
 import AddIcon from '@mui/icons-material/Add';
 import { toolbarOptions } from '../../../../constants/productsConstants';
+import { convertFilesToBase64 } from '../../../../utils/convertBase64';
 
 const MainLayout = ({ children }) => {
   return (
@@ -100,7 +101,7 @@ const AddProduct = (props) => {
       }, [])?.length
     );
   };
-  const submitHandler = (data, e) => {
+  const submitHandler = async (data, e) => {
     e.preventDefault();
     console.log(data, 'data form');
     if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
@@ -137,11 +138,15 @@ const AddProduct = (props) => {
         ),
       );
 
-      newImages.forEach((image) => {
-        newProduct.append('imageFile', image);
-      });
-
-      dispatch(createProduct(newProduct));
+      await convertFilesToBase64(
+        newImages,
+        (base64) => {
+          newProduct.append('imageFile', JSON.stringify(base64));
+        },
+        () => {
+          dispatch(createProduct(newProduct));
+        },
+      );
     }
   };
 

@@ -37,8 +37,8 @@ const HomeScreen = () => {
                 <div className="wrap-homescreen-products">
                     {!category && !keyword ? <Sliders /> : null}
                     {!category && !keyword && <CategorySlider />}
-                    {!category && !keyword ? <Corousel /> : null}
-                    {!category && !keyword ? <CorouselOder /> : null}
+                    {/* {!category && !keyword ? <Corousel /> : null}
+                    {!category && !keyword ? <CorouselOder /> : null} */}
 
                     <ShopSection keyword={keyword} pageNumber={pageNumber} queryCategory={category} />
                 </div>
