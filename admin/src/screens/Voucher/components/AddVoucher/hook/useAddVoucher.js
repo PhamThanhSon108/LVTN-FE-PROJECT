@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { ToastObject } from '../../../../../components/LoadingError/ToastObject';
 import { useHistory, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { isUsageLimit } from '../AddVoucher';
+import { applyVoucherFor, isUsageLimit } from '../AddVoucher';
 const DEFAULT_STEP_USABLE_VOUCHER = 7;
 
 export default function useAddVoucher() {
@@ -15,6 +15,7 @@ export default function useAddVoucher() {
   const { id } = useParams();
   const {
     control,
+    setValue,
     reset,
     watch,
     formState: { errors },
@@ -62,11 +63,15 @@ export default function useAddVoucher() {
       endDate: data.applyTime[1].toJSON(),
       applicableProducts: data.applicableProducts?.map((product) => product._id),
     };
+    if (data.applyFor === applyVoucherFor.selectedProducts && data.applicableProducts?.length === 0) {
+      toast.error('Bạn chưa chọn sản phẩm áp dụng', ToastObject);
+      return;
+    }
     delete voucher.applyTime;
     if (id) {
-      dispatch(AddVoucher({ voucher, createVoucherStatus: handleAfterAdd }));
-    } else {
       dispatch(UpdateVoucher({ voucher, createVoucherStatus: handleAfterAdd }));
+    } else {
+      dispatch(AddVoucher({ voucher, createVoucherStatus: handleAfterAdd }));
     }
   };
 
@@ -75,5 +80,5 @@ export default function useAddVoucher() {
       dispatch(getVoucher({ id, handleAfterFetch: handleAfterGetDetail }));
     }
   }, []);
-  return { id, loadingAdd, control, watch, errors, handleSubmit, handleCreateVoucher };
+  return { id, loadingAdd, control, setValue, watch, errors, handleSubmit, handleCreateVoucher };
 }
