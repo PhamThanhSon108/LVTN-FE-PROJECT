@@ -10,7 +10,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import { useDispatch, useSelector } from 'react-redux';
-import { allProducts } from '../../../../Redux/Actions/ProductActions';
+import { getAllProducts } from '../../../../Redux/Actions/ProductActions';
 import {
   Avatar,
   InputAdornment,
@@ -38,21 +38,21 @@ function union(a, b) {
   return [...a, ...not(b, a)];
 }
 
-export default function AddProductToVoucher({ field }) {
+export default function AddProductToVoucher({ field, voucherId }) {
   const dispatch = useDispatch();
   const [checked, setChecked] = React.useState([]);
   const [currentProducts, setCurrentProducts] = React.useState([]);
-  const [currentSelectedProducts, setCurrentSelectedProducts] = React.useState([]);
+  const [currentSelectedProducts, setCurrentSelectedProducts] = React.useState(field.value || []);
   const [searchKey, setSearchKey] = React.useState('');
   const [filterByCategory, setFilterByCategory] = React.useState('-1');
   const lcategories = useSelector((state) => state.CategoryChildren);
   const { categories } = lcategories;
 
   const productList = useSelector((state) => state.productList);
-  const { loading } = productList;
+  const { loadingGetAll } = productList;
   const listProductAfterFilter = currentProducts.filter(
     (value) =>
-      value.name.toLocaleLowerCase().includes(searchKey.toLocaleLowerCase()) &&
+      value?.name?.toLocaleLowerCase().includes(searchKey?.toLocaleLowerCase()) &&
       (value.category._id === filterByCategory || filterByCategory === '-1'),
   );
 
@@ -96,7 +96,17 @@ export default function AddProductToVoucher({ field }) {
 
   const fetchAllProduct = {
     success: (products) => {
-      setCurrentProducts(products);
+      if (voucherId) {
+        console.log(products, field.value, 'list');
+        const selectedProducts = field.value.map((id) => products.find((product) => id === product?._id));
+        setCurrentProducts(products.filter((product) => !field.value.find((id) => product?._id === id)));
+        setCurrentSelectedProducts(selectedProducts);
+        if (selectedProducts.length > 0 && field.value?.length > 0) {
+          field.onChange(selectedProducts);
+        }
+      } else {
+        setCurrentProducts(products);
+      }
     },
   };
 
@@ -115,7 +125,8 @@ export default function AddProductToVoucher({ field }) {
   };
 
   React.useEffect(() => {
-    dispatch(allProducts(fetchAllProduct));
+    dispatch(getAllProducts(fetchAllProduct));
+
     dispatch(ListCategory());
   }, [dispatch]);
 
@@ -186,7 +197,7 @@ export default function AddProductToVoucher({ field }) {
       />
       <Divider />
       <div style={{ height: 2.5 }}>
-        {loading ? (
+        {loadingGetAll ? (
           <LinearProgress sx={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, height: '2.5px' }} />
         ) : null}
       </div>
@@ -194,6 +205,7 @@ export default function AddProductToVoucher({ field }) {
         sx={{
           bgcolor: 'background.paper',
           overflow: 'auto',
+          height: '45vh',
         }}
         dense
         component="div"
@@ -204,7 +216,7 @@ export default function AddProductToVoucher({ field }) {
 
           return (
             <ListItem key={value} role="listitem" button onClick={handleToggle(value)}>
-              <ListItemIcon>
+              <ListItemIcon className="col-1">
                 <Checkbox
                   checked={checked.indexOf(value) !== -1}
                   tabIndex={-1}
@@ -214,12 +226,12 @@ export default function AddProductToVoucher({ field }) {
                   }}
                 />
               </ListItemIcon>
-              <ListItemAvatar>
-                <Avatar alt={value.name} src={value?.images?.[0]} />
+              <ListItemAvatar className="col-1">
+                <Avatar alt={value?.name} src={value?.images?.[0]} />
               </ListItemAvatar>
-              <ListItemText id={labelId} primary={value?.name || 'Tên sản phẩm'} />
-              <ListItemText id={labelId} primary={value?.category?.name || 'Thể loại sản phẩm'} />
-              <ListItemText id={labelId} primary={value?.price + ' VNĐ' || 'Giá sản phẩm'} />
+              <ListItemText className="col-2" id={labelId} primary={value?.name || 'Tên sản phẩm'} />
+              <ListItemText className="col-2" id={labelId} primary={value?.category?.name || 'Thể loại sản phẩm'} />
+              <ListItemText className="col-2" id={labelId} primary={value?.price + ' VNĐ' || 'Giá sản phẩm'} />
             </ListItem>
           );
         })}
@@ -242,6 +254,7 @@ export default function AddProductToVoucher({ field }) {
         sx={{
           bgcolor: 'background.paper',
           overflow: 'auto',
+          height: '45vh',
         }}
         dense
         component="div"
@@ -251,13 +264,13 @@ export default function AddProductToVoucher({ field }) {
           const labelId = `transfer-list-all-item-${value}-label`;
 
           return (
-            <ListItem key={value} role="listitem" button>
+            <ListItem className="col-2" key={value} role="listitem" button>
               <ListItemAvatar>
-                <Avatar alt={value.name} src={value?.images?.[0]} />
+                <Avatar alt={value?.name} src={value?.images?.[0]} />
               </ListItemAvatar>
-              <ListItemText id={labelId} primary={value?.name || 'Tên sản phẩm'} />
-              <ListItemText id={labelId} primary={value?.category?.name || 'Thể loại sản phẩm'} />
-              <ListItemText id={labelId} primary={value?.price + ' VNĐ' || 'Giá sản phẩm'} />
+              <ListItemText className="col-2" id={labelId} primary={value?.name || 'Tên sản phẩm'} />
+              <ListItemText className="col-2" id={labelId} primary={value?.category?.name || 'Thể loại sản phẩm'} />
+              <ListItemText className="col-2" id={labelId} primary={value?.price + ' VNĐ' || 'Giá sản phẩm'} />
               <ListItemIcon>
                 <Button onClick={() => handleDeleteSelectedProduct(value)}>
                   <i className="fas fa-trash-alt color-red" />

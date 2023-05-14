@@ -23,14 +23,16 @@ export const UpdatePasswordTab = () => {
             passObj.password = 'Bạn chưa nhập mật khẩu mới';
         } else {
             if (password.length < 6) {
-                passObj.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+                passObj.password =
+                    'Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng';
             }
         }
         if (isEmpty(confirmPassword)) {
             passObj.confirmPassword = 'Bạn chưa nhập lại mật khẩu mới';
         } else {
             if (confirmPassword.length < 6) {
-                passObj.confirmPassword = 'Mật khẩu phải có ít nhất 6 ký tự';
+                passObj.confirmPassword =
+                    'Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng';
             } else {
                 if (password !== confirmPassword) {
                     passObj.confirmPassword = 'Mật khẩu không khớp';

@@ -47,7 +47,7 @@ const Login = () => {
             msg.colorRed2 = 'color-red';
         } else {
             if (password.length < 6) {
-                msg.password = 'Mật khẩu phải ít nhất 6 ký tự';
+                msg.password = 'Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng';
                 msg.borderRed2 = 'border-red';
                 msg.colorRed2 = 'color-red';
             }

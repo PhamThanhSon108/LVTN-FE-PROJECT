@@ -8,6 +8,17 @@ import { listMyOrders } from '../../Redux/Actions/orderActions';
 import './Profile.scss';
 import MyAccount from './components/MyAccount/MyAccount';
 import MyOrders from './components/MyOrders/MyOrder';
+import useSearchParamsCustom from '~/hooks/useSearchParamCustom';
+import VoucherWallet from './components/VoucherWallet/VoucherWallet';
+import { Badge, Typography } from '@mui/material';
+import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import DiscountOutlinedIcon from '@mui/icons-material/DiscountOutlined';
+const bar = {
+    purchase: { value: 'purchase', component: <MyOrders /> },
+    voucher: { value: 'voucher', component: <VoucherWallet /> },
+    property: { value: 'property', component: <MyAccount /> },
+};
 
 const ProfileScreen = () => {
     window.scrollTo(0, 0);
@@ -18,7 +29,8 @@ const ProfileScreen = () => {
     const { userInfo } = userLogin;
     const myOrders = useSelector((state) => state.myOrders);
     const { loading, error, orders } = myOrders;
-    const [buleanProfile, setBuleanProfile] = useState(true);
+    const { getParamValue, replaceParams } = useSearchParamsCustom();
+    const [currentBar] = useState(getParamValue('bar') || bar.property.value);
 
     useEffect(() => {
         dispatch(getShippingAddresses());
@@ -28,7 +40,7 @@ const ProfileScreen = () => {
     return (
         <div className="container mt-3">
             <div className="row align-items-start">
-                <div className="col-lg-4 wrap-profile-left">
+                <div className="col-lg-3 wrap-profile-left">
                     <div className="author-card pb-0">
                         <div
                             className="row fix-culum"
@@ -41,46 +53,62 @@ const ProfileScreen = () => {
                                 <img
                                     src="./images/user.png"
                                     alt="userprofileimage"
-                                    style={{ height: '100px', width: '100px' }}
+                                    style={{ height: '100%', width: '100%' }}
                                     className="fix-none"
                                 />
                             </div>
                             <div className="col-md-8">
-                                <h5 className="author-card-name mb-2">
-                                    <strong>{userInfo?.name || 'alias'}</strong>
+                                <h5 className="author-card-name mb-1">
+                                    <Typography variant="h6" fontWeight={600}>
+                                        {userInfo?.name || 'alias'}
+                                    </Typography>
                                 </h5>
-                                <span className="author-card-position">
-                                    <>Joined {moment(userInfo?.createdAt).format('LL')}</>
-                                </span>
+                                <Typography variant="caption" className="author-card-position">
+                                    Khách hàng
+                                </Typography>
                             </div>
                         </div>
                     </div>
                     <div className="wizard pt-3 fix-top wrap-profile-menu" style={{ marginTop: '10px' }}>
                         <div
                             onClick={() => {
-                                setBuleanProfile(true);
+                                replaceParams([{ key: 'bar', value: bar.property.value }], 'replaceAll');
                             }}
-                            className={`wrap-profile-menu-item ${buleanProfile ? 'active-menu' : ''}`}
+                            className={`wrap-profile-menu-item ${
+                                currentBar === bar.property.value ? 'active-menu' : ''
+                            }`}
                         >
-                            <span>Thông tin của tôi</span>
+                            <PersonOutlineOutlinedIcon sx={{ mr: 0.5, fontSize: '20px' }} />
+                            <Typography>Thông tin của tôi</Typography>
                         </div>
                         <div
-                            className={`wrap-profile-menu-item ${!buleanProfile ? 'active-menu' : ''}`}
+                            className={`wrap-profile-menu-item ${
+                                currentBar === bar.purchase.value ? 'active-menu' : ''
+                            }`}
                             onClick={() => {
-                                setBuleanProfile(false);
+                                replaceParams([{ key: 'bar', value: bar.purchase.value }], 'replaceAll');
                             }}
                         >
-                            <span>Đơn mua</span>
-                            <div className="number-my-order d-flex justify-content-center align-item-center">
-                                <span>{orders?.length || 0}</span>
-                            </div>
+                            <TextSnippetOutlinedIcon sx={{ mr: 0.5, fontSize: '20px' }} />
+                            <Typography>Đơn mua</Typography>
+                        </div>
+                        <div
+                            onClick={() => {
+                                replaceParams([{ key: 'bar', value: bar.voucher.value }], 'replaceAll');
+                            }}
+                            className={`wrap-profile-menu-item ${
+                                currentBar === bar.voucher.value ? 'active-menu' : ''
+                            }`}
+                        >
+                            <DiscountOutlinedIcon sx={{ mr: 0.5, fontSize: '20px' }} />
+                            <Typography>Kho vouchers</Typography>
                         </div>
                     </div>
                 </div>
 
                 {/* panels */}
-                <div class="tab-content col-lg-8 pb-5 pt-lg-0 pt-3" id="v-pills-tabContent">
-                    {buleanProfile ? <MyAccount /> : <MyOrders />}
+                <div class="tab-content col-lg-9 pb-5 pt-lg-0 pt-3" id="v-pills-tabContent">
+                    {bar?.[currentBar]?.component}
                 </div>
             </div>
         </div>

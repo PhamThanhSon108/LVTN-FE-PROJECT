@@ -9,16 +9,14 @@ import { UpdatePasswordTab } from '../UpdatePasswordTab/UpdatePasswordTab';
 import { Card } from '@mui/material';
 import AddressTab from '../AddressTab/AddressTab';
 
-import { useHistory, useLocation } from 'react-router-dom';
+import useSearchParamsCustom from '~/hooks/useSearchParamCustom';
 
 const TabPanelStyles = { padding: '0px 0px 24px' };
 export default function MyAccount() {
-    const location = useLocation();
-    const history = useHistory();
-    const searchParams = new URLSearchParams(location.search);
-    const [tab] = React.useState(searchParams.get('tab') || 'profile');
+    const { getParamValue, replaceParams } = useSearchParamsCustom();
+    const [tab] = React.useState(getParamValue('tab') || 'profile');
     const handleChange = (_, newTab) => {
-        history.replace(`?tab=${newTab}`);
+        replaceParams([{ key: 'tab', value: newTab }]);
     };
 
     return (

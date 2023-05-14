@@ -10,6 +10,7 @@ import useQuery from '~/hooks/useQuery';
 import './HomeScreen.scss';
 import CategorySlider from './components/CategorySlider/CategorySlider';
 import ShopSection from './components/ShopSection';
+import Vouchers from './components/Vouchers/Vouchers';
 
 const Corousel = React.lazy(() => import('../../components/SlideCorousel/Corousel'));
 const CorouselOder = React.lazy(() => import('../../components/SlideCorousel/CourouselOder'));
@@ -39,7 +40,7 @@ const HomeScreen = () => {
                     {!category && !keyword && <CategorySlider />}
                     {/* {!category && !keyword ? <Corousel /> : null}
                     {!category && !keyword ? <CorouselOder /> : null} */}
-
+                    <Vouchers />
                     <ShopSection keyword={keyword} pageNumber={pageNumber} queryCategory={category} />
                 </div>
 

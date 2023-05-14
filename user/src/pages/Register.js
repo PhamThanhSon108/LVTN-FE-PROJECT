@@ -70,7 +70,7 @@ const Register = () => {
             msg.colorRed4 = 'color-red';
         } else {
             if (password.length < 6) {
-                msg.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+                msg.password = 'Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng';
                 msg.borderRed4 = 'border-red';
                 msg.colorRed4 = 'color-red';
             }
@@ -82,7 +82,7 @@ const Register = () => {
             msg.colorRed5 = 'color-red';
         } else {
             if (cfpassword.length < 6) {
-                msg.cfpassword = 'Mật khẩu phải có 6 ký tự';
+                msg.cfpassword = 'Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng';
                 msg.borderRed5 = 'border-red';
                 msg.colorRed5 = 'color-red';
             } else {

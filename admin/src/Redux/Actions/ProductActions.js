@@ -1,4 +1,7 @@
 import {
+  PRODUCT_ALL_FAIL,
+  PRODUCT_ALL_REQUEST,
+  PRODUCT_ALL_SUCCESS,
   PRODUCT_CREATE_FAIL,
   PRODUCT_CREATE_REQUEST,
   PRODUCT_CREATE_SUCCESS,
@@ -108,17 +111,17 @@ export const updateProduct = (product, handleAfterUpdate) => async (dispatch) =>
   }
 };
 
-export const allProducts = (fetchAllProduct) => async (dispatch) => {
+export const getAllProducts = (fetchAllProduct) => async (dispatch) => {
   try {
-    dispatch({ type: PRODUCT_LIST_REQUEST });
+    dispatch({ type: PRODUCT_ALL_REQUEST });
     const { data } = await request.get(`/products/all-products`);
 
-    dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data.data || { products: [] } });
+    dispatch({ type: PRODUCT_ALL_SUCCESS, payload: data.data.products || { products: [] } });
     fetchAllProduct.success(data?.data.products || []);
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
     dispatch({
-      type: PRODUCT_LIST_FAIL,
+      type: PRODUCT_ALL_FAIL,
       payload: message,
     });
   }

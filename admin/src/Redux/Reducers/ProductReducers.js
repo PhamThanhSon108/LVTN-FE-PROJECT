@@ -1,4 +1,7 @@
 import {
+  PRODUCT_ALL_FAIL,
+  PRODUCT_ALL_REQUEST,
+  PRODUCT_ALL_SUCCESS,
   PRODUCT_CREATE_FAIL,
   PRODUCT_CREATE_REQUEST,
   PRODUCT_CREATE_RESET,
@@ -33,6 +36,17 @@ export const productListReducer = (state = { products: [] }, action) => {
       };
     case PRODUCT_LIST_FAIL:
       return { loading: false, error: action.payload };
+
+    case PRODUCT_ALL_REQUEST:
+      return { ...state, loadingGetAll: true };
+    case PRODUCT_ALL_SUCCESS:
+      return {
+        ...state,
+        allProducts: action.payload,
+        loadingGetAll: false,
+      };
+    case PRODUCT_ALL_FAIL:
+      return { ...state, loadingGetAll: false, error: action.payload };
     default:
       return state;
   }
