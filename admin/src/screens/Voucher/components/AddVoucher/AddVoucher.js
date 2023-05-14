@@ -13,7 +13,7 @@ import { inputPropsConstants } from '../../../../constants/variants';
 import { renderError } from '../../../../utils/errorMessage';
 import AddIcon from '@mui/icons-material/Add';
 
-const applyVoucherFor = {
+export const applyVoucherFor = {
   allProducts: 1,
   selectedProducts: 2,
 };
@@ -28,7 +28,7 @@ export const isUsageLimit = {
 };
 
 export default function AddVoucher() {
-  const { id, loadingAdd, control, watch, handleSubmit, errors, handleCreateVoucher } = useAddVoucher();
+  const { id, loadingAdd, control, setValue, watch, handleSubmit, errors, handleCreateVoucher } = useAddVoucher();
 
   return (
     <div className={styles.voucherContainer}>
@@ -87,7 +87,17 @@ export default function AddVoucher() {
               name="applyFor"
               control={control}
               render={({ field }) => (
-                <RadioGroup {...field} row className={styles.applyForProductWrapper}>
+                <RadioGroup
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e.target.value);
+                    if (field.value?._id) {
+                      setValue('applicableProducts', []);
+                    }
+                  }}
+                  row
+                  className={styles.applyForProductWrapper}
+                >
                   <FormControlLabel
                     value={applyVoucherFor.allProducts}
                     control={<Radio size={inputPropsConstants.smallSize} />}
