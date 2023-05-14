@@ -85,6 +85,13 @@ const privateRouter = [
     exact: true,
   },
   {
+    name: 'Chỉnh sửa vouchers',
+
+    path: '/vouchers/:id/edit',
+    component: <AddVoucher />,
+    exact: true,
+  },
+  {
     path: '*',
     component: <NotFound />,
     exact: true,

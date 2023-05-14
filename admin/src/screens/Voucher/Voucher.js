@@ -8,6 +8,7 @@ import {
   CardHeader,
   Divider,
   InputAdornment,
+  LinearProgress,
   List,
   ListItem,
   ListItemAvatar,
@@ -23,8 +24,10 @@ import useVoucher from './hook/useVoucher';
 import { inputPropsConstants } from '../../constants/variants';
 import { Link } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
+import moment from 'moment';
+import { formatMoney } from '../../utils/formatMoney';
 export default function Voucher() {
-  const { control, watch, handleSubmit, handleCreateVoucher } = useVoucher();
+  const { vouchers, loading } = useVoucher();
   return (
     <div className={styles.voucherContainer}>
       <div className={styles.header}>
@@ -35,6 +38,11 @@ export default function Voucher() {
           </Button>
         </Link>
       </div>
+      <div style={{ height: 2.5 }}>
+        {loading ? (
+          <LinearProgress sx={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, height: '2.5px' }} />
+        ) : null}
+      </div>
       <Card className={styles.voucherListWrapper}>
         <CardHeader
           className={styles.vouchersHeader}
@@ -42,7 +50,7 @@ export default function Voucher() {
             <div className={styles.vouchersHeaderFilter}>
               <TextField
                 className={styles.searchVouchers}
-                label="Tìm kiếm sản phẩm"
+                label="Tìm kiếm voucher"
                 size={inputPropsConstants.smallSize}
                 variant={inputPropsConstants.variantOutLine}
                 InputProps={{
@@ -53,16 +61,6 @@ export default function Voucher() {
                   ),
                 }}
               />
-              <Select
-                className={styles.searchVouchers}
-                size={inputPropsConstants.smallSize}
-                placeholder="Chọn thể loại"
-              >
-                <MenuItem value="-1">Tất cả thể loại</MenuItem>
-                {/* {categories.map((category) => (
-                  <MenuItem value={category?._id}>{category?.name || ''}</MenuItem>
-                ))} */}
-              </Select>
             </div>
           }
         />
@@ -78,7 +76,7 @@ export default function Voucher() {
           component="div"
           role="list"
         >
-          {[1, 2, 3, 4].map((value) => {
+          {vouchers?.map((value) => {
             const labelId = `transfer-list-all-item-${value}-label`;
 
             return (
@@ -86,14 +84,35 @@ export default function Voucher() {
                 <ListItemAvatar>
                   <Avatar alt={value?.name} src={value?.images?.[0]} />
                 </ListItemAvatar>
-                <ListItemText id={labelId} primary={value?.name || 'Tên sản phẩm'} />
-                <ListItemText id={labelId} primary={value?.category?.name || 'Thể loại sản phẩm'} />
-                <ListItemText id={labelId} primary={value?.price + ' VNĐ' || 'Giá sản phẩm'} />
+                <ListItemText className="col-2" id={labelId} primary={value?.code || 'Mã code'} />
+
+                <ListItemText
+                  className="col-3"
+                  id={labelId}
+                  primary={`${value?.used || 'Đã sử dụng'} / ${
+                    value?.isUsageLimit ? value?.usageLimit : 'Không giới hạn'
+                  }`}
+                />
+
+                <ListItemText
+                  className="col-3"
+                  id={labelId}
+                  primary={value?.discountType === '1' ? formatMoney(value?.discount) : value?.discount + ' %'}
+                />
+                <ListItemText
+                  className="col-3"
+                  id={labelId}
+                  primary={`${moment(value?.startDate).format('HH:MM DD/MM/YYYY')} - ${moment(value?.endDate).format(
+                    'HH:MM DD/MM/YYYY',
+                  )}`}
+                />
                 <ListItemIcon>
                   <div className={`${styles.actionEachVoucher} ${styles.actionEditVoucher}`}>
-                    <Tooltip title="Chỉnh sửa mã giảm giá">
-                      <i className="fas fa-pencil color-red" />
-                    </Tooltip>
+                    <Link to={`/vouchers/${value?._id}/edit`}>
+                      <Tooltip title="Chỉnh sửa mã giảm giá">
+                        <i className="fas fa-pencil color-red" />
+                      </Tooltip>
+                    </Link>
                   </div>
                   <div className={`${styles.actionEachVoucher} ${styles.actionDeleteVoucher}`}>
                     <Tooltip title="Xóa mã giảm giá">

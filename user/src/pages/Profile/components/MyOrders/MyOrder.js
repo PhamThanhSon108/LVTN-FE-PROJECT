@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getMyOrders } from '~/Redux/Actions/orderActions';
 import Loading from '~/components/LoadingError/Loading';
 import Message from '~/components/LoadingError/Error';
+import { Typography } from '@mui/material';
 const MyOrders = () => {
     const dispatch = useDispatch();
     const myOrders = useSelector((state) => state.myOrders);
@@ -29,15 +30,16 @@ const MyOrders = () => {
             <Fragment>
                 {!orders || orders?.length === 0 ? (
                     <div className="col-12 alert alert-info text-center mt-3">
-                        No Orders
+                        <Typography>Bạn chưa có đơn hàng nào</Typography>
                         <Link
                             className="btn btn-success mx-2 px-3 py-2"
                             to="/"
                             style={{
                                 fontSize: '12px',
+                                marginTop: '4px',
                             }}
                         >
-                            START SHOPPING
+                            <Typography>SHOPPING NGAY!</Typography>
                         </Link>
                     </div>
                 ) : (

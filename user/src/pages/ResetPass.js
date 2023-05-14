@@ -8,6 +8,8 @@ import { resetPassWord } from '~/Redux/Actions/userActions';
 
 import { useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
+import { TextField, Typography } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 
 export default function ResetPass() {
     const location = useLocation();
@@ -36,48 +38,72 @@ export default function ResetPass() {
     };
 
     return (
-        <div className="container d-flex flex-column justify-content-center align-items-center login-center">
-            <form className="Login col-md-6 col-lg-4 col-10" onSubmit={handleSubmit(submitResetPassword)}>
+        <div className="container d-flex flex-column justify-content-center align-items-center login-center mt-3">
+            <form
+                className="Login col-md-6 col-lg-4 col-10 d-flex flex-column align-content-start"
+                onSubmit={handleSubmit(submitResetPassword)}
+            >
                 {loading && <FormLoading />}
-                <div className="d-flex align-content-center justify-content-center h-25-l">
-                    <img src={image.logo}></img>
+                <div className="d-flex align-content-center justify-content-center h-25-lm">
+                    <img style={{ width: '40%' }} alt="Fashion shop" src={image.logo}></img>
                 </div>
-                <h4>Tạo mật khẩu mới</h4>
+
+                <Typography variant="h5" className="mb-3 mt-1">
+                    Tạo mật khẩu mới
+                </Typography>
                 <Controller
                     name="emailReset"
                     control={control}
                     defaultValue=""
                     rules={{
-                        required: 'Please enter your email',
+                        required: 'Bạn chưa nhập email',
                         pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
                     }}
-                    render={({ field }) => <input {...field} placeholder="Enter your email" />}
+                    render={({ field }) => (
+                        <TextField {...field} sx={{ width: '100%', mb: 0.5 }} size="small" label="Email" />
+                    )}
                 />
 
                 {/* <ErrorMessage errors={errors} name="emailReset" render={({ message }) => <p>{message}</p>} /> */}
-                {errors.emailReset && errors.emailReset.type == 'required' && (
-                    <p className="text-danger m-0">{errors.emailReset.message}</p>
+                {errors.emailReset && errors.emailReset.type === 'required' && (
+                    <p className="text-danger m-0" style={{ textAlign: 'start' }}>
+                        {errors.emailReset.message}
+                    </p>
                 )}
-                {errors.emailReset && errors.emailReset.type == 'pattern' ? (
-                    <p className="text-danger m-0">Invalid email</p>
+                {errors.emailReset && errors.emailReset.type === 'pattern' ? (
+                    <p style={{ textAlign: 'start' }} className="text-danger m-0">
+                        Email không hợp lệ
+                    </p>
                 ) : null}
 
                 <Controller
                     name="newPassword"
                     defaultValue=""
                     control={control}
-                    render={({ field }) => <input type={'password'} {...field} placeholder="Enter your new password" />}
+                    render={({ field }) => (
+                        <TextField
+                            {...field}
+                            sx={{ width: '100%', mt: 1.5, mb: 0.5 }}
+                            size="small"
+                            label="Mật khẩu mới"
+                            inputProps={{ type: 'password' }}
+                        />
+                    )}
                     rules={{
                         minLength: 6,
-                        required: 'Please your password',
+                        required: 'Bạn chưa nhập mật khẩu mới',
                     }}
                 />
-                {errors.newPassword && errors.newPassword.type == 'required' ? (
-                    <p className="text-danger m-0">{errors.newPassword.message}</p>
+                {errors.newPassword && errors.newPassword.type === 'required' ? (
+                    <p style={{ textAlign: 'start' }} className="text-danger m-0">
+                        {errors.newPassword.message}
+                    </p>
                 ) : null}
 
-                {errors.newPassword && errors.newPassword.type == 'minLength' ? (
-                    <p className="text-danger m-0">Password must be at least 6 characters</p>
+                {errors.newPassword && errors.newPassword.type === 'minLength' ? (
+                    <p style={{ textAlign: 'start' }} className="text-danger m-0">
+                        Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng
+                    </p>
                 ) : null}
 
                 <Controller
@@ -85,7 +111,13 @@ export default function ResetPass() {
                     defaultValue=""
                     control={control}
                     render={({ field }) => (
-                        <input type={'password'} {...field} placeholder="Enter your confirm password" />
+                        <TextField
+                            {...field}
+                            sx={{ width: '100%', mt: 1.5, mb: 0.5 }}
+                            size="small"
+                            label="Nhập lại Mật khẩu mới"
+                            inputProps={{ type: 'password' }}
+                        />
                     )}
                     rules={{
                         required: 'Please enter confirm password',
@@ -95,19 +127,19 @@ export default function ResetPass() {
                 />
 
                 {errors.newPassConfirm && errors.newPassConfirm.type === 'validate' ? (
-                    <p className="text-danger m-0">
-                        'Wrong or invalid confirm new password. Please correct and try again'
+                    <p style={{ textAlign: 'start' }} className="text-danger m-0">
+                        Mật khẩu không khớp
                     </p>
                 ) : null}
 
                 {errors.newPassConfirm && errors.newPassConfirm.type === 'required' ? (
-                    <p className="text-danger m-0">
-                        'Wrong or invalid confirm new password. Please correct and try again'
+                    <p style={{ textAlign: 'start' }} className="text-danger m-0">
+                        Bạn chưa nhập lại mật khẩu mới
                     </p>
                 ) : null}
-                <button className="btn btn-outline-danger btn__login" type="submit">
-                    Save password
-                </button>
+                <LoadingButton className=" mt-3" variant="contained" type="submit">
+                    Lưu
+                </LoadingButton>
             </form>
         </div>
     );

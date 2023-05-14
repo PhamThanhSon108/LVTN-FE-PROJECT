@@ -1,15 +1,14 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { getVouchers } from '../../../Redux/Actions/VoucherActions';
 
 export default function useVoucher() {
-  const { control, watch, handleSubmit } = useForm({
-    defaultValues: {
-      firstName: '',
-      select: {},
-      applyFor: '2',
-      discountType: 'price',
-    },
-  });
-  const handleCreateVoucher = (data) => {};
+  const dispatch = useDispatch();
+  const { vouchers, loading } = useSelector((state) => state.Voucher);
+  useEffect(() => {
+    dispatch(getVouchers({}));
+  }, []);
 
-  return { control, watch, handleSubmit, handleCreateVoucher };
+  return { vouchers, loading };
 }
