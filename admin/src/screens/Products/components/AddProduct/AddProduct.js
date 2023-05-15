@@ -103,7 +103,6 @@ const AddProduct = (props) => {
   };
   const submitHandler = async (data, e) => {
     e.preventDefault();
-    console.log(data, 'data form');
     if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
       toast.error('Name of classify cannot be duplicated!!', ToastObjects);
       return;
@@ -137,7 +136,7 @@ const AddProduct = (props) => {
             })),
         ),
       );
-      console.log(newImages.length);
+
       await convertFilesToBase64(
         newImages,
         (base64) => {
@@ -537,7 +536,7 @@ const AddProduct = (props) => {
                                   setValue(`variants.${iClass1}.field.${iClass2}.quantity`, watch('quantity'));
                                 }
                                 return (
-                                  <tr key={`${value1} + ${value2}`}>
+                                  <tr key={uuidv4()}>
                                     <td className="col-3">{value1 || '?'}</td>
                                     <td className="col-3">{value2 || '?'}</td>
                                     <td className="col-2">
@@ -559,7 +558,6 @@ const AddProduct = (props) => {
                                         className=""
                                         placeholder="Enter price"
                                         {...register(`variants.${iClass1}.field.${iClass2}.priceSale`, {
-                                          required: 'This is required',
                                           validate: {
                                             positive: (value) =>
                                               value >= 0 && value < watch(`variants.${iClass1}.field.${iClass2}.price`),

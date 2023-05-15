@@ -142,7 +142,6 @@ const EditProduct = () => {
   };
 
   const submitHandler = async (data, e) => {
-    console.log('submit', data);
     e.preventDefault();
     if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
       console.log('submit1');
@@ -617,7 +616,7 @@ const EditProduct = () => {
                                   setValue(`variants.${iClass1}.field.${iClass2}.quantity`, watch('quantity'));
                                 }
                                 return (
-                                  <tr key={`${value1} + ${value2}`}>
+                                  <tr key={uuidv4()}>
                                     <td className="col-3">{value1 || '?'}</td>
                                     <td className="col-3">{value2 || '?'}</td>
                                     <td className="col-2">

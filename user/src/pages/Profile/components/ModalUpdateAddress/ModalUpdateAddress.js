@@ -223,7 +223,7 @@ export default function ModalUpdateAddress({ isOpenModal, handleOpenModal, addre
                                             sx={{ width: '100%' }}
                                             fullWidth={true}
                                             options={provinces}
-                                            getOptionLabel={(option) => option.ProvinceName}
+                                            getOptionLabel={(option) => option?.ProvinceName}
                                             renderInput={(params) => (
                                                 <Fragment>
                                                     <TextField
@@ -271,7 +271,7 @@ export default function ModalUpdateAddress({ isOpenModal, handleOpenModal, addre
                                                 dispatch(getWards(value.DistrictID));
                                             }}
                                             getOptionSelected={(option, value) =>
-                                                option.DistrictName === value.DistrictName
+                                                option?.DistrictName === value?.DistrictName
                                             }
                                             size="small"
                                             sx={{ width: '100%' }}
@@ -323,8 +323,8 @@ export default function ModalUpdateAddress({ isOpenModal, handleOpenModal, addre
                                             sx={{ width: '100%' }}
                                             fullWidth={true}
                                             options={wards}
-                                            getOptionSelected={(option, value) => option.WardName === value.WardName}
-                                            getOptionLabel={(option) => option.WardName}
+                                            getOptionSelected={(option, value) => option?.WardName === value?.WardName}
+                                            getOptionLabel={(option) => option?.WardName}
                                             disabled={!watch('address.district')?.DistrictName}
                                             renderInput={(params) => (
                                                 <Fragment>

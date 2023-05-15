@@ -12,7 +12,7 @@ import CategorySlider from './components/CategorySlider/CategorySlider';
 import ShopSection from './components/ShopSection';
 import Vouchers from './components/Vouchers/Vouchers';
 
-const Corousel = React.lazy(() => import('../../components/SlideCorousel/Corousel'));
+const NewProductRecommend = React.lazy(() => import('../../components/SlideCorousel/NewProductRecommend'));
 const CorouselOder = React.lazy(() => import('../../components/SlideCorousel/CourouselOder'));
 
 const Sliders = React.lazy(() => import('../../components/Sliders'));
@@ -38,9 +38,9 @@ const HomeScreen = () => {
                 <div className="wrap-homescreen-products">
                     {!category && !keyword ? <Sliders /> : null}
                     {!category && !keyword && <CategorySlider />}
-                    {/* {!category && !keyword ? <Corousel /> : null}
-                    {!category && !keyword ? <CorouselOder /> : null} */}
-                    <Vouchers />
+                    {!category && !keyword ? <NewProductRecommend /> : null}
+                    {!category && !keyword && <Vouchers />}
+                    {!category && !keyword ? <CorouselOder /> : null}
                     <ShopSection keyword={keyword} pageNumber={pageNumber} queryCategory={category} />
                 </div>
 

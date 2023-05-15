@@ -36,7 +36,7 @@ import {
 import { Sliderload } from './Reducers/SliderReducer';
 import { categoryListReducer } from './Reducers/CategoryReducers';
 import { AddressReducer, ShippingFeeReducer } from './Reducers/DeliveryReducers';
-import { myVouchers } from './Reducers/VoucherReducers';
+import { addVoucher, myVouchers, publicVouchers } from './Reducers/VoucherReducers';
 
 const reducer = combineReducers({
     listAllOrder: productbestseller,
@@ -72,6 +72,8 @@ const reducer = combineReducers({
     shippingAddress: shippingAddress,
 
     myVouchers: myVouchers,
+    publicVouchers: publicVouchers,
+    addVoucher: addVoucher,
 });
 
 const cartOrderItemsFromLocalStorage = localStorage.getItem('cartOrderItems')

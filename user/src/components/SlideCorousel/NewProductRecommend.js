@@ -8,8 +8,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ListProductAll } from '../../Redux/Actions/productActions';
 import { useEffect } from 'react';
 import { Card, CardContent, CardMedia, Skeleton, Typography } from '@mui/material';
+import Product from '../Product/Product';
 
-export default function Corousel() {
+export default function NewProductRecommend() {
     const allProduct = useSelector((state) => state.productAll);
     const { products, loading } = allProduct;
 
@@ -58,44 +59,20 @@ export default function Corousel() {
     return (
         <div style={{ marginTop: '20px' }}>
             <div className="divider-custom">
-                <span>New products</span>
+                <span>Sản phẩm mới</span>
             </div>
             <div style={{ maxHeight: '340px' }}>
-                {products?.length > 0 ? (
-                    <Slider className="new-product-recomment" {...settings} style={{ maxHeight: '340px' }}>
-                        {products?.map((product, index) => {
-                            return (
-                                <Card className="col-sm-2 product-card">
-                                    <Link to={`/product/${product._id}`} className="corousel-link">
-                                        <CardMedia
-                                            component="img"
-                                            height="180"
-                                            image={product?.image}
-                                            className="corousel-img"
-                                        />
-                                        <CardContent>
-                                            <Typography
-                                                gutterBottom
-                                                variant="h8"
-                                                component="div"
-                                                className="corousel-noti"
-                                            >
-                                                {product.name}
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                <div className="corousel-rating">
-                                                    <Rating
-                                                        value={product.rating}
-                                                        text={`${product.numReviews} reviews`}
-                                                    />
-                                                </div>
-                                                <p className="corousel-price">${product.price?.toFixed(2)}</p>
-                                            </Typography>
-                                        </CardContent>
-                                    </Link>
-                                </Card>
-                            );
-                        })}
+                {!loading ? (
+                    <Slider
+                        className="col-12"
+                        {...settings}
+                        style={{ maxHeight: '340px', backgroundColor: 'transparent' }}
+                    >
+                        {products?.map((product, index) => (
+                            <div className="col-lg-2 col-md-3 col-sm-6  mb-3" key={product._id}>
+                                <Product key={product?._id} product={product} />
+                            </div>
+                        ))}
                     </Slider>
                 ) : (
                     <>

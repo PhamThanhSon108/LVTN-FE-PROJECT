@@ -37,7 +37,7 @@ export const createOrder = (order, handleAfterFetch) => async (dispatch, getStat
     try {
         dispatch({ type: ORDER_CREATE_REQUEST });
         const { data } = await addOrder(order);
-        handleAfterFetch.success(data.data.newOrder);
+        handleAfterFetch?.success(data.data.newOrder);
 
         dispatch({ type: ORDER_CREATE_SUCCESS, payload: data });
         dispatch({ type: CART_CONST?.CART_ORDER_RESET });
@@ -45,14 +45,14 @@ export const createOrder = (order, handleAfterFetch) => async (dispatch, getStat
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
 
-        handleAfterFetch.error();
+        handleAfterFetch?.error(message);
         toast.error(message, Toastobjects);
         dispatch({
             type: ORDER_CREATE_FAIL,
             payload: message,
         });
     } finally {
-        handleAfterFetch.finally();
+        handleAfterFetch?.finally();
     }
 };
 
