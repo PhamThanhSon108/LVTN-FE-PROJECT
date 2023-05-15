@@ -97,7 +97,6 @@ export default function AddProductToVoucher({ field, voucherId }) {
   const fetchAllProduct = {
     success: (products) => {
       if (voucherId) {
-        console.log(products, field.value, 'list');
         const selectedProducts = field.value.map((id) => products.find((product) => id === product?._id));
         setCurrentProducts(products.filter((product) => !field.value.find((id) => product?._id === id)));
         setCurrentSelectedProducts(selectedProducts);

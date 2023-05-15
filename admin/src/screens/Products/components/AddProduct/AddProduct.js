@@ -103,9 +103,8 @@ const AddProduct = (props) => {
   };
   const submitHandler = async (data, e) => {
     e.preventDefault();
-    console.log(data, 'data form');
     if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
-      toast.error('Name of classify cannot be duplicated!!', ToastObjects);
+      toast.error('Giá trị các phân loại không được trùng nhau!', ToastObjects);
       return;
     }
     if (category !== -1) {
@@ -137,7 +136,6 @@ const AddProduct = (props) => {
             })),
         ),
       );
-      console.log(newImages.length);
       await convertFilesToBase64(
         newImages,
         (base64) => {
@@ -242,80 +240,6 @@ const AddProduct = (props) => {
                 </div>
 
                 <div className="mb-4">
-                  <label htmlFor="product_category" className="form-label">
-                    Kích thước của sản phẩm
-                  </label>
-                  <div className="d-flex col-12 justify-content-between align-items-center">
-                    <Controller
-                      control={control}
-                      name="weight"
-                      render={({ field }) => (
-                        <input
-                          min={1}
-                          max={20000}
-                          type="number"
-                          placeholder="Trọng lượng(gram)"
-                          {...field}
-                          required
-                          className="form-control col-3"
-                          style={{ width: '23%' }}
-                        />
-                      )}
-                    />
-                    -
-                    <Controller
-                      control={control}
-                      name="height"
-                      render={({ field }) => (
-                        <input
-                          min={1}
-                          max={200}
-                          type="number"
-                          placeholder="Chiều cao(cm)"
-                          {...field}
-                          required
-                          className="form-control col-3"
-                          style={{ width: '23%' }}
-                        />
-                      )}
-                    />
-                    -
-                    <Controller
-                      control={control}
-                      name="width"
-                      render={({ field }) => (
-                        <input
-                          min={1}
-                          max={200}
-                          type="number"
-                          placeholder="Chiều rộng(cm)"
-                          {...field}
-                          required
-                          className="form-control"
-                          style={{ width: '23%' }}
-                        />
-                      )}
-                    />
-                    -
-                    <Controller
-                      control={control}
-                      name="length"
-                      render={({ field }) => (
-                        <input
-                          min={1}
-                          max={200}
-                          placeholder="Chiều dài(cm)"
-                          {...field}
-                          required
-                          className="form-control"
-                          style={{ width: '23%' }}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
-
-                <div className="mb-4">
                   <label className="form-label">Mô tả</label>
 
                   <ReactQuill
@@ -351,7 +275,7 @@ const AddProduct = (props) => {
                             <div className="card-body shadow-sm col-11">
                               {getValues(valueOption)?.map((valueField, i) => (
                                 <div className="col-mb-11 d-flex" key={uuidv4()} style={{ marginTop: '15px' }}>
-                                  <label className="col-2 text-start ">Tên của phân loại hàng</label>
+                                  {/* <label className="col-2 text-start ">Giá trị của phận loại</label> */}
                                   <div className="col-10 d-flex">
                                     <Controller
                                       control={control}
@@ -458,7 +382,7 @@ const AddProduct = (props) => {
                                     }}
                                   >
                                     <Button sx={{ mt: 1 }} startIcon={<AddIcon />}>
-                                      Thêm thể loại
+                                      Thêm giá trị
                                     </Button>
                                   </div>
                                 </div>
@@ -537,14 +461,14 @@ const AddProduct = (props) => {
                                   setValue(`variants.${iClass1}.field.${iClass2}.quantity`, watch('quantity'));
                                 }
                                 return (
-                                  <tr key={`${value1} + ${value2}`}>
+                                  <tr key={uuidv4()}>
                                     <td className="col-3">{value1 || '?'}</td>
                                     <td className="col-3">{value2 || '?'}</td>
                                     <td className="col-2">
                                       <input
                                         type="number"
                                         className=""
-                                        placeholder="Enter price"
+                                        placeholder="Nhập giá sản phẩm"
                                         {...register(`variants.${iClass1}.field.${iClass2}.price`, {
                                           required: 'This is required',
                                           validate: {
@@ -557,9 +481,8 @@ const AddProduct = (props) => {
                                       <input
                                         type="number"
                                         className=""
-                                        placeholder="Enter price"
+                                        placeholder="Nhập giá đặc biệt"
                                         {...register(`variants.${iClass1}.field.${iClass2}.priceSale`, {
-                                          required: 'This is required',
                                           validate: {
                                             positive: (value) =>
                                               value >= 0 && value < watch(`variants.${iClass1}.field.${iClass2}.price`),
@@ -586,6 +509,88 @@ const AddProduct = (props) => {
                             })}
                           </tbody>
                         </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+              <Card sx={{ padding: 2, mb: 2 }}>
+                <div className="mb-4">
+                  <h5>Thông tin vận chuyển</h5>
+                </div>
+                <div className="card mb-4 shadow-sm">
+                  <div className="card-body">
+                    <div className="mb-4">
+                      <label htmlFor="product_category" className="form-label">
+                        Kích thước của kiện hàng
+                      </label>
+                      <div className="d-flex col-12 justify-content-between align-items-center">
+                        <Controller
+                          control={control}
+                          name="weight"
+                          render={({ field }) => (
+                            <input
+                              min={1}
+                              max={20000}
+                              type="number"
+                              placeholder="Trọng lượng(gram)"
+                              {...field}
+                              required
+                              className="form-control col-3"
+                              style={{ width: '23%' }}
+                            />
+                          )}
+                        />
+                        -
+                        <Controller
+                          control={control}
+                          name="height"
+                          render={({ field }) => (
+                            <input
+                              min={1}
+                              max={200}
+                              type="number"
+                              placeholder="Chiều cao(cm)"
+                              {...field}
+                              required
+                              className="form-control col-3"
+                              style={{ width: '23%' }}
+                            />
+                          )}
+                        />
+                        -
+                        <Controller
+                          control={control}
+                          name="width"
+                          render={({ field }) => (
+                            <input
+                              min={1}
+                              max={200}
+                              type="number"
+                              placeholder="Chiều rộng(cm)"
+                              {...field}
+                              required
+                              className="form-control"
+                              style={{ width: '23%' }}
+                            />
+                          )}
+                        />
+                        -
+                        <Controller
+                          control={control}
+                          name="length"
+                          render={({ field }) => (
+                            <input
+                              min={1}
+                              max={200}
+                              placeholder="Chiều dài(cm)"
+                              {...field}
+                              required
+                              className="form-control"
+                              style={{ width: '23%' }}
+                            />
+                          )}
+                        />
                       </div>
                     </div>
                   </div>
