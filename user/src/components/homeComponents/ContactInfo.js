@@ -9,7 +9,7 @@ const ContactInfo = () => {
                         <div className="info-image">
                             <i className="fas fa-phone-alt"></i>
                         </div>
-                        <h5 className="infor-area-text">Call Us 24x7</h5>
+                        <h5 className="infor-area-text">Gọi cho chúng tôi</h5>
                         <p>0123456789</p>
                     </div>
                 </div>
@@ -18,8 +18,8 @@ const ContactInfo = () => {
                         <div className="info-image">
                             <i className="fas fa-map-marker-alt"></i>
                         </div>
-                        <h5 className="infor-area-text">Headquarter</h5>
-                        <p>Go vap district - Ho Chi Minh City</p>
+                        <h5 className="infor-area-text">Trụ sở</h5>
+                        <p>Gò Vấp - Tp HCM</p>
                     </div>
                 </div>
                 <div className="col-12 col-md-4 contact-Box">

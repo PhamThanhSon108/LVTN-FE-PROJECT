@@ -10,12 +10,56 @@ import styles from './Vouchers.module.scss';
 import styled from '@emotion/styled';
 import Voucher from './components/Voucher/Voucher';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import Slider from 'react-slick';
+import { getPublicVouchers } from '~/Redux/Actions/voucherAction';
 const StyledCardContent = styled(CardContent)(({ theme }) => ({
     '&:last-child': {
         padding: '0px 2px 4px',
     },
 }));
+const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 2,
+    slidesToScroll: 2,
+    initialSlide: 0,
+
+    responsive: [
+        {
+            breakpoint: 1024,
+            settings: {
+                slidesToShow: 2,
+                slidesToScroll: 2,
+                infinite: true,
+                dots: false,
+                initialSlide: 0,
+            },
+        },
+        {
+            breakpoint: 600,
+            settings: {
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                initialSlide: 0,
+            },
+        },
+        {
+            breakpoint: 480,
+            settings: {
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                initialSlide: 0,
+            },
+        },
+    ],
+};
 export default function Vouchers() {
+    const dispatch = useDispatch();
+    const { vouchers } = useSelector((state) => state.publicVouchers);
+    useEffect(() => {
+        dispatch(getPublicVouchers());
+    }, []);
     return (
         <Card className={styles.container}>
             <CardHeader
@@ -37,11 +81,16 @@ export default function Vouchers() {
                 }
             />
             <Divider />
-            <StyledCardContent sx={{ padding: 0, pb: '0px', width: '100%' }} className={styles.listVouchersWrapper}>
-                {[1, 2, 3, 4]?.map((category, index) => {
-                    return <Voucher />;
+
+            <Slider style={{ maxHeight: '252px', overflow: 'hidden', objectFit: 'cover' }} {...settings}>
+                {vouchers?.map((voucher) => {
+                    return (
+                        <div key={voucher?._id}>
+                            <Voucher voucher={voucher} />
+                        </div>
+                    );
                 })}
-            </StyledCardContent>
+            </Slider>
         </Card>
     );
 }
