@@ -12,7 +12,6 @@ import Voucher from './components/Voucher/Voucher';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Slider from 'react-slick';
 import { getPublicVouchers } from '~/Redux/Actions/voucherAction';
-
 const settings = {
     dots: false,
     infinite: true,

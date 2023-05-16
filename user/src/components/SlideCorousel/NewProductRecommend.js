@@ -59,16 +59,20 @@ export default function NewProductRecommend() {
     return (
         <div style={{ marginTop: '20px' }}>
             <div className="divider-custom">
+
                 <Typography color="primary" fontWeight={600}>
                     Sản phẩm mới
                 </Typography>
             </div>
             <div style={{ maxHeight: '316px', overflow: 'hidden' }}>
+
                 {!loading ? (
                     <Slider
                         className="col-12"
                         {...settings}
+
                         style={{ maxHeight: '316px', backgroundColor: 'transparent', overflow: 'hidden' }}
+
                     >
                         {products?.map((product, index) => (
                             <div className="col-lg-2 col-md-3 col-sm-6  mb-3" key={product._id}>
@@ -81,6 +85,7 @@ export default function NewProductRecommend() {
                         <div style={{ display: 'flex' }}>
                             {SkeletonOption.map((key) => (
                                 <div className="" key={key} style={{ margin: '15px 7.9px', width: '100%' }}>
+
                                     <Skeleton variant="rectangular" width={'100%'} height={209} />
                                     <Skeleton />
                                     <Skeleton />

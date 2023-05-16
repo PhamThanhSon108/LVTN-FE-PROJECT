@@ -15,7 +15,9 @@ export default function Product({ product }) {
                     <div class={styles.discountFlag}>
                         <div class={styles.discountFlagWrapper}>
                             <Typography class={styles.percent} fontSize={10} noWrap variant="inherit" color="white">
+
                                 {percentDiscount < 100 ? percentDiscount : 99} %
+
                             </Typography>
 
                             <span class={styles.label}>giảm</span>
