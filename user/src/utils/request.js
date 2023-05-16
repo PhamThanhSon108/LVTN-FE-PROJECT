@@ -6,6 +6,7 @@ const getToken = () => {
 };
 
 export const API_FASHIONSHOP = 'https://api.fashionshop.nkt2001.tech/api/v1/';
+
 const request = axios.create({
     baseURL: API_FASHIONSHOP,
     headers: {

@@ -2,7 +2,16 @@ import React, { Fragment } from 'react';
 import styles from './AddVoucher.module.scss';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
 
-import { Button, Card, FormControlLabel, InputAdornment, Radio, RadioGroup, TextField } from '@mui/material';
+import {
+  Button,
+  Card,
+  FormControlLabel,
+  InputAdornment,
+  LinearProgress,
+  Radio,
+  RadioGroup,
+  TextField,
+} from '@mui/material';
 import { MultiInputDateTimeRangeField } from '@mui/x-date-pickers-pro';
 import { Controller } from 'react-hook-form';
 
@@ -28,7 +37,8 @@ export const isUsageLimit = {
 };
 
 export default function AddVoucher() {
-  const { id, loadingAdd, control, setValue, watch, handleSubmit, errors, handleCreateVoucher } = useAddVoucher();
+  const { loadingDetail, id, loadingAdd, control, setValue, watch, handleSubmit, errors, handleCreateVoucher } =
+    useAddVoucher();
 
   return (
     <div className={styles.voucherContainer}>
@@ -36,14 +46,37 @@ export default function AddVoucher() {
         <div className={styles.header}>
           <h2 className={styles.title}> {id ? 'Chỉnh sửa mã giảm giá' : 'Tạo mã giảm giá'}</h2>
         </div>
+        <div style={{ height: 2.5 }}>
+          {loadingDetail ? (
+            <LinearProgress sx={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, height: '2.5px' }} />
+          ) : null}
+        </div>
         <form className={styles.voucherForm} onSubmit={handleSubmit(handleCreateVoucher)}>
           <Card sx={{ boxShadow: 3 }} className={styles.voucherPropertyArea}>
             <h5 className={styles?.subTitle}>Thông tin cơ bản</h5>
-
+            <Controller
+              name="name"
+              control={control}
+              rules={{ required: true }}
+              render={({ field, fieldState }) => (
+                <TextField
+                  focused={!!fieldState.error}
+                  color={fieldState.error ? 'error' : 'info'}
+                  className={styles.voucherFormItem}
+                  label="Tên chương trình giảm giá"
+                  {...field}
+                  variant={inputPropsConstants.variantOutLine}
+                  size={inputPropsConstants.smallSize}
+                  helperText={renderError([
+                    { error: fieldState?.error?.type === 'required', message: 'Bạn chưa nhập trường này' },
+                  ])}
+                />
+              )}
+            />
             <Controller
               name="code"
               control={control}
-              rules={{ required: true, pattern: /^[A-Za-z0-9]{6,10}$/ }}
+              rules={{ required: true, pattern: /^[A-Za-z0-9]{6,20}$/ }}
               render={({ field, fieldState }) => (
                 <TextField
                   focused={!!fieldState.error}
@@ -58,7 +91,7 @@ export default function AddVoucher() {
                     {
                       error: fieldState?.error?.type === 'min' || fieldState?.error?.type === 'pattern',
                       message:
-                        'Mã giảm giá chỉ chứa chữ cái từ a-z, A-Z và chữ số từ 0 đến 9 và độ dài từ 6 đến 10 ký tự',
+                        'Mã giảm giá chỉ chứa chữ cái từ a-z, A-Z và chữ số từ 0 đến 9 và độ dài từ 6 đến 20 ký tự',
                     },
                   ])}
                 />

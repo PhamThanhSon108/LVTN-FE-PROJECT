@@ -12,11 +12,6 @@ import Voucher from './components/Voucher/Voucher';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Slider from 'react-slick';
 import { getPublicVouchers } from '~/Redux/Actions/voucherAction';
-const StyledCardContent = styled(CardContent)(({ theme }) => ({
-    '&:last-child': {
-        padding: '0px 2px 4px',
-    },
-}));
 const settings = {
     dots: false,
     infinite: true,
@@ -61,12 +56,12 @@ export default function Vouchers() {
         dispatch(getPublicVouchers());
     }, []);
     return (
-        <Card className={styles.container}>
+        <Card className={styles.container} sx={{ pl: 0, pr: '8px' }}>
             <CardHeader
                 sx={{ display: 'flex', alignItems: 'center' }}
                 title={
                     <div className="d-flex justify-content-between align-content-center align-items-center">
-                        <Typography noWrap variant="button" color="text.secondary">
+                        <Typography noWrap variant="button" color="primary">
                             KHUYẾN MÃI
                         </Typography>
                         <Link
@@ -85,7 +80,11 @@ export default function Vouchers() {
             <Slider style={{ maxHeight: '252px', overflow: 'hidden', objectFit: 'cover' }} {...settings}>
                 {vouchers?.map((voucher) => {
                     return (
-                        <div key={voucher?._id}>
+                        <div
+                            key={voucher?._id}
+                            className="col-6 d-flex justify-content-center"
+                            style={{ paddingLeft: '0px' }}
+                        >
                             <Voucher voucher={voucher} />
                         </div>
                     );

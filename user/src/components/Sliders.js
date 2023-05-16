@@ -30,8 +30,8 @@ export default function Sliders() {
     return (
         <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
             <div class="slider-container " style={{ maxHeight: '252px', overflow: 'hidden', objectFit: 'cover' }}>
-                {data?.sliders?.length > 0 ? (
-                    <Fragment>
+                <Fragment>
+                    {data?.sliders?.length > 0 ? (
                         <Slider
                             style={{ maxHeight: '252px', overflow: 'hidden', objectFit: 'cover' }}
                             {...settings}
@@ -45,6 +45,10 @@ export default function Sliders() {
                                 );
                             })}
                         </Slider>
+                    ) : (
+                        <Skeleton variant="rectangular" width={'70%'} height={'252px'} />
+                    )}
+                    {data?.banners?.length > 0 ? (
                         <div className="slider-right-wrap">
                             <img
                                 style={{ objectFit: 'cover' }}
@@ -59,10 +63,7 @@ export default function Sliders() {
                                 src={data?.banners?.[1]?.image}
                             ></img>
                         </div>
-                    </Fragment>
-                ) : (
-                    <Fragment>
-                        <Skeleton variant="rectangular" width={'70%'} height={'252px'} />
+                    ) : (
                         <div
                             style={{
                                 width: '30%',
@@ -76,8 +77,8 @@ export default function Sliders() {
                             <Skeleton variant="rectangular" width={'100%'} height={'124px'} />
                             <Skeleton variant="rectangular" width={'100%'} height={'124px'} />
                         </div>
-                    </Fragment>
-                )}
+                    )}
+                </Fragment>
             </div>
         </div>
     );

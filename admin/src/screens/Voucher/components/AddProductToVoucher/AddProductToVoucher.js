@@ -25,6 +25,7 @@ import { ListCategory } from '../../../../Redux/Actions/CategoryActions';
 import styles from './AddProductToVoucher.module.scss';
 import { inputPropsConstants } from '../../../../constants/variants';
 import AddIcon from '@mui/icons-material/Add';
+import { useParams } from 'react-router-dom';
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -38,7 +39,8 @@ function union(a, b) {
   return [...a, ...not(b, a)];
 }
 
-export default function AddProductToVoucher({ field, voucherId }) {
+export default function AddProductToVoucher({ field }) {
+  const { id } = useParams();
   const dispatch = useDispatch();
   const [checked, setChecked] = React.useState([]);
   const [currentProducts, setCurrentProducts] = React.useState([]);
@@ -49,7 +51,7 @@ export default function AddProductToVoucher({ field, voucherId }) {
   const { categories } = lcategories;
 
   const productList = useSelector((state) => state.productList);
-  const { loadingGetAll } = productList;
+  const { loadingGetAll, allProducts } = productList;
   const listProductAfterFilter = currentProducts.filter(
     (value) =>
       value?.name?.toLocaleLowerCase().includes(searchKey?.toLocaleLowerCase()) &&
@@ -96,11 +98,12 @@ export default function AddProductToVoucher({ field, voucherId }) {
 
   const fetchAllProduct = {
     success: (products) => {
-      if (voucherId) {
-        console.log(products, field.value, 'list');
+      if (id) {
         const selectedProducts = field.value.map((id) => products.find((product) => id === product?._id));
+
         setCurrentProducts(products.filter((product) => !field.value.find((id) => product?._id === id)));
         setCurrentSelectedProducts(selectedProducts);
+
         if (selectedProducts.length > 0 && field.value?.length > 0) {
           field.onChange(selectedProducts);
         }
@@ -125,7 +128,29 @@ export default function AddProductToVoucher({ field, voucherId }) {
   };
 
   React.useEffect(() => {
-    dispatch(getAllProducts(fetchAllProduct));
+    if (!allProducts || allProducts?.length === 0) {
+      dispatch(getAllProducts(fetchAllProduct));
+    } else {
+      // if (id) {
+
+      if (field?.value?.[0]?._id) {
+        const selectedProducts = field.value.map((value) => allProducts.find((product) => value?._id === product?._id));
+        setCurrentProducts(allProducts.filter((product) => !field.value.find((value) => product?._id === value?._id)));
+        setCurrentSelectedProducts(selectedProducts);
+        field.onChange(selectedProducts);
+      } else {
+        const selectedProducts = field.value.map((id) => allProducts?.find((product) => id === product?._id));
+
+        setCurrentProducts(allProducts?.filter((product) => !field.value.find((id) => product?._id === id)));
+        setCurrentSelectedProducts(selectedProducts);
+        field.onChange(selectedProducts);
+      }
+
+      // } else {
+      //   setCurrentProducts(allProducts);
+      //   setCurrentSelectedProducts([]);
+      // }
+    }
 
     dispatch(ListCategory());
   }, [dispatch]);
@@ -215,7 +240,7 @@ export default function AddProductToVoucher({ field, voucherId }) {
           const labelId = `transfer-list-all-item-${value}-label`;
 
           return (
-            <ListItem key={value} role="listitem" button onClick={handleToggle(value)}>
+            <ListItem key={value?._id} role="listitem" button onClick={handleToggle(value)}>
               <ListItemIcon className="col-1">
                 <Checkbox
                   checked={checked.indexOf(value) !== -1}

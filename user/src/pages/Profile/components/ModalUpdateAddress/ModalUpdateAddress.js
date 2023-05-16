@@ -66,8 +66,8 @@ export default function ModalUpdateAddress({ isOpenModal, handleOpenModal, addre
     } = useSelector((state) => state.address);
     const addressReducer = useSelector((state) => state.shippingAddress);
     const { loading } = addressReducer;
-    const userDetails = useSelector((state) => state.userDetails);
-    const { user } = userDetails;
+    const userDetails = useSelector((state) => state.userLogin);
+    const { userInfor: user } = userDetails;
     const handleAfterFetch = {
         success: (message) => {
             handleOpenModal(false);

@@ -26,7 +26,7 @@ export default function CategorySlider() {
         <Card className={styles.container}>
             <CardHeader
                 title={
-                    <Typography noWrap variant="button" color="text.secondary">
+                    <Typography noWrap variant="button" color="primary">
                         DANH MỤC
                     </Typography>
                 }

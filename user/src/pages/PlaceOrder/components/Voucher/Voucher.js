@@ -6,10 +6,11 @@ import { formatMoney } from '~/utils/formatMoney';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function Voucher({ voucherToApply, voucher, handleApplyVoucher, canRemove = false }) {
-    const percentUsed = (voucher.used * 100) / voucher.usageLimit;
-    const discountType = voucher.discountType;
-    const discount = discountType === 'money' ? formatMoney(voucher.discount) : `${voucher.discount} %`;
-
+    const percentUsed = (voucher?.used * 100) / voucher?.usageLimit;
+    const discountType = voucher?.discountType;
+    const discount = discountType === '1' ? formatMoney(voucher?.discount) : `${voucher?.discount} %`;
+    const startDate = moment(voucher?.startDate);
+    const effectiveLater = startDate > moment();
     return (
         <Card className={styles.container}>
             <ListItem
@@ -55,24 +56,39 @@ export default function Voucher({ voucherToApply, voucher, handleApplyVoucher, c
                 <ListItemText
                     sx={{ padding: 'var(--space-8)', pr: 4 }}
                     primary={
-                        <Typography
-                            component="div"
-                            variant="body1"
-                            color="text.primary"
-                            sx={{ fontWeight: 600, mb: 1 }}
-                        >
-                            Giảm {discount}
-                        </Typography>
+                        <div>
+                            <Typography
+                                component="div"
+                                variant="body1"
+                                color="text.primary"
+                                sx={{ fontWeight: 600, mb: 1 }}
+                            >
+                                Giảm {discount}
+                            </Typography>
+                            {discountType === '2' ? (
+                                <Typography>Giảm tối thiểu: {formatMoney(voucher?.maximumDiscount || 0)}</Typography>
+                            ) : null}
+                        </div>
                     }
                     secondary={
                         <Box>
                             <Chip variant="outlined" label="Ví momo" size="small" color="error" sx={{ mr: 1 }} />
                             <Chip variant="outlined" label="Tiền mặt" size="small" color="primary" />
 
-                            <LinearProgress variant="determinate" value={percentUsed} sx={{ mt: 1 }} />
-                            <Typography component="div" variant="caption" color="text.primary" sx={{ mt: 1 }}>
-                                Đã dùng {percentUsed}%, hạn sử dụng {moment(voucher?.endDate).format('MM/DD/YYYY')}
-                            </Typography>
+                            {effectiveLater ? (
+                                <Typography component="div" variant="caption" color="text.primary" sx={{ mt: 1 }}>
+                                    Có hiệu lực từ
+                                    {startDate.format('HH:MM DD/MM/YYYY')}
+                                </Typography>
+                            ) : (
+                                <Fragment>
+                                    <LinearProgress variant="determinate" value={percentUsed} sx={{ mt: 1 }} />
+                                    <Typography component="div" variant="caption" color="text.primary" sx={{ mt: 1 }}>
+                                        Đã dùng {percentUsed}%, hạn sử dụng{' '}
+                                        {moment(voucher?.endDate).format('MM/DD/YYYY')}
+                                    </Typography>
+                                </Fragment>
+                            )}
                         </Box>
                     }
                 />

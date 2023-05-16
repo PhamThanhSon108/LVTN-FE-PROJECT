@@ -73,7 +73,7 @@ export const UploadImageProduct = (props) => {
               whiteSpace: 'nowrap',
             }}
           >
-            {`Image of ${name || 'product'}`}
+            {`Ảnh của ${name || 'sản phẩm'}`}
           </span>
           <small style={{ paddingLeft: '5px' }}>{new Date().toLocaleDateString()}</small>
         </div>

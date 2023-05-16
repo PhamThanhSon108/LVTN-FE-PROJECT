@@ -176,6 +176,7 @@ const PlaceOrderScreen = ({ history }) => {
                             {loadingGetList || loadingShippingFee ? (
                                 <CircularProgress size={15} />
                             ) : (
+                                shippingFee?.leadTime?.leadtime &&
                                 moment(shippingFee?.leadTime?.leadtime * 1000).format('L')
                             )}
                         </Typography>

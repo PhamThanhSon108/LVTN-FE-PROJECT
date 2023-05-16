@@ -61,15 +61,17 @@ export const deleteProduct = (id) => async (dispatch) => {
 };
 
 // CREATE PRODUCT
-export const createProduct = (newProduct) => async (dispatch) => {
+export const createProduct = (newProduct, handleAfterFetch) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_CREATE_REQUEST });
     const { data } = await request.post(`/products/`, newProduct);
-    toast.success('Add product success', ToastObjects);
+    toast.success('Thêm sản phẩm thành công', ToastObjects);
+    handleAfterFetch?.success();
     dispatch({ type: PRODUCT_CREATE_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
     toast.error(message, ToastObjects);
+    handleAfterFetch?.error();
     dispatch({
       type: PRODUCT_CREATE_FAIL,
       payload: message,

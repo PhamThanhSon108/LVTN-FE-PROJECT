@@ -12,8 +12,7 @@ const OrderDetailProducts = (props) => {
     const addDecimals = (num) => {
       return (Math.round(num * 100) / 100).toFixed(2);
     };
-
-    order.itemsPrice = 0;
+    if (order) order.itemsPrice = 0;
   }
 
   return (

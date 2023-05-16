@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../Redux/Actions/userActions';
+import { getUserDetails, logout } from '../Redux/Actions/userActions';
 import Search from './homeComponents/Search';
 import { listCart } from '~/Redux/Actions/cartActions';
 import { Typography } from '@mui/material';
@@ -14,9 +14,15 @@ const Header = () => {
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
 
-    // useEffect(() => {
-    //     dispatch(listCart());
-    // }, []);
+    useEffect(() => {
+        if (localStorage.getItem('userInfo') && !userInfo?._id) {
+            dispatch(getUserDetails('profile'));
+        }
+
+        if (userInfo && (!cartItems || cartItems?.length === 0)) {
+            dispatch(listCart());
+        }
+    }, []);
 
     const [searchValue, setSearchValue] = useState('');
     const [keyword, setKeyword] = useState('');

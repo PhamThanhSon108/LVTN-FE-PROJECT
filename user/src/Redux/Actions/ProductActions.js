@@ -22,7 +22,6 @@ export const ListProductAll = () => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_LIST_ALL_REQUEST });
         const { data } = await request.get(`/products`);
-        console.log(data, ' get list product');
         dispatch({ type: PRODUCT_LIST_ALL_SUCCESS, payload: data.data });
     } catch (error) {
         dispatch({

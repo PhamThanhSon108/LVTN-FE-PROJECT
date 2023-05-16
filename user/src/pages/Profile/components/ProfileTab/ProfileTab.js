@@ -5,7 +5,7 @@ import { FormControl, FormControlLabel, Radio, RadioGroup, TextField } from '@mu
 import styles from './ProfileTab.module.scss';
 
 import { getDistricts, getProvinces, getWards } from '~/Redux/Actions/deliveryAction';
-import { updateUserProfile } from '~/Redux/Actions/userActions';
+import { getUserDetails, updateUserProfile } from '~/Redux/Actions/userActions';
 import { Controller, useForm } from 'react-hook-form';
 import { renderError } from '~/utils/errorMessage';
 import { inputPropsConstants } from '~/constant/variants';
@@ -25,16 +25,25 @@ const ProfileTab = () => {
         },
     });
 
-    const userDetails = useSelector((state) => state.userDetails);
-    const { user } = userDetails;
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo: user } = userLogin;
 
     const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
     const { loading: updateLoading } = userUpdateProfile;
+    const handleAfterFetch = {
+        success: () => {
+            dispatch(getUserDetails('profile'));
+        },
+        error: () => {},
+    };
     const submitUpdateProfile = (data) => {
         dispatch(
-            updateUserProfile({
-                ...data,
-            }),
+            updateUserProfile(
+                {
+                    ...data,
+                },
+                handleAfterFetch,
+            ),
         );
     };
 
@@ -50,7 +59,6 @@ const ProfileTab = () => {
                 birthday: moment(user?.birthday).format('YYYY-MM-DD'),
             });
         }
-        console.log(moment(user?.birthday).format('DD/MM/YYYY'));
         dispatch(getProvinces());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, user]);

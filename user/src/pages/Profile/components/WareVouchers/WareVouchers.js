@@ -10,9 +10,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Toastobjects } from '~/Redux/Actions/cartActions';
 const StyledCardContent = styled(CardContent)(({ theme }) => ({
-    '&:last-child': {
-        padding: '0px 2px 4px',
-    },
+    paddingRight: '8px',
+    paddingLeft: '0px',
+    paddingTop: '16px',
+    paddingBottom: '8px',
 }));
 const handleAfterFetch = {
     success: () => {
@@ -45,7 +46,8 @@ export default function WareVouchers() {
                     <LinearProgress sx={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, height: '2.5px' }} />
                 ) : null}
             </div>
-            <div className={styles.container}>
+            <div className={`${styles.container} col-12`}>
+
                 <CardHeader
                     sx={{ display: 'flex', alignItems: 'center' }}
                     title={
@@ -72,12 +74,15 @@ export default function WareVouchers() {
                     }
                 />
                 <Divider />
-                <StyledCardContent
-                    sx={{ flexWrap: 'wrap', display: 'flex', padding: 0, pb: '0px', width: '100%' }}
-                    className={styles.listVouchersWrapper}
-                >
+
+                <StyledCardContent sx={{ flexWrap: 'wrap', display: 'flex', width: '100%' }} className="row">
                     {vouchers?.map((voucher) => {
-                        return <Voucher size="medium" key={voucher?._id} voucher={voucher} myVoucher />;
+                        return (
+                            <div key={voucher?._id} className="col-lg-6 col-md-12 col-sm-12">
+                                <Voucher size="medium" voucher={voucher} myVoucher />
+                            </div>
+                        );
+
                     })}
                 </StyledCardContent>
             </div>

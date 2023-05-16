@@ -25,7 +25,7 @@ export default function useAddVoucher() {
       name: '',
       applicableProducts: [],
       applyTime: [moment(), moment().add(DEFAULT_STEP_USABLE_VOUCHER, 'days')],
-      applyFor: 2,
+      applyFor: 1,
       discountType: '1',
       discount: 0,
       usageLimit: 1,
@@ -34,7 +34,7 @@ export default function useAddVoucher() {
       maximumDiscount: 0,
     },
   });
-  const { loadingAdd } = useSelector((state) => state.Voucher);
+  const { loadingAdd, loadingDetail } = useSelector((state) => state.Voucher);
   const handleAfterAdd = {
     success: () => {
       toast.success(id ? 'Cập nhật thành công' : 'Tạo voucher thành công!', ToastObject);
@@ -47,7 +47,6 @@ export default function useAddVoucher() {
 
   const handleAfterGetDetail = {
     success: (voucher) => {
-      console.log(voucher, 'detail voucher');
       reset({ ...voucher, isUsageLimit: voucher.isUsageLimit ? isUsageLimit.limit : isUsageLimit.notLimit });
     },
     error: (message) => {
@@ -57,11 +56,12 @@ export default function useAddVoucher() {
   };
 
   const handleCreateVoucher = (data) => {
+    console.log(data.applicableProducts, 'product');
     const voucher = {
       ...data,
       startDate: data.applyTime[0].toJSON(),
       endDate: data.applyTime[1].toJSON(),
-      applicableProducts: data.applicableProducts?.map((product) => product._id),
+      applicableProducts: data?.applicableProducts?.map((product) => product._id),
     };
     if (data.applyFor === applyVoucherFor.selectedProducts && data.applicableProducts?.length === 0) {
       toast.error('Bạn chưa chọn sản phẩm áp dụng', ToastObject);
@@ -80,5 +80,5 @@ export default function useAddVoucher() {
       dispatch(getVoucher({ id, handleAfterFetch: handleAfterGetDetail }));
     }
   }, []);
-  return { id, loadingAdd, control, setValue, watch, errors, handleSubmit, handleCreateVoucher };
+  return { loadingDetail, id, loadingAdd, control, setValue, watch, errors, handleSubmit, handleCreateVoucher };
 }

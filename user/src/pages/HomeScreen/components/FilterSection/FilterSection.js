@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useHistory } from 'react-router-dom';
 import isEmpty from 'validator/lib/isEmpty';
 
 import { TreeItem, TreeView, treeItemClasses } from '@mui/lab';
@@ -11,6 +10,8 @@ import { Typography, styled } from '@mui/material';
 import Rating from '../Rating/Rating';
 import { ListCategory } from '~/Redux/Actions/categoryActions';
 import styles from './FilterSection.module.scss';
+import useSearchParamsCustom from '~/hooks/useSearchParamCustom';
+import { listProduct } from '~/Redux/Actions/productActions';
 
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
     color: theme.palette.text.secondary,
@@ -43,40 +44,41 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
     },
 }));
 
-export default function FilterSection({ setRating, setMinPrice, setCategory, setMaxPrice, rating, keyword }) {
+export default function FilterSection({ setToggleLoad }) {
     const dispatch = useDispatch();
-    const history = useHistory();
     const lcategories = useSelector((state) => state.CategoryList);
     const { categories } = lcategories;
     const [curentMinPrice, setCurentMinPrice] = useState('');
     const [curentMaxPrice, setCurentMaxPrice] = useState('');
+    const { getParamValue, replaceParams } = useSearchParamsCustom();
+    const rating = getParamValue('rating') || '';
 
     //xủ lí logic check form
     const [price, SetPrice] = useState({});
     const checkPrice = () => {
         const msg = {};
         if (isEmpty(curentMinPrice)) {
-            msg.name = 'Please input your price';
+            msg.name = 'Bạn chưa nhập giá';
         } else {
             if (curentMinPrice < 0) {
-                msg.name = 'Please enter the positive value';
+                msg.name = 'Giá phải là số nguyên dương';
             } else {
                 if (isNaN(curentMinPrice)) {
-                    msg.name = 'Please enter the number';
+                    msg.name = 'Hãy nhập số';
                 }
             }
         }
         if (isEmpty(curentMaxPrice)) {
-            msg.name = 'Please input your price';
+            msg.name = 'Bạn chưa nhập giá';
         } else {
             if (curentMaxPrice < 0) {
-                msg.name = 'Please enter the positive value';
+                msg.name = 'Giá phải là số nguyên dương';
             } else {
                 if (isNaN(curentMaxPrice)) {
-                    msg.name = 'Please enter the number';
+                    msg.name = 'Hãy nhập số';
                 } else {
                     if (Number(curentMinPrice) > Number(curentMaxPrice)) {
-                        msg.name = 'MinPrice is smaller MaxPrice';
+                        msg.name = 'Khoảng giá không hợp lệ';
                     }
                 }
             }
@@ -86,21 +88,22 @@ export default function FilterSection({ setRating, setMinPrice, setCategory, set
         return true;
     };
     const ClearHandle = () => {
-        history.push(`?keyword=${keyword}`);
-        setCategory('');
-        setRating('');
-        setMaxPrice('');
-        setMinPrice('');
-        setCurentMaxPrice('');
-        setCurentMinPrice('');
+        setToggleLoad((toggle) => !toggle);
+        replaceParams([{ key: 'keyword', value: getParamValue('keyword') || '' }], 'all');
     };
     const ApplyHandler = () => {
         if (!checkPrice()) return;
-        setMinPrice(curentMinPrice);
-        setMaxPrice(curentMaxPrice);
+        replaceParams([
+            { key: 'min', value: curentMinPrice },
+            { key: 'max', value: curentMaxPrice },
+        ]);
+        setToggleLoad((toggle) => !toggle);
     };
+
     useEffect(() => {
-        dispatch(ListCategory());
+        if (!categories || categories?.length === 0) {
+            dispatch(ListCategory());
+        }
     }, [dispatch]);
     return (
         <div className="section-div col-lg-2 col-md-3">
@@ -121,13 +124,12 @@ export default function FilterSection({ setRating, setMinPrice, setCategory, set
                     {categories?.map((category) => (
                         <StyledTreeItemRoot
                             onClick={() => {
-                                history.push(`?keyword=${keyword}?category=${category._id}`);
-                                setCategory(category._id);
+                                replaceParams([{ key: 'category', value: category?.slug }]);
                             }}
                             key={category._id}
                             nodeId={category._id}
                             label={category.name}
-                            sx={{ mb: '4px' }}
+                            sx={{ mb: '4px', color: category?.slug === getParamValue('category') ? 'red' : null }}
                         >
                             {category?.children.length > 0
                                 ? category.children.map((childrenCategory) => (
@@ -135,6 +137,14 @@ export default function FilterSection({ setRating, setMinPrice, setCategory, set
                                           key={childrenCategory._id}
                                           nodeId={childrenCategory._id}
                                           label={childrenCategory.name}
+                                          sx={{
+                                              color:
+                                                  childrenCategory?.slug === getParamValue('category') ? 'red' : null,
+                                          }}
+                                          onClick={() => {
+                                              replaceParams([{ key: 'category', value: childrenCategory?.slug }]);
+                                              setToggleLoad((toggle) => !toggle);
+                                          }}
                                       />
                                   ))
                                 : null}
@@ -156,7 +166,7 @@ export default function FilterSection({ setRating, setMinPrice, setCategory, set
                     <div className="distance-price__flex" style={{ display: 'flex', alignItems: 'center' }}>
                         <input
                             type="number"
-                            placeholder="$Min"
+                            placeholder="Từ"
                             onChange={(e) => setCurentMinPrice(e.target.value)}
                             value={curentMinPrice}
                             min="0"
@@ -164,7 +174,7 @@ export default function FilterSection({ setRating, setMinPrice, setCategory, set
                         <label>-</label>
                         <input
                             type="number"
-                            placeholder="$Max"
+                            placeholder="Tới"
                             onChange={(e) => setCurentMaxPrice(e.target.value)}
                             value={curentMaxPrice}
                             min="1"
@@ -189,7 +199,7 @@ export default function FilterSection({ setRating, setMinPrice, setCategory, set
                                 id="five"
                                 value={'5'}
                                 onClick={(e) => {
-                                    setRating(e.target.value);
+                                    replaceParams([{ key: 'rating', value: e.target.value }]);
                                 }}
                             ></input>
                             <label for="five" className={rating === '5' ? 'rating-color' : ' '}>
@@ -205,11 +215,18 @@ export default function FilterSection({ setRating, setMinPrice, setCategory, set
                                 id="four"
                                 value={'4'}
                                 onClick={(e) => {
-                                    setRating(e.target.value);
+                                    replaceParams([{ key: 'rating', value: e.target.value }]);
                                 }}
                             ></input>
                             <label for="four" className={rating === '4' ? 'rating-color' : ' '}>
-                                <Rating value="4" text={'& up'}></Rating>
+                                <Rating
+                                    value="4"
+                                    text={
+                                        <Typography ml={0} variant="caption">
+                                            Trở lên
+                                        </Typography>
+                                    }
+                                ></Rating>
                             </label>
                         </div>
                         <div display={{ display: 'flex', alignItems: 'center' }}>
@@ -221,11 +238,18 @@ export default function FilterSection({ setRating, setMinPrice, setCategory, set
                                 id="three"
                                 value={'3'}
                                 onClick={(e) => {
-                                    setRating(e.target.value);
+                                    replaceParams([{ key: 'rating', value: e.target.value }]);
                                 }}
                             ></input>
                             <label for="three" className={rating === '3' ? 'rating-color' : ' '}>
-                                <Rating value="3" text={'& up'}></Rating>
+                                <Rating
+                                    value="3"
+                                    text={
+                                        <Typography ml={0} variant="caption">
+                                            Trở lên
+                                        </Typography>
+                                    }
+                                ></Rating>
                             </label>
                         </div>
                         <div display={{ display: 'flex', alignItems: 'center' }}>
@@ -237,11 +261,18 @@ export default function FilterSection({ setRating, setMinPrice, setCategory, set
                                 id="two"
                                 value={'2'}
                                 onClick={(e) => {
-                                    setRating(e.target.value);
+                                    replaceParams([{ key: 'rating', value: e.target.value }]);
                                 }}
                             ></input>
                             <label for="two" className={rating === '2' ? 'rating-color' : ' '}>
-                                <Rating value="2" text={'& up'}></Rating>
+                                <Rating
+                                    value="2"
+                                    text={
+                                        <Typography ml={0} variant="caption">
+                                            Trở lên
+                                        </Typography>
+                                    }
+                                ></Rating>
                             </label>
                         </div>
                         <div display={{ display: 'flex', alignItems: 'center' }}>
@@ -253,11 +284,18 @@ export default function FilterSection({ setRating, setMinPrice, setCategory, set
                                 id="one"
                                 value={'1'}
                                 onClick={(e) => {
-                                    setRating(e.target.value);
+                                    replaceParams([{ key: 'rating', value: e.target.value }]);
                                 }}
                             ></input>
                             <label for="one" className={rating === '1' ? 'rating-color' : ''}>
-                                <Rating value="1" text={'& up'}></Rating>
+                                <Rating
+                                    value="1"
+                                    text={
+                                        <Typography ml={0} variant="caption">
+                                            Trở lên
+                                        </Typography>
+                                    }
+                                ></Rating>
                             </label>
                         </div>
                     </div>

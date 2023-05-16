@@ -45,12 +45,11 @@ export const login = (email, password) => async (dispatch) => {
         localStorage.setItem(
             'userInfo',
             JSON.stringify({
-                ...data?.data.user,
                 refreshToken: data?.data.refreshToken,
                 accessToken: data?.data.accessToken,
             }),
         );
-        window.location.href = '/';
+        // window.location.href = '/';
         await dispatch({ type: USER_LOGIN_SUCCESS, payload: data?.data.user });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -65,16 +64,13 @@ export const login = (email, password) => async (dispatch) => {
 // LOGOUT
 export const logout = () => (dispatch) => {
     try {
-        setTimeout(() => {
-            dispatch({ type: USER_LOGIN_REQUEST });
-        }, 100);
-        setTimeout(() => {
-            localStorage.removeItem('userInfo');
-            dispatch({ type: USER_LOGOUT });
-            dispatch({ type: USER_DETAILS_RESET });
-            dispatch({ type: ORDER_LIST_MY_RESET });
-            dispatch({ type: CART_CONST?.CART_LIST_MY_RESET });
-        }, 500);
+        dispatch({ type: USER_LOGIN_REQUEST });
+
+        localStorage.removeItem('userInfo');
+        dispatch({ type: USER_LOGOUT });
+        dispatch({ type: USER_DETAILS_RESET });
+        dispatch({ type: ORDER_LIST_MY_RESET });
+        dispatch({ type: CART_CONST?.CART_LIST_MY_RESET });
     } catch (error) {
         toast.error(
             error.response && error.response.data.message ? error.response.data.message : error.message,
@@ -109,7 +105,7 @@ export const register = (history, name, email, phone, password) => async (dispat
 export const confirmRegister = (verifyEmail, history) => async (dispatch) => {
     try {
         await request.patch(`/users/auth/verify-email?emailVerificationToken=${verifyEmail}`);
-        toast.success('Register success', Toastobjects);
+        toast.success('Đăng ký thành công', Toastobjects);
         localStorage.removeItem('userInfo');
         setTimeout(() => {
             history.push('/login');
@@ -161,7 +157,7 @@ export const resetPassWord = (resetPasswordToken, data, history) => async (dispa
             ...data,
         });
         dispatch({ type: RESET_PASSWORD_SUCCESS, payload: dataApi });
-        toast.success('Reset is success', Toastobjects);
+        toast.success('Cập nhật mật khẩu thành công', Toastobjects);
         localStorage.removeItem('userInfo');
         setTimeout(() => {
             history.push('/login');
@@ -178,7 +174,7 @@ export const resetPassWord = (resetPasswordToken, data, history) => async (dispa
 };
 
 // USER DETAILS
-export const getUserDetails = (id, setLoadingFetchUserShipping) => async (dispatch) => {
+export const getUserDetails = (id, setLoadingFetchUserShipping) => async (dispatch, getState) => {
     try {
         dispatch({ type: USER_DETAILS_REQUEST });
         const { data } = await request.get(`/users/${id}`);
@@ -196,28 +192,28 @@ export const getUserDetails = (id, setLoadingFetchUserShipping) => async (dispat
 };
 
 // UPDATE PROFILE
-export const updateUserProfile = (user, history, setLoading) => async (dispatch, getState) => {
+export const updateUserProfile = (user, handleAfterFetch) => async (dispatch, getState) => {
     try {
         dispatch({ type: USER_UPDATE_PROFILE_REQUEST });
 
         const { data } = await request.put(`/users/profile`, user);
 
-        toast.success('Profile Updated', Toastobjects);
+        toast.success('Cập nhật thông tin thành công', Toastobjects);
         dispatch({
             type: USER_UPDATE_PROFILE_SUCCESS,
             payload: { ...data?.data.user, accessToken: data?.data.accessToken },
         });
 
-        if (setLoading) setLoading(false);
+        handleAfterFetch.success();
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
 
-        // dispatch({
-        //     type: USER_UPDATE_PROFILE_FAIL,
-        //     payload: message,
-        // });
+        dispatch({
+            type: USER_UPDATE_PROFILE_FAIL,
+            payload: message,
+        });
         toast.error(message, Toastobjects);
-        if (setLoading) setLoading(false);
+        handleAfterFetch.error(message);
     }
 };
 
@@ -230,12 +226,20 @@ export const updateUserPassword = (user, handleSuccessUpdatePassword) => async (
         } = getState();
 
         const { data } = await request.patch(`/users/auth/change-password`, user);
-        dispatch({ type: USER_UPDATE_PASSWORD_SUCCESS, payload: { ...userInfo, accessToken: userInfo.accessToken } });
+
+        dispatch({ type: USER_UPDATE_PASSWORD_SUCCESS, payload: { ...userInfo, accessToken: data?.data.accessToken } });
+        localStorage.setItem(
+            'userInfo',
+            JSON.stringify({
+                accessToken: data?.data.accessToken,
+                refreshToken: data?.data.refreshToken,
+            }),
+        );
+        window.location.reload();
         if (handleSuccessUpdatePassword) {
             handleSuccessUpdatePassword();
         }
-        toast.success('Update password success', Toastobjects);
-        localStorage.setItem('userInfo', JSON.stringify({ ...userInfo, accessToken: data.token }));
+        toast.success('Cập nhật mật khẩu thành công', Toastobjects);
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
 

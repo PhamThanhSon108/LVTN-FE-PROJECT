@@ -19,6 +19,7 @@ export const AddVoucher =
   ({ voucher = { code: '', name: '', discountType: 1, discount: 0 }, createVoucherStatus }) =>
   async (dispatch) => {
     try {
+      console.log(voucher);
       dispatch({ type: VOUCHER_ADD_REQUEST });
       const { data } = await request.post(`/discount-codes`, voucher);
       dispatch({ type: VOUCHER_ADD_SUCCESS, payload: data });
