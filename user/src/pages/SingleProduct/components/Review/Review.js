@@ -9,11 +9,11 @@ import Message from '~/components/LoadingError/Error';
 import Loading from '~/components/LoadingError/Loading';
 import styles from './Review.module.scss';
 const OPTION_SELECT_RATING = [
-    { value: 1, label: 'Select...' },
-    { value: 2, label: '2 - Fair' },
-    { value: 3, label: '3 - Good' },
-    { value: 4, label: '4 - Very Good' },
-    { value: 5, label: '5 - Excellent' },
+    { value: 1, label: 'Chọn...' },
+    { value: 2, label: '2 - Sản phẩm tệ' },
+    { value: 3, label: '3 - Chất lượng ổn định' },
+    { value: 4, label: '4 - Chất lượng tốt' },
+    { value: 5, label: '5 - Tuyệt vời' },
 ];
 export default function Review() {
     const dispatch = useDispatch();
@@ -42,15 +42,17 @@ export default function Review() {
 
     return (
         <div className="col-md-12 product-rating" style={{ paddingTop: '20px' }}>
-            <div className="row">
-                <div>
+            <div className="row ">
+                <div className="col-md-6">
                     <div className={styles.wrapper}>
                         <Typography noWrap variant="h6" color="black">
                             Đánh giá sản phẩm
                         </Typography>
                     </div>
                     <div className="rating-review">
-                        {product?.reviews?.length === 0 && <Message variant={'alert-info mt-3'}>No Reviews</Message>}
+                        {product?.reviews?.length === 0 && (
+                            <Message variant={'alert-info mt-3'}>Chưa có đánh giá nào</Message>
+                        )}
                         {product?.reviews?.map((review) => (
                             <div key={review._id} className="mb-5 mb-md-3 bg-light p-3 shadow-sm rounded">
                                 <div style={{ display: 'flex' }}>
@@ -77,9 +79,9 @@ export default function Review() {
                         ))}
                     </div>
                 </div>
-                {/* <div className="col-md-6">
+                <div className="col-md-6">
                     <div style={{ paddingLeft: '10px' }}>
-                        <h6 className="write-review">WRITE A CUSTOMER REVIEW</h6>
+                        <h6 className="write-review">Đánh giá sản phẩm</h6>
                         <div className="my-4">{loadingCreateReview && <Loading />}</div>
                         {userInfo ? (
                             <form onSubmit={submitHandler}>
@@ -96,7 +98,7 @@ export default function Review() {
                                     </select>
                                 </div>
                                 <div className="my-4">
-                                    <strong>Comment</strong>
+                                    <strong>Chi tiết đánh giá</strong>
                                     <textarea
                                         row="3"
                                         value={comment}
@@ -109,23 +111,23 @@ export default function Review() {
                                         disabled={loadingCreateReview}
                                         className="col-12 bg-orange border-0 p-3 rounded text-white"
                                     >
-                                        SUBMIT
+                                        Gửi
                                     </button>
                                 </div>
                             </form>
                         ) : (
                             <div className="my-3">
                                 <Message variant={'alert-warning'}>
-                                    Please{' '}
+                                    Hãy{' '}
                                     <Link to="/login">
-                                        " <strong>Login</strong> "
+                                        " <strong>Đăng nhập</strong> "
                                     </Link>{' '}
-                                    and buy this product to write a review{' '}
+                                    và mua sản phẩm để đánh giá{' '}
                                 </Message>
                             </div>
                         )}
                     </div>
-                </div> */}
+                </div>
             </div>
         </div>
     );

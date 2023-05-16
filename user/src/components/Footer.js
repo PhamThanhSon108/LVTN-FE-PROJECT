@@ -6,14 +6,14 @@ const Footer = () => {
             <div className="container">
                 <div className="row">
                     <div className="col-lg-3 col-md-6 col-sm-12 center">
-                        <h1 className="footer-hearder">Design</h1>
+                        <h1 className="footer-hearder">Thiết kế</h1>
                         <ul className="footer-list">
                             <li>Pham Thanh Son</li>
                             <li>Nguyễn Khắc Tuấn</li>
                         </ul>
                     </div>
                     <div className="col-lg-3 col-md-6 col-sm-12 center">
-                        <h1 className="footer-hearder">Follow Us</h1>
+                        <h1 className="footer-hearder">Theo dõi</h1>
                         <ul className="footer-list">
                             <li>
                                 <a href="#">
@@ -50,7 +50,7 @@ const Footer = () => {
                                 />
                             </div>
                             <div className="card-name">
-                                <img alt="paypal" src="https://pbs.twimg.com/media/EfTZlEnWAAMn1lX.png" />
+                                <img alt="momo" src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" />
                             </div>
                         </div>
                         <div className="foorter-flex">
@@ -69,16 +69,13 @@ const Footer = () => {
                         </div>
                     </div>
                     <div className="col-lg-3 col-md-6 col-sm-12 center">
-                        <h1 className="footer-hearder">Customer Care</h1>
+                        <h1 className="footer-hearder">Chăm sóc khách hàng</h1>
                         <ul className="footer-list">
                             <li>
-                                <a href="#">Help Center</a>
+                                <a href="#">Trung tâm hỗ trợ</a>
                             </li>
                             <li>
-                                <a href="#">Customer Guide</a>
-                            </li>
-                            <li>
-                                <a href="#">Customer Care</a>
+                                <a href="#">Hướng dẫn</a>
                             </li>
                         </ul>
                     </div>

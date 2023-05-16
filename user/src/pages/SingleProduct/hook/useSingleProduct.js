@@ -33,9 +33,9 @@ export default function useSingleProduct() {
         (value) => value.attributes?.[0].value === value1 && value.attributes?.[1].value === value2,
     );
     const percentDiscount = (
-        ((currentVariant?.price - currentVariant?.priceSale) * 100) / currentVariant?.price ||
-        ((product?.price - product?.priceSale) * 100) / product?.price ||
-        0
+        currentVariant
+            ? ((currentVariant?.price - currentVariant?.priceSale) * 100) / currentVariant?.price
+            : ((product?.price - product?.priceSale) * 100) / product?.price
     ).toFixed();
 
     const defaultValue1 =
@@ -104,7 +104,7 @@ export default function useSingleProduct() {
                     },
                 ]),
             );
-            history.push('/login?redirect=shipping');
+            history.push('/login?redirect=placeorder');
         } else history.push('/login');
     };
     const submitHandler = (e) => {
@@ -127,6 +127,7 @@ export default function useSingleProduct() {
     }, [deBounce]);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         if (successCreateReview) {
             setRating(0);
             setComment('');
@@ -135,6 +136,7 @@ export default function useSingleProduct() {
         dispatch(listProductDetails(productId));
     }, [dispatch, productId, successCreateReview]);
     return {
+        loading,
         currentVariant,
         percentDiscount,
         submitHandler,

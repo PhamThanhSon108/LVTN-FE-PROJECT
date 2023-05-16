@@ -176,6 +176,7 @@ const PlaceOrderScreen = ({ history }) => {
                             {loadingGetList || loadingShippingFee ? (
                                 <CircularProgress size={15} />
                             ) : (
+                                shippingFee?.leadTime?.leadtime &&
                                 moment(shippingFee?.leadTime?.leadtime * 1000).format('L')
                             )}
                         </Typography>
@@ -215,6 +216,11 @@ const PlaceOrderScreen = ({ history }) => {
                 </div>
                 <Divider />
                 <div className={styles.voucherBody}>
+                    {loadingApplyVoucher ? (
+                        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                            <CircularProgress />
+                        </div>
+                    ) : null}
                     {voucher ? <Voucher voucher={voucher} handleApplyVoucher={handleApplyVoucher} canRemove /> : null}
                 </div>
             </Card>

@@ -11,6 +11,7 @@ import { listProduct } from '~/Redux/Actions/productActions';
 import Rating from '../Rating/Rating';
 import styles from './ShopSection.module.scss';
 import Product from '~/components/Product/Product';
+import useSearchParamsCustom from '~/hooks/useSearchParamCustom';
 const LoadingEachProduct = () => {
     return (
         <div className={styles.loadingEachProduct} style={{ margin: '15px 7.9px' }}>
@@ -34,40 +35,29 @@ const ShowFilter = ({ children, show }) => {
 };
 const ShopSection = (props) => {
     const dispatch = useDispatch();
-    const { keyword, pageNumber = 1, queryCategory } = props;
+    const { getParamValue, replaceParams } = useSearchParamsCustom();
+    const [toggleLoad, setToggleLoad] = useState(false);
     const productList = useSelector((state) => state.productList);
     const { loading, error, products, page, pages } = productList;
-    const [rating, setRating] = useState('');
-    const [minPrice, setMinPrice] = useState('');
-    const [category, setCategory] = useState(queryCategory);
-    const [maxPrice, setMaxPrice] = useState('');
+
+    const minPrice = getParamValue('min') || '';
+    const category = getParamValue('category') || '';
+    const maxPrice = getParamValue('max') || '';
+    const keyword = getParamValue('keyword') || '';
+    const pageNumber = getParamValue('page') || '';
+    const rating = getParamValue('rating') || '';
+
     const [priceOrder, setPriceOrder] = useState('');
     let SkeletonOption = window.innerWidth > 540 ? [1, 2, 3, 4, 5, 6] : [1];
     useEffect(() => {
-        if (category !== queryCategory) setCategory(queryCategory);
-    }, [queryCategory]);
-    useEffect(() => {
-        dispatch(listProduct({ category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder }));
-    }, [dispatch, category, keyword, rating, minPrice, maxPrice, priceOrder, pageNumber]);
-
+        dispatch(listProduct({ category, keyword, pageNumber, rating, minPrice, maxPrice }));
+    }, [toggleLoad]);
     return (
         <>
             <div className={styles.shopSectionContainer}>
                 <div className={styles.section}>
                     <div className="row">
-                        {keyword || category ? (
-                            <FilterSection
-                                setRating={setRating}
-                                setMinPrice={setMinPrice}
-                                setMaxPrice={setMaxPrice}
-                                setCategory={setCategory}
-                                rating={rating}
-                                minPrice={minPrice}
-                                maxPrice={maxPrice}
-                                categoryCurrent={category}
-                                keyword={keyword}
-                            ></FilterSection>
-                        ) : null}
+                        {keyword || category ? <FilterSection setToggleLoad={setToggleLoad}></FilterSection> : null}
                         <div
                             style={{ paddingLeft: 0, paddingRight: 0 }}
                             className={` ${keyword || category ? 'col-lg-10' : 'col-lg-12'} col-md-9 article`}
@@ -90,17 +80,13 @@ const ShopSection = (props) => {
                                             className="col-lg-12 col-md-6 col-sm-6 d-flex align-content-center justify-center flex-column"
                                             style={{ alignItems: 'center', justifyContent: 'center' }}
                                         >
-                                            <div className="position-relative">
+                                            <div className="d-flex flex-column align-content-center">
                                                 <img
                                                     alt="Không tìm thấy sản phẩm"
                                                     src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg//assets/a60759ad1dabe909c46a817ecbf71878.png"
                                                 />
-                                                <div
-                                                    className="position-absolute"
-                                                    style={{ bottom: '15px', right: '50px' }}
-                                                >
-                                                    Không tìm thấy sản phẩm
-                                                </div>
+
+                                                <Typography className="text-center">Không tìm thấy sản phẩm</Typography>
                                             </div>
                                         </div>
                                     }
@@ -150,12 +136,20 @@ const ShopSection = (props) => {
 
                                     {!keyword && !category ? (
                                         <div className="row divider-custom">
-                                            <span>Sản phẩm hôm nay</span>
+                                            <Typography color="primary" fontWeight={600}>
+                                                Sản phẩm hôm nay
+                                            </Typography>
                                         </div>
                                     ) : null}
 
                                     {products?.map((product) => (
-                                        <Product product={product} />
+                                        <div
+                                            className="col-lg-2 col-md-3 col-sm-6  mb-3"
+                                            style={{ paddingLeft: 4, paddingRight: 4 }}
+                                            key={product._id}
+                                        >
+                                            <Product product={product} />
+                                        </div>
                                     ))}
                                 </RenderProduct>
 
@@ -165,31 +159,31 @@ const ShopSection = (props) => {
                                     className="row d-flex justify-content-center"
                                     style={{ paddingTop: '18px', marginBottom: '16px' }}
                                 >
-                                    {keyword || category ? (
-                                        <Pagination
-                                            pages={pages}
-                                            page={page}
-                                            // category={category ? category : ''}
-                                            keyword={keyword ? keyword : ''}
-                                            category={category || ''}
-                                        />
-                                    ) : (
-                                        !props?.todayProducts && (
-                                            <Link to={'today-product'} style={{ width: '30%' }}>
-                                                <Button
-                                                    variant="outlined"
-                                                    style={{
-                                                        borderColor: 'var(--default-background-color)',
-                                                        width: '100%',
-                                                        color: 'var(--default-background-color)',
-                                                        minWidth: '150px',
-                                                    }}
-                                                >
-                                                    Xem thêm
-                                                </Button>
-                                            </Link>
-                                        )
-                                    )}
+                                    {keyword || category
+                                        ? products?.length > 16 && (
+                                              <Pagination
+                                                  pages={pages}
+                                                  page={page}
+                                                  // category={category ? category : ''}
+                                                  keyword={keyword ? keyword : ''}
+                                                  category={category || ''}
+                                              />
+                                          )
+                                        : products?.length > 16 && (
+                                              <Link to={'today-product'} style={{ width: '30%' }}>
+                                                  <Button
+                                                      variant="outlined"
+                                                      style={{
+                                                          borderColor: 'var(--default-background-color)',
+                                                          width: '100%',
+                                                          color: 'var(--default-background-color)',
+                                                          minWidth: '150px',
+                                                      }}
+                                                  >
+                                                      Xem thêm
+                                                  </Button>
+                                              </Link>
+                                          )}
                                 </div>
                             </div>
                         </div>

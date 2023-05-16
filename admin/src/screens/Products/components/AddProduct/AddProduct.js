@@ -10,7 +10,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import React, { useState, useEffect, Fragment } from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Controller, useForm } from 'react-hook-form';
@@ -58,6 +58,7 @@ const methodToChange = {
 };
 
 const AddProduct = (props) => {
+  const history = useHistory();
   const [changeForALL, setChangForAll] = useState(false);
   const { productId } = props;
   const [category, setCategory] = useState('');
@@ -86,12 +87,18 @@ const AddProduct = (props) => {
     dispatch(ListCategory());
   }, [productId, dispatch]);
 
-  const productUpdate = useSelector((state) => state.productUpdate);
-  const { loading: loadingUpdate } = productUpdate;
+  const productCreate = useSelector((state) => state.productCreate);
+  const { loading: loadingCreate } = productCreate;
 
   const categoriesInStore = useSelector((state) => state.CategoryChildren);
   const { categories } = categoriesInStore;
 
+  const handleAfterAdd = {
+    success: () => {
+      history.push('/products');
+    },
+    error: () => {},
+  };
   const checkSameValue = (arrValue) => {
     return (
       arrValue?.length ===
@@ -136,6 +143,7 @@ const AddProduct = (props) => {
             })),
         ),
       );
+
       await convertFilesToBase64(
         newImages,
         (base64) => {
@@ -143,7 +151,7 @@ const AddProduct = (props) => {
         },
         (base64s) => {
           newProduct.append('imageFile', JSON.stringify(base64s));
-          dispatch(createProduct(newProduct));
+          dispatch(createProduct(newProduct, handleAfterAdd));
         },
       );
     }
@@ -457,8 +465,8 @@ const AddProduct = (props) => {
                                 setValue(`variants.${iClass1}.field.${iClass2}.attributes.0.value`, value1);
                                 setValue(`variants.${iClass1}.field.${iClass2}.attributes.1.value`, value2);
                                 if (changeForALL) {
-                                  setValue(`variants.${iClass1}.field.${iClass2}.price`, watch('price'));
-                                  setValue(`variants.${iClass1}.field.${iClass2}.quantity`, watch('quantity'));
+                                  setValue(`variants.${iClass1}.field.${iClass2}.price`, getValues('price'));
+                                  setValue(`variants.${iClass1}.field.${iClass2}.quantity`, getValues('quantity'));
                                 }
                                 return (
                                   <tr key={uuidv4()}>
@@ -470,7 +478,7 @@ const AddProduct = (props) => {
                                         className=""
                                         placeholder="Nhập giá sản phẩm"
                                         {...register(`variants.${iClass1}.field.${iClass2}.price`, {
-                                          required: 'This is required',
+                                          required: 'Thông tin bắt buộc',
                                           validate: {
                                             positive: (value) => value >= 0 && value < 100000000000,
                                           },
@@ -485,7 +493,10 @@ const AddProduct = (props) => {
                                         {...register(`variants.${iClass1}.field.${iClass2}.priceSale`, {
                                           validate: {
                                             positive: (value) =>
-                                              value >= 0 && value < watch(`variants.${iClass1}.field.${iClass2}.price`),
+                                              !value ||
+                                              (Number(value) >= 0 &&
+                                                Number(value) <
+                                                  Number(getValues(`variants.${iClass1}.field.${iClass2}.price`))),
                                           },
                                         })}
                                       ></input>
@@ -601,7 +612,7 @@ const AddProduct = (props) => {
                 <Card sx={{ padding: 2 }}>
                   <div className="d-flex align-content-between justify-content-end">
                     <LoadingButton
-                      loading={loadingUpdate}
+                      loading={loadingCreate}
                       type="submit"
                       variant={inputPropsConstants.variantContained}
                       startIcon={<AddIcon />}

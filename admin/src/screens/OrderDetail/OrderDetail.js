@@ -60,7 +60,7 @@ const OrderDetail = () => {
   }, [dispatch, orderId, successDelivered, successUpdateStatus, successCancel]);
 
   useEffect(() => {
-    setStatus(order?.statatus);
+    setStatus(order?.status);
   }, [order]);
   return (
     <section>

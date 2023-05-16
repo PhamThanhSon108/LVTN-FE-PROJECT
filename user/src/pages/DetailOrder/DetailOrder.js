@@ -39,7 +39,7 @@ import VerifiedUserOutlinedIcon from '@mui/icons-material/VerifiedUserOutlined';
 import { formatMoney } from '~/utils/formatMoney';
 import ProductInOrder from './Product/ProductInOrder';
 import { PAY_WITH_MOMO } from '../PlaceOrder/hook/usePlaceOrder';
-const stepShipping = {
+export const stepShipping = {
     placed: {
         icon: <StickyNote2OutlinedIcon />,
         label: 'Đặt hàng',
@@ -215,7 +215,7 @@ const DetailOrder = () => {
                   return stepper;
               }, [])
             : stepperNoCancelStatus;
-    console.log(stepper, lastStatus === 'cancelled');
+
     return (
         <div className="container">
             <div className="content-header"></div>

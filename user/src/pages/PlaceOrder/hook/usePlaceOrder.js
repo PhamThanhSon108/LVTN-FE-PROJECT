@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { listCart, listOrderCart } from '~/Redux/Actions/cartActions';
+import { toast } from 'react-toastify';
+import { Toastobjects, listCart, listOrderCart } from '~/Redux/Actions/cartActions';
 import { getShippingFee } from '~/Redux/Actions/deliveryAction';
 import { createOrder } from '~/Redux/Actions/orderActions';
 import { getShippingAddresses } from '~/Redux/Actions/userActions';
@@ -69,12 +70,27 @@ export default function usePlaceOrder() {
 
     const handleAfterFetch = {
         success: (order) => {
+            toast.success('Đặt hàng thành công!', Toastobjects);
             dispatch(listCart());
             dispatch(listOrderCart());
             history.push(`/order/${order._id}`);
             dispatch({ type: ORDER_CREATE_RESET });
         },
-        error: () => {},
+        error: (message) => {
+            toast.error(message || 'Đặt hàng thất bại!', Toastobjects);
+        },
+        finally: () => {
+            setLoading(false);
+        },
+    };
+
+    const handleAfterFetchFee = {
+        success: (order) => {
+            toast.success('Áp dụng mã giảm giá thành công!', Toastobjects);
+        },
+        error: (message) => {
+            toast.error(message || 'Áp dụng mã giảm giá thất bại!', Toastobjects);
+        },
         finally: () => {
             setLoading(false);
         },
@@ -88,9 +104,7 @@ export default function usePlaceOrder() {
                 getShippingFee({
                     to_district_id: newAddress.district.id,
                     to_ward_code: newAddress.ward.id.toString(),
-
                     weight: 1,
-
                     insurance_value: null,
                     coupon: null,
                 }),
@@ -98,22 +112,26 @@ export default function usePlaceOrder() {
         }
     };
     const afterFetchPriceIsReduced = {
-        success: (data) => {
+        success: (data, voucher) => {
+            setVoucher(voucher);
             setPriceIsReduced(data);
             setLoadingApplyVoucher(false);
+            toast.success('Áp dụng thành công', Toastobjects);
+        },
+        error: (message) => {
+            setVoucher('');
+            toast.error(message || 'Có lỗi xảy ra khi áp dụng voucher', Toastobjects);
         },
         finally: () => {
             setLoadingApplyVoucher(false);
         },
     };
     const handleApplyVoucher = (voucher) => {
-        setVoucher(voucher);
-
         if (voucher) {
             setLoadingApplyVoucher(true);
             dispatch(
                 getPriceIsReducedAfterApplyVoucher({
-                    discountCode: voucher?.code,
+                    voucher,
                     orderItems: cartOrder.cartOrderItems.map((variant) => ({
                         variant: variant.variant._id,
                         quantity: variant.quantity,

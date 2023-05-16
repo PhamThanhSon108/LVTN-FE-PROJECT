@@ -8,6 +8,7 @@ import { getMyOrders } from '~/Redux/Actions/orderActions';
 import Loading from '~/components/LoadingError/Loading';
 import Message from '~/components/LoadingError/Error';
 import { Typography } from '@mui/material';
+import { stepShipping } from '~/pages/DetailOrder/DetailOrder';
 const MyOrders = () => {
     const dispatch = useDispatch();
     const myOrders = useSelector((state) => state.myOrders);
@@ -48,9 +49,9 @@ const MyOrders = () => {
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>STATUS</th>
-                                    <th>TIME</th>
-                                    <th>TOTAL</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thời gian</th>
+                                    <th>Tổng thanh toán</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -69,7 +70,9 @@ const MyOrders = () => {
                                             </a>
                                         </td>
                                         <td>
-                                            <span className="">{order?.status}</span>
+                                            <span className="">
+                                                {stepShipping?.[order?.status]?.labelActive || 'Trạng thái đơn hàng'}
+                                            </span>
                                         </td>
                                         <td>{moment(order.createdAt).calendar()}</td>
                                         <td>{formatMoney(order.totalPayment)}</td>

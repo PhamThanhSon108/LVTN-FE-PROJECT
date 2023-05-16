@@ -5,11 +5,12 @@ import Message from '../../components/LoadingError/Error';
 import { LoadingButton } from '@mui/lab';
 import useSingleProduct from './hook/useSingleProduct';
 import styles from './SingleProduct.module.scss';
-import { Button, Chip, Rating, Typography, styled } from '@mui/material';
+import { Button, Chip, CircularProgress, Rating, Tooltip, Typography, styled } from '@mui/material';
 import GppGoodIcon from '@mui/icons-material/GppGood';
 import { formatMoney } from '~/utils/formatMoney';
 import Review from './components/Review/Review';
 import ReactQuill from 'react-quill';
+import SliderOfProductImage from './components/SliderOfProductImage/SliderOfProductImage';
 
 const StyledRating = styled(Rating)({
     '& .MuiRating-iconFilled': {
@@ -53,6 +54,7 @@ const RenderStatus = ({ value1, value2, product }) => {
 
 const SingleProduct = () => {
     const {
+        loading,
         currentVariant,
         buyProductHandle,
         AddToCartHandle,
@@ -73,20 +75,20 @@ const SingleProduct = () => {
         haveQuantityOfCurrentVariant,
     } = useSingleProduct();
 
-    // if (loading)
-    //     return (
-    //         <Fragment>
-    //             <div className="container single-product">
-    //                 <Loading />;
-    //             </div>
-    //         </Fragment>
-    //     );
+    if (loading)
+        return (
+            <Fragment>
+                <div className="container single-product d-flex justify-content-center mt-3">
+                    <CircularProgress />
+                </div>
+            </Fragment>
+        );
 
     if (error)
         return (
             <Fragment>
-                <div className="container single-product">
-                    <Message variant="alert-danger">{error}</Message>;
+                <div className="container single-product mt-3">
+                    <Message variant="alert-danger">{error || ' Có lỗi xảy ra trong quá trình tải sản phẩm'}</Message>
                 </div>
             </Fragment>
         );
@@ -97,7 +99,7 @@ const SingleProduct = () => {
                     <div className="row">
                         <div className="col-md-5">
                             <div className={styles.imageWrapper}>
-                                <img src={product.images?.[0]} alt={product.name} />
+                                <SliderOfProductImage images={product?.images || []} />
                             </div>
                         </div>
                         <div className="col-md-7 product-postion">
@@ -122,7 +124,7 @@ const SingleProduct = () => {
                                             <StyledRating
                                                 size="small"
                                                 name="read-only"
-                                                value={product.rating || 2}
+                                                value={product.rating || 0}
                                                 readOnly
                                                 sx={{
                                                     pr: 1,
@@ -173,7 +175,7 @@ const SingleProduct = () => {
                                             {percentDiscount > 0 ? (
                                                 <div className={styles.chipDiscount}>
                                                     <Typography fontSize={10} noWrap variant="inherit" color="white">
-                                                        {percentDiscount} % giảm
+                                                        {percentDiscount < 100 ? percentDiscount : 99} % giảm
                                                     </Typography>
                                                 </div>
                                             ) : null}
@@ -224,7 +226,7 @@ const SingleProduct = () => {
                                             </button>
                                         ))}
                                     </div>
-                                    {haveQuantityOfCurrentVariant > 0 ? (
+                                    {
                                         <>
                                             <div className="flex-box d-flex justify-content-start align-items-center mt-2">
                                                 <Typography
@@ -254,6 +256,7 @@ const SingleProduct = () => {
                                                         onChange={(e) => {
                                                             setQty(parseInt(e.target.value));
                                                         }}
+                                                        disabled={!(haveQuantityOfCurrentVariant > 0)}
                                                     ></input>
                                                     <i
                                                         class="far fa-plus input-quantity icon"
@@ -286,27 +289,48 @@ const SingleProduct = () => {
                                                 className="d-flex mt-4"
                                                 style={{ marginTop: '10px', marginLeft: '25px' }}
                                             >
-                                                <LoadingButton
-                                                    variant="outlined"
-                                                    loading={loadingAddtoCart}
-                                                    onClick={AddToCartHandle}
-                                                    style={{ marginRight: '15px' }}
-                                                    className="col-4 btn text-primary"
-                                                    loadingPosition="start"
+                                                <Tooltip
+                                                    title={
+                                                        !(haveQuantityOfCurrentVariant > 0)
+                                                            ? 'Bạn cần chọn màu sắc và kích cỡ trước'
+                                                            : ''
+                                                    }
                                                 >
-                                                    Thêm vào giỏ hàng
-                                                </LoadingButton>
-                                                <Button
-                                                    variant="contained"
-                                                    style={{ minWidth: 120 }}
-                                                    onClick={buyProductHandle}
-                                                    className="col-2 btn btn-primary btn-buy-single-product"
+                                                    <div className="col-4" style={{ marginRight: '15px' }}>
+                                                        <LoadingButton
+                                                            disabled={!(haveQuantityOfCurrentVariant > 0)}
+                                                            variant="outlined"
+                                                            loading={loadingAddtoCart}
+                                                            onClick={AddToCartHandle}
+                                                            className="col-12 btn text-primary"
+                                                            loadingPosition="start"
+                                                        >
+                                                            Thêm vào giỏ hàng
+                                                        </LoadingButton>
+                                                    </div>
+                                                </Tooltip>
+                                                <Tooltip
+                                                    title={
+                                                        !(haveQuantityOfCurrentVariant > 0)
+                                                            ? 'Bạn cần chọn màu sắc và kích cỡ trước'
+                                                            : ''
+                                                    }
                                                 >
-                                                    Mua ngay
-                                                </Button>
+                                                    <div className="col-4">
+                                                        <Button
+                                                            disabled={!(haveQuantityOfCurrentVariant > 0)}
+                                                            variant="contained"
+                                                            style={{ minWidth: 120 }}
+                                                            onClick={buyProductHandle}
+                                                            className="col-2 btn btn-primary btn-buy-single-product"
+                                                        >
+                                                            Mua ngay
+                                                        </Button>
+                                                    </div>
+                                                </Tooltip>
                                             </div>
                                         </>
-                                    ) : null}
+                                    }
                                 </div>
                                 <div
                                     className="d-flex flex-grow-1 mt-3 align-items-end"

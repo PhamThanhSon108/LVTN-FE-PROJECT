@@ -142,16 +142,12 @@ const EditProduct = () => {
   };
 
   const submitHandler = async (data, e) => {
-    console.log('submit', data);
     e.preventDefault();
     if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
-      console.log('submit1');
-
       toast.error('Tên của phân loại hàng không được trùng nhau', ToastObjects);
       return;
     }
     if (images.length === 0 && newImages.length === 0) {
-      console.log('submit2');
       toast.error('Sản phẩm phải có ít nhất một hình ảnh', ToastObjects);
       return;
     }
@@ -613,11 +609,11 @@ const EditProduct = () => {
                                 setValue(`variants.${iClass1}.field.${iClass2}.attributes.0.value`, value1);
                                 setValue(`variants.${iClass1}.field.${iClass2}.attributes.1.value`, value2);
                                 if (changeForALL) {
-                                  setValue(`variants.${iClass1}.field.${iClass2}.price`, watch('price'));
-                                  setValue(`variants.${iClass1}.field.${iClass2}.quantity`, watch('quantity'));
+                                  setValue(`variants.${iClass1}.field.${iClass2}.price`, getValues('price'));
+                                  setValue(`variants.${iClass1}.field.${iClass2}.quantity`, getValues('quantity'));
                                 }
                                 return (
-                                  <tr key={`${value1} + ${value2}`}>
+                                  <tr key={uuidv4()}>
                                     <td className="col-3">{value1 || '?'}</td>
                                     <td className="col-3">{value2 || '?'}</td>
                                     <td className="col-2">
@@ -639,10 +635,12 @@ const EditProduct = () => {
                                         className=""
                                         placeholder="Enter price"
                                         {...register(`variants.${iClass1}.field.${iClass2}.priceSale`, {
-                                          required: 'This is required',
                                           validate: {
                                             positive: (value) =>
-                                              value >= 0 && value < watch(`variants.${iClass1}.field.${iClass2}.price`),
+                                              !value ||
+                                              (Number(value) >= 0 &&
+                                                Number(value) <
+                                                  Number(getValues(`variants.${iClass1}.field.${iClass2}.price`))),
                                           },
                                         })}
                                       ></input>

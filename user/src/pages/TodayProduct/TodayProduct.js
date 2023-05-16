@@ -1,14 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import Rating from './Rating';
+import React, { Fragment, useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { listProduct } from '../../Redux/Actions/productActions';
-import Message from '../LoadingError/Error';
 
-import { createBrowserHistory } from 'history';
-import { Pagination, Skeleton } from '@mui/material';
+import { Box, Pagination, Skeleton, Typography } from '@mui/material';
 import styles from './TodayProduct.module.scss';
+import Product from '~/components/Product/Product';
+import { Message } from '@mui/icons-material';
+import { Card } from 'react-bootstrap';
+const NotFound = ({ children, empty }) => {
+    if (empty) return children;
+    return <Fragment />;
+};
+const MainSection = ({ children }) => {
+    return (
+        <div className={styles.containerTodayProduct}>
+            <div className={styles.section}>
+                <div className="row col-12">
+                    <div className="row divider-custom">
+                        <Typography color="primary" fontWeight={600}>
+                            Sản phẩm hôm nay
+                        </Typography>
+                    </div>
+
+                    <Fragment>{children}</Fragment>
+                </div>
+            </div>
+        </div>
+    );
+};
 const TodayProduct = () => {
     const dispatch = useDispatch();
     const productList = useSelector((state) => state.productList);
@@ -25,103 +45,62 @@ const TodayProduct = () => {
         dispatch(listProduct({ pageNumber: pageNumber, pageSize }));
     }, [dispatch, pageNumber]);
 
-    return (
-        <div className={styles.containerTodayProduct}>
-            <div className="section">
-                <div className="row">
-                    <div className={`${'col-lg-12'} col-md-9 article`}>
-                        <div className="shop-section-container row">
-                            {loading ? (
-                                <>
-                                    <div style={{ display: 'flex', width: '100%' }}>
-                                        {SkeletonOption.map(() => (
-                                            <div className="" style={{ margin: '15px 7.9px', width: '100%' }}>
-                                                <Skeleton variant="rectangular" width={'100%'} height={209} />
-                                                <Skeleton />
-                                                <Skeleton />
-                                                <Skeleton width="60%" />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </>
-                            ) : error ? (
-                                <Message variant="alert-danger">{error}</Message>
-                            ) : (
-                                <>
-                                    {!loading &&
-                                        (products?.length === 0 || !products ? (
-                                            <div
-                                                className="col-lg-12 col-md-6 col-sm-6 d-flex align-content-center justify-center flex-column"
-                                                style={{ alignItems: 'center', justifyContent: 'center' }}
-                                            >
-                                                <div className="position-relative">
-                                                    <img src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg//assets/a60759ad1dabe909c46a817ecbf71878.png" />
-                                                    <div
-                                                        className="position-absolute"
-                                                        style={{ bottom: '15px', right: '50px' }}
-                                                    >
-                                                        NOT FOUND PRODUCT
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <>
-                                                <div className="row divider-custom">
-                                                    <span>Danh sách sản phẩm</span>
-                                                </div>
+    if (loading)
+        return (
+            <MainSection>
+                <div className=" d-flex justify-content-center">
+                    {SkeletonOption.map((key) => (
+                        <div key={key} className="col-lg-2 col-md-3 col-sm-4" style={{ padding: '15px 7.9px' }}>
+                            <Skeleton variant="rectangular" width={'100%'} height={209} />
+                            <Skeleton />
+                            <Skeleton />
+                            <Skeleton width="60%" />
+                        </div>
+                    ))}
+                </div>
+            </MainSection>
+        );
 
-                                                {products?.map((product) => (
-                                                    <div
-                                                        className="col-lg-2 col-md-6 col-sm-6 product-card-wrap"
-                                                        key={product._id}
-                                                    >
-                                                        <div className="border-product product-card-item">
-                                                            <Link to={`/product/${product._id}`}>
-                                                                <div className="product-card-item-img-wrap">
-                                                                    <img src={product.images?.[0]} alt={product.name} />
-                                                                </div>
-                                                            </Link>
-
-                                                            <div className="shoptext">
-                                                                <p>
-                                                                    <Link to={`/product/${product._id}`}>
-                                                                        {product.name}
-                                                                    </Link>
-                                                                </p>
-
-                                                                <Rating
-                                                                    value={product.rating}
-                                                                    text={`${product.numReviews} reviews`}
-                                                                />
-                                                                <h3>${product.price.toFixed(2)}</h3>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </>
-                                        ))}
-                                </>
-                            )}
-
-                            {/* Pagination */}
-
-                            <div className="row d-flex justify-content-center" style={{ paddingTop: '18px' }}>
-                                {
-                                    <Pagination
-                                        color="primary"
-                                        count={pages}
-                                        page={page}
-                                        variant="outlined"
-                                        shape="rounded"
-                                        onChange={handleChangePage}
-                                    />
-                                }
+    if (error)
+        return (
+            <MainSection>
+                <Message variant="alert-danger">{error}</Message>
+            </MainSection>
+        );
+    if (products?.length === 0)
+        return (
+            <MainSection>
+                <NotFound>
+                    <div
+                        className="col-lg-12 col-md-6 col-sm-6 d-flex align-content-center justify-center flex-column"
+                        style={{ alignItems: 'center', justifyContent: 'center' }}
+                    >
+                        <div className="position-relative">
+                            <img src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg//assets/a60759ad1dabe909c46a817ecbf71878.png" />
+                            <div className="position-absolute" style={{ bottom: '15px', right: '50px' }}>
+                                Không tìm thấy sản phẩm
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
+                </NotFound>
+            </MainSection>
+        );
+
+    return (
+        <MainSection>
+            <>
+                {products?.map((product) => (
+                    <div className="col-lg-2 col-md-6 col-sm-6 mb-3" key={product._id}>
+                        <Product product={product} />
+                    </div>
+                ))}
+            </>
+            {products?.length > 16 ? (
+                <Box className="col-12 d-flex justify-content-end">
+                    {<Pagination color="primary" count={pages} page={page} onChange={handleChangePage} />}
+                </Box>
+            ) : null}
+        </MainSection>
     );
 };
 

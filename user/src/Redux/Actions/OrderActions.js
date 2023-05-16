@@ -37,7 +37,7 @@ export const createOrder = (order, handleAfterFetch) => async (dispatch, getStat
     try {
         dispatch({ type: ORDER_CREATE_REQUEST });
         const { data } = await addOrder(order);
-        handleAfterFetch.success(data.data.newOrder);
+        handleAfterFetch?.success(data.data.newOrder);
 
         dispatch({ type: ORDER_CREATE_SUCCESS, payload: data });
         dispatch({ type: CART_CONST?.CART_ORDER_RESET });
@@ -45,14 +45,14 @@ export const createOrder = (order, handleAfterFetch) => async (dispatch, getStat
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
 
-        handleAfterFetch.error();
+        handleAfterFetch?.error(message);
         toast.error(message, Toastobjects);
         dispatch({
             type: ORDER_CREATE_FAIL,
             payload: message,
         });
     } finally {
-        handleAfterFetch.finally();
+        handleAfterFetch?.finally();
     }
 };
 
@@ -93,9 +93,9 @@ export const getMyOrders =
     ({ pageNumber = 1 }) =>
     async (dispatch, getState) => {
         try {
-            const { userDetails } = getState();
+            const { userLogin } = getState();
             dispatch({ type: ORDER_LIST_MY_REQUEST });
-            const { data } = await getOrdersByUser(userDetails?.user._id, pageNumber);
+            const { data } = await getOrdersByUser(userLogin?.userInfo._id, pageNumber);
             dispatch({ type: ORDER_LIST_MY_SUCCESS, payload: data?.data?.orders || [] });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -125,11 +125,11 @@ export const orderGetAddress = () => async (dispatch, getState) => {
 };
 
 // ODERS LIST ALL
-export const listAllOrder = () => async (dispatch) => {
+export const getBestSellerProducts = () => async (dispatch) => {
     try {
         dispatch({ type: ORDER_LIST_ALL_REQUEST });
-        const { data } = await request.get(`/product?bestSeller=true`);
-        dispatch({ type: ORDER_LIST_ALL_SUCCESS, payload: data?.products });
+        const { data } = await request.get(`/products?&sortBy=total_sales&limit=16`);
+        dispatch({ type: ORDER_LIST_ALL_SUCCESS, payload: data?.data?.products || [] });
     } catch (error) {
         dispatch({
             type: ORDER_LIST_ALL_FAIL,

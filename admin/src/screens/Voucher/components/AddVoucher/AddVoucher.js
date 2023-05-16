@@ -2,7 +2,16 @@ import React, { Fragment } from 'react';
 import styles from './AddVoucher.module.scss';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
 
-import { Button, Card, FormControlLabel, InputAdornment, Radio, RadioGroup, TextField } from '@mui/material';
+import {
+  Button,
+  Card,
+  FormControlLabel,
+  InputAdornment,
+  LinearProgress,
+  Radio,
+  RadioGroup,
+  TextField,
+} from '@mui/material';
 import { MultiInputDateTimeRangeField } from '@mui/x-date-pickers-pro';
 import { Controller } from 'react-hook-form';
 
@@ -28,13 +37,19 @@ export const isUsageLimit = {
 };
 
 export default function AddVoucher() {
-  const { id, loadingAdd, control, setValue, watch, handleSubmit, errors, handleCreateVoucher } = useAddVoucher();
+  const { loadingDetail, id, loadingAdd, control, setValue, watch, handleSubmit, errors, handleCreateVoucher } =
+    useAddVoucher();
 
   return (
     <div className={styles.voucherContainer}>
       <div className={styles.voucherWrapper}>
         <div className={styles.header}>
           <h2 className={styles.title}> {id ? 'Chỉnh sửa mã giảm giá' : 'Tạo mã giảm giá'}</h2>
+        </div>
+        <div style={{ height: 2.5 }}>
+          {loadingDetail ? (
+            <LinearProgress sx={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, height: '2.5px' }} />
+          ) : null}
         </div>
         <form className={styles.voucherForm} onSubmit={handleSubmit(handleCreateVoucher)}>
           <Card sx={{ boxShadow: 3 }} className={styles.voucherPropertyArea}>

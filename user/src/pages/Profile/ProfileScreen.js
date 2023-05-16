@@ -34,7 +34,6 @@ const ProfileScreen = () => {
 
     useEffect(() => {
         dispatch(getShippingAddresses());
-        dispatch(getUserDetails('profile'));
     }, [dispatch]);
 
     return (
@@ -59,11 +58,12 @@ const ProfileScreen = () => {
                             </div>
                             <div className="col-md-8">
                                 <h5 className="author-card-name mb-1">
-                                    <Typography variant="h6" fontWeight={600}>
+                                    <Typography variant="h6" fontWeight={600} noWrap>
                                         {userInfo?.name || 'alias'}
                                     </Typography>
                                 </h5>
-                                <Typography variant="caption" className="author-card-position">
+
+                                <Typography variant="caption" className="author-card-position" noWrap>
                                     Khách hàng
                                 </Typography>
                             </div>

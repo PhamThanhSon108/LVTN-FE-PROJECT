@@ -82,7 +82,7 @@ export default function Voucher() {
             return (
               <ListItem key={value} role="listitem" button>
                 <ListItemAvatar>
-                  <Avatar alt={value?.name} src={value?.images?.[0]} />
+                  <Avatar alt={value?.name} src={'/images/voucherTemplate.jpg'} />
                 </ListItemAvatar>
                 <ListItemText className="col-2" id={labelId} primary={value?.code || 'Mã code'} />
 
@@ -124,9 +124,9 @@ export default function Voucher() {
             );
           })}
         </List>
-        <CardActions className={styles.pagination}>
+        {/* <CardActions className={styles.pagination}>
           <Pagination variant="outlined" shape="rounded" />
-        </CardActions>
+        </CardActions> */}
       </Card>
     </div>
   );

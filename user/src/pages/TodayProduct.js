@@ -10,8 +10,6 @@ const Loading = () => {
     );
 };
 const TodayProduct = () => {
-    window.scrollTo(0, 0);
-
     // const category = match.params.category;
 
     return <Suspense fallback={<Loading></Loading>}>{/* <TodayProduct /> */}</Suspense>;
