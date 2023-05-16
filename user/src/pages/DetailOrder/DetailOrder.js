@@ -215,7 +215,7 @@ const DetailOrder = () => {
                   return stepper;
               }, [])
             : stepperNoCancelStatus;
-    console.log(stepper, lastStatus === 'cancelled');
+
     return (
         <div className="container">
             <div className="content-header"></div>

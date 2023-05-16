@@ -127,6 +127,7 @@ export default function useSingleProduct() {
     }, [deBounce]);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         if (successCreateReview) {
             setRating(0);
             setComment('');

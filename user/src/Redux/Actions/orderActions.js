@@ -93,9 +93,9 @@ export const getMyOrders =
     ({ pageNumber = 1 }) =>
     async (dispatch, getState) => {
         try {
-            const { userDetails } = getState();
+            const { userLogin } = getState();
             dispatch({ type: ORDER_LIST_MY_REQUEST });
-            const { data } = await getOrdersByUser(userDetails?.user._id, pageNumber);
+            const { data } = await getOrdersByUser(userLogin?.userInfo._id, pageNumber);
             dispatch({ type: ORDER_LIST_MY_SUCCESS, payload: data?.data?.orders || [] });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -125,11 +125,11 @@ export const orderGetAddress = () => async (dispatch, getState) => {
 };
 
 // ODERS LIST ALL
-export const listAllOrder = () => async (dispatch) => {
+export const getBestSellerProducts = () => async (dispatch) => {
     try {
         dispatch({ type: ORDER_LIST_ALL_REQUEST });
-        const { data } = await request.get(`/product?bestSeller=true`);
-        dispatch({ type: ORDER_LIST_ALL_SUCCESS, payload: data?.products });
+        const { data } = await request.get(`/products?&sortBy=total_sales&limit=16`);
+        dispatch({ type: ORDER_LIST_ALL_SUCCESS, payload: data?.data?.products || [] });
     } catch (error) {
         dispatch({
             type: ORDER_LIST_ALL_FAIL,

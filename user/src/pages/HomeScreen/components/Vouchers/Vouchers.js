@@ -66,7 +66,7 @@ export default function Vouchers() {
                 sx={{ display: 'flex', alignItems: 'center' }}
                 title={
                     <div className="d-flex justify-content-between align-content-center align-items-center">
-                        <Typography noWrap variant="button" color="text.secondary">
+                        <Typography noWrap variant="button" color="primary">
                             KHUYẾN MÃI
                         </Typography>
                         <Link

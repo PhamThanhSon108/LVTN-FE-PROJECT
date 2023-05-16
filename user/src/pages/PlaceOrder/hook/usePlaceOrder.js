@@ -89,7 +89,6 @@ export default function usePlaceOrder() {
             toast.success('Áp dụng mã giảm giá thành công!', Toastobjects);
         },
         error: (message) => {
-            console.log('afterfetch');
             toast.error(message || 'Áp dụng mã giảm giá thất bại!', Toastobjects);
         },
         finally: () => {

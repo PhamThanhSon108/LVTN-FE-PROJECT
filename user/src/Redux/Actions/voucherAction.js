@@ -66,7 +66,7 @@ export const addVoucher =
     async (dispatch) => {
         try {
             dispatch({ type: ADD_VOUCHER_REQUEST });
-            const { data } = await request.post('users/discount-code/add-user-discount-code-list', {
+            const { data } = await request.post('/users/discount-code/user-add-discount-code', {
                 discountCode: code,
             });
             dispatch({ type: ADD_VOUCHER_SUCCESS, payload: data?.data?.discountCode });

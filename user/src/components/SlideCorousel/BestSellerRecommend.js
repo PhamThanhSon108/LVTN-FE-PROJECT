@@ -5,20 +5,21 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { ListProductAll } from '../../Redux/Actions/productActions';
-import { useEffect } from 'react';
-import { Card, CardContent, CardMedia, Skeleton, Typography } from '@mui/material';
+
+import { useEffect, useState } from 'react';
+
 import Product from '../Product/Product';
+import { Skeleton, Typography } from '@mui/material';
+import { getBestSellerProducts } from '~/Redux/Actions/orderActions';
 
-export default function NewProductRecommend() {
-    const allProduct = useSelector((state) => state.productAll);
-    const { products, loading } = allProduct;
-
+export default function BestSellerRecommend() {
+    const orderAllList = useSelector((state) => state.bestSellerProduct);
+    const { products, loading } = orderAllList;
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(ListProductAll());
+        dispatch(getBestSellerProducts());
     }, []);
-    const SkeletonOption = window.innerWidth > 540 ? [1, 2, 3, 4, 5, 6] : [1, 2];
+    let SkeletonOption = window.innerWidth > 540 ? [1, 2, 3, 4, 5, 6] : [1, 2];
     const settings = {
         dots: false,
         infinite: true,
@@ -56,25 +57,26 @@ export default function NewProductRecommend() {
             },
         ],
     };
+
     return (
         <div style={{ marginTop: '20px' }}>
-            <div className="divider-custom">
+            <div className="row divider-custom">
                 <Typography color="primary" fontWeight={600}>
-                    Sản phẩm mới
+                    Sản phẩm bán chạy
                 </Typography>
             </div>
-            <div style={{ maxHeight: '316px', overflow: 'hidden' }}>
-                {!loading ? (
-                    <Slider
-                        className="col-12"
-                        {...settings}
-                        style={{ maxHeight: '316px', backgroundColor: 'transparent', overflow: 'hidden' }}
-                    >
-                        {products?.map((product, index) => (
-                            <div className="col-lg-2 col-md-3 col-sm-6  mb-3" key={product._id}>
-                                <Product key={product?._id} product={product} />
-                            </div>
-                        ))}
+
+            <div style={{ maxHeight: '316px', overflow: 'hidden' }} className="corousel">
+                {products?.length > 0 ? (
+                    <Slider {...settings} style={{ maxHeight: '340px' }}>
+                        {products &&
+                            products?.map((product, index) => {
+                                return (
+                                    <div className="col-lg-2 col-md-3 col-sm-6  mb-3" key={product._id}>
+                                        <Product key={product?._id} product={product} />
+                                    </div>
+                                );
+                            })}
                     </Slider>
                 ) : (
                     <>

@@ -144,13 +144,10 @@ const EditProduct = () => {
   const submitHandler = async (data, e) => {
     e.preventDefault();
     if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
-      console.log('submit1');
-
       toast.error('Tên của phân loại hàng không được trùng nhau', ToastObjects);
       return;
     }
     if (images.length === 0 && newImages.length === 0) {
-      console.log('submit2');
       toast.error('Sản phẩm phải có ít nhất một hình ảnh', ToastObjects);
       return;
     }

@@ -87,16 +87,13 @@ const ShopSection = (props) => {
                                             className="col-lg-12 col-md-6 col-sm-6 d-flex align-content-center justify-center flex-column"
                                             style={{ alignItems: 'center', justifyContent: 'center' }}
                                         >
-                                            <div className="position-relative">
+                                            <div className="">
                                                 <img
                                                     alt="Không tìm thấy sản phẩm"
                                                     src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg//assets/a60759ad1dabe909c46a817ecbf71878.png"
                                                 />
-                                                <div
-                                                    className="position-absolute"
-                                                    style={{ bottom: '15px', right: '50px' }}
-                                                >
-                                                    Không tìm thấy sản phẩm
+                                                <div className="" style={{ bottom: '15px', right: '50px' }}>
+                                                    Không tìm thấfdsfy sản phẩm
                                                 </div>
                                             </div>
                                         </div>
@@ -143,7 +140,9 @@ const ShopSection = (props) => {
 
                                     {!keyword && !category ? (
                                         <div className="row divider-custom">
-                                            <span>Sản phẩm hôm nay</span>
+                                            <Typography color="primary" fontWeight={600}>
+                                                Sản phẩm hôm nay
+                                            </Typography>
                                         </div>
                                     ) : null}
                                     {products?.map((product) => (

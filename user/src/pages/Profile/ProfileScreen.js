@@ -34,7 +34,6 @@ const ProfileScreen = () => {
 
     useEffect(() => {
         dispatch(getShippingAddresses());
-        dispatch(getUserDetails('profile'));
     }, [dispatch]);
 
     return (

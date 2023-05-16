@@ -18,7 +18,7 @@ import {
     forgotPasswordReducer,
     resetPasswordReducer,
     shippingAddress,
-    userDetailsReducer,
+    // userDetailsReducer,
     userLoginReducer,
     userRegisterReducer,
     userUpdateProfileReducer,
@@ -31,7 +31,7 @@ import {
     orderDetailsReducer,
     orderListMyReducer,
     orderPayReducer,
-    productbestseller,
+    productBestseller,
 } from './Reducers/OrderReducres';
 import { Sliderload } from './Reducers/SliderReducer';
 import { categoryListReducer } from './Reducers/CategoryReducers';
@@ -39,7 +39,7 @@ import { AddressReducer, ShippingFeeReducer } from './Reducers/DeliveryReducers'
 import { addVoucher, myVouchers, publicVouchers } from './Reducers/VoucherReducers';
 
 const reducer = combineReducers({
-    listAllOrder: productbestseller,
+    bestSellerProduct: productBestseller,
     productList: productListReducer,
     productAll: productListAllReducer,
     productDetails: productDetailsReducer,
@@ -52,7 +52,7 @@ const reducer = combineReducers({
 
     userLogin: userLoginReducer,
     userRegister: userRegisterReducer,
-    userDetails: userDetailsReducer,
+    // userDetails: userDetailsReducer,
     userUpdateProfile: userUpdateProfileReducer,
     forgotPassword: forgotPasswordReducer,
     resetPassword: resetPasswordReducer,

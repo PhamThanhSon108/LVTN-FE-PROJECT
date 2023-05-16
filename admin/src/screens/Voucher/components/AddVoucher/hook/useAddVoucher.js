@@ -47,7 +47,6 @@ export default function useAddVoucher() {
 
   const handleAfterGetDetail = {
     success: (voucher) => {
-      console.log(voucher, 'detail voucher');
       reset({ ...voucher, isUsageLimit: voucher.isUsageLimit ? isUsageLimit.limit : isUsageLimit.notLimit });
     },
     error: (message) => {

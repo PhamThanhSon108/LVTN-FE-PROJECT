@@ -13,7 +13,7 @@ import Register from '~/pages/Register';
 import ResetPass from '~/pages/ResetPass';
 import ShippingScreen from '~/pages/ShippingScreen';
 import SingleProduct from '~/pages/SingleProduct/SingleProduct';
-import TodayProduct from '~/pages/TodayProduct';
+import TodayProduct from '~/pages/TodayProduct/TodayProduct';
 import VerifyRegisterSuccess from '~/pages/VerifyRegisterSuccess';
 
 const publicRouter = [
