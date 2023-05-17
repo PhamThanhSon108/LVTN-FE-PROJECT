@@ -3,6 +3,9 @@ import {
   VOUCHER_ADD_REQUEST,
   VOUCHER_ADD_RESET,
   VOUCHER_ADD_SUCCESS,
+  VOUCHER_DELETE_FAIL,
+  VOUCHER_DELETE_REQUEST,
+  VOUCHER_DELETE_SUCCESS,
   VOUCHER_DETAIL_FAIL,
   VOUCHER_DETAIL_REQUEST,
   VOUCHER_DETAIL_SUCCESS,
@@ -57,6 +60,13 @@ export const voucherReducer = (state = { loading: false, loadingAdd: false, vouc
       return { ...state, loadingDetail: false, successDetail: true, voucher: action.payload };
     case VOUCHER_DETAIL_FAIL:
       return { ...state, loadingDetail: false, errorDetail: action.payload };
+
+    case VOUCHER_DELETE_REQUEST:
+      return { ...state, loadingDelete: true };
+    case VOUCHER_DELETE_SUCCESS:
+      return { ...state, loadingDelete: false, successDelete: true };
+    case VOUCHER_DELETE_FAIL:
+      return { ...state, loadingDelete: false, errorDelete: action.payload };
     default:
       return state;
   }

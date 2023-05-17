@@ -56,7 +56,6 @@ export default function useAddVoucher() {
   };
 
   const handleCreateVoucher = (data) => {
-    console.log(data.applicableProducts, 'product');
     const voucher = {
       ...data,
       startDate: data.applyTime[0].toJSON(),

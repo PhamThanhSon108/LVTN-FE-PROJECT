@@ -105,6 +105,7 @@ export default function FilterSection({ setToggleLoad }) {
             dispatch(ListCategory());
         }
     }, [dispatch]);
+    console.log(getParamValue('category'), 'category');
     return (
         <div className="section-div col-lg-2 col-md-3">
             <div className="Category-section">
@@ -120,14 +121,16 @@ export default function FilterSection({ setToggleLoad }) {
                     defaultExpandIcon={<ArrowRightIcon />}
                     sx={{ flexGrow: 1, overflowY: 'auto', mb: 2 }}
                     disabledItemsFocusable={true}
+                    defaultExpanded={[getParamValue('category')]}
                 >
                     {categories?.map((category) => (
                         <StyledTreeItemRoot
                             onClick={() => {
                                 replaceParams([{ key: 'category', value: category?.slug }]);
+                                setToggleLoad((toggle) => !toggle);
                             }}
                             key={category._id}
-                            nodeId={category._id}
+                            nodeId={category.slug}
                             label={category.name}
                             sx={{ mb: '4px', color: category?.slug === getParamValue('category') ? 'red' : null }}
                         >

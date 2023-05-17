@@ -1069,6 +1069,9 @@ textarea:focus {
     font-size: 12px !important;
     color: red !important;
 }
+.slick-track {
+    margin-left: 0px !important;
+}
 .slider-list {
     min-width: 900px;
     margin: 0 0 0 0;

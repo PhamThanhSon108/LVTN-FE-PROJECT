@@ -23,7 +23,7 @@ const Login = () => {
     const { error, loading, userInfo } = userLogin;
 
     useEffect(() => {
-        if (userInfo) {
+        if (userInfo?._id) {
             history.push(redirect);
         }
     }, [userInfo, history, redirect]);

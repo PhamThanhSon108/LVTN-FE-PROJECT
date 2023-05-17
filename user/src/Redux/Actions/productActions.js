@@ -81,13 +81,13 @@ export const listProductDetails = (id) => async (dispatch) => {
 
 // PRODUCT REVIEW CREATE
 export const createProductReview =
-    ({ productId, review, onHide }) =>
+    ({ id, review, onHide }) =>
     async (dispatch) => {
         try {
             dispatch({ type: PRODUCT_CREATE_REVIEW_REQUEST });
-            await request.post(`/products/${productId}/review`, review);
+            await request.post(`/products/${id}/review`, review);
             onHide && onHide('displayBasic');
-            toast.success('Successful review', Toastobjects);
+            toast.success('Đánh giá sản phẩm thành công', Toastobjects);
             dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -107,7 +107,7 @@ export const createProductReviewByOrder =
             dispatch({ type: PRODUCT_CREATE_REVIEW_REQUEST });
             await request.post(`/order/${OrderId}/orderItem/${OrderItemId}/products/${ProductId}`, review);
             onHide && onHide('displayBasic');
-            toast.success('Successful review', Toastobjects);
+            toast.success('Đánh giá sản phẩm thành công', Toastobjects);
             dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;

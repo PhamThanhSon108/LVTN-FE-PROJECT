@@ -1,3 +1,5 @@
+import bcrypt from 'bcryptjs';
+
 import {
     ADD_SHIPPING_ADDRESS_SUCCESS,
     FORGOT_PASSWORD_FAIL,
@@ -29,6 +31,7 @@ import { ORDER_LIST_MY_RESET } from '../Constants/OrderConstants';
 import CART_CONST from '../Constants/CartConstants';
 import { toast } from 'react-toastify';
 import request from '../../utils/request';
+import { hashPassword } from '~/utils/hashPassword';
 
 const Toastobjects = {
     pauseOnFocusLoss: false,
@@ -40,8 +43,9 @@ const Toastobjects = {
 export const login = (email, password) => async (dispatch) => {
     try {
         dispatch({ type: USER_LOGIN_REQUEST });
+        const newPassword = await hashPassword(password);
 
-        const { data } = await request.post(`/users/login`, { email, password });
+        const { data } = await request.post(`/users/login`, { email, password: newPassword });
         localStorage.setItem(
             'userInfo',
             JSON.stringify({
@@ -49,7 +53,7 @@ export const login = (email, password) => async (dispatch) => {
                 accessToken: data?.data.accessToken,
             }),
         );
-        // window.location.href = '/';
+        window.location.href = '/';
         await dispatch({ type: USER_LOGIN_SUCCESS, payload: data?.data.user });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
@@ -83,10 +87,11 @@ export const logout = () => (dispatch) => {
 export const register = (history, name, email, phone, password) => async (dispatch) => {
     try {
         dispatch({ type: USER_REGISTER_REQUEST });
+        const newPassword = await hashPassword(password);
         const { data } = await request.post(`/users/register`, {
             name,
             email,
-            password,
+            password: newPassword,
             phone,
             confirmPassword: password,
         });
@@ -121,7 +126,7 @@ export const confirmRegister = (verifyEmail, history) => async (dispatch) => {
 
 export const cancelRegister = (verifyEmail, history) => async (dispatch) => {
     try {
-        const { data } = await request.patch(`/users/auth/cancel-verify-email?emailVerificationToken=${verifyEmail}`);
+        await request.patch(`/users/auth/cancel-verify-email?emailVerificationToken=${verifyEmail}`);
         localStorage.removeItem('userInfo');
         history.push('/login');
     } catch (error) {
@@ -152,9 +157,13 @@ export const forGotPassWord = (data, handleAfterFetch) => async (dispatch) => {
 export const resetPassWord = (resetPasswordToken, data, history) => async (dispatch) => {
     try {
         dispatch({ type: RESET_PASSWORD_REQUEST });
-
+        const newConfirmPassword = await hashPassword(data?.confirmPassword);
+        const newPasswordIsHash = await hashPassword(data?.newPassword);
+        delete data.newPassConfirm;
         const dataApi = await request.patch(`/users/auth/reset-password?resetPasswordToken=${resetPasswordToken}`, {
             ...data,
+            newPassword: newPasswordIsHash,
+            confirmPassword: newConfirmPassword,
         });
         dispatch({ type: RESET_PASSWORD_SUCCESS, payload: dataApi });
         toast.success('Cập nhật mật khẩu thành công', Toastobjects);
@@ -217,37 +226,30 @@ export const updateUserProfile = (user, handleAfterFetch) => async (dispatch, ge
     }
 };
 
-export const updateUserPassword = (user, handleSuccessUpdatePassword) => async (dispatch, getState) => {
+export const updateUserPassword = (user, handleAfterFetch) => async (dispatch, getState) => {
     try {
         dispatch({ type: USER_UPDATE_PROFILE_REQUEST });
+        const currentPassword = await hashPassword(user?.currentPassword);
+        const newPassword = await hashPassword(user?.newPassword);
+        await request.patch(`/users/auth/change-password`, {
+            ...user,
+            newPassword: newPassword,
+            currentPassword: currentPassword,
+        });
+        handleAfterFetch.success();
 
-        const {
-            userLogin: { userInfo },
-        } = getState();
-
-        const { data } = await request.patch(`/users/auth/change-password`, user);
-
-        dispatch({ type: USER_UPDATE_PASSWORD_SUCCESS, payload: { ...userInfo, accessToken: data?.data.accessToken } });
-        localStorage.setItem(
-            'userInfo',
-            JSON.stringify({
-                accessToken: data?.data.accessToken,
-                refreshToken: data?.data.refreshToken,
-            }),
-        );
-        window.location.reload();
-        if (handleSuccessUpdatePassword) {
-            handleSuccessUpdatePassword();
-        }
-        toast.success('Cập nhật mật khẩu thành công', Toastobjects);
+        setTimeout(() => {
+            dispatch({ type: USER_UPDATE_PASSWORD_SUCCESS, payload: {} });
+            localStorage.removeItem('userInfo');
+            window.location.reload();
+        }, 2000);
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-
+        handleAfterFetch.error(message);
         dispatch({
             type: USER_UPDATE_PROFILE_FAIL,
             payload: message,
         });
-        toast.error(message, Toastobjects);
     }
 };
 

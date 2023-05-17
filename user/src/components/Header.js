@@ -126,11 +126,11 @@ const Header = () => {
                                                     </button>
                                                     <div className="dropdown-menu">
                                                         <Link className="dropdown-item" to="/profile">
-                                                            Profile
+                                                            Hồ sơ
                                                         </Link>
 
                                                         <Link className="dropdown-item" to="#" onClick={logoutHandler}>
-                                                            Logout
+                                                            Đăng xuất
                                                         </Link>
                                                     </div>
                                                 </div>
@@ -205,11 +205,11 @@ const Header = () => {
                                             </button>
                                             <div className="dropdown-menu">
                                                 <Link className="dropdown-item" to="/profile">
-                                                    Profile
+                                                    <Typography>Thông tin</Typography>
                                                 </Link>
 
                                                 <Link className="dropdown-item" to="#" onClick={logoutHandler}>
-                                                    Logout
+                                                    <Typography>Đăng xuất</Typography>
                                                 </Link>
                                             </div>
                                         </div>

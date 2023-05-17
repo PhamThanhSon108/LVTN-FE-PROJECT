@@ -85,8 +85,6 @@ const ShopSection = (props) => {
                                                     alt="Không tìm thấy sản phẩm"
                                                     src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg//assets/a60759ad1dabe909c46a817ecbf71878.png"
                                                 />
-
-                                                <Typography className="text-center">Không tìm thấy sản phẩm</Typography>
                                             </div>
                                         </div>
                                     }

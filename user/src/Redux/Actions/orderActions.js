@@ -139,14 +139,16 @@ export const getBestSellerProducts = () => async (dispatch) => {
 };
 
 export const cancelOrder =
-    ({ orderId }) =>
+    ({ orderId, description, handleAfterFetch }) =>
     async (dispatch) => {
         try {
             dispatch({ type: ORDER_CANCEL_REQUEST });
-            const { data } = await request.patch(`/orders/${orderId}/cancel`, { orderId });
+            const { data } = await request.patch(`/orders/${orderId}/cancel`, { description });
+            handleAfterFetch?.success();
             dispatch({ type: ORDER_CANCEL_SUCCESS, payload: data });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+            handleAfterFetch?.error(message);
 
             dispatch({
                 type: ORDER_CANCEL_FAIL,
@@ -161,7 +163,7 @@ export const confirmPaid =
         try {
             dispatch({ type: ORDER_CONFIRM_PAID_REQUEST });
 
-            const { data } = await request.patch(`/orders/${orderId}`, { status: 'Paid' });
+            const { data } = await request.patch(`/orders/${orderId}/received`);
             dispatch({ type: ORDER_CONFIRM_PAID_SUCCESS, payload: data });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;

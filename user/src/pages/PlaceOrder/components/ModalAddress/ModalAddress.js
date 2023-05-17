@@ -41,9 +41,9 @@ const style = {
     boxShadow: 24,
     p: 1,
 };
-const ModalAddress = ({ isOpenModal, handleClose, handleChangeAddress }) => {
+const ModalAddress = ({ addressOld, isOpenModal, handleClose, handleChangeAddress }) => {
     const [openModalUpdate, setOpenModalUpdate] = useState('');
-    const [currentAddress, setCurrentAddress] = useState();
+    const [currentAddress, setCurrentAddress] = useState(addressOld);
 
     const addressReducer = useSelector((state) => state.shippingAddress);
     const { listAddress, loading } = addressReducer;
@@ -117,7 +117,11 @@ const ModalAddress = ({ isOpenModal, handleClose, handleChangeAddress }) => {
                                                     name="address"
                                                     type="radio"
                                                     id={address?._id}
-                                                    defaultChecked={address?.isDefault}
+                                                    checked={
+                                                        !currentAddress
+                                                            ? addressOld?._id === address?._id
+                                                            : currentAddress?._id === address?._id
+                                                    }
                                                 />
                                             </ListItemIcon>
                                             <ListItemText

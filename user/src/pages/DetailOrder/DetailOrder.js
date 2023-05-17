@@ -39,23 +39,24 @@ import VerifiedUserOutlinedIcon from '@mui/icons-material/VerifiedUserOutlined';
 import { formatMoney } from '~/utils/formatMoney';
 import ProductInOrder from './Product/ProductInOrder';
 import { PAY_WITH_MOMO } from '../PlaceOrder/hook/usePlaceOrder';
+import ModalCancelOrder from './components/ModalCancelOrder/ModalCancelOrder';
 export const stepShipping = {
     placed: {
         icon: <StickyNote2OutlinedIcon />,
         label: 'Đặt hàng',
-        labelActive: 'Đã đặt đơn hàng',
+        labelActive: 'Đơn hàng đang chờ xử lý',
     },
     confirm: {
         icon: <CheckOutlinedIcon />,
         label: 'Xác nhận đơn hàng',
-        labelActive: 'Đã xác nhận đơn hàng',
+        labelActive: 'Đã xác nhận đơn',
     },
     delivering: {
         icon: <LocalShippingOutlinedIcon />,
         label: 'Giao hàng',
         labelActive: 'Đang giao hàng',
     },
-    delivered: { icon: <LocalShippingOutlinedIcon />, label: 'Đã giao hàng', labelActive: 'Đã giao hàng' },
+    delivered: { icon: <LocalShippingOutlinedIcon />, label: 'Đã giao hàng', labelActive: 'Giao hàng thành công' },
     cancelled: { icon: <CancelOutlinedIcon />, label: 'Đơn hàng bị hủy', labelActive: 'Đơn hàng bị hủy' },
     completed: {
         icon: <VerifiedUserOutlinedIcon />,
@@ -66,17 +67,17 @@ export const stepShipping = {
 };
 
 const stepperPayWithMomo = [
-    { step: ['placed'] },
+    { step: ['placed', 'confirm'] },
     { step: ['paid'] },
-    { step: ['confirm'] },
+
     { step: ['delivering', 'delivered'] },
     { step: ['completed'] },
 ];
 const stepperPayWithCash = [
     { step: ['placed'] },
-    { step: ['confirm'] },
+    { step: ['confirm', 'paid'] },
     { step: ['delivering', 'delivered'] },
-    { step: ['paid'] },
+
     { step: ['completed'] },
 ];
 
@@ -151,9 +152,6 @@ const DetailOrder = () => {
     const orderPay = useSelector((state) => state.orderPay);
     const { loading: loadingPay, success: successPay } = orderPay;
 
-    const orderCancel = useSelector((state) => state.orderCancel);
-    const { loading: loadingCancel, success: successCancel } = orderCancel;
-
     const orderConfirmPaid = useSelector((state) => state.orderConfirmPaid);
     const { loading: loadingConfirmPaid, success: successConfirmPaid } = orderConfirmPaid;
 
@@ -177,17 +175,10 @@ const DetailOrder = () => {
     //gọi thêm userLogin để lấy số điện thoại
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
-    if (!loading) {
-        const addDecimals = (num) => {
-            return (Math.round(num * 100) / 100).toFixed(2);
-        };
-
-        order.itemsPrice = addDecimals(order?.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0));
-    }
 
     useEffect(() => {
         dispatch(getOrderDetails(orderId));
-    }, []);
+    }, [successConfirmPaid]);
 
     const successPaymentHandler = (paymentResult) => {
         dispatch(payOrder(orderId, paymentResult));
@@ -236,7 +227,8 @@ const DetailOrder = () => {
                     <Typography component="div" variant="body1" color="text.primary">
                         MÃ ĐƠN HÀNG: {order?._id.toUpperCase()}
                     </Typography>
-                    {paymentMethod === PAY_WITH_MOMO.toString() && lastStatus === 'placed' ? (
+                    {paymentMethod === PAY_WITH_MOMO.toString() &&
+                    (lastStatus === 'placed' || lastStatus === 'confirm') ? (
                         <a href={order?.paymentInformation?.payUrl}>
                             <Button sx={{ ml: 3 }} variant="contained">
                                 THANH TOÁN
@@ -251,11 +243,13 @@ const DetailOrder = () => {
                     <Stack sx={{ width: '100%' }} spacing={4}>
                         <Stepper alternativeLabel connector={<ColorlibConnector />}>
                             {stepper?.map((status) => {
-                                const currentStatus = order?.statusHistory?.find((historyStatus) =>
-                                    status?.step?.find((step) => step === historyStatus?.status),
-                                );
+                                const currentStatus = order?.statusHistory
+                                    ?.filter((historyStatus) =>
+                                        status?.step?.find((step) => step === historyStatus?.status),
+                                    )
+                                    .at(-1);
                                 const isCompledStatus =
-                                    status?.step?.find((step) => step === lastStatus) ||
+                                    status?.step?.filter((step) => step === lastStatus)?.at(-1) ||
                                     status?.step[0] === 'cancelled';
 
                                 return (
@@ -270,9 +264,15 @@ const DetailOrder = () => {
                                         >
                                             {currentStatus ? (
                                                 <Typography variant="body1">
-                                                    {stepShipping?.[currentStatus?.status].labelActive}
+                                                    {paymentMethod === '2' && currentStatus?.status === 'paid'
+                                                        ? `${
+                                                              stepShipping?.[currentStatus?.status].labelActive
+                                                          } (${formatMoney(order?.totalPayment || 0)})`
+                                                        : stepShipping?.[currentStatus?.status].labelActive}
                                                 </Typography>
                                             ) : (
+                                                //Trường hợp thời gian của confirm bị trùng với xác nhận thanh toán
+                                                //    paymentMethod === '1' &&   (lastStatus.status !== 'placed' || lastStatus.status !== 'placed') ?
                                                 <Typography variant="body1">
                                                     {stepShipping?.[status?.step[0]].label}
                                                 </Typography>
@@ -298,22 +298,19 @@ const DetailOrder = () => {
                         Ngày nhận hàng dự kiến:{' '}
                         {order?.delivery?.leadTime && moment(order?.delivery?.leadTime).format('DD/MM/YYYY')}
                     </Typography>
-                    <Button disabled={order?.status === 'cancelled'} onClick={handlePaid} variant="contained">
-                        Đã nhận hàng
-                    </Button>
+                    {order?.status === 'delivered' ? (
+                        <LoadingButton
+                            loading={loadingConfirmPaid}
+                            disabled={order?.status === 'cancelled'}
+                            onClick={handlePaid}
+                            variant="contained"
+                        >
+                            Đã nhận hàng
+                        </LoadingButton>
+                    ) : null}
                 </Box>
                 <Divider />
-                <Box className="d-flex justify-content-end align-items-center p-3 ">
-                    <LoadingButton
-                        disabled={order?.status === 'cancelled'}
-                        onClick={cancelOrderHandler}
-                        loading={loadingCancel}
-                        variant="contained"
-                        color="error"
-                    >
-                        Hủy đơn hàng
-                    </LoadingButton>
-                </Box>
+                {order?.status === 'placed' ? <ModalCancelOrder /> : null}
             </Card>
 
             <Card className="p-3 mt-2">
@@ -330,13 +327,15 @@ const DetailOrder = () => {
                         <Typography variant="caption">{order?.delivery?.to_phone}</Typography>
 
                         <Typography variant="caption">
-                            {`${order?.delivery?.to_address}, ${order?.delivery?.to_ward_name}, ${order?.delivery?.to_district_name}, ${order?.delivery?.to_province_name}`}
+                            {`${order?.delivery?.to_address || ''}, ${order?.delivery?.to_ward_name || ''}, ${
+                                order?.delivery?.to_district_name || ''
+                            }, ${order?.delivery?.to_province_name || ''}`}
                         </Typography>
                     </Box>
 
                     <Box>
                         <Stepper orientation="vertical">
-                            {order?.statusHistory.reverse().map((step, index) => (
+                            {order?.statusHistory.map((step, index) => (
                                 <Step key={step?._id}>
                                     <StepLabel
                                         sx={{ svg: { color: 'green' } }}
@@ -360,7 +359,7 @@ const DetailOrder = () => {
             <Card className="d-flex p-3 mt-2 col-12">
                 <Box className="col-8">
                     {order?.orderItems.length === 0 ? (
-                        <Message variant="alert-info mt-5">Your order is empty</Message>
+                        <Message variant="alert-info mt-5">Bạn chưa chọn sản phẩm nào</Message>
                     ) : (
                         <>
                             {order?.orderItems.map((item, index) => (

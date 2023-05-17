@@ -51,7 +51,7 @@ const OrderDetailProducts = (props) => {
                 {item?.attributes?.[0]?.value}, {item?.attributes?.[1]?.value}{' '}
               </td>
 
-              <td>{item.quantity} </td>
+              <td>{item?.quantity || 0} </td>
               <td className="text-end"> {formatMoney(item?.quantity * item?.price || 0)}</td>
             </tr>
           ))}

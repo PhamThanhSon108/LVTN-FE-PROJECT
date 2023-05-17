@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -33,7 +34,7 @@ export default function usePlaceOrder() {
     const cartOrder = useSelector((state) => state.cartOrder);
     const { cartOrderItems } = cartOrder;
     const [loadingApplyVoucher, setLoadingApplyVoucher] = useState(false);
-
+    const noteRef = useRef();
     const currentCartItems = cartOrderItems.map((product) => ({
         variant: product.variant._id,
         quantity: product.quantity,
@@ -73,7 +74,9 @@ export default function usePlaceOrder() {
             toast.success('Đặt hàng thành công!', Toastobjects);
             dispatch(listCart());
             dispatch(listOrderCart());
-            history.push(`/order/${order._id}`);
+            setTimeout(() => {
+                history.push(`/order/${order._id}`);
+            }, 2000);
             dispatch({ type: ORDER_CREATE_RESET });
         },
         error: (message) => {
@@ -141,6 +144,7 @@ export default function usePlaceOrder() {
             );
         } else {
             setPriceIsReduced({ totalDiscount: 0 });
+            setVoucher('');
         }
     };
 
@@ -149,6 +153,7 @@ export default function usePlaceOrder() {
         dispatch(
             createOrder(
                 {
+                    note: noteRef.current,
                     shippingAddress: {
                         to_name: defaultAddress.name,
                         to_phone: defaultAddress.phone,
@@ -174,6 +179,7 @@ export default function usePlaceOrder() {
     );
     const handleAfterFetchAddress = {
         success: (address) => {
+            setAddress(address);
             dispatch(
                 getShippingFee({
                     to_district_id: address.district.id,
@@ -187,11 +193,16 @@ export default function usePlaceOrder() {
         },
     };
 
+    const changeNote = (value) => {
+        noteRef.current = value;
+    };
+
     useEffect(() => {
         dispatch(getShippingAddresses(handleAfterFetchAddress));
     }, []);
 
     return {
+        changeNote,
         loadingApplyVoucher,
         priceIsReduced,
         paymentMethod,

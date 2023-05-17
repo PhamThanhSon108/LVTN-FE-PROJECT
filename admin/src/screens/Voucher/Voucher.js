@@ -27,7 +27,7 @@ import AddIcon from '@mui/icons-material/Add';
 import moment from 'moment';
 import { formatMoney } from '../../utils/formatMoney';
 export default function Voucher() {
-  const { vouchers, loading } = useVoucher();
+  const { vouchers, loading, handleDeleteVoucher } = useVoucher();
   return (
     <div className={styles.voucherContainer}>
       <div className={styles.header}>
@@ -116,7 +116,7 @@ export default function Voucher() {
                   </div>
                   <div className={`${styles.actionEachVoucher} ${styles.actionDeleteVoucher}`}>
                     <Tooltip title="Xóa mã giảm giá">
-                      <i className="fas fa-trash-alt color-red" />
+                      <i onClick={() => handleDeleteVoucher(value?._id)} className="fas fa-trash-alt color-red" />
                     </Tooltip>
                   </div>
                 </ListItemIcon>

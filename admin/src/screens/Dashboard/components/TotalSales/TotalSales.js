@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatMoney } from '../../../../utils/formatMoney';
 
 const TotalSales = (props) => {
   const { orders, countProducts } = props;
@@ -18,13 +19,7 @@ const TotalSales = (props) => {
               <i className="text-primary fas fa-usd-circle"></i>
             </span>
             <div className="text">
-              <h6 className="mb-1">Tổng doanh thu</h6>{' '}
-              <span>
-                {totalSale.toLocaleString('en-US', {
-                  style: 'currency',
-                  currency: 'USD',
-                })}
-              </span>
+              <h6 className="mb-1">Tổng doanh thu</h6> <span>{formatMoney(totalSale) || 0}</span>
             </div>
           </article>
         </div>
@@ -37,7 +32,7 @@ const TotalSales = (props) => {
             </span>
             <div className="text">
               <h6 className="mb-1">Tổng số đơn</h6>
-              {orders ? <span>{orders?.orders?.length}</span> : <span>0</span>}
+              {orders ? <span>{orders?.orders?.length || 0}</span> : <span>0</span>}
             </div>
           </article>
         </div>

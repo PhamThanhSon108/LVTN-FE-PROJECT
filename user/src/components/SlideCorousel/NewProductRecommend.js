@@ -72,7 +72,9 @@ export default function NewProductRecommend() {
                     >
                         {products?.map((product, index) => (
                             <div className="col-lg-2 col-md-3 col-sm-6  mb-3" key={product._id}>
-                                <Product key={product?._id} product={product} />
+                                <div className="col-12" style={{ paddingLeft: '4px', paddingRight: '4px' }}>
+                                    <Product key={product?._id} product={product} />
+                                </div>
                             </div>
                         ))}
                     </Slider>

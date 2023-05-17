@@ -13,13 +13,15 @@ import {
   VOUCHER_DETAIL_REQUEST,
   VOUCHER_DETAIL_SUCCESS,
   VOUCHER_DETAIL_FAIL,
+  VOUCHER_DELETE_REQUEST,
+  VOUCHER_DELETE_SUCCESS,
+  VOUCHER_DELETE_FAIL,
   //   UPDATE_WHEN_DELETE_VOUCHER_SUCCESS,
 } from '../Constants/VoucherConstants';
 export const AddVoucher =
   ({ voucher = { code: '', name: '', discountType: 1, discount: 0 }, createVoucherStatus }) =>
   async (dispatch) => {
     try {
-      console.log(voucher);
       dispatch({ type: VOUCHER_ADD_REQUEST });
       const { data } = await request.post(`/discount-codes`, voucher);
       dispatch({ type: VOUCHER_ADD_SUCCESS, payload: data });
@@ -115,6 +117,27 @@ export const getVoucher =
       const message = error.response && error.response.data.message ? error.response.data.message : error.message;
       dispatch({
         type: VOUCHER_DETAIL_FAIL,
+        payload: message,
+      });
+      handleAfterFetch?.error(message);
+    } finally {
+      handleAfterFetch?.finally();
+    }
+  };
+
+export const deleteVoucher =
+  ({ id, handleAfterFetch }) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: VOUCHER_DELETE_REQUEST });
+      const { data } = await request.delete(`/discount-codes/${id}`);
+      dispatch({ type: VOUCHER_DELETE_SUCCESS, payload: data?.data?.discountCode || [] });
+
+      handleAfterFetch?.success();
+    } catch (error) {
+      const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+      dispatch({
+        type: VOUCHER_DELETE_FAIL,
         payload: message,
       });
       handleAfterFetch?.error(message);

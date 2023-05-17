@@ -3,12 +3,14 @@ import HeadlessTippy from '@tippyjs/react/headless';
 import useDebounce from '~/hooks/useDebounce';
 import request from '~/utils/request';
 import { useHistory } from 'react-router-dom';
+import useSearchParamsCustom from '~/hooks/useSearchParamCustom';
 
 const Search = ({ value, keyword, width }) => {
     const [searchResult, setSearchResult] = useState([]);
     const [showResult, setShowResult] = useState(false);
     const history = useHistory();
     const inputRef = useRef();
+    const { getParamValue } = useSearchParamsCustom();
     const debounce = useDebounce(value?.searchValue, 500);
     const submitHandler = (e) => {
         e.preventDefault();
@@ -95,8 +97,8 @@ const Search = ({ value, keyword, width }) => {
                             // ref={refSearch}
                             type="search"
                             className="form-control rounded search search-focus"
-                            placeholder="Search"
-                            value={value.searchValue}
+                            placeholder="Nhập từ khóa"
+                            value={value.searchValue || getParamValue('keyword')}
                             onChange={(e) => {
                                 const searchInput = e.target.value;
 
