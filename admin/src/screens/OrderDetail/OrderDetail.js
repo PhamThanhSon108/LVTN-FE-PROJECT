@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 
 import { Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,11 +6,22 @@ import { cancelOrder, deliverOrder, getOrderDetails, updateStatusOrder } from '.
 import moment from 'moment';
 
 import OrderDetailProducts from './components/OrderDetailProducts/OrderDetailProducts';
-import { statusAdminUpdate, statusToUpdate } from '../../constants/ordersConstants';
 import OrderDetailInfo from './components/OrderDetailInfo/OrderDetailInfo';
 import { formatMoney } from '../../utils/formatMoney';
-import { Chip, Typography } from '@mui/material';
+import { Alert, Chip, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
+import ModalCancelOrder from './components/ModalCancelOrder/ModalCancelOrder';
+
+const RenderButtonUpdateStatus = ({ children, canChange }) => {
+  if (canChange) return children;
+  return <Fragment />;
+};
+
+const notesForShipping = [
+  { value: 'CHOTHUHANG', label: 'Cho thử hàng' },
+  { value: 'CHOXEMHANGKHONGTHU', label: 'Cho xem hàng không thử' },
+  { value: 'KHONGCHOXEMHANG', label: 'Không cho xem hàng' },
+];
 
 const OrderDetail = () => {
   const { orderId } = useParams();
@@ -23,45 +34,25 @@ const OrderDetail = () => {
   const orderDeliver = useSelector((state) => state.orderDeliver);
   const { loading: loadingDelivered, success: successDelivered } = orderDeliver;
   const orderUpdateStatus = useSelector((state) => state.orderUpdateStatus);
-  const { loading: loadingPaid, success: successUpdateStatus } = orderUpdateStatus;
+  const { loading: loadingUpdate, success: successUpdateStatus } = orderUpdateStatus;
   const orderCancel = useSelector((state) => state.orderCancel);
   const { loading: loadingCancel, success: successCancel } = orderCancel;
-  const [status, setStatus] = useState(order?.status);
-
-  const deliverHandler = () => {
-    if (window.confirm('Are you sure??')) {
-      dispatch(deliverOrder(order));
-    }
-  };
-
-  const cancelOrderHandler = () => {
-    if (window.confirm('Are you sure??')) {
-      dispatch(cancelOrder(order));
-    }
-  };
-  const undoSatusHandler = (status) => {
-    if (window.confirm('Are you sure??')) {
-      dispatch(updateStatusOrder({ status, orderId: order._id }));
-    }
-  };
+  const [requiredNote, setRequiredNote] = useState();
 
   const saveStatusHandler = (status) => {
-    if (window.confirm('Are you sure??')) {
-      dispatch(updateStatusOrder({ status, orderId: order._id }));
+    if (window.confirm('Bạn có chắc muốn cập nhật?')) {
+      dispatch(updateStatusOrder({ status, orderId: order._id, delivery: { requiredNote } }));
     }
   };
 
   const findCompeletedStatus = (status) => {
     return order?.statusHistory?.find((step) => step?.status === status);
   };
-  const confirmStatus = findCompeletedStatus('confirm');
+
   useEffect(() => {
     dispatch(getOrderDetails(orderId));
   }, [dispatch, orderId, successDelivered, successUpdateStatus, successCancel]);
 
-  useEffect(() => {
-    setStatus(order?.status);
-  }, [order]);
   return (
     <section>
       <div className="card">
@@ -77,18 +68,13 @@ const OrderDetail = () => {
                 Order ID: {order?._id} | Nhận hàng dự kiến vào {moment(order?.delivery?.leadTime).format('DD/MM/YYYY')}
               </small>
             </div>
-            {(order?.status === 'placed' || order?.status === 'approved') && (
-              <div className="col-lg-3 col-md-6 ms-auto d-flex justify-content-end align-items-center">
-                <button
-                  onClick={cancelOrderHandler}
-                  className="btn btn-dark col-12"
-                  style={{ marginBottom: '15px' }}
-                  disabled={order?.status === 'cancelled'}
-                >
-                  Hủy đơn hàng
-                </button>
-              </div>
-            )}
+            {
+              <RenderButtonUpdateStatus
+                canChange={order?.status === 'placed' || order?.status === 'approved' || order?.status === 'delivering'}
+              >
+                <ModalCancelOrder />
+              </RenderButtonUpdateStatus>
+            }
           </div>
         </header>
         <div className="card-body">
@@ -147,38 +133,82 @@ const OrderDetail = () => {
                       </tbody>
                     </table>
 
-                    {order?.status !== 'Cancelled' && order?.status !== 'Completed' && (
+                    {order?.status !== 'cancelled' && order?.status !== 'completed' && (
                       <div style={{ padding: '10px', borderTop: '1px solid rgba(0,0,0,0.1)' }} className="">
-                        {confirmStatus ? (
-                          <Chip
-                            sx={{ width: '100%' }}
-                            color="success"
-                            label={`Xác nhận đơn hàng vào ${moment(confirmStatus?.createdAt).format(
-                              'hh:mm DD/MM/YYYY',
-                            )}`}
-                          />
-                        ) : (
+                        <RenderButtonUpdateStatus canChange={order?.status === 'placed'}>
                           <LoadingButton
                             onClick={() => saveStatusHandler('confirm')}
                             variant="contained"
                             sx={{ width: '100%' }}
+                            loading={loadingUpdate}
                           >
                             XÁC NHẬN ĐƠN HÀNG
                           </LoadingButton>
-                        )}
+                        </RenderButtonUpdateStatus>
 
-                        <LoadingButton
-                          onClick={() => saveStatusHandler('delivery')}
-                          className="mt-3"
-                          variant="contained"
-                          sx={{ width: '100%' }}
+                        <RenderButtonUpdateStatus canChange={order?.status === 'confirm'}>
+                          <select
+                            type="text"
+                            id="product_category"
+                            className="form-select"
+                            placeholder="Category"
+                            required
+                            value={requiredNote}
+                            onChange={(e) => setRequiredNote(e.target.value)}
+                          >
+                            <option value={''} selected>
+                              Lưu ý giao hàng
+                            </option>
+                            {notesForShipping?.map((note) => (
+                              <option key={note.value} value={note.value}>
+                                {note.label}
+                              </option>
+                            ))}
+                          </select>
+                          <LoadingButton
+                            loading={loadingUpdate}
+                            disabled={!requiredNote}
+                            onClick={() => saveStatusHandler('delivery')}
+                            className="mt-3"
+                            variant="contained"
+                            sx={{ width: '100%' }}
+                          >
+                            GIAO ĐƠN CHO BÊN VẬN CHUYỂN
+                          </LoadingButton>
+                        </RenderButtonUpdateStatus>
+                        <RenderButtonUpdateStatus canChange={order?.status === 'delivering'}>
+                          <LoadingButton
+                            loading={loadingUpdate}
+                            onClick={() => saveStatusHandler('delivered')}
+                            className="mt-3"
+                            variant="contained"
+                            sx={{ width: '100%' }}
+                            color="error"
+                          >
+                            GIAO HÀNG THÀNH CÔNG
+                          </LoadingButton>
+                        </RenderButtonUpdateStatus>
+
+                        <RenderButtonUpdateStatus
+                          canChange={
+                            !order?.paymentInformation &&
+                            (order?.status === 'confirm' || order?.status === 'delivering')
+                          }
                         >
-                          GIAO ĐƠN CHO BÊN VẬN CHUYỂN
-                        </LoadingButton>
+                          <LoadingButton
+                            loading={loadingUpdate}
+                            onClick={() => saveStatusHandler('paid')}
+                            className="mt-3"
+                            variant="contained"
+                            sx={{ width: '100%' }}
+                          >
+                            XÁC NHẬN THANH TOÁN
+                          </LoadingButton>
+                        </RenderButtonUpdateStatus>
 
-                        <LoadingButton className="mt-3" variant="contained" sx={{ width: '100%' }}>
-                          HOÀN TẤT ĐƠN
-                        </LoadingButton>
+                        <RenderButtonUpdateStatus canChange={order?.status === 'delivered'}>
+                          <Alert severity="info">Đơn hàng đang chờ xác nhận thanh toán của khách hàng</Alert>
+                        </RenderButtonUpdateStatus>
                       </div>
                     )}
                   </div>

@@ -14,7 +14,7 @@ import SliderOfProductImage from './components/SliderOfProductImage/SliderOfProd
 
 const StyledRating = styled(Rating)({
     '& .MuiRating-iconFilled': {
-        color: 'red',
+        color: '#faaf00',
     },
     '& .MuiRating-iconHover': {
         color: '#ff3d47',

@@ -91,6 +91,7 @@ export default function ModalAddCategoryParent({ isOpenModal, handleOpenModal })
     setIsLoadingAddCategory(true);
     convertFileToBase64(image, (base64) => {
       const newCategory = new FormData();
+      newCategory.append('updatedVersion', data?.updatedVersion || 0);
       newCategory.append('name', data.name);
       newCategory.append('description', data.description);
       newCategory.append('children', JSON.stringify(data.children));

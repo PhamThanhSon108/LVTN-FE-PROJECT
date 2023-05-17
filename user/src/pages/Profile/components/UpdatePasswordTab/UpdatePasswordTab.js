@@ -7,6 +7,8 @@ import { updateUserPassword } from '~/Redux/Actions/userActions';
 import { inputPropsConstants } from '~/constant/variants';
 import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
 import styles from './UpdatePasswordTab.module.scss';
+import { Toastobjects } from '~/Redux/Actions/cartActions';
+import { toast } from 'react-toastify';
 
 export const UpdatePasswordTab = () => {
     const dispatch = useDispatch();
@@ -14,6 +16,7 @@ export const UpdatePasswordTab = () => {
     const [oldPassword, setOldPassword] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [loadingUpdate, setLoadingUpdate] = useState(false);
     function checkPassword() {
         const passObj = {};
         if (isEmpty(oldPassword)) {
@@ -43,17 +46,25 @@ export const UpdatePasswordTab = () => {
         if (Object.keys(passObj).length > 0) return false;
         return true;
     }
-    const handleSuccessUpdatePassword = () => {
-        setOldPassword('');
-        setPassword('');
-        setConfirmPassword('');
+    const handleAfterFetch = {
+        success: () => {
+            toast.success('Cập nhật mật khẩu thành công', Toastobjects);
+            setLoadingUpdate(false);
+            setOldPassword('');
+            setPassword('');
+            setConfirmPassword('');
+        },
+        error: (message) => {
+            setLoadingUpdate(false);
+
+            toast.error(message || 'Có lỗi trong quá trình xử lý', Toastobjects);
+        },
     };
     const submitUpdatePassword = (e) => {
         e.preventDefault();
         if (!checkPassword()) return; // check funtion check pass để kiểm tra xem có các trường bị rổng hay không
-        dispatch(
-            updateUserPassword({ currentPassword: oldPassword, newPassword: password }, handleSuccessUpdatePassword),
-        );
+        setLoadingUpdate(true);
+        dispatch(updateUserPassword({ currentPassword: oldPassword, newPassword: password }, handleAfterFetch));
     };
 
     return (
@@ -108,6 +119,7 @@ export const UpdatePasswordTab = () => {
 
             <div className=" btn-update-profile">
                 <LoadingButton
+                    loading={loadingUpdate}
                     sx={{ width: '100%', mt: 2 }}
                     type="submit"
                     variant={inputPropsConstants.variantContained}

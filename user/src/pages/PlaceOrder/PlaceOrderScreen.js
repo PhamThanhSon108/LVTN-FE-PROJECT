@@ -5,6 +5,7 @@ import { Fragment } from 'react';
 import {
     Avatar,
     Backdrop,
+    Box,
     Button,
     Card,
     CircularProgress,
@@ -17,6 +18,7 @@ import {
     ListItemText,
     Radio,
     RadioGroup,
+    TextField,
     Typography,
 } from '@mui/material';
 import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
@@ -30,18 +32,19 @@ import moment from 'moment';
 
 export const RenderAttributes = ({ attributes }) => {
     if (attributes && attributes.length > 0) {
-        return attributes?.map((attribute) => (
-            <ListItemText key={attribute?.value} className="col-1">
+        return (
+            <ListItemText className="col-2">
                 <Typography variant="body1">
-                    {attribute.name}: {attribute?.value}
+                    Kích thước: {attributes?.[0]?.value}, Màu sắc: {attributes?.[1]?.value}
                 </Typography>
             </ListItemText>
-        ));
+        );
     } else return <Fragment />;
 };
 
 const PlaceOrderScreen = ({ history }) => {
     const {
+        changeNote,
         loadingApplyVoucher,
         priceIsReduced,
         paymentMethod,
@@ -59,7 +62,6 @@ const PlaceOrderScreen = ({ history }) => {
         userInfo,
         cartOrder,
         handleChangeAddress,
-        createContent,
         placeOrderHandler,
         loading,
     } = usePlaceOrder(history);
@@ -70,6 +72,7 @@ const PlaceOrderScreen = ({ history }) => {
                 <CircularProgress color="inherit" />
             </Backdrop>
             <ModalAddress
+                addressOld={address}
                 isOpenModal={isOpenModalAddress}
                 handleClose={handleOpenModalAddress}
                 handleChangeAddress={handleChangeAddress}
@@ -166,23 +169,54 @@ const PlaceOrderScreen = ({ history }) => {
                 </div>
                 <Divider />
                 <div className={styles.shipping}>
-                    <Typography className="col-4" variant="body1" sx={{ color: 'var(--neutral-5)' }}>
-                        Đơn vị vận chuyển
+                    <Box
+                        className="col-4 d-flex pl-3 pr-3 align-content-center align-items-center"
+                        sx={{ paddingLeft: '1rem', paddingRight: '1rem', borderRight: '1px solid var(--border-color)' }}
+                    >
+                        <Typography className="col-3">Lời nhắn:</Typography>
+                        <TextField
+                            onChange={(e) => {
+                                changeNote(e.target.value);
+                            }}
+                            className="col-9"
+                            variant="outlined"
+                            size="small"
+                            placeholder="Lưu ý cho người bán"
+                            inputProps={{ maxLength: 200 }}
+                        ></TextField>
+                    </Box>
+
+                    <Typography
+                        className="col-2"
+                        variant="body1"
+                        sx={{
+                            paddingLeft: '1rem',
+
+                            color: 'var(--neutral-5)',
+                        }}
+                    >
+                        Đơn vị vận chuyển:
                     </Typography>
-                    <div className="col-5">
+                    <div className="col-3" style={{ paddingLeft: '1rem' }}>
                         <Typography variant="body1">Giao hàng nhanh</Typography>
-                        <Typography variant="caption" color="error">
-                            Nhận hàng dự kiến vào{' '}
+                        <Typography variant="caption">
+                            Nhận hàng dự kiến vào{'  '}
                             {loadingGetList || loadingShippingFee ? (
                                 <CircularProgress size={15} />
                             ) : (
-                                shippingFee?.leadTime?.leadtime &&
-                                moment(shippingFee?.leadTime?.leadtime * 1000).format('L')
+                                <Typography color="primary" variant="caption">
+                                    {shippingFee?.leadTime?.leadtime &&
+                                        moment(shippingFee?.leadTime?.leadtime * 1000).format('L')}
+                                </Typography>
                             )}
                         </Typography>
                     </div>
 
-                    <Typography sx={{ textAlign: 'end' }} className="col-3 align-content-end" variant="body1">
+                    <Typography
+                        sx={{ paddingLeft: '1rem', textAlign: 'end' }}
+                        className="col-3 align-content-end"
+                        variant="body1"
+                    >
                         Phí giao hàng:{' '}
                         {loadingGetList || loadingShippingFee ? (
                             <CircularProgress size={15} />
@@ -214,10 +248,10 @@ const PlaceOrderScreen = ({ history }) => {
                         Thêm
                     </Button>
                 </div>
-                <Divider />
+                {voucher && <Divider />}
                 <div className={styles.voucherBody}>
                     {loadingApplyVoucher ? (
-                        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
                             <CircularProgress />
                         </div>
                     ) : null}
@@ -257,7 +291,7 @@ const PlaceOrderScreen = ({ history }) => {
                     </FormControl>
                     <Divider />
                     <div className={styles.totalFee}>
-                        <div className={styles.totalFeeItem}>
+                        <div className={styles.totalFeeItem + ' col-lg-3 col-sm-5'}>
                             <Typography sx={{ textAlign: 'end', pr: 1 }} variant="body1">
                                 Tổng tiền hàng:
                             </Typography>
@@ -266,7 +300,7 @@ const PlaceOrderScreen = ({ history }) => {
                             </Typography>
                         </div>
 
-                        <div className={styles.totalFeeItem}>
+                        <div className={styles.totalFeeItem + ' col-lg-3 col-sm-5'}>
                             <Typography sx={{ textAlign: 'end', pr: 1 }} variant="body1">
                                 Phí vận chuyển:
                             </Typography>
@@ -278,7 +312,7 @@ const PlaceOrderScreen = ({ history }) => {
                                 )}
                             </Typography>
                         </div>
-                        <div className={styles.totalFeeItem}>
+                        <div className={styles.totalFeeItem + ' col-lg-3 col-sm-5'}>
                             <Typography sx={{ textAlign: 'end', pr: 1 }} variant="body1">
                                 Khuyến mãi:
                             </Typography>
@@ -291,7 +325,7 @@ const PlaceOrderScreen = ({ history }) => {
                                 )}
                             </Typography>
                         </div>
-                        <div className={styles.totalFeeItem}>
+                        <div className={styles.totalFeeItem + ' col-lg-3 col-sm-5'}>
                             <Typography sx={{ textAlign: 'end', pr: 1 }} variant="body1">
                                 Tổng thanh toán:
                             </Typography>

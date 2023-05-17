@@ -80,20 +80,17 @@ export const deliverOrder = (order) => async (dispatch, getState) => {
 
 //orders PAID
 export const updateStatusOrder =
-  ({ status, orderId }) =>
+  ({ status, orderId, requiredNote }) =>
   async (dispatch, getState) => {
     try {
       dispatch({ type: ORDER_UPDATE_STATUS_REQUEST });
 
-      const { data } = await request.patch(`/orders/${orderId}/${status}`);
-      toast.success(data?.message, ToastObject);
+      const { data } = await request.patch(`/orders/${orderId}/${status}`, { requiredNote });
+      toast.success(data?.message || 'Cập nhật trạng thái đơn hàng thành công', ToastObject);
       dispatch({ type: ORDER_UPDATE_STATUS_SUCCESS, payload: data });
     } catch (error) {
       const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-      if (message === 'Not authorized, token failed') {
-        dispatch(logout());
-      }
-      toast.error(message, ToastObject);
+      toast.error(message || 'Cập nhật trạng thái đơn hàng thất bại', ToastObject);
 
       dispatch({
         type: ORDER_UPDATE_STATUS_FAIL,
@@ -102,20 +99,22 @@ export const updateStatusOrder =
     }
   };
 
-export const cancelOrder = (order) => async (dispatch) => {
-  try {
-    dispatch({ type: ORDER_CANCEL_REQUEST });
+export const cancelOrder =
+  ({ orderId, description, handleAfterFetch }) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: ORDER_CANCEL_REQUEST });
 
-    const { data } = await request.patch(`/orders/${order._id}/cancel`, { orderId: order._id });
-    dispatch({ type: ORDER_CANCEL_SUCCESS, payload: data });
-  } catch (error) {
-    const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-    if (message === 'Not authorized, token failed') {
-      dispatch(logout());
+      const { data } = await request.patch(`/orders/${orderId}/cancel`, { description });
+      handleAfterFetch?.success();
+      dispatch({ type: ORDER_CANCEL_SUCCESS, payload: data });
+    } catch (error) {
+      const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+      handleAfterFetch?.error(message);
+
+      dispatch({
+        type: ORDER_CANCEL_FAIL,
+        payload: message,
+      });
     }
-    dispatch({
-      type: ORDER_CANCEL_FAIL,
-      payload: message,
-    });
-  }
-};
+  };

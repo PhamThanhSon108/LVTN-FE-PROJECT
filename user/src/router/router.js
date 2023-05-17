@@ -13,8 +13,10 @@ import Register from '~/pages/Register';
 import ResetPass from '~/pages/ResetPass';
 import ShippingScreen from '~/pages/ShippingScreen';
 import SingleProduct from '~/pages/SingleProduct/SingleProduct';
+import TimeToProcess from '~/pages/TimeToProcess/TimeToProcess';
 import TodayProduct from '~/pages/TodayProduct/TodayProduct';
 import VerifyRegisterSuccess from '~/pages/VerifyRegisterSuccess';
+import WaitingPayment from '~/pages/WaitingPayment/WaitingPayment';
 
 const publicRouter = [
     {
@@ -119,6 +121,18 @@ const privateRouter = [
         name: 'Xem đơn',
         path: '/order/:id',
         component: <DetailOrder />,
+        exact: true,
+    },
+    {
+        name: 'Xử lý thanh toán',
+        path: '/order/:id/waiting-payment',
+        component: <WaitingPayment />,
+        exact: true,
+    },
+    {
+        name: 'Xử lý',
+        path: '/time-to-process',
+        component: <TimeToProcess />,
         exact: true,
     },
 ];

@@ -13,8 +13,13 @@ const MyOrders = () => {
     const dispatch = useDispatch();
     const myOrders = useSelector((state) => state.myOrders);
     const { loading, error, orders } = myOrders;
+
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
     useEffect(() => {
-        dispatch(getMyOrders({}));
+        if (userInfo?._id) {
+            dispatch(getMyOrders({}));
+        }
     }, []);
     if (loading) {
         return (

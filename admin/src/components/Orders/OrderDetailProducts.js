@@ -5,16 +5,6 @@ import { statusDescription } from './statusDescription';
 const OrderDetailProducts = (props) => {
   const { order, loading } = props;
   const itemsPrice = order?.orderItems.reduce((totalPrice, i) => totalPrice + i.quantity * i?.price, 0).toFixed(2);
-  if (!loading) {
-    // Calculate Price
-    const addDecimals = (num) => {
-      return (Math.round(num * 100) / 100).toFixed(2);
-    };
-
-    order.itemsPrice = addDecimals(
-      order.orderItems.reduce((acc, item) => acc + item?.variant?.product?.price * item?.quantity, 0),
-    );
-  }
 
   return (
     <>
@@ -47,10 +37,10 @@ const OrderDetailProducts = (props) => {
                   <div className="info">{item?.name}</div>
                 </Link>
               </td>
-              <td>${item?.price} </td>
-              <td>{item?.size} </td>
-              <td>{item?.color} </td>
-              <td>{item.quantity} </td>
+              <td>${item?.price || ''} </td>
+              <td>{item?.size || ''} </td>
+              <td>{item?.color || ''} </td>
+              <td>{item?.quantity || ''} </td>
               <td className="text-end"> ${item.quantity * item.price}</td>
             </tr>
           ))}
@@ -69,7 +59,7 @@ const OrderDetailProducts = (props) => {
                       `}
                       style={{ fontSize: '15px' }}
                     >
-                      {statusDescription[order.status]}
+                      {statusDescription[order?.status]}
                     </b>
                   </dd>
                 </dl>

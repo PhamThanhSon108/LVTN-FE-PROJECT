@@ -43,7 +43,7 @@ const CartScreen = () => {
         : 0;
     const handleAfterFetch = {
         success: () => {
-            history.push('/login?redirect=placeorder');
+            history.push('/placeorder');
         },
     };
     const checkOutHandler = () => {

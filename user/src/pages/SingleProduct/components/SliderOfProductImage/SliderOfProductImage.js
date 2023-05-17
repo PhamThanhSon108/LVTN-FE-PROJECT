@@ -7,14 +7,15 @@ import 'slick-carousel/slick/slick-theme.css';
 import { Skeleton, Typography } from '@mui/material';
 
 export default function SliderOfProductImage({ images }) {
+    const [imageIsChoose, setImageIsChoose] = useState('');
     let SkeletonOption = window.innerWidth > 540 ? [1, 2, 3, 4, 5, 6] : [1, 2];
     const [currentImage, setCurrentImage] = useState(0);
     const settings = {
         dots: false,
         infinite: true,
         speed: 800,
-        slidesToShow: 1,
-        slidesToScroll: 1,
+        slidesToShow: 6,
+        slidesToScroll: 6,
         initialSlide: currentImage,
         autoplay: true,
         autoplaySpeed: 3000,
@@ -23,8 +24,8 @@ export default function SliderOfProductImage({ images }) {
             {
                 breakpoint: 1024,
                 settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1,
+                    slidesToShow: 6,
+                    slidesToScroll: 6,
                     infinite: true,
                     dots: false,
                     initialSlide: 0,
@@ -51,17 +52,39 @@ export default function SliderOfProductImage({ images }) {
 
     return (
         <div style={{ maxHeight: '100%', overflow: 'hidden' }} className="col-12">
-            {images?.length > 0 ? (
-                <Slider {...settings} style={{ maxHeight: '340px' }}>
-                    {images &&
-                        images?.map((image, index) => {
-                            return (
-                                <div className="col-12" key={image}>
-                                    <img className="col-12" src={image} alt="Hình ảnh của sản phẩm" />
-                                </div>
-                            );
-                        })}
-                </Slider>
+            <div style={{ height: images?.length > 1 ? 'calc(100% - 80px)' : '100%' }}>
+                <img alt="Hình ảnh sản phẩm" src={imageIsChoose || images[0]} style={{ height: '100%' }} />
+            </div>
+            {images?.length > 1 ? (
+                <div style={{ maxHeight: '80px', overflow: 'hidden', marginTop: '4px' }} className="col-12">
+                    <Slider {...settings} style={{ maxHeight: '80px' }} className="col-12">
+                        {images &&
+                            images?.map((image, index) => {
+                                return (
+                                    <div
+                                        onMouseEnter={() => setImageIsChoose(image)}
+                                        className="col-3"
+                                        key={image}
+                                        style={{ maxHeight: '80px' }}
+                                    >
+                                        <div
+                                            style={{
+                                                cursor: 'pointer',
+                                                paddingLeft: '1.5px',
+                                                paddingRight: '1.5px',
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'cover',
+                                                border: imageIsChoose === image ? '2px solid red' : '',
+                                            }}
+                                        >
+                                            <img src={image} className="col-12" alt="Hình ảnh của sản phẩm" />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                    </Slider>
+                </div>
             ) : (
                 <>
                     <div style={{ display: 'flex' }}>

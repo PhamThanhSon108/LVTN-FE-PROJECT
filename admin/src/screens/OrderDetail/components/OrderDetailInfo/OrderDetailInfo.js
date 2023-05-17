@@ -27,7 +27,7 @@ const OrderDetailInfo = (props) => {
 
           <Box>
             <Stepper orientation="vertical">
-              {order?.statusHistory.reverse().map((step, index) => (
+              {order?.statusHistory.map((step, index) => (
                 <Step key={step?._id}>
                   <StepLabel
                     sx={{ svg: { color: 'green' } }}
