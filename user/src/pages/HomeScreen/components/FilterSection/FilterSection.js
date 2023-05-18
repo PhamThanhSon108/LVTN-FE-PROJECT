@@ -118,6 +118,7 @@ export default function FilterSection({ setToggleLoad }) {
                     aria-label="file system navigator"
                     defaultCollapseIcon={<ArrowDropDownIcon />}
                     defaultExpandIcon={<ArrowRightIcon />}
+                    selected={[getParamValue('category')]}
                     sx={{ flexGrow: 1, overflowY: 'auto', mb: 2 }}
                     disabledItemsFocusable={true}
                     defaultExpanded={[getParamValue('category')]}
@@ -125,13 +126,15 @@ export default function FilterSection({ setToggleLoad }) {
                     {categories?.map((category) => (
                         <StyledTreeItemRoot
                             onClick={() => {
-                                replaceParams([{ key: 'category', value: category?.slug }]);
-                                setToggleLoad((toggle) => !toggle);
+                                if (getParamValue('category') !== category?.slug) {
+                                    replaceParams([{ key: 'category', value: category?.slug }]);
+                                    setToggleLoad((toggle) => !toggle);
+                                }
                             }}
                             key={category._id}
                             nodeId={category.slug}
                             label={category.name}
-                            sx={{ mb: '4px', color: category?.slug === getParamValue('category') ? 'red' : null }}
+                            sx={{ mb: '4px', color: category?.slug === getParamValue('category') ? 'red' : '' }}
                         >
                             {category?.children.length > 0
                                 ? category.children.map((childrenCategory) => (
@@ -144,8 +147,10 @@ export default function FilterSection({ setToggleLoad }) {
                                                   childrenCategory?.slug === getParamValue('category') ? 'red' : null,
                                           }}
                                           onClick={() => {
-                                              replaceParams([{ key: 'category', value: childrenCategory?.slug }]);
-                                              setToggleLoad((toggle) => !toggle);
+                                              if (getParamValue('category') !== childrenCategory?.slug) {
+                                                  replaceParams([{ key: 'category', value: childrenCategory?.slug }]);
+                                                  setToggleLoad((toggle) => !toggle);
+                                              }
                                           }}
                                       />
                                   ))

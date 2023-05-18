@@ -48,6 +48,7 @@ const privateRouter = [
     exact: true,
   },
   {
+    name: 'Chi tiết đơn hàng',
     path: '/orders/:orderId',
     component: <OrderDetail />,
     exact: true,

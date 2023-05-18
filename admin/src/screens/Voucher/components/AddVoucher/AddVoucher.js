@@ -329,6 +329,7 @@ export default function AddVoucher() {
               rules={{ required: true, min: 1, pattern: /^[1-9]\d*$/ }}
               render={({ field, fieldState }) => (
                 <TextField
+                  disabled
                   focused={!!fieldState.error}
                   color={fieldState.error ? 'error' : 'info'}
                   size={inputPropsConstants.smallSize}

@@ -6,6 +6,7 @@ import HomeScreen from '~/pages/HomeScreen/HomeScreen';
 import Login from '~/pages/Login';
 import NotFound from '~/pages/NotFound';
 import OrderScreen from '~/pages/OrderScreen';
+import PaymentError from '~/pages/PaymentError/PaymentError';
 import PaymentScreen from '~/pages/PaymentScreen';
 import PlaceOrderScreen from '~/pages/PlaceOrder/PlaceOrderScreen';
 import ProfileScreen from '~/pages/Profile/ProfileScreen';
@@ -133,6 +134,12 @@ const privateRouter = [
         name: 'Xử lý',
         path: '/time-to-process',
         component: <TimeToProcess />,
+        exact: true,
+    },
+    {
+        name: 'Thanh toán thất bại',
+        path: '/payment-error',
+        component: <PaymentError />,
         exact: true,
     },
 ];

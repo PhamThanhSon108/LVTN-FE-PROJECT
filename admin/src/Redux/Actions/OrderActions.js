@@ -18,7 +18,7 @@ import {
   ORDER_UPDATE_STATUS_REQUEST,
   ORDER_UPDATE_STATUS_SUCCESS,
 } from '../Constants/OrderConstants';
-import { logout } from './UserActions';
+
 import request from '../../utils/request';
 import { toast } from 'react-toastify';
 import { ToastObject } from '../../components/LoadingError/ToastObject';
@@ -28,15 +28,11 @@ export const listOrders =
   async (dispatch, getState) => {
     try {
       dispatch({ type: ORDER_LIST_REQUEST });
-
       const { data } = await request.get(`/orders?limit=${15}&page=${page}&sortBy=${dateOrder}&status=${orderStatus}`);
-
       dispatch({ type: ORDER_LIST_SUCCESS, payload: data?.data });
     } catch (error) {
       const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-      if (message === 'Not authorized, token failed') {
-        dispatch(logout());
-      }
+
       dispatch({
         type: ORDER_LIST_FAIL,
         payload: message,
@@ -52,9 +48,7 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
     dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data?.data?.order });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-    if (message === 'Not authorized, token failed') {
-      dispatch(logout());
-    }
+
     dispatch({
       type: ORDER_DETAILS_FAIL,
       payload: message,
@@ -71,9 +65,7 @@ export const deliverOrder = (order) => async (dispatch, getState) => {
     dispatch({ type: ORDER_DELIVERED_SUCCESS, payload: data });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-    if (message === 'Not authorized, token failed') {
-      dispatch(logout());
-    }
+
     dispatch({
       type: ORDER_DELIVERED_FAIL,
       payload: message,

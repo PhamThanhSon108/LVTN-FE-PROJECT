@@ -61,9 +61,6 @@ export const listUser = () => async (dispatch, getState) => {
     dispatch({ type: USER_LIST_SUCCESS, payload: data?.data?.users || [] });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-    if (message === 'Not authorized, token failed') {
-      dispatch(logout());
-    }
     dispatch({
       type: USER_LIST_FAIL,
       payload: message,

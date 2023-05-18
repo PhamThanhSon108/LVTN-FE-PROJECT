@@ -103,7 +103,7 @@ export default function Voucher({ voucher, size = 'small', myVoucher = false }) 
                                             color="text.primary"
                                             sx={{ mt: 1 }}
                                         >
-                                            Đã dùng {percentUsed}%, hạn sử dụng{' '}
+                                            Đã dùng {percentUsed?.toFixed()}%, hạn sử dụng{' '}
                                             {moment(voucher?.endDate).format('DD/MM/YYYY')}
                                         </Typography>
                                     </Fragment>

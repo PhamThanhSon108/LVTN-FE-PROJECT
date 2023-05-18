@@ -1481,7 +1481,7 @@ textarea:focus {
     color: black !important;
 }
 .dropdown-menu a:hover {
-    background-color: orangered !important;
+    background-color: var(--default-background-color) !important;
     color: #fff !important;
 }
 .fix-culum {

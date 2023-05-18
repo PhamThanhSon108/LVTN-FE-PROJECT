@@ -61,6 +61,7 @@ export const stepShipping = {
     icon: <StickyNote2OutlinedIcon />,
     label: 'Đặt hàng',
     labelActive: 'Đã đặt đơn hàng',
+    color: 'info',
   },
   confirm: {
     icon: <CheckOutlinedIcon />,
@@ -73,11 +74,12 @@ export const stepShipping = {
     labelActive: 'Đang giao hàng',
   },
   delivered: { icon: <LocalShippingOutlinedIcon />, label: 'Đã giao hàng', labelActive: 'Đã giao hàng' },
-  cancelled: { icon: <CancelOutlinedIcon />, label: 'Đơn hàng bị hủy', labelActive: 'Đơn hàng bị hủy' },
+  cancelled: { icon: <CancelOutlinedIcon />, label: 'Đơn hàng bị hủy', labelActive: 'Đơn hàng bị hủy', color: 'error' },
   completed: {
     icon: <VerifiedUserOutlinedIcon />,
     label: 'Hoàn tất',
     labelActive: 'Hoàn tất đơn hàng',
+    color: 'success',
   },
   paid: { icon: <PaidOutlinedIcon />, label: 'Thanh toán', labelActive: 'Đã thanh toán' },
 };

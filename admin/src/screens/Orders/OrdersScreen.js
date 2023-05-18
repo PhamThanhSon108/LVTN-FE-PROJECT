@@ -7,7 +7,7 @@ import Loading from '../../components/LoadingError/Loading';
 import Message from '../../components/LoadingError/Error';
 import Orders from './components/Orders/Orders';
 import { dateFilter, statusFilter } from '../../constants/ordersConstants';
-import { Divider, Pagination } from '@mui/material';
+import { CircularProgress, Divider, Pagination } from '@mui/material';
 import { useHistory, useLocation } from 'react-router-dom';
 
 const OrdersScreen = (props) => {
@@ -72,9 +72,11 @@ const OrdersScreen = (props) => {
             </div>
           </div>
           <Divider />
-          <div className="table-responsive">
+          <div className="table-responsive" style={{ minHeight: '15rem' }}>
             {loading ? (
-              <Loading />
+              <div className="col-12 d-flex justify-content-center mt-3">
+                <CircularProgress />
+              </div>
             ) : error ? (
               <Message variant="alert-danger">{error}</Message>
             ) : (

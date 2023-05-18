@@ -25,6 +25,7 @@ import {
     StepContent,
     StepLabel,
     Stepper,
+    Tooltip,
     Typography,
     stepConnectorClasses,
     styled,
@@ -151,7 +152,7 @@ function ColorlibStepIcon(props) {
 
 const DetailOrder = () => {
     window.scrollTo(0, 0);
-
+    moment.locale('vi');
     const { id: orderId } = useParams();
     const dispatch = useDispatch();
 
@@ -244,11 +245,19 @@ const DetailOrder = () => {
                         MÃ ĐƠN HÀNG: {order?._id.toUpperCase()}
                     </Typography>
                     {paymentMethod === PAY_WITH_MOMO.toString() &&
-                    (lastStatus === 'placed' || lastStatus === 'confirm') ? (
+                    (lastStatus === 'placed' || lastStatus === 'confirm') &&
+                    !order?.paymentInformation?.paid ? (
                         <a href={order?.paymentInformation?.payUrl}>
-                            <Button sx={{ ml: 3 }} variant="contained">
-                                THANH TOÁN
-                            </Button>
+                            <Tooltip
+                                title={`Giao dịch sẽ hết hạn sau ${moment(order?.paymentInformation.createdAt)
+                                    .add(1, 'hour')
+                                    .add(33, 'minutes')
+                                    .format('hh:mm DD/MM/YYYY')}`}
+                            >
+                                <Button sx={{ ml: 3 }} variant="contained">
+                                    THANH TOÁN
+                                </Button>
+                            </Tooltip>
                         </a>
                     ) : null}
                 </Box>
@@ -295,7 +304,7 @@ const DetailOrder = () => {
 
                                 const resonCancelOrder =
                                     currentStatus?.status === 'cancelled' ? (
-                                        <Typography variant="body1">Vì lý do {currentStatus?.description}</Typography>
+                                        <Typography variant="body1">{currentStatus?.description}</Typography>
                                     ) : null;
 
                                 return (
@@ -360,7 +369,7 @@ const DetailOrder = () => {
                     ) : null}
                 </Box>
                 <Divider />
-                {order?.status === 'placed' ? <ModalCancelOrder /> : null}
+                {order?.status === 'placed' && !order?.paymentInformation?.paid ? <ModalCancelOrder /> : null}
             </Card>
 
             <Card className="p-3 mt-2">

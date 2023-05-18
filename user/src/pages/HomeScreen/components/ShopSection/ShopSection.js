@@ -48,7 +48,7 @@ const ShopSection = (props) => {
     const rating = getParamValue('rating') || '';
 
     const [priceOrder, setPriceOrder] = useState('');
-    let SkeletonOption = window.innerWidth > 540 ? [1, 2, 3, 4, 5, 6] : [1];
+    let SkeletonOption = window.innerWidth > 540 ? (keyword || category ? [1, 2, 3, 4, 5] : [1, 2, 3, 4, 5, 6]) : [1];
     useEffect(() => {
         dispatch(listProduct({ category, keyword, pageNumber, rating, minPrice, maxPrice }));
     }, [toggleLoad]);
@@ -142,8 +142,14 @@ const ShopSection = (props) => {
 
                                     {products?.map((product) => (
                                         <div
-                                            className="col-lg-2 col-md-3 col-sm-6  mb-3"
-                                            style={{ paddingLeft: 4, paddingRight: 4 }}
+                                            className={`${
+                                                keyword || category ? '' : 'col-lg-2'
+                                            }  col-md-3 col-sm-6  mb-3`}
+                                            style={{
+                                                paddingLeft: 4,
+                                                paddingRight: 4,
+                                                width: keyword || category ? '20%' : '',
+                                            }}
                                             key={product._id}
                                         >
                                             <Product product={product} />

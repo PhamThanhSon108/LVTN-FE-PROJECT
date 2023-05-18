@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { statusDescription } from '../../../../constants/ordersConstants';
+import { statusDescription, stepShipping } from '../../../../constants/ordersConstants';
 import { formatMoney } from '../../../../utils/formatMoney';
+import { Badge, Chip } from '@mui/material';
 
 const OrderDetailProducts = (props) => {
   const { order, loading } = props;
@@ -62,16 +63,14 @@ const OrderDetailProducts = (props) => {
                 <dl className="dlist">
                   <dt className="text-muted">Trạng thái:</dt>
                   <dd>
-                    <b
-                      className={`badge rounded-pill alert-primary
-                     ${statusOfOrder === 'completed' && 'alert-success'}
-                      ${statusOfOrder === 'cancelled' && 'alert-dark'}
-                      ${statusOfOrder === 'failed' && 'alert-danger'}
-                      `}
-                      style={{ fontSize: '15px' }}
-                    >
-                      {statusDescription[statusOfOrder]}
-                    </b>
+                    <Badge badgeContent={order?.status === 'placed' ? 'Mới' : null} color="error">
+                      <Chip
+                        size="medium"
+                        color={stepShipping[order?.status]?.color || 'default'}
+                        variant="filled"
+                        label={stepShipping[order?.status]?.labelActive || ''}
+                      />
+                    </Badge>
                   </dd>
                 </dl>
               </article>
