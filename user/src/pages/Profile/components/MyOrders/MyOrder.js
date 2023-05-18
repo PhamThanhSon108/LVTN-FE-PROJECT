@@ -9,6 +9,7 @@ import Loading from '~/components/LoadingError/Loading';
 import Message from '~/components/LoadingError/Error';
 import { Typography } from '@mui/material';
 import { stepShipping } from '~/pages/DetailOrder/DetailOrder';
+import { getUserDetails } from '~/Redux/Actions/userActions';
 const MyOrders = () => {
     const dispatch = useDispatch();
     const myOrders = useSelector((state) => state.myOrders);
@@ -16,11 +17,18 @@ const MyOrders = () => {
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
+    // const handleGetMyOrderWhenDoNotHaveUserId = async() => {
+    //      if (localStorage.getItem('userInfo') && !userInfo?._id) {
+    //          dispatch(getUserDetails('profile'));
+    //      }
+    //      dispatch(getMyOrders)
+    // }
     useEffect(() => {
         if (userInfo?._id) {
             dispatch(getMyOrders({}));
+        } else {
         }
-    }, []);
+    }, [userInfo]);
     if (loading) {
         return (
             <div className=" d-flex justify-content-center align-items-center flex-column">
@@ -34,7 +42,7 @@ const MyOrders = () => {
     return (
         <div className=" d-flex justify-content-center align-items-center flex-column">
             <Fragment>
-                {!orders || orders?.length === 0 ? (
+                {(!orders || orders?.length === 0) && userInfo?._id ? (
                     <div className="col-12 alert alert-info text-center mt-3">
                         <Typography>Bạn chưa có đơn hàng nào</Typography>
                         <Link

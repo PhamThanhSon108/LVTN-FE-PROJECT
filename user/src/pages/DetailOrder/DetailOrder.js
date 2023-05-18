@@ -67,9 +67,17 @@ export const stepShipping = {
 };
 
 const stepperPayWithMomo = [
-    { step: ['placed', 'confirm'] },
+    { step: ['placed'] },
     { step: ['paid'] },
+    { step: ['confirm'] },
+    { step: ['delivering', 'delivered'] },
+    { step: ['completed'] },
+];
 
+const stepperPayWithMomoFirstConfirm = [
+    { step: ['placed'] },
+    { step: ['confirm'] },
+    { step: ['paid'] },
     { step: ['delivering', 'delivered'] },
     { step: ['completed'] },
 ];
@@ -186,7 +194,15 @@ const DetailOrder = () => {
     const lastStatus = order?.statusHistory.at(-1)?.status;
 
     const paymentMethod = order?.paymentInformation?.paymentMethod;
-    const stepperNoCancelStatus = paymentMethod === '1' ? stepperPayWithCash : stepperPayWithMomo;
+    let indexOfConfirm = order?.statusHistory?.findIndex((step) => step?.status === 'confirm');
+    let indexOfPaid = order?.statusHistory?.findIndex((step) => step?.status === 'paid');
+
+    const stepperPayWithMomoFlexible =
+        paymentMethod === '2' && (indexOfConfirm < indexOfPaid || indexOfPaid === -1) && indexOfConfirm >= 0
+            ? stepperPayWithMomoFirstConfirm
+            : stepperPayWithMomo;
+
+    const stepperNoCancelStatus = paymentMethod === '1' ? stepperPayWithCash : stepperPayWithMomoFlexible;
 
     const stepper =
         lastStatus === 'cancelled'
@@ -243,14 +259,44 @@ const DetailOrder = () => {
                     <Stack sx={{ width: '100%' }} spacing={4}>
                         <Stepper alternativeLabel connector={<ColorlibConnector />}>
                             {stepper?.map((status) => {
+                                //Object những status có trong lịch sử
                                 const currentStatus = order?.statusHistory
                                     ?.filter((historyStatus) =>
                                         status?.step?.find((step) => step === historyStatus?.status),
                                     )
                                     .at(-1);
+                                //
                                 const isCompledStatus =
                                     status?.step?.filter((step) => step === lastStatus)?.at(-1) ||
                                     status?.step[0] === 'cancelled';
+
+                                const placedIsConfirmPaymentWithCash =
+                                    currentStatus?.status === 'placed' &&
+                                    order?.statusHistory?.find((step) => step?.status === 'confirm');
+
+                                const confirmPaywithCash =
+                                    currentStatus?.status === 'confirm' &&
+                                    paymentMethod === '1' &&
+                                    !order?.statusHistory?.find((step) => step?.status === 'paid');
+
+                                const labelActive = placedIsConfirmPaymentWithCash ? (
+                                    <Typography variant="body1">Đã đặt hàng</Typography>
+                                ) : (
+                                    <Typography variant="body1">
+                                        {paymentMethod === '2' && currentStatus?.status === 'paid'
+                                            ? `${stepShipping?.[currentStatus?.status]?.labelActive} (${formatMoney(
+                                                  order?.totalPayment || 0,
+                                              )})`
+                                            : confirmPaywithCash
+                                            ? 'Đã xác nhận thông tin thanh toán'
+                                            : stepShipping?.[currentStatus?.status]?.labelActive}
+                                    </Typography>
+                                );
+
+                                const resonCancelOrder =
+                                    currentStatus?.status === 'cancelled' ? (
+                                        <Typography variant="body1">Vì lý do {currentStatus?.description}</Typography>
+                                    ) : null;
 
                                 return (
                                     <Step completed={isCompledStatus} active={currentStatus} key={status?.step[0]}>
@@ -263,16 +309,8 @@ const DetailOrder = () => {
                                             )}
                                         >
                                             {currentStatus ? (
-                                                <Typography variant="body1">
-                                                    {paymentMethod === '2' && currentStatus?.status === 'paid'
-                                                        ? `${
-                                                              stepShipping?.[currentStatus?.status].labelActive
-                                                          } (${formatMoney(order?.totalPayment || 0)})`
-                                                        : stepShipping?.[currentStatus?.status].labelActive}
-                                                </Typography>
+                                                labelActive
                                             ) : (
-                                                //Trường hợp thời gian của confirm bị trùng với xác nhận thanh toán
-                                                //    paymentMethod === '1' &&   (lastStatus.status !== 'placed' || lastStatus.status !== 'placed') ?
                                                 <Typography variant="body1">
                                                     {stepShipping?.[status?.step[0]].label}
                                                 </Typography>
@@ -283,6 +321,7 @@ const DetailOrder = () => {
                                                     {moment(currentStatus?.createdAt).format('HH:mm:ss DD/MM/YYYY')}
                                                 </Typography>
                                             ) : null}
+                                            {resonCancelOrder}
                                         </StepLabel>
                                     </Step>
                                 );
@@ -307,6 +346,17 @@ const DetailOrder = () => {
                         >
                             Đã nhận hàng
                         </LoadingButton>
+                    ) : null}
+                    {lastStatus === 'delivering' ? (
+                        <a
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            href={`https://tracking.ghn.dev/?order_code=${order?.delivery?.deliveryCode}`}
+                        >
+                            <Button sx={{ ml: 3 }} variant="contained">
+                                Tra cứu đơn hàng
+                            </Button>
+                        </a>
                     ) : null}
                 </Box>
                 <Divider />

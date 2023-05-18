@@ -164,9 +164,11 @@ export const confirmPaid =
             dispatch({ type: ORDER_CONFIRM_PAID_REQUEST });
 
             const { data } = await request.patch(`/orders/${orderId}/received`);
+            toast.success('Xác nhận đã nhận được hàng', Toastobjects);
             dispatch({ type: ORDER_CONFIRM_PAID_SUCCESS, payload: data });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+            toast.error(message || 'Có lỗi trong quá trình xử lý', Toastobjects);
 
             dispatch({
                 type: ORDER_CONFIRM_PAID_FAIL,
