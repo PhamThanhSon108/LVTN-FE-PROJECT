@@ -13,6 +13,9 @@ import {
   ORDER_LIST_FAIL,
   ORDER_LIST_REQUEST,
   ORDER_LIST_SUCCESS,
+  ORDER_PREVIEW_FAIL,
+  ORDER_PREVIEW_REQUEST,
+  ORDER_PREVIEW_SUCCESS,
   ORDER_UPDATE_STATUS_FAIL,
   ORDER_UPDATE_STATUS_REQUEST,
   ORDER_UPDATE_STATUS_RESET,
@@ -87,6 +90,20 @@ export const orderCancelReducer = (state = {}, action) => {
       return { loading: false, error: action.payload };
     case ORDER_CANCEL_RESET:
       return {};
+    default:
+      return state;
+  }
+};
+
+export const orderPreviewReducer = (state = {}, action) => {
+  switch (action.type) {
+    case ORDER_PREVIEW_REQUEST:
+      return { loading: true };
+    case ORDER_PREVIEW_SUCCESS:
+      return { loading: false, success: true, preview: action.payload };
+    case ORDER_PREVIEW_FAIL:
+      return { loading: false, error: action.payload };
+
     default:
       return state;
   }

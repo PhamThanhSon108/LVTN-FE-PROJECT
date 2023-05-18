@@ -105,7 +105,6 @@ export default function FilterSection({ setToggleLoad }) {
             dispatch(ListCategory());
         }
     }, [dispatch]);
-    console.log(getParamValue('category'), 'category');
     return (
         <div className="section-div col-lg-2 col-md-3">
             <div className="Category-section">

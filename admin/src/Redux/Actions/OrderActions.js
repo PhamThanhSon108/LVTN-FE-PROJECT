@@ -11,6 +11,9 @@ import {
   ORDER_LIST_FAIL,
   ORDER_LIST_REQUEST,
   ORDER_LIST_SUCCESS,
+  ORDER_PREVIEW_FAIL,
+  ORDER_PREVIEW_REQUEST,
+  ORDER_PREVIEW_SUCCESS,
   ORDER_UPDATE_STATUS_FAIL,
   ORDER_UPDATE_STATUS_REQUEST,
   ORDER_UPDATE_STATUS_SUCCESS,
@@ -80,18 +83,19 @@ export const deliverOrder = (order) => async (dispatch, getState) => {
 
 //orders PAID
 export const updateStatusOrder =
-  ({ status, orderId, requiredNote }) =>
+  ({ status, orderId, requiredNote, handleAfterFetch }) =>
   async (dispatch, getState) => {
     try {
       dispatch({ type: ORDER_UPDATE_STATUS_REQUEST });
 
       const { data } = await request.patch(`/orders/${orderId}/${status}`, { requiredNote });
       toast.success(data?.message || 'Cập nhật trạng thái đơn hàng thành công', ToastObject);
+      handleAfterFetch?.success();
       dispatch({ type: ORDER_UPDATE_STATUS_SUCCESS, payload: data });
     } catch (error) {
       const message = error.response && error.response.data.message ? error.response.data.message : error.message;
       toast.error(message || 'Cập nhật trạng thái đơn hàng thất bại', ToastObject);
-
+      handleAfterFetch?.error();
       dispatch({
         type: ORDER_UPDATE_STATUS_FAIL,
         payload: message,
@@ -114,6 +118,26 @@ export const cancelOrder =
 
       dispatch({
         type: ORDER_CANCEL_FAIL,
+        payload: message,
+      });
+    }
+  };
+
+export const getPreviewOrder =
+  ({ orderId = '', handleAfterFetch = { success: () => {}, error: () => {} } }) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: ORDER_PREVIEW_REQUEST });
+
+      const { data } = await request.post(`/deliveries/shipping-order/${orderId}/preview`);
+      handleAfterFetch?.success();
+      dispatch({ type: ORDER_PREVIEW_SUCCESS, payload: data?.data?.deliveryInfo });
+    } catch (error) {
+      const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+      handleAfterFetch?.error(message);
+
+      dispatch({
+        type: ORDER_PREVIEW_FAIL,
         payload: message,
       });
     }

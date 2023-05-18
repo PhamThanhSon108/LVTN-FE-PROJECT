@@ -8,20 +8,15 @@ import moment from 'moment';
 import OrderDetailProducts from './components/OrderDetailProducts/OrderDetailProducts';
 import OrderDetailInfo from './components/OrderDetailInfo/OrderDetailInfo';
 import { formatMoney } from '../../utils/formatMoney';
-import { Alert, Chip, Typography } from '@mui/material';
+import { Alert, Chip, Tooltip, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
 import ModalCancelOrder from './components/ModalCancelOrder/ModalCancelOrder';
+import ModalPreviewOrder from './components/ModalPreviewOrder/ModalPreviewOrder';
 
 const RenderButtonUpdateStatus = ({ children, canChange }) => {
   if (canChange) return children;
   return <Fragment />;
 };
-
-const notesForShipping = [
-  { value: 'CHOTHUHANG', label: 'Cho thử hàng' },
-  { value: 'CHOXEMHANGKHONGTHU', label: 'Cho xem hàng không thử' },
-  { value: 'KHONGCHOXEMHANG', label: 'Không cho xem hàng' },
-];
 
 const OrderDetail = () => {
   const { orderId } = useParams();
@@ -70,7 +65,7 @@ const OrderDetail = () => {
             </div>
             {
               <RenderButtonUpdateStatus
-                canChange={order?.status === 'placed' || order?.status === 'approved' || order?.status === 'delivering'}
+                canChange={order?.status === 'placed' || order?.status === 'confirm' || order?.status === 'delivering'}
               >
                 <ModalCancelOrder />
               </RenderButtonUpdateStatus>
@@ -146,8 +141,26 @@ const OrderDetail = () => {
                           </LoadingButton>
                         </RenderButtonUpdateStatus>
 
-                        <RenderButtonUpdateStatus canChange={order?.status === 'confirm'}>
-                          <select
+                        <RenderButtonUpdateStatus
+                          canChange={
+                            order?.status === 'confirm' &&
+                            !order?.paymentInformation?.paid &&
+                            order?.paymentInformation?.paymentMethod === '2'
+                          }
+                        >
+                          <Alert severity="info">
+                            Đơn hàng đang chờ khách hàng thanh toán trước khi bàn giao cho đơn vị vận chuyển
+                          </Alert>
+                        </RenderButtonUpdateStatus>
+
+                        <RenderButtonUpdateStatus
+                          canChange={
+                            order?.paymentInformation?.paymentMethod === '2'
+                              ? order?.status === 'confirm' && order.paymentInformation.paid
+                              : order?.status === 'confirm'
+                          }
+                        >
+                          {/* <select
                             type="text"
                             id="product_category"
                             className="form-select"
@@ -164,8 +177,8 @@ const OrderDetail = () => {
                                 {note.label}
                               </option>
                             ))}
-                          </select>
-                          <LoadingButton
+                          </select> */}
+                          {/* <LoadingButton
                             loading={loadingUpdate}
                             disabled={!requiredNote}
                             onClick={() => saveStatusHandler('delivery')}
@@ -174,7 +187,8 @@ const OrderDetail = () => {
                             sx={{ width: '100%' }}
                           >
                             GIAO ĐƠN CHO BÊN VẬN CHUYỂN
-                          </LoadingButton>
+                          </LoadingButton> */}
+                          <ModalPreviewOrder />
                         </RenderButtonUpdateStatus>
                         <RenderButtonUpdateStatus canChange={order?.status === 'delivering'}>
                           <LoadingButton
@@ -188,22 +202,21 @@ const OrderDetail = () => {
                             GIAO HÀNG THÀNH CÔNG
                           </LoadingButton>
                         </RenderButtonUpdateStatus>
-
                         <RenderButtonUpdateStatus
-                          canChange={
-                            !order?.paymentInformation &&
-                            (order?.status === 'confirm' || order?.status === 'delivering')
-                          }
+                          canChange={!order?.paymentInformation?.paid && order?.status === 'confirm'}
                         >
-                          <LoadingButton
-                            loading={loadingUpdate}
-                            onClick={() => saveStatusHandler('paid')}
-                            className="mt-3"
-                            variant="contained"
-                            sx={{ width: '100%' }}
-                          >
-                            XÁC NHẬN THANH TOÁN
-                          </LoadingButton>
+                          <Tooltip title={'Bạn đã nhận được thanh toán của người dùng'}>
+                            <LoadingButton
+                              loading={loadingUpdate}
+                              onClick={() => saveStatusHandler('confirm-payment')}
+                              className="mt-3"
+                              variant="contained"
+                              sx={{ width: '100%' }}
+                              color="warning"
+                            >
+                              XÁC NHẬN THANH TOÁN
+                            </LoadingButton>
+                          </Tooltip>
                         </RenderButtonUpdateStatus>
 
                         <RenderButtonUpdateStatus canChange={order?.status === 'delivered'}>
