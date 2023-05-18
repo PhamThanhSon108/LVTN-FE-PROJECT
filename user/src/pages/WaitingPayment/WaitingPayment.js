@@ -31,7 +31,7 @@ export default function WaitingPayment() {
     if (moment().valueOf() - time.valueOf() > 7 * 1000) {
         history.push('/time-to-process');
     }
-    if (resultCode === 0 && order?.paymentInformation?.paid && order?.statusHistory?.at(-1)?.status === 'paid') {
+    if (resultCode === '0' && order?.paymentInformation?.paid && order?.statusHistory?.at(-1)?.status === 'paid') {
         if (timesToast === 0) {
             toast.success('Thanh toán thành công', Toastobjects);
             setTimeout(() => {
@@ -48,7 +48,7 @@ export default function WaitingPayment() {
     ) {
         history.push(`/`);
     }
-    if (resultCode !== 0) {
+    if (resultCode && resultCode !== '0') {
         history.push(`/payment-error?resultCode=${resultCode}`);
     }
     return (

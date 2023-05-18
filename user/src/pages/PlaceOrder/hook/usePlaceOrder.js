@@ -198,9 +198,11 @@ export default function usePlaceOrder() {
     };
 
     useEffect(() => {
+        if (cartOrderItems?.length < 1) {
+            history.push('/');
+        }
         dispatch(getShippingAddresses(handleAfterFetchAddress));
     }, []);
-
     return {
         changeNote,
         loadingApplyVoucher,
