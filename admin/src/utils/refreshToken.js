@@ -7,7 +7,7 @@ const refreshToken = async () => {
   const refreshToken = getRefreshToken();
   if (!refreshToken) {
     localStorage.removeItem(USER_INFO_KEY);
-    window.location.assign('./login');
+    window.location.assign('/login');
     return;
   }
   try {
@@ -20,7 +20,7 @@ const refreshToken = async () => {
     });
   } catch (error) {
     localStorage.removeItem(USER_INFO_KEY);
-    window.location.assign('./login');
+    window.location.assign('/login');
   }
 };
 

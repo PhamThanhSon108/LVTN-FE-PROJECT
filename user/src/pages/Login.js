@@ -73,6 +73,7 @@ const Login = () => {
                     sx={{ width: '100%', mt: 2 }}
                     size="small"
                     label="Tài khoản"
+                    placeholder="Nhập tài khoản"
                     value={email}
                     onClick={() => {
                         setLoginCheck((object) => {
@@ -106,7 +107,7 @@ const Login = () => {
                     }}
                     inputProps={{ type: 'password' }}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Mật khẩu"
+                    placeholder="Nhập mật khẩu"
                 />
                 <Typography noWrap variant="body2" color="red" sx={{ mt: 1, mb: 1, textAlign: 'start' }}>
                     {loginCheck.password || ''}

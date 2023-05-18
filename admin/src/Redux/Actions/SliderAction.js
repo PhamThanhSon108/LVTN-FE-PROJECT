@@ -13,7 +13,7 @@ import {
   SLIDER_LIST_REQUEST,
   SLIDER_LIST_SUCCESS,
 } from '../Constants/SliderConstants';
-import { logout } from './UserActions';
+
 const ToastObjects = {
   pauseOnFocusLoss: false,
   draggable: false,
@@ -43,9 +43,7 @@ export const deleteSlider = (id) => async (dispatch, getState) => {
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
     toast.error(message, ToastObjects);
-    if (message === 'Not authorized, token failed') {
-      dispatch(logout());
-    }
+
     dispatch({
       type: SLIDER_DELETE_FAIL,
       payload: message,
@@ -65,9 +63,6 @@ export const createSlider =
     } catch (error) {
       const message = error.response && error.response.data.message ? error.response.data.message : error.message;
       toast.error(message, ToastObjects);
-      if (message === 'Not authorized, token failed') {
-        dispatch(logout());
-      }
       dispatch({
         type: SLIDER_CREATE_FAIL,
         payload: message,
@@ -89,9 +84,6 @@ export const updateSlider =
       const message = error.response && error.response.data.message ? error.response.data.message : error.message;
       toast.error(message, ToastObjects);
 
-      if (message === 'Not authorized, token failed') {
-        dispatch(logout());
-      }
       dispatch({
         type: SLIDER_CREATE_FAIL,
         payload: message,
