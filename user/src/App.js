@@ -39,12 +39,14 @@ const App = () => {
                     <PrivateRouter
                         key={option.path}
                         {...option}
-                        component={<DefaultLayout name={option.name || 'Admin'}>{option.component}</DefaultLayout>}
+                        component={
+                            <DefaultLayout name={option.name || 'Fashionshop'}>{option.component}</DefaultLayout>
+                        }
                     />
                 ))}
                 {publicRouter.map((option) => {
                     const renderComponent = () => (
-                        <DefaultLayout name={option.name || 'Admin'}>{option.component}</DefaultLayout>
+                        <DefaultLayout name={option.name || 'Fashionshop'}>{option.component}</DefaultLayout>
                     );
                     return <Route key={option.path} {...option} component={renderComponent} />;
                 })}
