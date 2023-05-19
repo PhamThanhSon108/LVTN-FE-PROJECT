@@ -1,10 +1,13 @@
-import { Rating, Tooltip, Typography } from '@mui/material';
+import { Button, Rating, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Product.module.scss';
 import { formatMoney } from '~/utils/formatMoney';
-export default function Product({ product }) {
+import { useDispatch } from 'react-redux';
+import { getSimilarProduct } from '~/Redux/Actions/productActions';
+export default function Product({ product, findSimilar = true }) {
     const percentDiscount = (((product.price - product.priceSale) * 100) / product.price).toFixed();
+    const dispatch = useDispatch();
     return (
         <Link to={`/product/${product._id}`} className="col-12">
             <div className={`border-product product-card-item ${styles.productWrapper}`}>
@@ -43,11 +46,38 @@ export default function Product({ product }) {
                             {formatMoney(product.priceSale || 0)}
                         </Typography>
                     </div>
-                    <Rating size="small" readOnly value={product.rating} text={`${product.numReviews} đánh giá`} />
+                    <Rating
+                        precision={0.5}
+                        size="small"
+                        readOnly
+                        value={product.rating}
+                        text={`${product.numReviews} đánh giá`}
+                    />
                     <Typography noWrap variant="body2" color="black" sx={{ mb: 1 }}>
                         TP. Hồ Chí Minh
                     </Typography>
                 </div>
+                {findSimilar ? (
+                    <Link to={`/product/${product._id}?section=similar`}>
+                        <Button
+                            onClick={() => {
+                                dispatch(
+                                    getSimilarProduct({
+                                        id: product?._id,
+                                        category: product?.category,
+                                    }),
+                                );
+                            }}
+                            sx={{ borderRadius: '0', width: '100%', zIndex: 3 }}
+                            size="small"
+                            color="primary"
+                            variant="contained"
+                            className={styles.findSimilarProducts}
+                        >
+                            Tìm sản phẩm tương tự
+                        </Button>
+                    </Link>
+                ) : null}
             </div>
         </Link>
     );

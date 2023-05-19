@@ -7,7 +7,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import { Skeleton, Typography } from '@mui/material';
 
 export default function SliderOfProductImage({ images }) {
-    const [imageIsChoose, setImageIsChoose] = useState('');
+    const [imageIsChoose, setImageIsChoose] = useState(images?.[0]);
     let SkeletonOption = window.innerWidth > 540 ? [1, 2, 3, 4, 5, 6] : [1, 2];
     const [currentImage, setCurrentImage] = useState(0);
     const settings = {

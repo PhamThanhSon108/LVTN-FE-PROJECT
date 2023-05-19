@@ -6,7 +6,7 @@ import isEmpty from 'validator/lib/isEmpty';
 import { TreeItem, TreeView, treeItemClasses } from '@mui/lab';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import { Typography, styled } from '@mui/material';
+import { Button, Typography, styled } from '@mui/material';
 import Rating from '../Rating/Rating';
 import { ListCategory } from '~/Redux/Actions/categoryActions';
 import styles from './FilterSection.module.scss';
@@ -109,7 +109,7 @@ export default function FilterSection({ setToggleLoad }) {
         <div className="section-div col-lg-2 col-md-3">
             <div className="Category-section">
                 <div className="section-flex">
-                    <Typography noWrap variant="button" color="text.secondary">
+                    <Typography noWrap variant="button" color="primary">
                         DANH MỤC
                     </Typography>
                 </div>
@@ -119,7 +119,7 @@ export default function FilterSection({ setToggleLoad }) {
                     defaultCollapseIcon={<ArrowDropDownIcon />}
                     defaultExpandIcon={<ArrowRightIcon />}
                     selected={[getParamValue('category')]}
-                    sx={{ flexGrow: 1, overflowY: 'auto', mb: 2 }}
+                    sx={{ flexGrow: 1, overflowY: 'auto', mb: 1 }}
                     disabledItemsFocusable={true}
                     defaultExpanded={[getParamValue('category')]}
                 >
@@ -161,13 +161,13 @@ export default function FilterSection({ setToggleLoad }) {
             </div>
             <div className="Category-search">
                 <div className="section-flex">
-                    <Typography noWrap variant="button" color="text.secondary">
+                    <Typography noWrap variant="button" color="primary">
                         LỌC
                     </Typography>
                 </div>
 
                 <div className="distance-price">
-                    <Typography noWrap variant="body1" color="text.secondary">
+                    <Typography noWrap variant="body1" color="text.secondary" className="mb-1">
                         Khoảng giá
                     </Typography>
                     <div className="distance-price__flex" style={{ display: 'flex', alignItems: 'center' }}>
@@ -181,130 +181,46 @@ export default function FilterSection({ setToggleLoad }) {
                         <label>-</label>
                         <input
                             type="number"
-                            placeholder="Tới"
+                            placeholder="Đến"
                             onChange={(e) => setCurentMaxPrice(e.target.value)}
                             value={curentMaxPrice}
                             min="1"
                         ></input>
                     </div>
                     <p style={{ fontSize: '14px', color: 'red' }}>{price.name}</p>
-                    <button className="distance-price__submit" onClick={ApplyHandler}>
+
+                    <Button variant="contained" sx={{ width: '100%', mt: 1 }} onClick={ApplyHandler}>
                         Áp dụng
-                    </button>
+                    </Button>
                 </div>
                 <div className="assess-star">
                     <Typography sx={{ mt: 1 }} noWrap variant="body1" color="text.secondary">
                         Đánh giá
                     </Typography>
                     <div className="assess-star__div">
-                        <div display={{ display: 'flex', alignItems: 'center' }}>
-                            <input
-                                type="radio"
-                                style={{ display: 'none' }}
-                                className="rating"
-                                name="star"
-                                id="five"
-                                value={'5'}
-                                onClick={(e) => {
-                                    replaceParams([{ key: 'rating', value: e.target.value }]);
-                                }}
-                            ></input>
-                            <label for="five" className={rating === '5' ? 'rating-color' : ' '}>
-                                <Rating value="5"></Rating>
-                            </label>
-                        </div>
-                        <div display={{ display: 'flex', alignItems: 'center' }}>
-                            <input
-                                type="radio"
-                                style={{ display: 'none' }}
-                                className="star-none"
-                                name="star"
-                                id="four"
-                                value={'4'}
-                                onClick={(e) => {
-                                    replaceParams([{ key: 'rating', value: e.target.value }]);
-                                }}
-                            ></input>
-                            <label for="four" className={rating === '4' ? 'rating-color' : ' '}>
-                                <Rating
-                                    value="4"
-                                    text={
-                                        <Typography ml={0} variant="caption">
-                                            Trở lên
-                                        </Typography>
-                                    }
-                                ></Rating>
-                            </label>
-                        </div>
-                        <div display={{ display: 'flex', alignItems: 'center' }}>
-                            <input
-                                type="radio"
-                                style={{ display: 'none' }}
-                                className="star-none"
-                                name="star"
-                                id="three"
-                                value={'3'}
-                                onClick={(e) => {
-                                    replaceParams([{ key: 'rating', value: e.target.value }]);
-                                }}
-                            ></input>
-                            <label for="three" className={rating === '3' ? 'rating-color' : ' '}>
-                                <Rating
-                                    value="3"
-                                    text={
-                                        <Typography ml={0} variant="caption">
-                                            Trở lên
-                                        </Typography>
-                                    }
-                                ></Rating>
-                            </label>
-                        </div>
-                        <div display={{ display: 'flex', alignItems: 'center' }}>
-                            <input
-                                type="radio"
-                                style={{ display: 'none' }}
-                                className="star-none"
-                                name="star"
-                                id="two"
-                                value={'2'}
-                                onClick={(e) => {
-                                    replaceParams([{ key: 'rating', value: e.target.value }]);
-                                }}
-                            ></input>
-                            <label for="two" className={rating === '2' ? 'rating-color' : ' '}>
-                                <Rating
-                                    value="2"
-                                    text={
-                                        <Typography ml={0} variant="caption">
-                                            Trở lên
-                                        </Typography>
-                                    }
-                                ></Rating>
-                            </label>
-                        </div>
-                        <div display={{ display: 'flex', alignItems: 'center' }}>
-                            <input
-                                type="radio"
-                                style={{ display: 'none' }}
-                                className="star-none"
-                                name="star"
-                                id="one"
-                                value={'1'}
-                                onClick={(e) => {
-                                    replaceParams([{ key: 'rating', value: e.target.value }]);
-                                }}
-                            ></input>
-                            <label for="one" className={rating === '1' ? 'rating-color' : ''}>
-                                <Rating
-                                    value="1"
-                                    text={
-                                        <Typography ml={0} variant="caption">
-                                            Trở lên
-                                        </Typography>
-                                    }
-                                ></Rating>
-                            </label>
-                        </div>
+                        {['5', '4', '3', '2', '1'].map((star) => (
+                            <div key={star} display={{ display: 'flex', alignItems: 'center' }}>
+                                <input
+                                    type="radio"
+                                    style={{ display: 'none' }}
+                                    className="rating"
+                                    name="star"
+                                    id={star}
+                                    value={star}
+                                    onClick={(e) => {
+                                        setToggleLoad((toggle) => !toggle);
+                                        replaceParams([{ key: 'rating', value: e.target.value }]);
+                                    }}
+                                ></input>
+                                <label
+                                    for={star}
+                                    className={`d-flex align-items-center ${rating === star ? 'rating-color' : ' '}`}
+                                >
+                                    <Rating value={star}></Rating>
+                                    {star !== '5' ? <Typography variant="caption">trở lên</Typography> : null}
+                                </label>
+                            </div>
+                        ))}
                     </div>
                 </div>
                 {/* <div className="assess-star">
@@ -312,15 +228,9 @@ export default function FilterSection({ setToggleLoad }) {
                     <input class="rating" />
                 </div> */}
                 <div className="" display={{ display: 'flex', alignItems: 'center' }}>
-                    <button className="distance-price__submit">
-                        <span
-                            className="navbar-brand"
-                            style={{ fontSize: '0.85rem', color: '#fff' }}
-                            onClick={ClearHandle}
-                        >
-                            Xóa tất cả
-                        </span>
-                    </button>
+                    <Button variant="contained" sx={{ width: '100%', mt: 1 }} onClick={ClearHandle}>
+                        Xóa tất cả
+                    </Button>
                 </div>
             </div>
         </div>

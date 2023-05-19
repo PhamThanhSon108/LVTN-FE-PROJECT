@@ -11,6 +11,7 @@ import { formatMoney } from '~/utils/formatMoney';
 import Review from './components/Review/Review';
 import ReactQuill from 'react-quill';
 import SliderOfProductImage from './components/SliderOfProductImage/SliderOfProductImage';
+import SimilarProduct from './components/SimilarProduct/SimilarProduct';
 
 const StyledRating = styled(Rating)({
     '& .MuiRating-iconFilled': {
@@ -54,6 +55,7 @@ const RenderStatus = ({ value1, value2, product }) => {
 
 const SingleProduct = () => {
     const {
+        similarProductRef,
         loading,
         currentVariant,
         buyProductHandle,
@@ -367,6 +369,7 @@ const SingleProduct = () => {
                 </div>
                 {/* RATING */}
                 <Review />
+                <SimilarProduct similarProductRef={similarProductRef} />
             </div>
         </div>
     );

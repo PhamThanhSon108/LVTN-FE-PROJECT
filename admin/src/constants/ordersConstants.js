@@ -75,7 +75,7 @@ export const stepShipping = {
     labelActive: 'Đang giao hàng',
     color: 'info',
   },
-  delivered: { icon: <LocalShippingOutlinedIcon />, label: 'Đã giao hàng', labelActive: 'Đã giao hàng' },
+  delivered: { color: 'info', icon: <LocalShippingOutlinedIcon />, label: 'Đã giao hàng', labelActive: 'Đã giao hàng' },
   cancelled: { icon: <CancelOutlinedIcon />, label: 'Đơn hàng bị hủy', labelActive: 'Đơn hàng bị hủy', color: 'error' },
   completed: {
     icon: <VerifiedUserOutlinedIcon />,
