@@ -1,6 +1,23 @@
 .productWrapper {
     position: relative;
     background-color: white;
+
+    box-sizing: border-box;
+
+    &:hover {
+        border: 1px solid var(--default-background-color);
+        z-index: 2;
+    }
+    .findSimilarProducts {
+        position: absolute;
+        display: none;
+    }
+}
+.productWrapper:hover {
+    .findSimilarProducts {
+        z-index: 2;
+        display: block;
+    }
 }
 .discountFlag {
     top: 0;

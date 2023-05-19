@@ -1,15 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Toastobjects } from '~/components/LoadingError/Toast';
 import useDebounce from '~/hooks/useDebounce';
 import { addProductOrderInCart, addToCart, listCart } from '~/Redux/Actions/cartActions';
-import { createProductReview, listProductDetails } from '~/Redux/Actions/productActions';
+import { createProductReview, listProductDetails, getSimilarProduct } from '~/Redux/Actions/productActions';
 import { PRODUCT_CREATE_REVIEW_RESET } from '~/Redux/Constants/ProductConstants';
 import CART_CONST from '~/Redux/Constants/CartConstants';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
+import useSearchParamsCustom from '~/hooks/useSearchParamCustom';
 export default function useSingleProduct() {
+    const { getParamValue } = useSearchParamsCustom();
+    const similarProductRef = useRef();
     const [qty, setQty] = useState(1);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
@@ -24,6 +27,10 @@ export default function useSingleProduct() {
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
     const productReviewCreate = useSelector((state) => state.productReviewCreate);
+
+    const similarProduct = useSelector((state) => state.similarProduct);
+    const { products: similarProducts } = similarProduct;
+
     const [loadingAddtoCart, setLoadingAddtoCart] = useState(false);
     const { loading: loadingCreateReview, success: successCreateReview } = productReviewCreate;
     const haveQuantityOfCurrentVariant = product?.variants?.find(
@@ -120,6 +127,29 @@ export default function useSingleProduct() {
         );
     };
 
+    const handleAfterFetch = {
+        success: (slug) => {
+            if (similarProducts?.[0]?.slug !== slug) {
+                dispatch(
+                    getSimilarProduct({
+                        id: productId,
+                        category: slug,
+                    }),
+                );
+            }
+            if (getParamValue('section') === 'similar') {
+                setTimeout(() => {
+                    window.scrollTo({
+                        top: similarProductRef.current.offsetTop - 150,
+                        left: 100,
+                        behavior: 'smooth',
+                    });
+                }, 500);
+            }
+        },
+        error: () => {},
+    };
+
     useEffect(() => {
         if (!qty) setQty(null);
         if (qty > quantity) setQty(quantity);
@@ -133,9 +163,10 @@ export default function useSingleProduct() {
             setComment('');
             dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
         }
-        dispatch(listProductDetails(productId));
+        dispatch(listProductDetails(productId, handleAfterFetch));
     }, [dispatch, productId, successCreateReview]);
     return {
+        similarProductRef,
         loading,
         currentVariant,
         percentDiscount,

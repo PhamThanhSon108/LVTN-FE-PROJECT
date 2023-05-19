@@ -12,6 +12,9 @@ import {
     PRODUCT_LIST_ALL_FAIL,
     PRODUCT_LIST_ALL_REQUEST,
     PRODUCT_LIST_ALL_SUCCESS,
+    PRODUCT_SIMILAR_REQUEST,
+    PRODUCT_SIMILAR_SUCCESS,
+    PRODUCT_SIMILAR_FAIL,
 } from '../Constants/ProductConstants';
 
 //PRODUCT LIST ALL
@@ -75,6 +78,24 @@ export const productCreateReviewReducer = (state = {}, action) => {
             return { loading: false, error: action.payload };
         case PRODUCT_CREATE_REVIEW_RESET:
             return {};
+        default:
+            return state;
+    }
+};
+
+export const similarProductReducer = (state = { products: [] }, action) => {
+    switch (action.type) {
+        case PRODUCT_SIMILAR_REQUEST:
+            return { ...state, loading: true };
+        case PRODUCT_SIMILAR_SUCCESS:
+            return {
+                loading: false,
+                pages: action.payload.pages,
+                page: action.payload.page,
+                products: action.payload.products,
+            };
+        case PRODUCT_SIMILAR_FAIL:
+            return { loading: false, error: action.payload };
         default:
             return state;
     }

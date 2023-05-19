@@ -91,7 +91,7 @@ export default function Review() {
                                     trên 5
                                 </Typography>
                             </Box>
-                            <Rating size="large" readOnly value={product.rating} />
+                            <Rating precision={0.5} size="large" readOnly value={product.rating} />
                         </Box>
                         <Box className="col-8">
                             {filterOption.map((ratingItem) => (

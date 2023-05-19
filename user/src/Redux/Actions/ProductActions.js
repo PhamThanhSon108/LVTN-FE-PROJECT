@@ -11,6 +11,9 @@ import {
     PRODUCT_LIST_ALL_FAIL,
     PRODUCT_LIST_ALL_REQUEST,
     PRODUCT_LIST_ALL_SUCCESS,
+    PRODUCT_SIMILAR_FAIL,
+    PRODUCT_SIMILAR_SUCCESS,
+    PRODUCT_SIMILAR_REQUEST,
 } from '../Constants/ProductConstants';
 import { logout } from './userActions';
 import request from '../../utils/request';
@@ -64,13 +67,38 @@ export const listProduct =
         }
     };
 
+export const getSimilarProduct =
+    ({ id = '', category = '', pageNumber = '', pageSize = 12 }) =>
+    async (dispatch) => {
+        try {
+            dispatch({ type: PRODUCT_SIMILAR_REQUEST });
+            const { data } = await getProducts({
+                category,
+                pageNumber,
+                pageSize,
+            });
+            const productsObject = {
+                ...data?.data,
+                products: data?.data?.products?.filter((product) => product?._id !== id),
+            };
+            dispatch({ type: PRODUCT_SIMILAR_SUCCESS, payload: productsObject });
+        } catch (error) {
+            dispatch({
+                type: PRODUCT_SIMILAR_FAIL,
+                payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+            });
+        }
+    };
+
 // SINGLE PRODUCT
-export const listProductDetails = (id) => async (dispatch) => {
+export const listProductDetails = (id, handleAfterFetch) => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_DETAILS_REQUEST });
         const { data } = await request.get(`/products/${id}`);
         dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data.data });
+        handleAfterFetch?.success(data.data?.product?.category);
     } catch (error) {
+        handleAfterFetch?.error();
         dispatch({
             type: PRODUCT_DETAILS_FAIL,
             payload: error.response && error.response.data.message ? error.response.data.message : error.message,

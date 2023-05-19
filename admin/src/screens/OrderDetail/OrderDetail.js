@@ -203,7 +203,11 @@ const OrderDetail = () => {
                           </LoadingButton>
                         </RenderButtonUpdateStatus>
                         <RenderButtonUpdateStatus
-                          canChange={!order?.paymentInformation?.paid && order?.status === 'confirm'}
+                          canChange={
+                            !order?.paymentInformation?.paid &&
+                            order?.status === 'confirm' &&
+                            order?.paymentInformation?.paymentMethod === '2'
+                          }
                         >
                           <Tooltip title={'Bạn đã nhận được thanh toán của người dùng'}>
                             <LoadingButton

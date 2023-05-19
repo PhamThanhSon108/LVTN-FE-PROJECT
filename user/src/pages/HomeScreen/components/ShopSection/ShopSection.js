@@ -46,12 +46,13 @@ const ShopSection = (props) => {
     const keyword = getParamValue('keyword') || '';
     const pageNumber = getParamValue('page') || '';
     const rating = getParamValue('rating') || '';
+    const sortByPrice = getParamValue('sort-by-price') || '';
 
     const [priceOrder, setPriceOrder] = useState('');
     let SkeletonOption = window.innerWidth > 540 ? (keyword || category ? [1, 2, 3, 4, 5] : [1, 2, 3, 4, 5, 6]) : [1];
     useEffect(() => {
-        dispatch(listProduct({ category, keyword, pageNumber, rating, minPrice, maxPrice }));
-    }, [toggleLoad]);
+        dispatch(listProduct({ category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder: sortByPrice }));
+    }, [toggleLoad, sortByPrice]);
     return (
         <>
             <div className={styles.shopSectionContainer}>
@@ -89,7 +90,7 @@ const ShopSection = (props) => {
                                         </div>
                                     }
                                 >
-                                    <ShowFilter show={(keyword || category) && products && products?.length > 2}>
+                                    <ShowFilter show={(keyword || category) && (products?.length > 2 || loading)}>
                                         <div
                                             style={{
                                                 display: 'flex',
@@ -104,7 +105,7 @@ const ShopSection = (props) => {
                                             </Typography>
                                             <Button
                                                 onClick={(e) => {
-                                                    setPriceOrder(e.target.value);
+                                                    replaceParams([{ key: 'sort-by-price', value: '' }]);
                                                 }}
                                                 type="ghost"
                                                 sx={{ mr: 1 }}
@@ -112,22 +113,20 @@ const ShopSection = (props) => {
                                                 Mới nhất
                                             </Button>
                                             <div className="" style={{ cursor: 'pointer', zIndex: '2' }}>
-                                                <FormControl size="small" fullWidth sx={{ minWidth: '8rem' }}>
-                                                    <InputLabel id="sort-by-price-select-label">Giá</InputLabel>
-                                                    <Select
-                                                        labelId="sort-by-price-select-label"
-                                                        id="demo-simple-select"
-                                                        value={priceOrder}
-                                                        label="Giá"
-                                                        onChange={(e) => {
-                                                            setPriceOrder(e.target.value);
-                                                        }}
-                                                    >
-                                                        <MenuItem>Giá</MenuItem>
-                                                        <MenuItem value="asc">Giá tăng dần</MenuItem>
-                                                        <MenuItem value="desc">Giá giảm dần</MenuItem>
-                                                    </Select>
-                                                </FormControl>
+                                                <select
+                                                    onChange={(e) => {
+                                                        replaceParams([
+                                                            { key: 'sort-by-price', value: e.target.value },
+                                                        ]);
+                                                    }}
+                                                    value={sortByPrice}
+                                                    class="form-select"
+                                                    aria-label="Default select example"
+                                                >
+                                                    <option value="">Giá</option>
+                                                    <option value="asc">Giá tăng dần</option>
+                                                    <option value="desc">Giá giảm dần</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </ShowFilter>
