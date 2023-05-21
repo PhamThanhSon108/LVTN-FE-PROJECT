@@ -237,7 +237,7 @@ const EditProduct = () => {
                   </label>
                   <input
                     type="text"
-                    placeholder="Type here"
+                    placeholder="Nhập tên sản phẩm"
                     className="form-control"
                     id="product_title"
                     required

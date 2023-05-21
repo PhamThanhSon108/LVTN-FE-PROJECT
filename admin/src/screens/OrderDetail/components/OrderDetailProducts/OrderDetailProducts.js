@@ -15,7 +15,7 @@ const OrderDetailProducts = (props) => {
     };
     if (order) order.itemsPrice = 0;
   }
-
+  const status = order.statusHistory?.at(-1)?.status || order?.status;
   return (
     <>
       <table className="table border table-lg">
@@ -32,30 +32,32 @@ const OrderDetailProducts = (props) => {
           </tr>
         </thead>
         <tbody>
-          {order?.orderItems?.map((item, index) => (
-            <tr key={index}>
-              <td>
-                <Link className="itemside" to="#">
-                  <div className="left">
-                    <img
-                      src={item?.image}
-                      alt={item?.name}
-                      style={{ width: '40px', height: '40px' }}
-                      className="img-xs"
-                    />
-                  </div>
-                  <div className="info">{item?.name}</div>
-                </Link>
-              </td>
-              <td>{formatMoney(item?.price || 0)} </td>
-              <td>
-                {item?.attributes?.[0]?.value}, {item?.attributes?.[1]?.value}{' '}
-              </td>
+          {order?.orderItems?.map((item, index) => {
+            return (
+              <tr key={index}>
+                <td>
+                  <Link className="itemside" to="#">
+                    <div className="left">
+                      <img
+                        src={item?.image}
+                        alt={item?.name}
+                        style={{ width: '40px', height: '40px' }}
+                        className="img-xs"
+                      />
+                    </div>
+                    <div className="info">{item?.name}</div>
+                  </Link>
+                </td>
+                <td>{formatMoney(item?.price || 0)} </td>
+                <td>
+                  {item?.attributes?.[0]?.value}, {item?.attributes?.[1]?.value}{' '}
+                </td>
 
-              <td>{item?.quantity || 0} </td>
-              <td className="text-end"> {formatMoney(item?.quantity * item?.price || 0)}</td>
-            </tr>
-          ))}
+                <td>{item?.quantity || 0} </td>
+                <td className="text-end"> {formatMoney(item?.quantity * item?.price || 0)}</td>
+              </tr>
+            );
+          })}
 
           <tr>
             <td colSpan="8">
@@ -66,9 +68,9 @@ const OrderDetailProducts = (props) => {
                     <Badge badgeContent={order?.status === 'placed' ? 'Mới' : null} color="error">
                       <Chip
                         size="medium"
-                        color={stepShipping[order?.status]?.color || 'default'}
+                        color={stepShipping[status]?.color || 'default'}
                         variant="filled"
-                        label={stepShipping[order?.status]?.labelActive || ''}
+                        label={stepShipping[status]?.labelActive || ''}
                       />
                     </Badge>
                   </dd>

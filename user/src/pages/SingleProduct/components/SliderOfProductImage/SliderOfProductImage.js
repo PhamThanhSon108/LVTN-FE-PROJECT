@@ -78,7 +78,7 @@ export default function SliderOfProductImage({ images }) {
                                                 border: imageIsChoose === image ? '2px solid red' : '',
                                             }}
                                         >
-                                            <img src={image} className="col-12" alt="Hình ảnh của sản phẩm" />
+                                            <img src={image} style={{ height: '72px' }} alt="Hình ảnh của sản phẩm" />
                                         </div>
                                     </div>
                                 );

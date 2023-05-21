@@ -467,7 +467,18 @@ const DetailOrder = () => {
                                     </Typography>
                                 </td>
                             </tr>
-
+                            <tr>
+                                <td>
+                                    <Typography component="div" variant="body1" color="text.primary">
+                                        Giảm giá
+                                    </Typography>
+                                </td>
+                                <td>
+                                    <Typography component="div" variant="body1" color="text.primary">
+                                        {formatMoney(order?.totalDiscount || 0)}
+                                    </Typography>
+                                </td>
+                            </tr>
                             <tr>
                                 <td>
                                     <Typography component="div" variant="body1" color="text.primary">

@@ -62,8 +62,10 @@ function ModalUpdateBanner({ banner, setBanner }) {
       if (banner?.type === 'banner') {
         slider.append('type', 'banner');
       }
+      slider.append('updatedVersion', data.updatedVersion);
       slider.append('title', data.title);
       slider.append('index', data.index);
+      console.log(data);
       dispatch(updateSlider({ slider, id: banner?._id }, handleAfterUpdate));
     });
   };

@@ -46,13 +46,13 @@ const ShopSection = (props) => {
     const keyword = getParamValue('keyword') || '';
     const pageNumber = getParamValue('page') || '';
     const rating = getParamValue('rating') || '';
-    const sortByPrice = getParamValue('sort-by-price') || '';
+    const sortBy = getParamValue('sort-by') || '';
 
     const [priceOrder, setPriceOrder] = useState('');
     let SkeletonOption = window.innerWidth > 540 ? (keyword || category ? [1, 2, 3, 4, 5] : [1, 2, 3, 4, 5, 6]) : [1];
     useEffect(() => {
-        dispatch(listProduct({ category, keyword, pageNumber, rating, minPrice, maxPrice, priceOrder: sortByPrice }));
-    }, [toggleLoad, sortByPrice]);
+        dispatch(listProduct({ sortBy, category, keyword, pageNumber, rating, minPrice, maxPrice }));
+    }, [toggleLoad, sortBy]);
     return (
         <>
             <div className={styles.shopSectionContainer}>
@@ -105,7 +105,7 @@ const ShopSection = (props) => {
                                             </Typography>
                                             <Button
                                                 onClick={(e) => {
-                                                    replaceParams([{ key: 'sort-by-price', value: '' }]);
+                                                    replaceParams([{ key: 'sort-by', value: 'latest' }]);
                                                 }}
                                                 type="ghost"
                                                 sx={{ mr: 1 }}
@@ -115,11 +115,9 @@ const ShopSection = (props) => {
                                             <div className="" style={{ cursor: 'pointer', zIndex: '2' }}>
                                                 <select
                                                     onChange={(e) => {
-                                                        replaceParams([
-                                                            { key: 'sort-by-price', value: e.target.value },
-                                                        ]);
+                                                        replaceParams([{ key: 'sort-by', value: e.target.value }]);
                                                     }}
-                                                    value={sortByPrice}
+                                                    value={sortBy}
                                                     class="form-select"
                                                     aria-label="Default select example"
                                                 >
@@ -128,6 +126,15 @@ const ShopSection = (props) => {
                                                     <option value="desc">Giá giảm dần</option>
                                                 </select>
                                             </div>
+                                            <Button
+                                                onClick={(e) => {
+                                                    replaceParams([{ key: 'sort-by', value: 'total_sales' }]);
+                                                }}
+                                                type="ghost"
+                                                sx={{ mr: 1 }}
+                                            >
+                                                Bán chạy
+                                            </Button>
                                         </div>
                                     </ShowFilter>
 

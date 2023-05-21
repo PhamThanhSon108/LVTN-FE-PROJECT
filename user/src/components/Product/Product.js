@@ -68,7 +68,7 @@ export default function Product({ product, findSimilar = true }) {
                                     }),
                                 );
                             }}
-                            sx={{ borderRadius: '0', width: '100%', zIndex: 3 }}
+                            sx={{ borderRadius: '0', width: '100%', zIndex: 3, fontSize: '0.8rem' }}
                             size="small"
                             color="primary"
                             variant="contained"

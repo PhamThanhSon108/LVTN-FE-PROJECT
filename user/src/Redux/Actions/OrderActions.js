@@ -46,7 +46,7 @@ export const createOrder = (order, handleAfterFetch) => async (dispatch, getStat
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
 
         handleAfterFetch?.error(message);
-        toast.error(message, Toastobjects);
+
         dispatch({
             type: ORDER_CREATE_FAIL,
             payload: message,

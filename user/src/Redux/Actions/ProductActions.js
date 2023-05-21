@@ -43,7 +43,7 @@ export const listProduct =
         rating = '',
         minPrice = '',
         maxPrice = '',
-        priceOrder = '',
+        sortBy = '',
         pageSize = 12,
     }) =>
     async (dispatch) => {
@@ -56,7 +56,7 @@ export const listProduct =
                 rating,
                 minPrice,
                 maxPrice,
-                priceOrder,
+                sortBy,
                 pageSize,
             });
             dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data.data });

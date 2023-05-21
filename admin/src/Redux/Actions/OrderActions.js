@@ -75,12 +75,12 @@ export const deliverOrder = (order) => async (dispatch, getState) => {
 
 //orders PAID
 export const updateStatusOrder =
-  ({ status, orderId, requiredNote, handleAfterFetch }) =>
+  ({ status, orderId, delivery, handleAfterFetch }) =>
   async (dispatch, getState) => {
     try {
       dispatch({ type: ORDER_UPDATE_STATUS_REQUEST });
 
-      const { data } = await request.patch(`/orders/${orderId}/${status}`, { requiredNote });
+      const { data } = await request.patch(`/orders/${orderId}/${status}`, { requiredNote: delivery?.requiredNote });
       toast.success(data?.message || 'Cập nhật trạng thái đơn hàng thành công', ToastObject);
       handleAfterFetch?.success();
       dispatch({ type: ORDER_UPDATE_STATUS_SUCCESS, payload: data });
