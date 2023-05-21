@@ -15,7 +15,7 @@ const OrderDetailProducts = (props) => {
     };
     if (order) order.itemsPrice = 0;
   }
-  const status = order.statusHistory?.at(-1)?.status || order?.status;
+  const status = order?.statusHistory?.at(-1)?.status || order?.status;
   return (
     <>
       <table className="table border table-lg">

@@ -9,6 +9,7 @@ import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
 import styles from './UpdatePasswordTab.module.scss';
 import { Toastobjects } from '~/Redux/Actions/cartActions';
 import { toast } from 'react-toastify';
+import { regexPassword } from '~/pages/Login';
 
 export const UpdatePasswordTab = () => {
     const dispatch = useDispatch();
@@ -22,23 +23,27 @@ export const UpdatePasswordTab = () => {
         if (isEmpty(oldPassword)) {
             passObj.oldPassword = 'Bạn chưa nhập mật khẩu hiện tại';
         }
-        if (isEmpty(password)) {
-            passObj.password = 'Bạn chưa nhập mật khẩu mới';
+        if (oldPassword === password) {
+            passObj.password = 'Mật khẩu mới không được trùng với mật khẩu cũ';
         } else {
-            if (password.length < 6) {
-                passObj.password =
-                    'Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng';
-            }
-        }
-        if (isEmpty(confirmPassword)) {
-            passObj.confirmPassword = 'Bạn chưa nhập lại mật khẩu mới';
-        } else {
-            if (confirmPassword.length < 6) {
-                passObj.confirmPassword =
-                    'Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng';
+            if (isEmpty(password)) {
+                passObj.password = 'Bạn chưa nhập mật khẩu mới';
             } else {
-                if (password !== confirmPassword) {
-                    passObj.confirmPassword = 'Mật khẩu không khớp';
+                if (!regexPassword.test(password)) {
+                    passObj.password =
+                        'Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng';
+                }
+            }
+            if (isEmpty(confirmPassword)) {
+                passObj.confirmPassword = 'Bạn chưa nhập lại mật khẩu mới';
+            } else {
+                if (!regexPassword.test(confirmPassword)) {
+                    passObj.confirmPassword =
+                        'Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng';
+                } else {
+                    if (password !== confirmPassword) {
+                        passObj.confirmPassword = 'Mật khẩu không khớp';
+                    }
                 }
             }
         }

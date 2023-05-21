@@ -275,7 +275,7 @@ textarea:focus {
         url('https://bizweb.dktcdn.net/100/372/651/themes/802187/assets/slider_1.jpg?1638761605779') no-repeat scroll
             center / cover;
     padding: 100px 0 100px;
-    width: 100%;
+    width: 100vw;
 }
 .subscribe-head h2 {
     color: #fff;

@@ -76,12 +76,12 @@ export default function Voucher({ voucher, size = 'small', myVoucher = false }) 
                                         </Typography>
                                     ) : null}
                                 </div>
-                                {!myVoucher ? (
+                                {!myVoucher && !voucher?.isAdd ? (
                                     <LoadingButton loading={saveVoucher} onClick={handleSaveVoucher}>
                                         Lưu
                                     </LoadingButton>
                                 ) : (
-                                    <Link to="/"></Link>
+                                    <Chip label={'Đã lưu'} color="primary" variant="outlined"></Chip>
                                 )}
                             </div>
                         }

@@ -2,7 +2,17 @@ import React, { useEffect } from 'react';
 
 import { Link } from 'react-router-dom';
 
-import { Avatar, Card, CardContent, CardHeader, Divider, Tooltip, Typography, cardContentClasses } from '@mui/material';
+import {
+    Avatar,
+    Card,
+    CardContent,
+    CardHeader,
+    CircularProgress,
+    Divider,
+    Tooltip,
+    Typography,
+    cardContentClasses,
+} from '@mui/material';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ListCategory } from '~/Redux/Actions/categoryActions';
@@ -50,14 +60,10 @@ const settings = {
         },
     ],
 };
-export default function Vouchers() {
-    const dispatch = useDispatch();
-    const { vouchers } = useSelector((state) => state.publicVouchers);
-    useEffect(() => {
-        dispatch(getPublicVouchers());
-    }, []);
+
+const MainSection = ({ children }) => {
     return (
-        <Card className={styles.container} sx={{ pl: 0, pr: '8px' }}>
+        <Card className={styles.container} sx={{ pl: 0, pr: '8px', pb: '4px' }}>
             <CardHeader
                 sx={{ display: 'flex', alignItems: 'center' }}
                 title={
@@ -77,8 +83,32 @@ export default function Vouchers() {
                 }
             />
             <Divider />
+            {children}
+        </Card>
+    );
+};
+export default function Vouchers() {
+    const dispatch = useDispatch();
+    const { vouchers, loading } = useSelector((state) => state.publicVouchers);
+    useEffect(() => {
+        dispatch(getPublicVouchers());
+    }, []);
 
-            <Slider style={{ maxHeight: '252px', overflow: 'hidden', objectFit: 'cover' }} {...settings}>
+    if (loading)
+        return (
+            <MainSection>
+                <div className="col-12 d-flex justify-content-center align-items-center" style={{ height: '128.8px' }}>
+                    <CircularProgress />
+                </div>
+            </MainSection>
+        );
+
+    return (
+        <MainSection>
+            <Slider
+                style={{ maxHeight: '252px', overflow: 'hidden', objectFit: 'cover', marginTop: '4px' }}
+                {...settings}
+            >
                 {vouchers?.map((voucher) => {
                     return (
                         <div
@@ -91,6 +121,6 @@ export default function Vouchers() {
                     );
                 })}
             </Slider>
-        </Card>
+        </MainSection>
     );
 }

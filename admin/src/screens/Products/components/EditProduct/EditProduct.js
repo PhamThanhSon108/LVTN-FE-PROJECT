@@ -156,7 +156,7 @@ const EditProduct = () => {
       newProduct.append('_id', productId);
       newProduct.append('name', name);
       newProduct.append('description', description);
-      newProduct.append('category', category);
+      newProduct.append('category', category?._id);
       newProduct.append('brand', data.brand);
       newProduct.append('weight', data.weight);
       newProduct.append('height', data.height);
@@ -164,6 +164,7 @@ const EditProduct = () => {
       newProduct.append('length', data.length);
       newProduct.append('keywords', JSON.stringify([]));
       newProduct.append('images', JSON.stringify(images));
+      newProduct.append('updatedVersion', product?.updatedVersion);
       newProduct.append(
         'variants',
         JSON.stringify(

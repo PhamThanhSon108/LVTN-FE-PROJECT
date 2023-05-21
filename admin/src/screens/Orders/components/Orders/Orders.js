@@ -28,7 +28,7 @@ const Orders = (props) => {
             </tr>
           )}
           {orders?.orders?.map((order) => {
-            const status = order.statusHistory?.at(-1)?.status || order?.status;
+            const status = order?.statusHistory?.at(-1)?.status || order?.status;
             return (
               <tr key={order._id}>
                 <td className="col-2">

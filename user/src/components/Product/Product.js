@@ -64,7 +64,7 @@ export default function Product({ product, findSimilar = true }) {
                                 dispatch(
                                     getSimilarProduct({
                                         id: product?._id,
-                                        category: product?.category,
+                                        category: product?.category?.slug,
                                     }),
                                 );
                             }}

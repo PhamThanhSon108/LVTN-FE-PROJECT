@@ -14,7 +14,11 @@ import Product from '~/components/Product/Product';
 import useSearchParamsCustom from '~/hooks/useSearchParamCustom';
 const LoadingEachProduct = () => {
     return (
-        <div className={styles.loadingEachProduct} style={{ margin: '15px 7.9px' }}>
+        <div
+            className={styles.loadingEachProduct + ' col-lg-2 col-md-3 col-sm-4  mb-3 col-6'}
+            // style={{ margin: '15px 7.9px' }}
+            style={{ padding: '15px 7.9px' }}
+        >
             <Skeleton variant="rectangular" width={'100%'} height={209} />
             <Skeleton />
             <Skeleton />
@@ -49,7 +53,8 @@ const ShopSection = (props) => {
     const sortBy = getParamValue('sort-by') || '';
 
     const [priceOrder, setPriceOrder] = useState('');
-    let SkeletonOption = window.innerWidth > 540 ? (keyword || category ? [1, 2, 3, 4, 5] : [1, 2, 3, 4, 5, 6]) : [1];
+    let SkeletonOption =
+        window.innerWidth > 540 ? (keyword || category ? [1, 2, 3, 4, 5] : [1, 2, 3, 4, 5, 6]) : [1, 2];
     useEffect(() => {
         dispatch(listProduct({ sortBy, category, keyword, pageNumber, rating, minPrice, maxPrice }));
     }, [toggleLoad, sortBy]);
@@ -61,15 +66,15 @@ const ShopSection = (props) => {
                         {keyword || category ? <FilterSection setToggleLoad={setToggleLoad}></FilterSection> : null}
                         <div
                             style={{ paddingLeft: 0, paddingRight: 0 }}
-                            className={` ${keyword || category ? 'col-lg-10' : 'col-lg-12'} col-md-9 article`}
+                            className={` ${keyword || category ? 'col-10' : 'col-12'}  article`}
                         >
-                            <div className=" row">
+                            <div className="row">
                                 <RenderProduct
                                     loading={loading}
                                     error={error}
                                     notfound={products?.length === 0 || !products}
                                     LoadingComponent={
-                                        <div style={{ display: 'flex', width: '100%' }} className="col-lg-12">
+                                        <div style={{ display: 'flex' }} className="row">
                                             {SkeletonOption.map(() => (
                                                 <LoadingEachProduct />
                                             ))}
@@ -150,7 +155,7 @@ const ShopSection = (props) => {
                                         <div
                                             className={`${
                                                 keyword || category ? '' : 'col-lg-2'
-                                            }  col-md-3 col-sm-6  mb-3`}
+                                            }  col-md-3 col-sm-4  mb-3 col-6`}
                                             style={{
                                                 paddingLeft: 4,
                                                 paddingRight: 4,
