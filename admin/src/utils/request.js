@@ -5,7 +5,7 @@ const getToken = () => {
   return `Bearer ${JSON.parse(localStorage.getItem('userInfo'))?.accessToken}`;
 };
 
-export const API_FASHIONSHOP = 'https://api.fashionshop.nkt2001.tech/api/v1/';
+export const API_FASHIONSHOP = 'https://062a-171-248-246-149.ngrok-free.app/api/v1/';
 const request = axios.create({
   baseURL: API_FASHIONSHOP,
   headers: {

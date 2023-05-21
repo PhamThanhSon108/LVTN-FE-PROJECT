@@ -22,9 +22,13 @@ const Orders = (props) => {
           </tr>
         </thead>
         <tbody>
-          {orders?.orders?.length === 0 && <tr className="">Không có đơn hàng nào</tr>}
+          {orders?.orders?.length === 0 && (
+            <tr className="" style={{ height: '150px' }}>
+              Không có đơn hàng nào
+            </tr>
+          )}
           {orders?.orders?.map((order) => {
-            const status = order.statusHistory?.at(-1)?.status || order?.status;
+            const status = order?.statusHistory?.at(-1)?.status || order?.status;
             return (
               <tr key={order._id}>
                 <td className="col-2">
@@ -39,7 +43,6 @@ const Orders = (props) => {
                   </Typography>
                 </td>
                 <td>
-                  {' '}
                   <Typography noWrap variant="body1">
                     {moment(order.createdAt).format('hh:mm MM/DD/YYYY')}
                   </Typography>

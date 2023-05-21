@@ -31,11 +31,11 @@ import Voucher from './components/Voucher/Voucher';
 import moment from 'moment';
 
 export const RenderAttributes = ({ attributes }) => {
-    if (attributes && attributes.length > 0) {
+    if (attributes && attributes?.length > 0) {
         return (
             <ListItemText className="col-2">
                 <Typography variant="body1">
-                    Kích thước: {attributes?.[0]?.value}, Màu sắc: {attributes?.[1]?.value}
+                    kích thước: {attributes?.[0]?.value}, màu sắc: {attributes?.[1]?.value}
                 </Typography>
             </ListItemText>
         );
@@ -148,7 +148,7 @@ const PlaceOrderScreen = ({ history }) => {
                                     <Typography variant="body1">{product.variant.product.name}</Typography>
                                 </ListItemText>
 
-                                <RenderAttributes attributes={product.attributes} />
+                                <RenderAttributes attributes={product.variant.attributes} />
 
                                 <ListItemText>
                                     <Typography variant="body1">x{product.quantity}</Typography>

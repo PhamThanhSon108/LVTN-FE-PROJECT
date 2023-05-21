@@ -66,11 +66,11 @@ export default function Product({ product, findSimilar = true }) {
                                 dispatch(
                                     getSimilarProduct({
                                         id: product?._id,
-                                        category: product?.category,
+                                        category: product?.category?.slug,
                                     }),
                                 );
                             }}
-                            sx={{ borderRadius: '0', width: '100%', zIndex: 3 }}
+                            sx={{ borderRadius: '0', width: '100%', zIndex: 3, fontSize: '0.8rem' }}
                             size="small"
                             color="primary"
                             variant="contained"

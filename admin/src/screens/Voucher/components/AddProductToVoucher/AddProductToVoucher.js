@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllProducts } from '../../../../Redux/Actions/ProductActions';
+import { formatMoney } from '../../../../utils/formatMoney';
 import {
   Avatar,
   InputAdornment,
@@ -256,7 +257,11 @@ export default function AddProductToVoucher({ field }) {
               </ListItemAvatar>
               <ListItemText className="col-2" id={labelId} primary={value?.name || 'Tên sản phẩm'} />
               <ListItemText className="col-2" id={labelId} primary={value?.category?.name || 'Thể loại sản phẩm'} />
-              <ListItemText className="col-2" id={labelId} primary={value?.price + ' VNĐ' || 'Giá sản phẩm'} />
+              <ListItemText
+                className="col-2"
+                id={labelId}
+                primary={formatMoney(value?.priceSale || value?.price) + ' VNĐ' || 'Giá sản phẩm'}
+              />
             </ListItem>
           );
         })}
@@ -295,7 +300,11 @@ export default function AddProductToVoucher({ field }) {
               </ListItemAvatar>
               <ListItemText className="col-2" id={labelId} primary={value?.name || 'Tên sản phẩm'} />
               <ListItemText className="col-2" id={labelId} primary={value?.category?.name || 'Thể loại sản phẩm'} />
-              <ListItemText className="col-2" id={labelId} primary={value?.price + ' VNĐ' || 'Giá sản phẩm'} />
+              <ListItemText
+                className="col-2"
+                id={labelId}
+                primary={value?.priceSale || value?.price + ' VNĐ' || 'Giá sản phẩm'}
+              />
               <ListItemIcon>
                 <Button onClick={() => handleDeleteSelectedProduct(value)}>
                   <i className="fas fa-trash-alt color-red" />

@@ -7,7 +7,7 @@ import Toast from '../components/LoadingError/Toast';
 import { login } from '../Redux/Actions/userActions';
 import { FormLoading } from '~/components/LoadingError/Loading';
 import { Button, Divider, TextField, Typography } from '@mui/material';
-
+export const regexPassword = /^(?=.*[A-Za-z])(?=.*\d)[^\s]{6,255}$/;
 const Login = () => {
     window.scrollTo(0, 0);
     const [email, setEmail] = useState('');
@@ -30,6 +30,7 @@ const Login = () => {
     const funtionCheck = () => {
         const msg = {};
         let re = /\S+@\S+\.\S+/;
+
         if (isEmpty(email)) {
             msg.email = 'Bạn chưa nhập email';
             msg.borderRed1 = 'border-red';
@@ -46,7 +47,7 @@ const Login = () => {
             msg.borderRed2 = 'border-red';
             msg.colorRed2 = 'color-red';
         } else {
-            if (password.length < 6) {
+            if (!regexPassword.test(password)) {
                 msg.password = 'Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng';
                 msg.borderRed2 = 'border-red';
                 msg.colorRed2 = 'color-red';
@@ -105,7 +106,11 @@ const Login = () => {
                             return x;
                         });
                     }}
-                    inputProps={{ type: 'password' }}
+                    inputProps={{
+                        type: 'password',
+
+                        title: 'Mật khẩu chưa đủ độ an toàn',
+                    }}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Nhập mật khẩu"
                 />

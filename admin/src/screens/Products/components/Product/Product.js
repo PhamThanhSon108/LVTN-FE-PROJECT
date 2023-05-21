@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import styles from './Product.module.scss';
@@ -30,56 +30,49 @@ const Product = (props) => {
   };
 
   return (
-    <Card className={styles.cardProduct} key={product?._id}>
-      <ListItem key={product} role="listitem" button>
-        <ListItemAvatar>
-          <Avatar alt={product?.name} src={product?.images?.[0]} />
-        </ListItemAvatar>
-        <ListItemText
-          primary={
-            <Tooltip title={product?.name || 'Tên thể loại'}>
-              <Typography noWrap={true} variant="subtitle2" gutterBottom>
-                {product?.name || 'Tên thể loại'}
-              </Typography>
-            </Tooltip>
-          }
-          sx={{ width: '30%', maxWidth: '300px', pr: 2 }}
-        />
+    <tr>
+      <td>
+        <Avatar alt={product?.name} src={product?.images?.[0]} />
+      </td>
+      <td>
+        <Tooltip title={product?.name || 'Tên sản phẩm'}>
+          <Typography noWrap={true} variant="subtitle2" gutterBottom>
+            {product?.name || 'Tên sản phẩm'}
+          </Typography>
+        </Tooltip>
+      </td>
+      <td>
+        <Typography>{product?.category?.name || 'Thể loại sản phẩm'} </Typography>
+      </td>
+      <td>
+        <div className="d-flex align-content-center">
+          <Typography sx={{ textDecoration: 'line-through' }} color="black">
+            {formatMoney(product?.price || 0)}
+          </Typography>
+          <Typography sx={{ pl: 1, pr: 1 }}>-</Typography>
 
-        <ListItemText
-          sx={{ width: '20%', maxWidth: '300px', pr: 2 }}
-          primary={product?.category?.name || 'Thể loại sản phẩm'}
-        />
-        <ListItemText
-          sx={{ width: '20%', maxWidth: '300px', pr: 2 }}
-          primary={
-            <div className="d-flex align-content-center">
-              <Typography sx={{ textDecoration: 'line-through' }} color="black">
-                {formatMoney(product?.price || 0)}
-              </Typography>
-              <Typography sx={{ pl: 1, pr: 1 }}>-</Typography>
-
-              <Typography color="error">{formatMoney(product?.priceSale || 0)}</Typography>
-            </div>
-          }
-        />
-        <ListItemText sx={{ width: '10%', maxWidth: '300px', pr: 2 }} primary={`x${product?.quantity || 0}`} />
-        <ListItemIcon>
-          <Link to={`/products/${product._id}/edit`}>
-            <IconButton>
-              <Tooltip title="Chỉnh sửa sản phẩm">
-                <EditIcon />
-              </Tooltip>
-            </IconButton>
-          </Link>
-          <IconButton onClick={() => deletehandler(product._id)}>
-            <Tooltip title="Xóa sản phẩm">
-              <DeleteIcon color="error" />
+          <Typography color="error">{formatMoney(product?.priceSale || 0)}</Typography>
+        </div>
+      </td>
+      <td>
+        <Typography>{`x${product?.quantity || 0}`}</Typography>
+      </td>
+      <td>
+        <Link to={`/products/${product._id}/edit`}>
+          <IconButton>
+            <Tooltip title="Chỉnh sửa sản phẩm">
+              <EditIcon />
             </Tooltip>
           </IconButton>
-        </ListItemIcon>
-      </ListItem>
-    </Card>
+        </Link>
+        <IconButton onClick={() => deletehandler(product._id)}>
+          <Tooltip title="Xóa sản phẩm">
+            <DeleteIcon color="error" />
+          </Tooltip>
+        </IconButton>
+      </td>
+    </tr>
+
     /* <div className="col-md-3 col-sm-4 col-lg-3 mb-5 col-xl-2 fix-bottom">
         <Toast />
         <div className="card card-product-grid">

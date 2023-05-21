@@ -61,8 +61,8 @@ const Header = () => {
                 }}
             >
                 {/* Top Header */}
-                <div className="Announcement ">
-                    <div className="container">
+                <div className="Announcement d-flex justify-content-center">
+                    <div className="container" style={{ width: 'var(--default-width-screen)' }}>
                         <div className="row">
                             <div className="wrap-hotline-in-header col-md-6 d-flex align-items-center display-none">
                                 <p>Hostline: 0123456789</p>
@@ -161,7 +161,7 @@ const Header = () => {
                         </div>
 
                         {/* PC HEADER */}
-                        <div className="pc-header">
+                        <div className="pc-header" style={{ width: 'var(--default-width-screen)' }}>
                             <div className="row ">
                                 <div
                                     className="col-md-3 col-4 d-flex align-items-center"

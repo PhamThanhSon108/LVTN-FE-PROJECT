@@ -3,7 +3,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button, Divider, LinearProgress, List, Pagination } from '@mui/material';
+import { Button, Divider, LinearProgress, List, Pagination, Typography } from '@mui/material';
 
 import AddIcon from '@mui/icons-material/Add';
 import { debounce } from 'lodash';
@@ -27,9 +27,29 @@ const RenderProducts = ({ loading, error, products = [] }) => {
   return (
     <div className="row">
       <List dense component="div" role="list">
-        {products?.map((product) => (
-          <Product product={product} key={product._id} />
-        ))}
+        <table className="table">
+          <thead>
+            <tr className="col-12">
+              <th scope="col" className="col-1"></th>
+              <th scope="col" className="col-2">
+                Tên sản phẩm
+              </th>
+              <th scope="col" className="col-2">
+                Thể loại
+              </th>
+              <th scope="col" className="col-1">
+                Giá
+              </th>
+              <th className="col-1">Số lượng</th>
+              <th scope="col" className="text-end col-1"></th>
+            </tr>
+          </thead>{' '}
+          <tbody>
+            {products?.map((product) => (
+              <Product product={product} key={product._id} />
+            ))}
+          </tbody>
+        </table>
       </List>
     </div>
   );

@@ -42,7 +42,7 @@ export const listProduct =
         rating = '',
         minPrice = '',
         maxPrice = '',
-        priceOrder = '',
+        sortBy = '',
         pageSize = 12,
     }) =>
     async (dispatch) => {
@@ -55,7 +55,7 @@ export const listProduct =
                 rating,
                 minPrice,
                 maxPrice,
-                priceOrder,
+                sortBy,
                 pageSize,
             });
             dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data.data });
@@ -96,7 +96,7 @@ export const listProductDetails = (id, handleAfterFetch) => async (dispatch) => 
         dispatch({ type: PRODUCT_DETAILS_REQUEST });
         const { data } = await request.get(`/products/${id}`);
         dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data.data });
-        handleAfterFetch?.success(data.data?.product?.category);
+        handleAfterFetch?.success(data.data?.product?.category?.slug);
     } catch (error) {
         handleAfterFetch?.error();
         dispatch({
