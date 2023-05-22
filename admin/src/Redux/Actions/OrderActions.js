@@ -1,4 +1,7 @@
 import {
+  BILL_OF_LANDING_FAIL,
+  BILL_OF_LANDING_REQUEST,
+  BILL_OF_LANDING_SUCCESS,
   ORDER_CANCEL_FAIL,
   ORDER_CANCEL_REQUEST,
   ORDER_CANCEL_SUCCESS,
@@ -130,6 +133,27 @@ export const getPreviewOrder =
 
       dispatch({
         type: ORDER_PREVIEW_FAIL,
+        payload: message,
+      });
+    }
+  };
+
+export const getBillOfLandingOrder =
+  ({ orderId = '', pageSize = 'A5', handleAfterFetch = { success: () => {}, error: () => {} } }) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: BILL_OF_LANDING_REQUEST });
+
+      const { data } = await request.get(`/deliveries/shipping-order/${orderId}/print/${pageSize}`);
+      window.open(data?.data?.url, '_blank');
+      handleAfterFetch?.success();
+      dispatch({ type: BILL_OF_LANDING_SUCCESS, payload: data?.data?.deliveryInfo });
+    } catch (error) {
+      const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+      handleAfterFetch?.error(message);
+
+      dispatch({
+        type: BILL_OF_LANDING_FAIL,
         payload: message,
       });
     }

@@ -2,14 +2,15 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, Route, useHistory } from 'react-router-dom';
 function PrivateRouter({ component: Component, ...rest }) {
-  const userLogin = useSelector((state) => state.userLogin);
+  const token = window.localStorage.getItem('userInfo');
   const history = useHistory();
-  const { userInfo } = userLogin;
-  if (!userInfo) {
+
+  if (!token) {
+    localStorage.removeItem('userInfo');
     history.push('/login');
     return null;
   }
-  if (userInfo && userInfo.role === 'admin') {
+  if (token) {
     return <Route {...rest} component={() => Component} />;
   }
 }

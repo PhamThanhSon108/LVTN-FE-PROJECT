@@ -46,25 +46,39 @@ export const stepShipping = {
         icon: <StickyNote2OutlinedIcon />,
         label: 'Đặt hàng',
         labelActive: 'Đơn hàng đang chờ xử lý',
+        color: 'primary',
     },
     confirm: {
         icon: <CheckOutlinedIcon />,
         label: 'Xác nhận đơn hàng',
         labelActive: 'Đã xác nhận đơn',
+        color: 'primary',
     },
     delivering: {
         icon: <LocalShippingOutlinedIcon />,
         label: 'Giao hàng',
         labelActive: 'Đang giao hàng',
+        color: 'primary',
     },
-    delivered: { icon: <LocalShippingOutlinedIcon />, label: 'Đã giao hàng', labelActive: 'Giao hàng thành công' },
-    cancelled: { icon: <CancelOutlinedIcon />, label: 'Đơn hàng bị hủy', labelActive: 'Đơn hàng bị hủy' },
+    delivered: {
+        icon: <LocalShippingOutlinedIcon />,
+        label: 'Đã giao hàng',
+        labelActive: 'Giao hàng thành công',
+        color: 'primary',
+    },
+    cancelled: {
+        icon: <CancelOutlinedIcon />,
+        label: 'Đơn hàng bị hủy',
+        labelActive: 'Đơn hàng bị hủy',
+        color: 'error',
+    },
     completed: {
         icon: <VerifiedUserOutlinedIcon />,
         label: 'Hoàn tất',
         labelActive: 'Hoàn tất đơn hàng',
+        color: 'success',
     },
-    paid: { icon: <PaidOutlinedIcon />, label: 'Thanh toán', labelActive: 'Đã thanh toán' },
+    paid: { icon: <PaidOutlinedIcon />, label: 'Thanh toán', labelActive: 'Đã thanh toán', color: 'primary' },
 };
 
 const stepperPayWithMomo = [

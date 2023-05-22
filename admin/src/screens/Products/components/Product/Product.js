@@ -36,7 +36,7 @@ const Product = (props) => {
       </td>
       <td>
         <Tooltip title={product?.name || 'Tên sản phẩm'}>
-          <Typography noWrap={true} variant="subtitle2" gutterBottom>
+          <Typography variant="subtitle2" gutterBottom>
             {product?.name || 'Tên sản phẩm'}
           </Typography>
         </Tooltip>

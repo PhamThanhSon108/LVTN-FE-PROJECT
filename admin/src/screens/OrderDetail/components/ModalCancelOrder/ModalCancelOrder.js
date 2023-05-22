@@ -78,7 +78,7 @@ export default function ModalCancelOrder() {
           color="error"
           variant="contained"
           onClick={() => setIsOpenModal(true)}
-          className=" col-12"
+          className=" col-6"
           style={{ marginBottom: '15px' }}
         >
           Hủy đơn hàng

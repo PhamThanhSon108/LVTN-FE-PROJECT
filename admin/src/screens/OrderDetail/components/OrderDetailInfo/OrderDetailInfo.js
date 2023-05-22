@@ -16,27 +16,34 @@ const OrderDetailInfo = (props) => {
         <Box className="d-flex col-12">
           <Box className="d-flex flex-column col-6">
             <Typography variant="body1" sx={{ mb: 1 }}>
-              {order?.delivery?.to_name}
+              {order?.delivery?.to_name || ''}
             </Typography>
-            <Typography variant="caption">{order?.delivery?.to_phone}</Typography>
+            <Typography variant="caption" sx={{ fontSize: '1rem' }}>
+              {order?.delivery?.to_phone || ''}
+            </Typography>
 
-            <Typography variant="caption">
-              {`${order?.delivery?.to_address}, ${order?.delivery?.to_ward_name}, ${order?.delivery?.to_district_name}, ${order?.delivery?.to_province_name}`}
+            <Typography variant="caption" sx={{ fontSize: '1rem' }}>
+              {order?.delivery?.to_address &&
+              order?.delivery?.to_ward_name &&
+              order?.delivery?.to_district_name &&
+              order?.delivery?.to_province_name
+                ? `${order?.delivery?.to_address}, ${order?.delivery?.to_ward_name}, ${order?.delivery?.to_district_name}, ${order?.delivery?.to_province_name}`
+                : null}
             </Typography>
           </Box>
 
           <Box>
             <Stepper orientation="vertical">
               {order?.statusHistory.map((step, index) => (
-                <Step key={step?._id}>
+                <Step key={step?._id} active>
                   <StepLabel
-                    sx={{ svg: { color: 'green' } }}
+                    sx={{ svg: { color: 'green', fontSize: '2rem' } }}
                     StepIconComponent={() => stepShipping?.[step?.status]?.icon || <Fragment />}
                   >
                     {stepShipping?.[step?.status]?.labelActive}
                   </StepLabel>
                   <StepContent>
-                    <Typography variant="caption">
+                    <Typography variant="caption" sx={{ fontSize: '1rem' }}>
                       Vào {moment(step?.createdAt).format('HH:mm:ss DD/MM/YYYY')}
                     </Typography>
                   </StepContent>

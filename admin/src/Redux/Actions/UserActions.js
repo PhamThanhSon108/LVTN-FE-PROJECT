@@ -29,8 +29,18 @@ export const login = (email, password, handleLogin) => async (dispatch) => {
         type: USER_LOGIN_FAIL,
       });
     } else {
-      dispatch({ type: USER_LOGIN_SUCCESS, payload: { ...data?.data.user, accessToken: data?.data?.accessToken } });
-      localStorage.setItem('userInfo', JSON.stringify({ ...data?.data.user, accessToken: data?.data?.accessToken }));
+      dispatch({
+        type: USER_LOGIN_SUCCESS,
+        payload: { ...data?.data?.user, accessToken: data?.data?.accessToken, refreshToken: data?.data.refreshToken },
+      });
+      localStorage.setItem(
+        'userInfo',
+        JSON.stringify({
+          ...data?.data?.user,
+          accessToken: data?.data?.accessToken,
+          refreshToken: data?.data.refreshToken,
+        }),
+      );
       handleLogin.success();
     }
   } catch (error) {

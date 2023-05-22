@@ -43,7 +43,7 @@ export const listProduct =
         minPrice = '',
         maxPrice = '',
         sortBy = '',
-        pageSize = 12,
+        limit = 24,
     }) =>
     async (dispatch) => {
         try {
@@ -56,7 +56,7 @@ export const listProduct =
                 minPrice,
                 maxPrice,
                 sortBy,
-                pageSize,
+                limit,
             });
             dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data.data });
         } catch (error) {

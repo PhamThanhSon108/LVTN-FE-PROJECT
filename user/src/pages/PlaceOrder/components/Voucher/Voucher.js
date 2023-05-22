@@ -84,7 +84,7 @@ export default function Voucher({ voucherToApply, voucher, handleApplyVoucher, c
                                 <Fragment>
                                     <LinearProgress variant="determinate" value={percentUsed} sx={{ mt: 1 }} />
                                     <Typography component="div" variant="caption" color="text.primary" sx={{ mt: 1 }}>
-                                        Đã dùng {percentUsed}%, hạn sử dụng{' '}
+                                        Đã dùng {percentUsed.toFixed()}%, hạn sử dụng{' '}
                                         {moment(voucher?.endDate).format('MM/DD/YYYY')}
                                     </Typography>
                                 </Fragment>

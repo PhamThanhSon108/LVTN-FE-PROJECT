@@ -23,6 +23,7 @@ export default function useAddVoucher() {
   } = useForm({
     defaultValues: {
       name: '',
+      code: '',
       applicableProducts: [],
       applyTime: [moment(), moment().add(DEFAULT_STEP_USABLE_VOUCHER, 'days')],
       applyFor: 1,

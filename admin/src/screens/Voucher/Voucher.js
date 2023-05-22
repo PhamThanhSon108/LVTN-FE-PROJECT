@@ -76,53 +76,72 @@ export default function Voucher() {
           component="div"
           role="list"
         >
-          {vouchers?.map((value) => {
-            const labelId = `transfer-list-all-item-${value}-label`;
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Mã voucher</th>
+                <th scope="col">Số lượng</th>
+                <th scope="col">Giảm giá</th>
+                <th>Áp dụng từ</th>
+                <th scope="col" className="text-end"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {vouchers?.map((value) => {
+                const labelId = `transfer-list-all-item-${value}-label`;
 
-            return (
-              <ListItem key={value} role="listitem" button>
-                <ListItemAvatar>
-                  <Avatar alt={value?.name} src={'/images/voucherTemplate.jpg'} />
-                </ListItemAvatar>
-                <ListItemText className="col-2" id={labelId} primary={value?.code || 'Mã code'} />
-
-                <ListItemText
-                  className="col-3"
-                  id={labelId}
-                  primary={`${value?.used || 'Đã sử dụng'} / ${
-                    value?.isUsageLimit ? value?.usageLimit : 'Không giới hạn'
-                  }`}
-                />
-
-                <ListItemText
-                  className="col-3"
-                  id={labelId}
-                  primary={value?.discountType === '1' ? formatMoney(value?.discount) : value?.discount + ' %'}
-                />
-                <ListItemText
-                  className="col-3"
-                  id={labelId}
-                  primary={`${moment(value?.startDate).format('HH:MM DD/MM/YYYY')} - ${moment(value?.endDate).format(
-                    'HH:MM DD/MM/YYYY',
-                  )}`}
-                />
-                <ListItemIcon>
-                  <div className={`${styles.actionEachVoucher} ${styles.actionEditVoucher}`}>
-                    <Link to={`/vouchers/${value?._id}/edit`}>
-                      <Tooltip title="Chỉnh sửa mã giảm giá">
-                        <i className="fas fa-pencil color-red" />
-                      </Tooltip>
-                    </Link>
-                  </div>
-                  <div className={`${styles.actionEachVoucher} ${styles.actionDeleteVoucher}`}>
-                    <Tooltip title="Xóa mã giảm giá">
-                      <i onClick={() => handleDeleteVoucher(value?._id)} className="fas fa-trash-alt color-red" />
-                    </Tooltip>
-                  </div>
-                </ListItemIcon>
-              </ListItem>
-            );
-          })}
+                return (
+                  <tr key={value} role="listitem" button>
+                    <td className="col-1">
+                      <Avatar alt={value?.name} src={'/images/voucherTemplate.jpg'} />
+                    </td>
+                    <td className="col-2">
+                      <ListItemText id={labelId} primary={value?.code || 'Mã code'} />
+                    </td>
+                    <td className="col-3">
+                      <ListItemText
+                        id={labelId}
+                        primary={`${value?.used || '0'} / ${
+                          value?.isUsageLimit ? value?.usageLimit : 'Không giới hạn'
+                        }`}
+                      />
+                    </td>
+                    <td className="col-3">
+                      <ListItemText
+                        id={labelId}
+                        primary={value?.discountType === '1' ? formatMoney(value?.discount) : value?.discount + ' %'}
+                      />
+                    </td>
+                    <td className="col-3">
+                      <ListItemText
+                        id={labelId}
+                        primary={`${moment(value?.startDate).format('HH:MM DD/MM/YYYY')} - ${moment(
+                          value?.endDate,
+                        ).format('HH:MM DD/MM/YYYY')}`}
+                      />
+                    </td>
+                    <td>
+                      <ListItemIcon>
+                        <div className={`${styles.actionEachVoucher} ${styles.actionEditVoucher}`}>
+                          <Link to={`/vouchers/${value?._id}/edit`}>
+                            <Tooltip title="Chỉnh sửa mã giảm giá">
+                              <i className="fas fa-pencil color-red" />
+                            </Tooltip>
+                          </Link>
+                        </div>
+                        <div className={`${styles.actionEachVoucher} ${styles.actionDeleteVoucher}`}>
+                          <Tooltip title="Xóa mã giảm giá">
+                            <i onClick={() => handleDeleteVoucher(value?._id)} className="fas fa-trash-alt color-red" />
+                          </Tooltip>
+                        </div>
+                      </ListItemIcon>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>{' '}
+          </table>
         </List>
         {/* <CardActions className={styles.pagination}>
           <Pagination variant="outlined" shape="rounded" />

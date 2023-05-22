@@ -9,11 +9,11 @@ const getProducts = async (
         minPrice: '',
         maxPrice: '',
         priceOrder: '',
-        pageSize: 24,
+        limit: 24,
     },
 ) => {
     return await request.get(`/products`, {
-        params: { ...data },
+        params: { ...data, limit: 24 },
     });
 };
 

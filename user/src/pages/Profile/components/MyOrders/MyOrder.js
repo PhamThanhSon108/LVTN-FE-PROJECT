@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getMyOrders } from '~/Redux/Actions/orderActions';
 import Loading from '~/components/LoadingError/Loading';
 import Message from '~/components/LoadingError/Error';
-import { Typography } from '@mui/material';
+import { Chip, Typography } from '@mui/material';
 import { stepShipping } from '~/pages/DetailOrder/DetailOrder';
 import { getUserDetails } from '~/Redux/Actions/userActions';
 const MyOrders = () => {
@@ -83,12 +83,22 @@ const MyOrders = () => {
                                             </a>
                                         </td>
                                         <td>
-                                            <span className="">
-                                                {stepShipping?.[order?.status]?.labelActive || 'Trạng thái đơn hàng'}
-                                            </span>
+                                            <Chip
+                                                variant="outlined"
+                                                color={stepShipping?.[order?.status]?.color}
+                                                label={
+                                                    stepShipping?.[order?.status]?.labelActive || 'Trạng thái đơn hàng'
+                                                }
+                                            />
                                         </td>
-                                        <td>{moment(order.createdAt).calendar()}</td>
-                                        <td>{formatMoney(order.totalPayment)}</td>
+                                        <td>
+                                            <Typography>
+                                                {moment(order.createdAt).format('DD/MM/YYYY hh:mm')}
+                                            </Typography>
+                                        </td>
+                                        <td>
+                                            <Typography color={'error'}>{formatMoney(order.totalPayment)} </Typography>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

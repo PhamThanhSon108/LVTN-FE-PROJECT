@@ -119,7 +119,7 @@ const EditProduct = () => {
       setValue('variants', defaultVariants);
       setName(product.name);
       setDescription(product.description);
-      setCategory(product.category);
+      setCategory(product.category?._id);
       setImages(product.images);
     },
   };
@@ -151,12 +151,13 @@ const EditProduct = () => {
       toast.error('Sản phẩm phải có ít nhất một hình ảnh', ToastObjects);
       return;
     }
+
     if (category !== -1) {
       let newProduct = new FormData();
       newProduct.append('_id', productId);
       newProduct.append('name', name);
       newProduct.append('description', description);
-      newProduct.append('category', category?._id);
+      newProduct.append('category', category);
       newProduct.append('brand', data.brand);
       newProduct.append('weight', data.weight);
       newProduct.append('height', data.height);
