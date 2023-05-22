@@ -47,6 +47,7 @@ export default function WareVouchers() {
                 ) : null}
             </div>
             <div className={`${styles.container} col-12`}>
+
                 <CardHeader
                     sx={{ display: 'flex', alignItems: 'center' }}
                     title={
@@ -73,6 +74,7 @@ export default function WareVouchers() {
                     }
                 />
                 <Divider />
+
                 <StyledCardContent sx={{ flexWrap: 'wrap', display: 'flex', width: '100%' }} className="row">
                     {vouchers?.map((voucher) => {
                         return (
@@ -80,6 +82,7 @@ export default function WareVouchers() {
                                 <Voucher size="medium" voucher={voucher} myVoucher />
                             </div>
                         );
+
                     })}
                 </StyledCardContent>
             </div>
