@@ -25,12 +25,9 @@ export default function Vouchers() {
                         <Typography noWrap variant="button" color="text.secondary">
                             KHUYẾN MÃI
                         </Typography>
-                        <Link
-                            to={'/profile?bar=voucher'}
-                            style={{ display: 'flex', alignItems: 'center', height: '100%' }}
-                        >
+                        <Link to={'/voucher'} style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
                             <Typography color="primary" variant="body1" fontSize="14px">
-                                Kho voucher <ArrowForwardIosIcon fontSize="12px" />
+                                Xem nhiều hơn <ArrowForwardIosIcon fontSize="12px" />
                             </Typography>
                         </Link>
                     </div>

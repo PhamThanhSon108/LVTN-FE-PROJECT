@@ -5,9 +5,11 @@ import { getUserDetails, logout } from '../Redux/Actions/userActions';
 import Search from './homeComponents/Search';
 import { listCart } from '~/Redux/Actions/cartActions';
 import { Typography } from '@mui/material';
+import useSearchParamsCustom from '~/hooks/useSearchParamCustom';
 
 const Header = () => {
     const dispatch = useDispatch();
+    const { getParamValue } = useSearchParamsCustom();
     let history = useHistory();
     const cart = useSelector((state) => state.cart);
     const { cartItems } = cart;
@@ -24,7 +26,7 @@ const Header = () => {
         }
     }, []);
 
-    const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState(getParamValue('keyword'));
     const [keyword, setKeyword] = useState('');
     const logoutHandler = () => {
         dispatch(logout());

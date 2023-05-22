@@ -87,6 +87,13 @@ export default function Voucher({ voucher, size = 'small', myVoucher = false }) 
                         }
                         secondary={
                             <Box sx={{ maxWidth: '85%' }}>
+                                <Chip
+                                    sx={{ mr: 1 }}
+                                    variant="filled"
+                                    label={voucher?.code}
+                                    size="small"
+                                    color="primary"
+                                />
                                 <Chip variant="outlined" label="Ví momo" size="small" color="error" sx={{ mr: 1 }} />
                                 <Chip variant="outlined" label="Tiền mặt" size="small" color="primary" />
 

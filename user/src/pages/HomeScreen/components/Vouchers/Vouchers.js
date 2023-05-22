@@ -70,12 +70,9 @@ const MainSection = ({ children }) => {
                         <Typography noWrap variant="button" color="primary">
                             KHUYẾN MÃI
                         </Typography>
-                        <Link
-                            to={'/profile?bar=voucher'}
-                            style={{ display: 'flex', alignItems: 'center', height: '100%' }}
-                        >
+                        <Link to={'/voucher'} style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
                             <Typography color="primary" variant="body1" fontSize="14px">
-                                Kho voucher <ArrowForwardIosIcon fontSize="12px" />
+                                Xem thêm <ArrowForwardIosIcon fontSize="12px" />
                             </Typography>
                         </Link>
                     </div>

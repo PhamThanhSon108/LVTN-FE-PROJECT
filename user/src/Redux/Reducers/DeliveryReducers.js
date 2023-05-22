@@ -55,20 +55,7 @@ export const AddressReducer = (state = { address: { provinces: [], districts: []
 
 export const ShippingFeeReducer = (
     state = {
-        shippingFee: {
-            total: 0,
-            service_fee: 0,
-            insurance_fee: 0,
-            pick_station_fee: 0,
-            coupon_value: 0,
-            r2s_fee: 0,
-            document_return: 0,
-            double_check: 0,
-            cod_fee: 0,
-            pick_remote_areas_fee: 0,
-            deliver_remote_areas_fee: 0,
-            cod_failed_fee: 0,
-        },
+        shippingFee: [],
     },
     action,
 ) => {

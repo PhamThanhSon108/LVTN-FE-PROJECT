@@ -1,11 +1,11 @@
 import CartScreen from '~/pages/Cart/CartScreen';
 import ConfirmRegister from '~/pages/ConfirmRegister';
 import DetailOrder from '~/pages/DetailOrder/DetailOrder';
+import DiscountScreen from '~/pages/DiscountScreen/DiscountScreen';
 import ForgotPass from '~/pages/ForgotPass';
 import HomeScreen from '~/pages/HomeScreen/HomeScreen';
 import Login from '~/pages/Login';
 import NotFound from '~/pages/NotFound';
-import OrderScreen from '~/pages/OrderScreen';
 import PaymentError from '~/pages/PaymentError/PaymentError';
 import PaymentScreen from '~/pages/PaymentScreen';
 import PlaceOrderScreen from '~/pages/PlaceOrder/PlaceOrderScreen';
@@ -44,6 +44,14 @@ const publicRouter = [
         path: '/product/:id',
         component: <SingleProduct />,
         exact: true,
+    },
+    {
+        name: 'Khuyến mãi',
+
+        path: '/voucher',
+        component: <DiscountScreen />,
+        exact: true,
+        footer: true,
     },
     {
         path: '/login',

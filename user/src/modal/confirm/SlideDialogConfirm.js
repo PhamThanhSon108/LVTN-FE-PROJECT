@@ -40,7 +40,7 @@ export default function SlideDialogConfirm(props) {
                 onClose={handleClose}
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle style={{ width: '350px' }}>{'Are you sure?'}</DialogTitle>
+                <DialogTitle style={{ width: '350px' }}>{'Bạn có chắc muốn xóa sản phẩm?'}</DialogTitle>
                 <DialogContent style={{ width: '350px' }}>
                     <DialogContentText style={{ width: '250px' }} id="alert-dialog-slide-description">
                         Xóa sản phẩm

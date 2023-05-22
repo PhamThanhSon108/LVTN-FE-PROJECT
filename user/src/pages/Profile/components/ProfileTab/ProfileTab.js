@@ -218,7 +218,7 @@ const ProfileTab = () => {
                                     <FormControlLabel
                                         value={'male'}
                                         control={<Radio size={inputPropsConstants.smallSize} />}
-                                        label="Name"
+                                        label="Nam"
                                     />
                                     <FormControlLabel
                                         value={'female'}

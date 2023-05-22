@@ -40,13 +40,17 @@ const App = () => {
                         key={option.path}
                         {...option}
                         component={
-                            <DefaultLayout name={option.name || 'Fashionshop'}>{option.component}</DefaultLayout>
+                            <DefaultLayout {...option} name={option.name || 'Fashionshop'}>
+                                {option.component}
+                            </DefaultLayout>
                         }
                     />
                 ))}
                 {publicRouter.map((option) => {
                     const renderComponent = () => (
-                        <DefaultLayout name={option.name || 'Fashionshop'}>{option.component}</DefaultLayout>
+                        <DefaultLayout {...option} name={option.name || 'Fashionshop'}>
+                            {option.component}
+                        </DefaultLayout>
                     );
                     return <Route key={option.path} {...option} component={renderComponent} />;
                 })}
