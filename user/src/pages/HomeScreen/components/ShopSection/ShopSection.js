@@ -110,7 +110,7 @@ const ShopSection = (props) => {
                                             </Typography>
                                             <Button
                                                 onClick={(e) => {
-                                                    replaceParams([{ key: 'sort-by', value: 'latest' }]);
+                                                    replaceParams([{ key: 'sort-by', value: 'newest' }]);
                                                 }}
                                                 type="ghost"
                                                 sx={{ mr: 1 }}
@@ -175,7 +175,7 @@ const ShopSection = (props) => {
                                     style={{ paddingTop: '18px', marginBottom: '16px' }}
                                 >
                                     {keyword || category
-                                        ? products?.length > 16 && (
+                                        ? pages > 1 && (
                                               <Pagination
                                                   pages={pages}
                                                   page={page}
@@ -184,7 +184,7 @@ const ShopSection = (props) => {
                                                   category={category || ''}
                                               />
                                           )
-                                        : products?.length > 16 && (
+                                        : pages > 1 && (
                                               <Link to={'today-product'} style={{ width: '30%' }}>
                                                   <Button
                                                       variant="outlined"

@@ -41,13 +41,13 @@ export const AddVoucher =
   };
 
 export const UpdateVoucher =
-  ({ voucher = { code: '', name: '', discountType: 1, discount: 0 }, createVoucherStatus }) =>
+  ({ voucher = { code: '', name: '', discountType: 1, discount: 0 }, createVoucherStatus = { finally: () => {} } }) =>
   async (dispatch) => {
     try {
       dispatch({ type: VOUCHER_ADD_REQUEST });
-      const { data } = await request.put(`/discount-codes/${voucher._id}`, voucher);
-      dispatch({ type: VOUCHER_ADD_SUCCESS, payload: data });
-      dispatch({ type: UPDATE_WHEN_ADD_VOUCHER_SUCCESS, payload: data?.data?.newDiscountCode });
+      const response = await request.put(`/discount-codes/${voucher._id}`, voucher);
+      dispatch({ type: VOUCHER_ADD_SUCCESS, payload: response?.data });
+      dispatch({ type: UPDATE_WHEN_ADD_VOUCHER_SUCCESS, payload: response?.data?.data?.newDiscountCode });
 
       createVoucherStatus?.success();
     } catch (error) {
@@ -67,8 +67,8 @@ export const getVouchers =
   async (dispatch) => {
     try {
       dispatch({ type: VOUCHER_REQUEST });
-      const { data } = await request.get(`/discount-codes`, { params: { page, limit } });
-      dispatch({ type: VOUCHER_SUCCESS, payload: data?.data?.discountCode || [] });
+      const res = await request.get(`/discount-codes`, { params: { page, limit } });
+      dispatch({ type: VOUCHER_SUCCESS, payload: res?.data?.data?.discountCode || [] });
 
       handleAfterFetch?.success();
     } catch (error) {
@@ -109,10 +109,10 @@ export const getVoucher =
   async (dispatch) => {
     try {
       dispatch({ type: VOUCHER_DETAIL_REQUEST });
-      const { data } = await request.get(`/discount-codes/${id}`);
-      dispatch({ type: VOUCHER_DETAIL_SUCCESS, payload: data?.data?.discountCode || [] });
+      const res = await request.get(`/discount-codes/${id}`);
+      dispatch({ type: VOUCHER_DETAIL_SUCCESS, payload: res?.data?.data?.discountCode || [] });
 
-      handleAfterFetch?.success(data?.data?.discountCode);
+      handleAfterFetch?.success(res?.data?.data?.discountCode);
     } catch (error) {
       const message = error.response && error.response.data.message ? error.response.data.message : error.message;
       dispatch({

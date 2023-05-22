@@ -214,19 +214,21 @@ const SingleProduct = () => {
                                         <Typography noWrap variant="body1" color="text.secondary" className="col-3">
                                             Màu sắc:
                                         </Typography>
-                                        {defaultValue2?.map((value, index) => (
-                                            <button
-                                                key={value}
-                                                onClick={() => {
-                                                    setValue2(value);
-                                                }}
-                                                className={`btn text-md-start btn__product-option ${
-                                                    value === value2 && 'active'
-                                                }`}
-                                            >
-                                                {value}
-                                            </button>
-                                        ))}
+                                        <div className="col-9">
+                                            {defaultValue2?.map((value, index) => (
+                                                <button
+                                                    key={value}
+                                                    onClick={() => {
+                                                        setValue2(value);
+                                                    }}
+                                                    className={`btn text-md-start btn__product-option ${
+                                                        value === value2 && 'active'
+                                                    }`}
+                                                >
+                                                    {value}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
                                     {
                                         <>

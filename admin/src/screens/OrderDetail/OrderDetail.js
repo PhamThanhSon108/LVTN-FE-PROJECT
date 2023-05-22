@@ -12,6 +12,7 @@ import { Alert, Chip, Tooltip, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
 import ModalCancelOrder from './components/ModalCancelOrder/ModalCancelOrder';
 import ModalPreviewOrder from './components/ModalPreviewOrder/ModalPreviewOrder';
+import ModalPrintBillOfLanding from './components/ModalPrintBillOfLanding/ModalPrintBillOfLanding';
 
 const RenderButtonUpdateStatus = ({ children, canChange }) => {
   if (canChange) return children;
@@ -44,6 +45,8 @@ const OrderDetail = () => {
     return order?.statusHistory?.find((step) => step?.status === status);
   };
 
+  const printBillOfLanding = () => {};
+
   useEffect(() => {
     dispatch(getOrderDetails(orderId));
   }, [dispatch, orderId, successDelivered, successUpdateStatus, successCancel]);
@@ -54,14 +57,23 @@ const OrderDetail = () => {
         <header className="card-header p-3 Header-white">
           <div className="row align-items-center ">
             <div className="col-lg-6 col-md-6">
-              <span>
+              <div className="d-flex align-items-center">
                 <i className="far fa-calendar-alt mx-2"></i>
-                <b className="text-black">Đặt hàng lúc {moment(order?.createdAt).format('hh:mm DD/MM/YYYY')}</b>
-              </span>
-              <br />
-              <small className="text-black mx-3 ">
-                Order ID: {order?._id} | Nhận hàng dự kiến vào {moment(order?.delivery?.leadTime).format('DD/MM/YYYY')}
-              </small>
+                <b className="text-black">Đặt hàng lúc {moment(order?.createdAt).format('hh:mm DD/MM/YYYY')} </b>
+                <div className="col-3">
+                  <RenderButtonUpdateStatus canChange={order?.status === 'delivering'}>
+                    <ModalPrintBillOfLanding orderCode={order?.delivery?.deliveryCode} />
+                  </RenderButtonUpdateStatus>
+                </div>
+              </div>
+              <div className="d-flex align-items-center  mt-1">
+                <Typography variant="body2" className="text-black mx-3">
+                  Order ID: {order?._id} |{' '}
+                </Typography>
+                <Typography variant="body2" color="primary">
+                  Nhận hàng dự kiến vào: {moment(order?.delivery?.leadTime).format('DD/MM/YYYY')}
+                </Typography>
+              </div>
             </div>
             {
               <RenderButtonUpdateStatus
@@ -160,34 +172,6 @@ const OrderDetail = () => {
                               : order?.status === 'confirm'
                           }
                         >
-                          {/* <select
-                            type="text"
-                            id="product_category"
-                            className="form-select"
-                            placeholder="Category"
-                            required
-                            value={requiredNote}
-                            onChange={(e) => setRequiredNote(e.target.value)}
-                          >
-                            <option value={''} selected>
-                              Lưu ý giao hàng
-                            </option>
-                            {notesForShipping?.map((note) => (
-                              <option key={note.value} value={note.value}>
-                                {note.label}
-                              </option>
-                            ))}
-                          </select> */}
-                          {/* <LoadingButton
-                            loading={loadingUpdate}
-                            disabled={!requiredNote}
-                            onClick={() => saveStatusHandler('delivery')}
-                            className="mt-3"
-                            variant="contained"
-                            sx={{ width: '100%' }}
-                          >
-                            GIAO ĐƠN CHO BÊN VẬN CHUYỂN
-                          </LoadingButton> */}
                           <ModalPreviewOrder />
                         </RenderButtonUpdateStatus>
                         <RenderButtonUpdateStatus canChange={order?.status === 'delivering'}>
@@ -197,11 +181,12 @@ const OrderDetail = () => {
                             className="mt-3"
                             variant="contained"
                             sx={{ width: '100%' }}
-                            color="error"
+                            color="warning"
                           >
-                            GIAO HÀNG THÀNH CÔNG
+                            XÁC NHẬN GIAO HÀNG THÀNH CÔNG
                           </LoadingButton>
                         </RenderButtonUpdateStatus>
+
                         <RenderButtonUpdateStatus
                           canChange={
                             !order?.paymentInformation?.paid &&

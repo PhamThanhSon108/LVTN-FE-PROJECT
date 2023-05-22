@@ -26,18 +26,18 @@ const RenderProducts = ({ loading, error, products = [] }) => {
   }
   return (
     <div className="row">
-      <List dense component="div" role="list">
-        <table className="table">
+      <List dense component="div" className="col-12" role="list">
+        <table className="table col-12">
           <thead>
             <tr className="col-12">
               <th scope="col" className="col-1"></th>
-              <th scope="col" className="col-2">
+              <th scope="col" className="col-4">
                 Tên sản phẩm
               </th>
               <th scope="col" className="col-2">
                 Thể loại
               </th>
-              <th scope="col" className="col-1">
+              <th scope="col" className="col-2">
                 Giá
               </th>
               <th className="col-1">Số lượng</th>

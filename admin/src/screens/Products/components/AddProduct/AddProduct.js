@@ -108,6 +108,7 @@ const AddProduct = (props) => {
       }, [])?.length
     );
   };
+
   const submitHandler = async (data, e) => {
     e.preventDefault();
     if (!checkSameValue(data.firstOption) || !checkSameValue(data.secondOption)) {
@@ -222,7 +223,7 @@ const AddProduct = (props) => {
                     </option>
                     {categories?.map((cate, index) => (
                       <option key={cate._id} value={cate._id}>
-                        {cate.name}
+                        {cate?.name}
                       </option>
                     ))}
                   </select>

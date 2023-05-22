@@ -1,4 +1,7 @@
 import {
+  BILL_OF_LANDING_FAIL,
+  BILL_OF_LANDING_REQUEST,
+  BILL_OF_LANDING_SUCCESS,
   ORDER_CANCEL_FAIL,
   ORDER_CANCEL_REQUEST,
   ORDER_CANCEL_RESET,
@@ -102,6 +105,20 @@ export const orderPreviewReducer = (state = {}, action) => {
     case ORDER_PREVIEW_SUCCESS:
       return { loading: false, success: true, preview: action.payload };
     case ORDER_PREVIEW_FAIL:
+      return { loading: false, error: action.payload };
+
+    default:
+      return state;
+  }
+};
+
+export const billOfLandingReducer = (state = {}, action) => {
+  switch (action.type) {
+    case BILL_OF_LANDING_REQUEST:
+      return { loading: true };
+    case BILL_OF_LANDING_SUCCESS:
+      return { loading: false, success: true, bill: action.payload };
+    case BILL_OF_LANDING_FAIL:
       return { loading: false, error: action.payload };
 
     default:

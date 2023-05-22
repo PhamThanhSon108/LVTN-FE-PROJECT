@@ -31,10 +31,10 @@ export const listProducts =
   async (dispatch) => {
     try {
       dispatch({ type: PRODUCT_LIST_REQUEST });
-      const { data } = await request.get(
-        `/products/admin?category=${category}&keyword=${keyword}&page=${pageNumber - 1}`,
+      const response = await request.get(
+        `/products/admin?category=${category}&keyword=${keyword}&page=${pageNumber - 1}&limit=12`,
       );
-      dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data.data });
+      dispatch({ type: PRODUCT_LIST_SUCCESS, payload: response?.data?.data || {} });
     } catch (error) {
       const message = error.response && error.response.data.message ? error.response.data.message : error.message;
       dispatch({
