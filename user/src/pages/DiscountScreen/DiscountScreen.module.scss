@@ -1,0 +1,27 @@
+.container {
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-32);
+}
+.wrapper {
+    width: var(--default-width-screen);
+    .banner {
+        width: 100%;
+        object-fit: cover;
+        img {
+            width: 100%;
+        }
+    }
+    .code {
+        margin: 4px 4px;
+    }
+
+    .codeHorizon {
+        // transform: rotate(-90deg);
+        // transform: rotateY(-50%);
+        position: absolute;
+        top: -10px;
+    }
+}

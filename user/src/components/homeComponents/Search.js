@@ -14,20 +14,15 @@ const Search = ({ value, keyword, width }) => {
     const debounce = useDebounce(value?.searchValue, 500);
     const submitHandler = (e) => {
         e.preventDefault();
-
-        if (keyword?.keyword !== value?.searchValue && value?.searchValue !== '') {
-            keyword?.setKeyword(value?.searchValue);
+        if (!value?.searchValue) {
+            history.push(`/`);
         }
+        // keyword?.setKeyword(value?.searchValue);
+        history.push(`/search?keyword=${value?.searchValue}`);
+
         setShowResult(false);
     };
-    useEffect(() => {
-        if (keyword?.keyword !== undefined) {
-            if (keyword?.keyword.trim() && keyword?.keyword) {
-                history.push(`/search?keyword=${keyword?.keyword}`);
-            }
-            // if (!keyword && searchValue && history.location.pathname === '/') setSearchValue('');
-        }
-    }, [keyword?.keyword]);
+
     const handleClear = () => {
         value.setSearchValue('');
         inputRef.current.reset();
@@ -43,12 +38,12 @@ const Search = ({ value, keyword, width }) => {
         }
         const fetchApi = async () => {
             try {
-                const res = await request.get('/api/product/search', {
+                const res = await request.get('/products/search', {
                     params: {
                         keyword: debounce,
                     },
                 });
-                setSearchResult(res.data);
+                setSearchResult(res.data?.data?.keywords);
             } catch (error) {}
         };
         fetchApi();
@@ -57,7 +52,7 @@ const Search = ({ value, keyword, width }) => {
         <HeadlessTippy
             interactive
             // visible="true"
-            visible={searchResult.length > 0 && showResult}
+            visible={searchResult?.length > 0 && showResult}
             render={(attrs) => (
                 <div
                     className="shadow-sm"
@@ -79,6 +74,7 @@ const Search = ({ value, keyword, width }) => {
                             onClick={() => {
                                 value.setSearchValue(item.name);
                                 keyword?.setKeyword(item.name);
+                                history.push(`/search?keyword=${item.name}`);
                                 setShowResult(false);
                             }}
                             style={{ cursor: 'pointer', padding: '5px 5px', display: 'flex', alignItems: 'center' }}
@@ -98,13 +94,10 @@ const Search = ({ value, keyword, width }) => {
                             type="search"
                             className="form-control rounded search search-focus"
                             placeholder="Nhập từ khóa"
-                            value={value.searchValue || getParamValue('keyword')}
+                            value={value.searchValue}
+                            defaultValue={getParamValue('keyword')}
                             onChange={(e) => {
-                                const searchInput = e.target.value;
-
-                                if (!e.target.value.startsWith(' ')) {
-                                    value.setSearchValue(e.target.value.trim());
-                                }
+                                value.setSearchValue(e.target.value);
                             }}
                             onFocus={() => {
                                 setShowResult(true);

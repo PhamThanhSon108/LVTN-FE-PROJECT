@@ -47,7 +47,7 @@ const ShopSection = (props) => {
     const minPrice = getParamValue('min') || '';
     const category = getParamValue('category') || '';
     const maxPrice = getParamValue('max') || '';
-    const keyword = getParamValue('keyword') || '';
+    const keyword = getParamValue('keyword') ? getParamValue('keyword')?.replace(/%20/g, ' ') : '';
     const pageNumber = getParamValue('page') || '';
     const rating = getParamValue('rating') || '';
     const sortBy = getParamValue('sort-by') || '';
@@ -57,7 +57,7 @@ const ShopSection = (props) => {
         window.innerWidth > 540 ? (keyword || category ? [1, 2, 3, 4, 5] : [1, 2, 3, 4, 5, 6]) : [1, 2];
     useEffect(() => {
         dispatch(listProduct({ sortBy, category, keyword, pageNumber, rating, minPrice, maxPrice }));
-    }, [toggleLoad, sortBy]);
+    }, [toggleLoad, sortBy, keyword]);
     return (
         <>
             <div className={styles.shopSectionContainer}>

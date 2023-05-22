@@ -58,7 +58,7 @@ const Categories = () => {
     },
   };
   const handleDeleteCategory = (id) => {
-    if (window.confirm('Are you sure??')) {
+    if (window.confirm('Bạn có chắc muốn xóa thể loại??')) {
       setCategoryWantToDelete(id);
       dispatch(DeleteCategory({ id, statusDeleteCategory }));
     }

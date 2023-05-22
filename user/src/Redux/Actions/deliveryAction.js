@@ -82,9 +82,12 @@ export const getShippingFee =
     async (dispatch) => {
         try {
             dispatch({ type: SHIPPING_FEE_REQUEST });
-            const { data } = await request.post('/deliveries/shipping-order/fee', address);
+            const { data } = await request.post('/deliveries/shipping-order/services', address);
             handleAfterFetch?.success();
-            dispatch({ type: SHIPPING_FEE_SUCCESS, payload: data?.data || { fee: {}, leadTime: {} } });
+            dispatch({
+                type: SHIPPING_FEE_SUCCESS,
+                payload: data?.data?.deliveryServices || [],
+            });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
             handleAfterFetch?.error(message);

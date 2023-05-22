@@ -186,12 +186,12 @@ const DetailOrder = () => {
     } = productReviewCreate;
 
     const cancelOrderHandler = () => {
-        if (window.confirm('Are you sure??')) {
+        if (window.confirm('Bạn có chắc muốn hủy đơn hàng??')) {
             dispatch(cancelOrder({ orderId: order?._id }));
         }
     };
     const handlePaid = () => {
-        if (window.confirm('Are you sure??')) {
+        if (window.confirm('Bạn có chắc chắn muốn xác nhận đã nhận được hàng?')) {
             dispatch(confirmPaid({ orderId: order?._id }));
         }
     };

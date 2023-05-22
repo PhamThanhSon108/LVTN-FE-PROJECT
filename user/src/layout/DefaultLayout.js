@@ -7,7 +7,13 @@ import Header from '~/components/Header';
 import Footer from '~/components/Footer';
 import Toast from '~/components/LoadingError/Toast';
 
-export default function DefaultLayout({ children = <Fragment />, header = true, sidebar = true, name }) {
+export default function DefaultLayout({
+    children = <Fragment />,
+    header = true,
+    sidebar = true,
+    name,
+    footer = false,
+}) {
     document.title = name;
     return (
         <Fragment>
@@ -16,6 +22,7 @@ export default function DefaultLayout({ children = <Fragment />, header = true, 
                 {header ? <Header /> : null}
 
                 {children}
+                {footer ? <Footer /> : null}
             </LocalizationProvider>
         </Fragment>
     );

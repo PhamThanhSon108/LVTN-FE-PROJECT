@@ -44,12 +44,12 @@ const OrderScreen = ({ match }) => {
     const itemsPrice = order?.orderItems.reduce((totalPrice, i) => totalPrice + i.quantity * i?.price, 0).toFixed(2);
 
     const cancelOrderHandler = () => {
-        if (window.confirm('Are you sure??')) {
+        if (window.confirm('Bạn có chắc muốn hủy đơn hàng và không thể hoàn tác??')) {
             dispatch(cancelOrder({ orderId: order?._id }));
         }
     };
     const handlePaid = () => {
-        if (window.confirm('Are you sure??')) {
+        if (window.confirm('Bạn có chắc muốn xác nhận đã nhận được hàng??')) {
             dispatch(confirmPaid({ orderId: order?._id }));
         }
     };

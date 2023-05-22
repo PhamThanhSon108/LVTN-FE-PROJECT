@@ -29,14 +29,9 @@ const OrderDetail = () => {
   useEffect(() => {
     setStatus(order?.statatus);
   }, [order]);
-  const deliverHandler = () => {
-    if (window.confirm('Are you sure??')) {
-      dispatch(deliverOrder(order));
-    }
-  };
 
   const cancelOrderHandler = () => {
-    if (window.confirm('Are you sure??')) {
+    if (window.confirm('Bạn có chắc muốn hủy đơn??')) {
       dispatch(cancelOrder(order));
     }
   };
@@ -47,7 +42,7 @@ const OrderDetail = () => {
   };
 
   const saveStatusHandler = () => {
-    if (window.confirm('Are you sure??')) {
+    if (window.confirm('Bạn có chắc muốn cập nhật trạng thái và không thể hoàn tác??')) {
       dispatch(updateStatusOrder({ status, orderId: order._id }));
     }
   };

@@ -76,7 +76,7 @@ export default function ModalCancelOrder() {
         finally: () => {},
     };
     const handleCancelOrder = (data) => {
-        if (window.confirm('Are you sure??')) {
+        if (window.confirm('Bạn có chắc chắn muốn hủy đơn hàng, thao tác này không thể hoàn tác?')) {
             dispatch(
                 cancelOrder({
                     orderId,

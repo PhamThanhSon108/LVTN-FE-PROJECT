@@ -24,7 +24,7 @@ const Product = (props) => {
   const dispatch = useDispatch();
 
   const deletehandler = (id) => {
-    if (window.confirm('Are you sure??')) {
+    if (window.confirm('Bạn có chắc muốn xóa sản phẩm??')) {
       dispatch(deleteProduct(id));
     }
   };

@@ -35,13 +35,14 @@ export default function usePlaceOrder() {
     const { cartOrderItems } = cartOrder;
     const [loadingApplyVoucher, setLoadingApplyVoucher] = useState(false);
     const noteRef = useRef();
+    const [service, setService] = useState();
     const currentCartItems = cartOrderItems.map((product) => ({
         variant: product.variant._id,
         quantity: product.quantity,
     }));
 
     const createContent = useCallback(() => {
-        return { title: 'Place order this product?', body: 'Are you sure?' };
+        return { title: 'Đặt đơn hàng?', body: 'Bạn có chắc muốn đặt đơn hàng?' };
     });
     const handleOpenModalAddress = (status) => {
         setIsOpenModalAddress(status);
@@ -62,11 +63,14 @@ export default function usePlaceOrder() {
         0,
     );
 
-    cartOrder.shippingFee = shippingFee?.fee?.total || 20000;
+    cartOrder.shippingFee = service?.fee || shippingFee?.[0]?.fee || 20000;
 
     cartOrder.totalBeforeApplyVoucher = cartOrder.priceOfProducts + cartOrder.shippingFee;
     cartOrder.total = cartOrder.totalBeforeApplyVoucher - priceIsReduced.totalDiscount;
-
+    const weightOfProduct = cartOrder.cartOrderItems.reduce(
+        (weight, product) => weight + product.variant.product.weight * product.quantity,
+        0,
+    );
     const [loading, setLoading] = useState(false);
 
     const handleAfterFetch = {
@@ -98,7 +102,7 @@ export default function usePlaceOrder() {
             setLoading(false);
         },
     };
-    const defaultAddress = listAddress.find((address) => address.isDefault);
+    const addressToShipping = address || listAddress.find((address) => address.isDefault);
     const handleChangeAddress = (newAddress) => {
         if (!compareAddress(newAddress, address)) {
             setAddress(newAddress);
@@ -107,7 +111,7 @@ export default function usePlaceOrder() {
                 getShippingFee({
                     to_district_id: newAddress.district.id,
                     to_ward_code: newAddress.ward.id.toString(),
-                    weight: 1,
+                    weight: weightOfProduct,
                     insurance_value: null,
                     coupon: null,
                 }),
@@ -155,12 +159,13 @@ export default function usePlaceOrder() {
                 {
                     note: noteRef.current,
                     shippingAddress: {
-                        to_name: defaultAddress.name,
-                        to_phone: defaultAddress.phone,
-                        to_province_id: defaultAddress.province.id,
-                        to_district_id: defaultAddress.district.id,
-                        to_ward_code: defaultAddress.ward.id,
-                        to_address: defaultAddress.specificAddress,
+                        to_name: addressToShipping.name,
+                        to_phone: addressToShipping.phone,
+                        to_province_id: addressToShipping.province.id,
+                        to_district_id: addressToShipping.district.id,
+                        to_ward_code: addressToShipping.ward.id,
+                        to_address: addressToShipping.specificAddress,
+                        service_id: service?.service_id || shippingFee?.[0]?.service_id,
                     },
                     orderItems: cartOrder.cartOrderItems.map((variant) => ({
                         variant: variant.variant._id,
@@ -173,10 +178,7 @@ export default function usePlaceOrder() {
             ),
         );
     };
-    const weightOfProduct = cartOrder.cartOrderItems.reduce(
-        (weight, product) => weight + product.variant.product.weight * product.quantity,
-        0,
-    );
+
     const handleAfterFetchAddress = {
         success: (address) => {
             setAddress(address);
@@ -204,6 +206,9 @@ export default function usePlaceOrder() {
         dispatch(getShippingAddresses(handleAfterFetchAddress));
     }, []);
     return {
+        setService,
+        serviceList: shippingFee || [],
+        service: service || shippingFee?.[0],
         changeNote,
         loadingApplyVoucher,
         priceIsReduced,
@@ -215,12 +220,12 @@ export default function usePlaceOrder() {
         handleOpenModalVoucher,
         loadingGetList,
         loadingShippingFee,
-        address: address || defaultAddress,
+        address: addressToShipping,
         handleChangeAddress,
         listAddress,
         isOpenModalAddress,
         handleOpenModalAddress,
-        shippingFee,
+
         userInfo,
         cartOrder,
         createContent,

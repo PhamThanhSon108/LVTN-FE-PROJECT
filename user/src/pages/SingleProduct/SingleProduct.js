@@ -257,6 +257,8 @@ const SingleProduct = () => {
                                                             evt.target.startWith(0) &&
                                                             evt.preventDefault()
                                                         }
+                                                        min={1}
+                                                        max={quantity}
                                                         onChange={(e) => {
                                                             setQty(parseInt(e.target.value));
                                                         }}
@@ -302,7 +304,9 @@ const SingleProduct = () => {
                                                 >
                                                     <div className="col-4" style={{ marginRight: '15px' }}>
                                                         <LoadingButton
-                                                            disabled={!(haveQuantityOfCurrentVariant > 0)}
+                                                            disabled={
+                                                                !(haveQuantityOfCurrentVariant > 0) || quantity < qty
+                                                            }
                                                             variant="outlined"
                                                             loading={loadingAddtoCart}
                                                             onClick={AddToCartHandle}
@@ -322,7 +326,9 @@ const SingleProduct = () => {
                                                 >
                                                     <div className="col-4">
                                                         <Button
-                                                            disabled={!(haveQuantityOfCurrentVariant > 0)}
+                                                            disabled={
+                                                                !(haveQuantityOfCurrentVariant > 0) || quantity < qty
+                                                            }
                                                             variant="contained"
                                                             style={{ minWidth: 120 }}
                                                             onClick={buyProductHandle}

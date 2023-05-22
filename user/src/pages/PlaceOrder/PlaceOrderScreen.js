@@ -44,10 +44,13 @@ export const RenderAttributes = ({ attributes }) => {
 
 const PlaceOrderScreen = ({ history }) => {
     const {
+        serviceList,
+        service,
         changeNote,
         loadingApplyVoucher,
         priceIsReduced,
         paymentMethod,
+        setService,
         setPaymentMethod,
         isOpenModalVoucher,
         voucher,
@@ -58,7 +61,7 @@ const PlaceOrderScreen = ({ history }) => {
         isOpenModalAddress,
         loadingShippingFee,
         handleOpenModalAddress,
-        shippingFee,
+
         userInfo,
         cartOrder,
         handleChangeAddress,
@@ -185,28 +188,52 @@ const PlaceOrderScreen = ({ history }) => {
                             inputProps={{ maxLength: 200 }}
                         ></TextField>
                     </Box>
-
-                    <Typography
-                        className="col-2"
-                        variant="body1"
-                        sx={{
-                            paddingLeft: '1rem',
-
-                            color: 'var(--neutral-5)',
-                        }}
-                    >
-                        Đơn vị vận chuyển:
-                    </Typography>
+                    <div className="col-2" style={{ paddingLeft: '1rem' }}>
+                        <Typography
+                            variant="body1"
+                            sx={{
+                                color: 'var(--neutral-5)',
+                            }}
+                        >
+                            Đơn vị vận chuyển:
+                        </Typography>
+                        <Typography sx={{ mb: 1, color: 'primary' }} variant="body1">
+                            Giao hàng nhanh
+                        </Typography>
+                    </div>
                     <div className="col-3" style={{ paddingLeft: '1rem' }}>
-                        <Typography variant="body1">Giao hàng nhanh</Typography>
+                        <div className="col-12 d-flex">
+                            <Typography sx={{ mb: 1 }} variant="body1" className="col-3">
+                                Dịch vụ:
+                            </Typography>
+                            <select
+                                className="form-select col-9"
+                                onChange={(e) => {
+                                    setService(
+                                        serviceList?.find(
+                                            (service) => service?.service_id?.toString() === e.target.value,
+                                        ),
+                                    );
+                                }}
+                                placeholder="Chọn dịch vụ"
+                                value={service?.service_id}
+                                defaultValue={service?.service_id}
+                                style={{ marginBottom: '8px' }}
+                            >
+                                {serviceList?.map((service) => (
+                                    <option key={service?.service_id} value={service?.service_id}>
+                                        {service?.short_name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                         <Typography variant="caption">
                             Nhận hàng dự kiến vào{'  '}
                             {loadingGetList || loadingShippingFee ? (
                                 <CircularProgress size={15} />
                             ) : (
                                 <Typography color="primary" variant="caption">
-                                    {shippingFee?.leadTime?.leadtime &&
-                                        moment(shippingFee?.leadTime?.leadtime * 1000).format('L')}
+                                    {service?.leadTime && moment(service?.leadTime).format('L')}
                                 </Typography>
                             )}
                         </Typography>
