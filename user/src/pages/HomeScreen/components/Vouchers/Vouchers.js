@@ -87,9 +87,10 @@ const MainSection = ({ children }) => {
 export default function Vouchers() {
     const dispatch = useDispatch();
     const { vouchers, loading } = useSelector((state) => state.publicVouchers);
+    const { success } = useSelector((state) => state.addVoucher);
     useEffect(() => {
         dispatch(getPublicVouchers());
-    }, []);
+    }, [success]);
 
     if (loading)
         return (
@@ -103,7 +104,7 @@ export default function Vouchers() {
     return (
         <MainSection>
             <Slider
-                style={{ maxHeight: '252px', overflow: 'hidden', objectFit: 'cover', marginTop: '4px' }}
+                style={{ maxHeight: '170px', overflow: 'hidden', objectFit: 'cover', marginTop: '4px' }}
                 {...settings}
             >
                 {vouchers?.map((voucher) => {

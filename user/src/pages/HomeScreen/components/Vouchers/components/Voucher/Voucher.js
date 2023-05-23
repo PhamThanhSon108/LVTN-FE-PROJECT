@@ -9,10 +9,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addVoucher, getMyVouchers, getPublicVouchers } from '~/Redux/Actions/voucherAction';
 import { toast } from 'react-toastify';
 import { Toastobjects } from '~/Redux/Actions/cartActions';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 export default function Voucher({ voucher, size = 'small', myVoucher = false }) {
     const [saveVoucher, setSaveVoucher] = useState();
+    const history = useHistory();
     const percentUsed = (voucher?.used * 100) / voucher?.usageLimit;
     const discountType = voucher?.discountType;
     const discount = discountType === '1' ? formatMoney(voucher?.discount) : `${voucher?.discount} %`;
@@ -33,8 +34,12 @@ export default function Voucher({ voucher, size = 'small', myVoucher = false }) 
         },
     };
     const handleSaveVoucher = () => {
-        setSaveVoucher(voucher);
-        dispatch(addVoucher({ code: voucher.code, handleAfterFetch }));
+        if (JSON.parse(localStorage?.getItem('userInfo'))?.accessToken) {
+            setSaveVoucher(voucher);
+            dispatch(addVoucher({ code: voucher.code, handleAfterFetch }));
+        } else {
+            history.push('/login');
+        }
     };
 
     return (
@@ -103,16 +108,44 @@ export default function Voucher({ voucher, size = 'small', myVoucher = false }) 
                                     </Typography>
                                 ) : (
                                     <Fragment>
-                                        <LinearProgress variant="determinate" value={percentUsed} sx={{ mt: 1 }} />
-                                        <Typography
-                                            component="div"
-                                            variant="caption"
-                                            color="text.primary"
-                                            sx={{ mt: 1 }}
-                                        >
-                                            Đã dùng {percentUsed?.toFixed()}%, hạn sử dụng{' '}
-                                            {moment(voucher?.endDate).format('DD/MM/YYYY')}
-                                        </Typography>
+                                        {voucher?.isUsageLimit ? (
+                                            <Fragment>
+                                                <LinearProgress
+                                                    variant="determinate"
+                                                    value={percentUsed}
+                                                    sx={{ mt: 1 }}
+                                                />
+                                                <Typography
+                                                    component="div"
+                                                    variant="caption"
+                                                    color="text.primary"
+                                                    sx={{ mt: 1 }}
+                                                >
+                                                    Đã dùng {percentUsed?.toFixed()}%, hạn sử dụng{' '}
+                                                    {moment(voucher?.endDate).format('DD/MM/YYYY')}
+                                                </Typography>
+                                            </Fragment>
+                                        ) : (
+                                            <Fragment>
+                                                <Typography
+                                                    component="div"
+                                                    variant="caption"
+                                                    color="primary"
+                                                    sx={{ mt: 1 }}
+                                                >
+                                                    Không giới hạn
+                                                </Typography>
+                                                <Typography
+                                                    component="div"
+                                                    variant="caption"
+                                                    color="text.primary"
+                                                    sx={{ mt: 1 }}
+                                                >
+                                                    Đã dùng {voucher?.used} lượt, hạn sử dụng{' '}
+                                                    {moment(voucher?.endDate).format('DD/MM/YYYY')}
+                                                </Typography>
+                                            </Fragment>
+                                        )}
                                     </Fragment>
                                 )}
                             </Box>

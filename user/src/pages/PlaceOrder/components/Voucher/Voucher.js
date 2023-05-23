@@ -4,6 +4,7 @@ import styles from './Voucher.module.scss';
 import moment from 'moment';
 import { formatMoney } from '~/utils/formatMoney';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useSelector } from 'react-redux';
 
 export default function Voucher({ voucherToApply, voucher, handleApplyVoucher, canRemove = false }) {
     const percentUsed = (voucher?.used * 100) / voucher?.usageLimit;
@@ -11,8 +12,11 @@ export default function Voucher({ voucherToApply, voucher, handleApplyVoucher, c
     const discount = discountType === '1' ? formatMoney(voucher?.discount) : `${voucher?.discount} %`;
     const startDate = moment(voucher?.startDate);
     const effectiveLater = startDate > moment();
+    const { userInfo } = useSelector((state) => state.userLogin);
+    const used = voucher?.usedBy?.filter((userId) => userId === userInfo?._id)?.length >= voucher?.userUseMaximum;
+
     return (
-        <Card className={styles.container}>
+        <Card className={styles.container} sx={{ opacity: used ? 0.5 : 1, cursor: used ? 'default' : 'pointer' }}>
             <ListItem
                 secondaryAction={
                     <div className={styles.actionWrapper}>
@@ -26,12 +30,18 @@ export default function Voucher({ voucherToApply, voucher, handleApplyVoucher, c
                                     <DeleteIcon color="error" />
                                 </IconButton>
                             ) : (
-                                <input
-                                    name="address"
-                                    type="radio"
-                                    id={voucher?._id}
-                                    defaultChecked={voucher?._id === voucherToApply?._id}
-                                />
+                                <Fragment>
+                                    {used ? (
+                                        ''
+                                    ) : (
+                                        <input
+                                            name="address"
+                                            type="radio"
+                                            id={voucher?._id}
+                                            defaultChecked={voucher?._id === voucherToApply?._id}
+                                        />
+                                    )}
+                                </Fragment>
                             )}
                         </div>
                     </div>
@@ -82,11 +92,40 @@ export default function Voucher({ voucherToApply, voucher, handleApplyVoucher, c
                                 </Typography>
                             ) : (
                                 <Fragment>
-                                    <LinearProgress variant="determinate" value={percentUsed} sx={{ mt: 1 }} />
-                                    <Typography component="div" variant="caption" color="text.primary" sx={{ mt: 1 }}>
-                                        Đã dùng {percentUsed.toFixed()}%, hạn sử dụng{' '}
-                                        {moment(voucher?.endDate).format('MM/DD/YYYY')}
-                                    </Typography>
+                                    {voucher?.isUsageLimit ? (
+                                        <Fragment>
+                                            <LinearProgress variant="determinate" value={percentUsed} sx={{ mt: 1 }} />
+                                            <Typography
+                                                component="div"
+                                                variant="caption"
+                                                color="text.primary"
+                                                sx={{ mt: 1 }}
+                                            >
+                                                Đã dùng {percentUsed?.toFixed()}%, hạn sử dụng{' '}
+                                                {moment(voucher?.endDate).format('DD/MM/YYYY')}
+                                            </Typography>
+                                        </Fragment>
+                                    ) : (
+                                        <Fragment>
+                                            <Typography
+                                                component="div"
+                                                variant="caption"
+                                                color="primary"
+                                                sx={{ mt: 1 }}
+                                            >
+                                                Không giới hạn
+                                            </Typography>
+                                            <Typography
+                                                component="div"
+                                                variant="caption"
+                                                color="text.primary"
+                                                sx={{ mt: 1 }}
+                                            >
+                                                Đã dùng {voucher?.used} lượt, hạn sử dụng{' '}
+                                                {moment(voucher?.endDate).format('DD/MM/YYYY')}
+                                            </Typography>
+                                        </Fragment>
+                                    )}
                                 </Fragment>
                             )}
                         </Box>

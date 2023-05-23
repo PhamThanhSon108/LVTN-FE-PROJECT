@@ -114,7 +114,7 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Nhập mật khẩu"
                 />
-                <Typography noWrap variant="body2" color="red" sx={{ mt: 1, mb: 1, textAlign: 'start' }}>
+                <Typography variant="body2" color="red" sx={{ mt: 1, mb: 1, textAlign: 'start' }}>
                     {loginCheck.password || ''}
                 </Typography>
 

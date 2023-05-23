@@ -149,7 +149,13 @@ export default function ModalPreviewOrder() {
                       <td>
                         <strong>Phí vận chuyển</strong>
                       </td>
-                      <td>{loading ? <CircularProgress size={15} /> : formatMoney(preview?.total_fee || 0)}</td>
+                      <td>
+                        {loading ? (
+                          <CircularProgress size={15} />
+                        ) : (
+                          formatMoney(preview?.total_fee || order?.shippingPrice || 20000)
+                        )}
+                      </td>
                     </tr>
                     <tr>
                       <td>

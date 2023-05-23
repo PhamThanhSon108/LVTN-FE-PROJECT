@@ -2,7 +2,7 @@ import React from 'react';
 
 const SaleStatistics = () => {
   return (
-    <div className="col-xl-6 col-lg-12">
+    <div className="col-xl-12 col-lg-12">
       <div className="card mb-4 shadow-sm">
         <article className="card-body">
           {/* <iframe

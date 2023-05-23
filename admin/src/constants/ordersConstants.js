@@ -18,9 +18,9 @@ export const statusFilter = [
   { status: 'placed', description: 'Đơn hàng mới' },
   { status: 'confirm', description: 'Đã xác nhận' },
   { status: 'delivering', description: 'Đang giao hàng' },
+  { status: 'delivered', description: 'Đã giao hàng' },
   { status: 'paid', description: 'Đã thanh toán' },
   { status: 'completed', description: 'Hoàn tất' },
-  { status: 'failed', description: 'Lỗi' },
   { status: 'cancelled', description: 'Đơn hàng bị hủy' },
 ];
 

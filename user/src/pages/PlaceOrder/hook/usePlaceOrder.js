@@ -10,6 +10,7 @@ import { getShippingAddresses } from '~/Redux/Actions/userActions';
 import { getPriceIsReducedAfterApplyVoucher } from '~/Redux/Actions/voucherAction';
 
 import { ORDER_CREATE_RESET } from '~/Redux/Constants/OrderConstants';
+import { clearLocalStorage } from '~/utils/localStorage';
 const compareAddress = (address1, address2) => {
     if (address1?._id !== address2?._id) return false;
     if (address1?.province?.id !== address2?.province?.id) return false;
@@ -80,6 +81,7 @@ export default function usePlaceOrder() {
             dispatch(listOrderCart());
             setTimeout(() => {
                 history.push(`/order/${order._id}`);
+                clearLocalStorage('cartOrderItems');
             }, 2000);
             dispatch({ type: ORDER_CREATE_RESET });
         },
@@ -106,7 +108,7 @@ export default function usePlaceOrder() {
     const handleChangeAddress = (newAddress) => {
         if (!compareAddress(newAddress, address)) {
             setAddress(newAddress);
-
+            setService('');
             dispatch(
                 getShippingFee({
                     to_district_id: newAddress.district.id,

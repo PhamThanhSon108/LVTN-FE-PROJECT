@@ -10,6 +10,7 @@ import { useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { TextField, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { regexPassword } from './Login';
 
 export default function ResetPass() {
     const location = useLocation();
@@ -90,8 +91,8 @@ export default function ResetPass() {
                         />
                     )}
                     rules={{
-                        minLength: 6,
                         required: 'Bạn chưa nhập mật khẩu mới',
+                        pattern: /^(?=.*[A-Za-z])(?=.*\d)[^\s]{6,255}$/,
                     }}
                 />
                 {errors.newPassword && errors.newPassword.type === 'required' ? (
@@ -100,7 +101,7 @@ export default function ResetPass() {
                     </p>
                 ) : null}
 
-                {errors.newPassword && errors.newPassword.type === 'minLength' ? (
+                {errors.newPassword && errors.newPassword.type === 'pattern' ? (
                     <p style={{ textAlign: 'start' }} className="text-danger m-0">
                         Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng
                     </p>
@@ -120,23 +121,28 @@ export default function ResetPass() {
                         />
                     )}
                     rules={{
-                        required: 'Please enter confirm password',
+                        required: 'Bạn chưa nhập mật khẩu mới',
                         // pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+                        pattern: /^(?=.*[A-Za-z])(?=.*\d)[^\s]{6,255}$/,
                         validate: (value) => value === watch('newPassword'),
                     }}
                 />
-
-                {errors.newPassConfirm && errors.newPassConfirm.type === 'validate' ? (
-                    <p style={{ textAlign: 'start' }} className="text-danger m-0">
-                        Mật khẩu không khớp
-                    </p>
-                ) : null}
-
                 {errors.newPassConfirm && errors.newPassConfirm.type === 'required' ? (
                     <p style={{ textAlign: 'start' }} className="text-danger m-0">
                         Bạn chưa nhập lại mật khẩu mới
                     </p>
                 ) : null}
+                {errors.newPassConfirm && errors.newPassConfirm.type === 'validate' ? (
+                    <p style={{ textAlign: 'start' }} className="text-danger m-0">
+                        Mật khẩu không khớp
+                    </p>
+                ) : null}
+                {errors.newPassword && errors.newPassword.type === 'pattern' ? (
+                    <p style={{ textAlign: 'start' }} className="text-danger m-0">
+                        Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng
+                    </p>
+                ) : null}
+
                 <LoadingButton className=" mt-3" variant="contained" type="submit">
                     Lưu
                 </LoadingButton>
