@@ -8,6 +8,7 @@ import WareVouchers from '../WareVouchers/WareVouchers';
 export default function VoucherWallet() {
     return (
         <Card sx={{ width: '100%' }}>
+
             <WareVouchers />
         </Card>
     );

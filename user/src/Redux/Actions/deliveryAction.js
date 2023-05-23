@@ -82,7 +82,9 @@ export const getShippingFee =
     async (dispatch) => {
         try {
             dispatch({ type: SHIPPING_FEE_REQUEST });
+
             const { data } = await request.post('/deliveries/shipping-order/services', address);
+
             handleAfterFetch?.success();
             dispatch({
                 type: SHIPPING_FEE_SUCCESS,
@@ -91,6 +93,7 @@ export const getShippingFee =
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
             handleAfterFetch?.error(message);
+
             dispatch({
                 type: SHIPPING_FEE_FAIL,
                 payload: message,

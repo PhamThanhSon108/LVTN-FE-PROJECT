@@ -41,6 +41,7 @@ const HomeScreen = () => {
                     {!category && !keyword ? <NewProductRecommend /> : null}
                     {!category && !keyword && <Vouchers />}
                     {!category && !keyword ? <BestSellerRecommend /> : null}
+
                     <ShopSection keyword={keyword} pageNumber={pageNumber} queryCategory={category} />
                 </div>
 
