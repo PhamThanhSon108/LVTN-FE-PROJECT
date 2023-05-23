@@ -41,7 +41,6 @@ export const createOrder = (order, handleAfterFetch) => async (dispatch, getStat
 
         dispatch({ type: ORDER_CREATE_SUCCESS, payload: data });
         dispatch({ type: CART_CONST?.CART_ORDER_RESET });
-        clearLocalStorage('cartOrderItems');
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
 
@@ -90,13 +89,13 @@ export const payOrder = (orderId, paymentResult) => async (dispatch) => {
 
 // USER ORDERS
 export const getMyOrders =
-    ({ pageNumber = 1 }) =>
+    ({ page = 0 }) =>
     async (dispatch, getState) => {
         try {
             const { userLogin } = getState();
             dispatch({ type: ORDER_LIST_MY_REQUEST });
-            const { data } = await getOrdersByUser(userLogin?.userInfo._id, pageNumber);
-            dispatch({ type: ORDER_LIST_MY_SUCCESS, payload: data?.data?.orders || [] });
+            const { data } = await getOrdersByUser({ userId: userLogin?.userInfo._id, page });
+            dispatch({ type: ORDER_LIST_MY_SUCCESS, payload: data?.data || { orders: [], page: 0, pages: 1 } });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
 

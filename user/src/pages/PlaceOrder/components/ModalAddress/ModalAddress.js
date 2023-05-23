@@ -67,6 +67,8 @@ const ModalAddress = ({ addressOld, isOpenModal, handleClose, handleChangeAddres
                             handleOpenModal={setOpenModalUpdate}
                             address={addressWantToUpdate}
                             variant={openModalUpdate}
+                            //cập nhật địa chỉ giao hàng mới
+                            setCurrentAddress={setCurrentAddress}
                         />
                         <List sx={{ width: '100%', bgcolor: 'background.paper', pt: 0 }}>
                             <Box className="d-flex justify-content-between align-items-center" sx={{ boxShadow: 1 }}>
@@ -100,7 +102,8 @@ const ModalAddress = ({ addressOld, isOpenModal, handleClose, handleChangeAddres
                                                 <div className={stylesProfile.actionWrapper}>
                                                     <div className={stylesProfile.modifyAction}>
                                                         <span
-                                                            onClick={() => {
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
                                                                 handleClickOpenModalUpdate('update');
                                                                 setAddressWantToUpdate(address);
                                                             }}

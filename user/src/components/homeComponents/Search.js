@@ -4,6 +4,31 @@ import useDebounce from '~/hooks/useDebounce';
 import request from '~/utils/request';
 import { useHistory } from 'react-router-dom';
 import useSearchParamsCustom from '~/hooks/useSearchParamCustom';
+import { CircularProgress, Typography } from '@mui/material';
+
+const handleSaveOldKey = (keyword) => {
+    if (keyword) {
+        const oldKeysSearch = JSON.parse(localStorage?.getItem('search'));
+        if (!(oldKeysSearch?.length >= 1)) {
+            localStorage.setItem('search', JSON.stringify([keyword]));
+        } else {
+            if (!oldKeysSearch?.find((oldKey) => oldKey === keyword)) {
+                localStorage.setItem('search', JSON.stringify([keyword].concat(oldKeysSearch)));
+            } else {
+                const newSearch = oldKeysSearch?.reduce(
+                    (list, key) => {
+                        if (key !== keyword) {
+                            return [...list, key];
+                        }
+                        return list;
+                    },
+                    [keyword],
+                );
+                localStorage.setItem('search', JSON.stringify(newSearch));
+            }
+        }
+    }
+};
 
 const Search = ({ value, keyword, width }) => {
     const [searchResult, setSearchResult] = useState([]);
@@ -12,14 +37,15 @@ const Search = ({ value, keyword, width }) => {
     const inputRef = useRef();
     const { getParamValue } = useSearchParamsCustom();
     const debounce = useDebounce(value?.searchValue, 500);
+    const [loading, setLoading] = useState(false);
     const submitHandler = (e) => {
         e.preventDefault();
         if (!value?.searchValue) {
             history.push(`/`);
         }
         // keyword?.setKeyword(value?.searchValue);
+        handleSaveOldKey(value?.searchValue);
         history.push(`/search?keyword=${value?.searchValue}`);
-
         setShowResult(false);
     };
 
@@ -38,13 +64,17 @@ const Search = ({ value, keyword, width }) => {
         }
         const fetchApi = async () => {
             try {
+                setLoading(true);
                 const res = await request.get('/products/search', {
                     params: {
                         keyword: debounce,
                     },
                 });
                 setSearchResult(res.data?.data?.keywords);
-            } catch (error) {}
+            } catch (error) {
+            } finally {
+                setLoading(false);
+            }
         };
         fetchApi();
     }, [debounce]);
@@ -52,7 +82,7 @@ const Search = ({ value, keyword, width }) => {
         <HeadlessTippy
             interactive
             // visible="true"
-            visible={searchResult?.length > 0 && showResult}
+            visible={showResult}
             render={(attrs) => (
                 <div
                     className="shadow-sm"
@@ -67,6 +97,41 @@ const Search = ({ value, keyword, width }) => {
                         backgroundColor: 'white',
                     }}
                 >
+                    {loading ? (
+                        <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0' }}>
+                            <CircularProgress size={25} />
+                        </div>
+                    ) : null}
+                    {searchResult?.length < 1 && !debounce && !loading
+                        ? JSON.parse(localStorage.getItem('search'))
+                              ?.slice(0, 7)
+                              ?.map((item) => (
+                                  <div
+                                      className="search-item"
+                                      // to={`/search/${item.name}`}
+                                      onClick={() => {
+                                          value.setSearchValue(item);
+                                          keyword?.setKeyword(item);
+                                          history.push(`/search?keyword=${item}`);
+                                          handleSaveOldKey(item);
+                                          setShowResult(false);
+                                      }}
+                                      style={{
+                                          cursor: 'pointer',
+                                          padding: '8px 16px',
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                      }}
+                                  >
+                                      <Typography sx={{ pt: 0 }} noWrap>
+                                          {item}
+                                      </Typography>
+                                  </div>
+                              ))
+                        : null}
+                    {searchResult?.length < 1 && debounce && !loading ? (
+                        <Typography sx={{ height: '50px', p: '16px' }}>Không tìm thấy sản phẩm nào</Typography>
+                    ) : null}
                     {searchResult?.slice(0, 9)?.map((item) => (
                         <div
                             className="search-item"
@@ -75,11 +140,12 @@ const Search = ({ value, keyword, width }) => {
                                 value.setSearchValue(item.name);
                                 keyword?.setKeyword(item.name);
                                 history.push(`/search?keyword=${item.name}`);
+                                handleSaveOldKey(item?.name);
                                 setShowResult(false);
                             }}
-                            style={{ cursor: 'pointer', padding: '5px 5px', display: 'flex', alignItems: 'center' }}
+                            style={{ cursor: 'pointer', padding: '8px 16px', display: 'flex', alignItems: 'center' }}
                         >
-                            <span>{item.name}</span>
+                            <Typography noWrap>{item.name}</Typography>
                         </div>
                     ))}
                 </div>

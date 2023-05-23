@@ -1,4 +1,13 @@
-import { CardContent, CardHeader, Divider, LinearProgress, TextField, Typography, styled } from '@mui/material';
+import {
+    CardContent,
+    CardHeader,
+    CircularProgress,
+    Divider,
+    LinearProgress,
+    TextField,
+    Typography,
+    styled,
+} from '@mui/material';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 
 import { Link } from 'react-router-dom';
@@ -9,6 +18,7 @@ import { addVoucher, getMyVouchers } from '~/Redux/Actions/voucherAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Toastobjects } from '~/Redux/Actions/cartActions';
+import { Card } from 'react-bootstrap';
 const StyledCardContent = styled(CardContent)(({ theme }) => ({
     paddingRight: '8px',
     paddingLeft: '0px',
@@ -39,13 +49,43 @@ export default function WareVouchers() {
     useEffect(() => {
         dispatch(getMyVouchers());
     }, []);
+    if (loading)
+        return (
+            <div className="col-12 flex-column align-items-center">
+                <CardHeader
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                    title={
+                        <div className="d-flex justify-content-center align-content-center align-items-center">
+                            <Typography sx={{ mr: 2 }} variant="h6">
+                                Mã voucher
+                            </Typography>
+                            <TextField
+                                size="small"
+                                placeholder="Nhập mã code"
+                                sx={{ mr: 2 }}
+                                onChange={(e) => setCode(e.target.value)}
+                            />
+                            <LoadingButton
+                                loading={loadingAdd}
+                                disabled={!code || code?.length < 6 || code?.length > 10}
+                                variant="contained"
+                                size="medium"
+                                onClick={handleSaveVoucher}
+                            >
+                                Thêm
+                            </LoadingButton>
+                        </div>
+                    }
+                />
+                <Divider />
+                <div className="col-12 d-flex justify-content-center align-items-center" style={{ height: '60vh' }}>
+                    <CircularProgress />
+                </div>
+            </div>
+        );
+
     return (
         <Fragment>
-            <div style={{ height: 2.5 }}>
-                {loading ? (
-                    <LinearProgress sx={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, height: '2.5px' }} />
-                ) : null}
-            </div>
             <div className={`${styles.container} col-12`}>
 
                 <CardHeader

@@ -336,7 +336,7 @@ export const UpdateShippingAddress =
         try {
             dispatch({ type: SHIPPING_ADDRESS_REQUEST });
             const { data } = await request.put(`/users/address/${id}/update-user-address`, address);
-            handleAfterFetch.success('Cập nhật địa chỉ giao hàng thành công');
+            handleAfterFetch.success('Cập nhật địa chỉ giao hàng thành công', address);
             dispatch({ type: SHIPPING_ADDRESS_SUCCESS, payload: data?.data?.addressList || [] });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;

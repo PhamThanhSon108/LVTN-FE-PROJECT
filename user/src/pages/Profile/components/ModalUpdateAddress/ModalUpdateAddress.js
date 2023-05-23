@@ -24,6 +24,7 @@ import { inputPropsConstants } from '~/constant/variants';
 import { LoadingButton } from '@mui/lab';
 import SaveIcon from '@mui/icons-material/Save';
 import { toast } from 'react-toastify';
+import { regexPhoneNumber } from '~/pages/Register';
 
 const style = {
     position: 'absolute',
@@ -36,7 +37,13 @@ const style = {
     boxShadow: 24,
     p: 1,
 };
-export default function ModalUpdateAddress({ isOpenModal, handleOpenModal, address, variant = 'update' }) {
+export default function ModalUpdateAddress({
+    isOpenModal,
+    handleOpenModal,
+    address,
+    variant = 'update',
+    setCurrentAddress,
+}) {
     const handleClose = () => {
         reset(defaultFormAddress);
         handleOpenModal(false);
@@ -69,7 +76,10 @@ export default function ModalUpdateAddress({ isOpenModal, handleOpenModal, addre
     const userDetails = useSelector((state) => state.userLogin);
     const { userInfor: user } = userDetails;
     const handleAfterFetch = {
-        success: (message) => {
+        success: (message, address) => {
+            if (address) {
+                setCurrentAddress(address);
+            }
             handleOpenModal(false);
             toast.success(message);
             reset(defaultFormAddress);
@@ -163,7 +173,7 @@ export default function ModalUpdateAddress({ isOpenModal, handleOpenModal, addre
                                 <Controller
                                     name="address.phone"
                                     control={control}
-                                    rules={{ required: true, pattern: /^0\d{9}$/ }}
+                                    rules={{ required: true, pattern: regexPhoneNumber }}
                                     render={({ field, fieldState }) => (
                                         <Fragment>
                                             <TextField

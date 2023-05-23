@@ -1701,11 +1701,7 @@ textarea:focus {
     height: 100px;
     width: 100%;
 }
-.search-item {
-    min-height: 55px;
 
-    /* text-align: center; */
-}
 .search-item:hover {
     background-color: rgba(0, 0, 0, 0.09);
 }

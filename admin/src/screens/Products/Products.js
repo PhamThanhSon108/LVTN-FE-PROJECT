@@ -164,7 +164,7 @@ const Products = () => {
                 >
                   <option value={''}>Tất cả thể loại</option>
                   {categories?.map((category) => (
-                    <option key={category?._id} value={category._id}>
+                    <option key={category?._id} value={category?.slug}>
                       {category.name}
                     </option>
                   ))}

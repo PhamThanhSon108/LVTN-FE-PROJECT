@@ -61,7 +61,6 @@ const PlaceOrderScreen = ({ history }) => {
         isOpenModalAddress,
         loadingShippingFee,
         handleOpenModalAddress,
-
         userInfo,
         cartOrder,
         handleChangeAddress,

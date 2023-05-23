@@ -12,6 +12,7 @@ import { inputPropsConstants } from '~/constant/variants';
 import { LoadingButton } from '@mui/lab';
 import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
 import moment from 'moment';
+import { regexPhoneNumber } from '~/pages/Register';
 
 const ProfileTab = () => {
     const dispatch = useDispatch();
@@ -144,7 +145,7 @@ const ProfileTab = () => {
                         <Controller
                             name="phone"
                             control={control}
-                            rules={{ required: true }}
+                            rules={{ required: true, pattern: regexPhoneNumber }}
                             render={({ field, fieldState }) => (
                                 <Fragment>
                                     <TextField
@@ -162,6 +163,10 @@ const ProfileTab = () => {
                                             {
                                                 error: fieldState?.error?.type === 'required',
                                                 message: 'Bạn chưa nhập trường này',
+                                            },
+                                            {
+                                                error: fieldState?.error?.type === 'pattern',
+                                                message: 'Số điện thoại không hợp lệ',
                                             },
                                         ])}
                                     </p>

@@ -31,6 +31,7 @@ import ModalUpdateAddress from '~/pages/Profile/components/ModalUpdateAddress/Mo
 import { toast } from 'react-toastify';
 import { getMyVouchers } from '~/Redux/Actions/voucherAction';
 import Voucher from '../Voucher/Voucher';
+import moment from 'moment';
 
 const style = {
     position: 'absolute',
@@ -51,6 +52,9 @@ const ModalVouchers = ({ voucherToApply, isOpenModal, handleClose, handleApplyVo
     const { vouchers, loading } = addressReducer;
 
     const [addressWantToUpdate, setAddressWantToUpdate] = useState();
+    const { userInfo } = useSelector((state) => state.userLogin);
+    const cartOrder = useSelector((state) => state.cartOrder);
+    const { cartOrderItems } = cartOrder;
 
     const handleClickOpenModalUpdate = (variant) => {
         setOpenModalUpdate(variant);
@@ -87,18 +91,36 @@ const ModalVouchers = ({ voucherToApply, isOpenModal, handleClose, handleApplyVo
                                 ) : null}
                             </div>
                             <div className={stylesProfile.addressListWrapper}>
-                                {vouchers.map((voucher) => (
-                                    <label
-                                        onClick={(e) => {
-                                            setCurrentVoucher(voucher);
-                                        }}
-                                        key={voucher?._id}
-                                        for={voucher?.id}
-                                        style={{ cursor: 'pointer', width: '100%' }}
-                                    >
-                                        <Voucher voucher={voucher} voucherToApply={voucherToApply} />
-                                    </label>
-                                ))}
+                                {vouchers.map((voucher) => {
+                                    const startDate = moment(voucher?.startDate);
+                                    const endDate = moment(voucher?.endDate);
+                                    const effectiveLater = startDate <= moment() && endDate >= moment();
+                                    const used =
+                                        voucher?.usedBy?.filter((userId) => userId === userInfo?._id)?.length >=
+                                        voucher?.userUseMaximum;
+                                    const applyForProduct =
+                                        voucher?.applyFor?.toString() === '1' ||
+                                        cartOrderItems?.find((item) =>
+                                            voucher?.applicableProducts?.find(
+                                                (applyProduct) => applyProduct === item?.variant?.product?._id,
+                                            ),
+                                        );
+
+                                    if (!used && applyForProduct && effectiveLater)
+                                        return (
+                                            <label
+                                                onClick={(e) => {
+                                                    setCurrentVoucher(voucher);
+                                                }}
+                                                key={voucher?._id}
+                                                for={voucher?.id}
+                                                style={{ cursor: 'pointer', width: '100%' }}
+                                            >
+                                                <Voucher voucher={voucher} voucherToApply={voucherToApply} />
+                                            </label>
+                                        );
+                                    return <Fragment />;
+                                })}
                             </div>
                             <Box className="col-12 d-flex justify-content-end pt-2">
                                 <Button variant="contained" onClick={handleConfirmChangeAddress}>

@@ -7,6 +7,8 @@ import { FormLoading } from '../components/LoadingError/Loading';
 
 import { register } from '../Redux/Actions/userActions';
 import { Button, TextField, Typography } from '@mui/material';
+import { regexPassword } from './Login';
+export const regexPhoneNumber = /((09|03|07|08|05)+([0-9]{8})\b)/g;
 
 const Register = () => {
     window.scrollTo(0, 0);
@@ -58,18 +60,18 @@ const Register = () => {
             msg.borderRed3 = 'border-red';
             msg.colorRed3 = 'color-red';
         } else {
-            if (isNaN(phone)) {
+            if (!regexPhoneNumber.test(phone)) {
                 msg.phone = 'Số điện thoại không hợp lệ';
                 msg.borderRed3 = 'border-red';
                 msg.colorRed3 = 'color-red';
             }
         }
         if (isEmpty(password)) {
-            msg.password = 'Bạn chưa nhập password';
+            msg.password = 'Bạn chưa nhập mật khẩu';
             msg.borderRed4 = 'border-red';
             msg.colorRed4 = 'color-red';
         } else {
-            if (password.length < 6) {
+            if (!regexPassword.test(password)) {
                 msg.password = 'Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng';
                 msg.borderRed4 = 'border-red';
                 msg.colorRed4 = 'color-red';
@@ -81,7 +83,7 @@ const Register = () => {
             msg.borderRed5 = 'border-red';
             msg.colorRed5 = 'color-red';
         } else {
-            if (cfpassword.length < 6) {
+            if (!regexPassword.test(cfpassword)) {
                 msg.cfpassword = 'Mật khẩu phải từ 6 - 255 ký tự, ít nhất 1 chữ cái, 1 chữ số và không có khoảng trắng';
                 msg.borderRed5 = 'border-red';
                 msg.colorRed5 = 'color-red';
@@ -178,7 +180,7 @@ const Register = () => {
                             setPhone(e.target.value);
                         }}
                     />
-                    <Typography noWrap variant="body2" color="red" sx={{ mt: 1, mb: 0, textAlign: 'start' }}>
+                    <Typography variant="body2" color="red" sx={{ mt: 1, mb: 0, textAlign: 'start' }}>
                         {checkValidate.phone || ''}
                     </Typography>
                 </div>
@@ -203,7 +205,7 @@ const Register = () => {
                         }}
                         inputProps={{ type: 'password' }}
                     />
-                    <Typography noWrap variant="body2" color="red" sx={{ mt: 1, mb: 0, textAlign: 'start' }}>
+                    <Typography variant="body2" color="red" sx={{ mt: 1, mb: 0, textAlign: 'start' }}>
                         {checkValidate.password || ''}
                     </Typography>
                 </div>
@@ -228,7 +230,7 @@ const Register = () => {
                         }}
                         inputProps={{ type: 'password' }}
                     />
-                    <Typography noWrap variant="body2" color="red" sx={{ mt: 1, mb: 2, textAlign: 'start' }}>
+                    <Typography variant="body2" color="red" sx={{ mt: 1, mb: 2, textAlign: 'start' }}>
                         {checkValidate.cfpassword || ''}
                     </Typography>
                 </div>
