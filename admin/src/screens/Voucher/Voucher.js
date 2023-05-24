@@ -19,6 +19,7 @@ import {
   Select,
   TextField,
   Tooltip,
+  Typography,
 } from '@mui/material';
 import useVoucher from './hook/useVoucher';
 import { inputPropsConstants } from '../../constants/variants';
@@ -27,7 +28,7 @@ import AddIcon from '@mui/icons-material/Add';
 import moment from 'moment';
 import { formatMoney } from '../../utils/formatMoney';
 export default function Voucher() {
-  const { vouchers, loading, handleDeleteVoucher } = useVoucher();
+  const { keyword, vouchers, loading, handleDeleteVoucher, handleChangeSearch } = useVoucher();
   return (
     <div className={styles.voucherContainer}>
       <div className={styles.header}>
@@ -53,7 +54,10 @@ export default function Voucher() {
                 label="Tìm kiếm voucher"
                 size={inputPropsConstants.smallSize}
                 variant={inputPropsConstants.variantOutLine}
+                onChange={handleChangeSearch}
+                defaultValue={keyword}
                 InputProps={{
+                  defaultValue: keyword,
                   endAdornment: (
                     <InputAdornment position="end">
                       <i className="fas fa-search" />
@@ -88,58 +92,67 @@ export default function Voucher() {
               </tr>
             </thead>
             <tbody>
-              {vouchers?.map((value) => {
-                const labelId = `transfer-list-all-item-${value}-label`;
+              {!loading && !(vouchers?.length > 0) ? (
+                <Typography color="" sx={{ mt: 2 }}>
+                  Không tìm thấy mã giảm giá nào
+                </Typography>
+              ) : (
+                vouchers?.map((value) => {
+                  const labelId = `transfer-list-all-item-${value}-label`;
 
-                return (
-                  <tr key={value} role="listitem" button>
-                    <td className="col-1">
-                      <Avatar alt={value?.name} src={'/images/voucherTemplate.jpg'} />
-                    </td>
-                    <td className="col-2">
-                      <ListItemText id={labelId} primary={value?.code || 'Mã code'} />
-                    </td>
-                    <td className="col-3">
-                      <ListItemText
-                        id={labelId}
-                        primary={`${value?.used || '0'} / ${
-                          value?.isUsageLimit ? value?.usageLimit : 'Không giới hạn'
-                        }`}
-                      />
-                    </td>
-                    <td className="col-3">
-                      <ListItemText
-                        id={labelId}
-                        primary={value?.discountType === '1' ? formatMoney(value?.discount) : value?.discount + ' %'}
-                      />
-                    </td>
-                    <td className="col-3">
-                      <ListItemText
-                        id={labelId}
-                        primary={`${moment(value?.startDate).format('HH:MM DD/MM/YYYY')} - ${moment(
-                          value?.endDate,
-                        ).format('HH:MM DD/MM/YYYY')}`}
-                      />
-                    </td>
-                    <td>
-                      <ListItemIcon>
-                        <div className={`${styles.actionEachVoucher} ${styles.actionEditVoucher}`}>
-                          <Link to={`/vouchers/${value?._id}/edit`}>
-                            <Tooltip title="Chỉnh sửa mã giảm giá">
-                              <i className="fas fa-pencil color-red" />
+                  return (
+                    <tr key={value} role="listitem" button>
+                      <td className="col-1">
+                        <Avatar alt={value?.name} src={'/images/voucherTemplate.jpg'} />
+                      </td>
+                      <td className="col-2">
+                        <ListItemText id={labelId} primary={value?.code || 'Mã code'} />
+                      </td>
+                      <td className="col-3">
+                        <ListItemText
+                          id={labelId}
+                          primary={`${value?.used || '0'} / ${
+                            value?.isUsageLimit ? value?.usageLimit : 'Không giới hạn'
+                          }`}
+                        />
+                      </td>
+                      <td className="col-3">
+                        <ListItemText
+                          id={labelId}
+                          primary={value?.discountType === '1' ? formatMoney(value?.discount) : value?.discount + ' %'}
+                        />
+                      </td>
+                      <td className="col-3">
+                        <ListItemText
+                          id={labelId}
+                          primary={`${moment(value?.startDate).format('HH:MM DD/MM/YYYY')} - ${moment(
+                            value?.endDate,
+                          ).format('HH:MM DD/MM/YYYY')}`}
+                        />
+                      </td>
+                      <td>
+                        <ListItemIcon>
+                          <div className={`${styles.actionEachVoucher} ${styles.actionEditVoucher}`}>
+                            <Link to={`/vouchers/${value?._id}/edit`}>
+                              <Tooltip title="Chỉnh sửa mã giảm giá">
+                                <i className="fas fa-pencil color-red" />
+                              </Tooltip>
+                            </Link>
+                          </div>
+                          <div className={`${styles.actionEachVoucher} ${styles.actionDeleteVoucher}`}>
+                            <Tooltip title="Xóa mã giảm giá">
+                              <i
+                                onClick={() => handleDeleteVoucher(value?._id)}
+                                className="fas fa-trash-alt color-red"
+                              />
                             </Tooltip>
-                          </Link>
-                        </div>
-                        <div className={`${styles.actionEachVoucher} ${styles.actionDeleteVoucher}`}>
-                          <Tooltip title="Xóa mã giảm giá">
-                            <i onClick={() => handleDeleteVoucher(value?._id)} className="fas fa-trash-alt color-red" />
-                          </Tooltip>
-                        </div>
-                      </ListItemIcon>
-                    </td>
-                  </tr>
-                );
-              })}
+                          </div>
+                        </ListItemIcon>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>{' '}
           </table>
         </List>

@@ -20,6 +20,9 @@ import {
   ORDER_UPDATE_STATUS_FAIL,
   ORDER_UPDATE_STATUS_REQUEST,
   ORDER_UPDATE_STATUS_SUCCESS,
+  UPDATE_COD_FAIL,
+  UPDATE_COD_REQUEST,
+  UPDATE_COD_SUCCESS,
 } from '../Constants/OrderConstants';
 
 import request from '../../utils/request';
@@ -154,6 +157,26 @@ export const getBillOfLandingOrder =
 
       dispatch({
         type: BILL_OF_LANDING_FAIL,
+        payload: message,
+      });
+    }
+  };
+
+export const updateCODAmount =
+  ({ cod_amount = 0, orderId, handleAfterFetch }) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: UPDATE_COD_REQUEST });
+
+      const { data } = await request.post(`deliveries/shipping-order/${orderId}/update-cod`, { cod_amount });
+      handleAfterFetch?.success();
+      dispatch({ type: UPDATE_COD_SUCCESS, payload: data?.data });
+    } catch (error) {
+      const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+      handleAfterFetch?.error(message);
+
+      dispatch({
+        type: UPDATE_COD_FAIL,
         payload: message,
       });
     }

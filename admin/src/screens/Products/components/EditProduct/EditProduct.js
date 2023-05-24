@@ -565,6 +565,7 @@ const EditProduct = () => {
                       <thead>
                         <tr>
                           <th scope="col">Giá</th>
+                          <th scope="col">Giá đặc biệt</th>
                           <th scope="col">Số lượng</th>
                         </tr>
                       </thead>
@@ -573,6 +574,16 @@ const EditProduct = () => {
                           <td>
                             <input
                               {...register('price')}
+                              className="border-0 input "
+                              placeholder="Nhập giá"
+                              type={'number'}
+                            ></input>
+                          </td>
+                          <td>
+                            <input
+                              {...register('priceSale')}
+                              min={0}
+                              max={getValues('price')}
                               className="border-0 input "
                               placeholder="Nhập giá"
                               type={'number'}
@@ -612,6 +623,7 @@ const EditProduct = () => {
                                 setValue(`variants.${iClass1}.field.${iClass2}.attributes.1.value`, value2);
                                 if (changeForALL) {
                                   setValue(`variants.${iClass1}.field.${iClass2}.price`, getValues('price'));
+                                  setValue(`variants.${iClass1}.field.${iClass2}.priceSale`, getValues('priceSale'));
                                   setValue(`variants.${iClass1}.field.${iClass2}.quantity`, getValues('quantity'));
                                 }
                                 return (
@@ -641,10 +653,11 @@ const EditProduct = () => {
                                             positive: (value) =>
                                               !value ||
                                               (Number(value) >= 0 &&
-                                                Number(value) <
+                                                Number(value) <=
                                                   Number(getValues(`variants.${iClass1}.field.${iClass2}.price`))),
                                           },
                                         })}
+                                        max={getValues(`variants.${iClass1}.field.${iClass2}.price`)}
                                       ></input>
                                     </td>
                                     <td className="col-2">

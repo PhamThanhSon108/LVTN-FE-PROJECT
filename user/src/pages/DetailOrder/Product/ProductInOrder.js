@@ -1,13 +1,26 @@
-import { Avatar, Card, Divider, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+import {
+    Avatar,
+    Button,
+    Card,
+    Divider,
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    Tooltip,
+    Typography,
+} from '@mui/material';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { ReviewDialog } from '~/components/profileComponents/Review/ReviewDialog';
+
 import { formatMoney } from '~/utils/formatMoney';
 
 export default function ProductInOrder({ product, order }) {
     return (
         <Fragment>
-            <Link to={`/product/${product?.product}`}>
+            <Link
+                key={product?._id}
+                to={`/product/${product?.product}${product?.isAbleToReview ? '?section=review' : ''}`}
+            >
                 <Card sx={{ boxShadow: 'none' }}>
                     <ListItem
                         className="d-flex"
@@ -17,6 +30,13 @@ export default function ProductInOrder({ product, order }) {
                                 <Typography sx={{ display: 'inline' }} color="error" component="span" variant="body1">
                                     {formatMoney(product?.price || 0)}
                                 </Typography>
+                                {product?.isAbleToReview ? (
+                                    <Tooltip title="Đánh giá sản phẩm">
+                                        <Button size="small" variant="outlined" sx={{ ml: 2 }}>
+                                            Đánh giá
+                                        </Button>
+                                    </Tooltip>
+                                ) : null}
                             </React.Fragment>
                         }
                     >
@@ -26,7 +46,13 @@ export default function ProductInOrder({ product, order }) {
 
                         <ListItemText
                             primary={
-                                <Typography component="div" variant="body1" color="text.primary" fontWeight={600}>
+                                <Typography
+                                    className="col-9"
+                                    component="div"
+                                    variant="body1"
+                                    color="text.primary"
+                                    fontWeight={600}
+                                >
                                     {product?.name}
                                 </Typography>
                             }
@@ -45,11 +71,8 @@ export default function ProductInOrder({ product, order }) {
                         {}
                     </ListItem>
                 </Card>
-                <Divider />
             </Link>
-            {/* <div className="d-flex justify-content-end col-1" style={{ marginTop: '10px' }}>
-                <ReviewDialog order={product} OrderId={order?._id} />
-            </div> */}
+            <Divider />
         </Fragment>
     );
 }

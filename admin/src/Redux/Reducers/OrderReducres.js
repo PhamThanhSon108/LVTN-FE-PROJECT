@@ -23,6 +23,9 @@ import {
   ORDER_UPDATE_STATUS_REQUEST,
   ORDER_UPDATE_STATUS_RESET,
   ORDER_UPDATE_STATUS_SUCCESS,
+  UPDATE_COD_FAIL,
+  UPDATE_COD_REQUEST,
+  UPDATE_COD_SUCCESS,
 } from '../Constants/OrderConstants';
 
 export const orderListReducer = (state = { orders: [] }, action) => {
@@ -119,6 +122,20 @@ export const billOfLandingReducer = (state = {}, action) => {
     case BILL_OF_LANDING_SUCCESS:
       return { loading: false, success: true, bill: action.payload };
     case BILL_OF_LANDING_FAIL:
+      return { loading: false, error: action.payload };
+
+    default:
+      return state;
+  }
+};
+
+export const updateCODReducer = (state = {}, action) => {
+  switch (action.type) {
+    case UPDATE_COD_REQUEST:
+      return { loading: true };
+    case UPDATE_COD_SUCCESS:
+      return { loading: false, success: true };
+    case UPDATE_COD_FAIL:
       return { loading: false, error: action.payload };
 
     default:

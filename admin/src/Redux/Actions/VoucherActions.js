@@ -63,11 +63,11 @@ export const UpdateVoucher =
   };
 
 export const getVouchers =
-  ({ page, limit, handleAfterFetch }) =>
+  ({ keyword = '', page, limit, handleAfterFetch }) =>
   async (dispatch) => {
     try {
       dispatch({ type: VOUCHER_REQUEST });
-      const res = await request.get(`/discount-codes`, { params: { page, limit } });
+      const res = await request.get(`/discount-codes`, { params: { page, limit, keyword } });
       dispatch({ type: VOUCHER_SUCCESS, payload: res?.data?.data?.discountCode || [] });
 
       handleAfterFetch?.success();

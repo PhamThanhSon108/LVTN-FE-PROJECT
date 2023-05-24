@@ -108,7 +108,7 @@ const SingleProduct = () => {
                             <div className={styles.productInfoToBuyWrapper}>
                                 <div className="product-count col-lg-12 pt-3">
                                     <div className="">
-                                        <Typography noWrap variant="h6" color="black">
+                                        <Typography variant="h6" color="black">
                                             {product.name}
                                         </Typography>
                                         <div className={styles.ratingWrapper}>

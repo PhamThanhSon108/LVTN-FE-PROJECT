@@ -4,7 +4,7 @@ const getProducts = async (
     data = {
         category: '',
         keyword: '',
-        pageNumber: 0,
+        page: 0,
         rating: '',
         minPrice: '',
         maxPrice: '',
@@ -13,7 +13,7 @@ const getProducts = async (
     },
 ) => {
     return await request.get(`/products`, {
-        params: { ...data, limit: 24 },
+        params: { ...data },
     });
 };
 

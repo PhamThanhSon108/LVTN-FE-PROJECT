@@ -63,14 +63,22 @@ export const getPublicVouchers = () => async (dispatch) => {
 };
 export const addVoucher =
     ({ code, handleAfterFetch }) =>
-    async (dispatch) => {
+    async (dispatch, getState) => {
         try {
+            const { publicVouchers } = getState();
             dispatch({ type: ADD_VOUCHER_REQUEST });
             const { data } = await request.post('/users/discount-code/user-add-discount-code', {
                 discountCode: code,
             });
             dispatch({ type: ADD_VOUCHER_SUCCESS, payload: data?.data?.discountCode });
+            const newPublicVoucher = publicVouchers?.vouchers.map((voucher) => {
+                if (voucher?.code === code) {
+                    return { ...voucher, isAdd: true };
+                } else return voucher;
+            });
             handleAfterFetch?.success();
+            dispatch({ type: MY_VOUCHER_SUCCESS, payload: data?.data?.discountCodeList });
+            dispatch({ type: PUBLIC_VOUCHER_SUCCESS, payload: newPublicVoucher || [] });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
             handleAfterFetch?.error(message);

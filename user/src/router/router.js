@@ -31,6 +31,7 @@ const publicRouter = [
         path: '/today-product',
         component: <TodayProduct />,
         exact: true,
+        footer: true,
     },
     {
         name: 'Tìm kiếm',

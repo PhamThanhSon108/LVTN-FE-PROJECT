@@ -27,12 +27,12 @@ const ToastObjects = {
   autoClose: 2000,
 };
 export const listProducts =
-  (category = '', keyword = '', pageNumber = '') =>
+  (category = '', keyword = '', pageNumber = '', status = '') =>
   async (dispatch) => {
     try {
       dispatch({ type: PRODUCT_LIST_REQUEST });
       const response = await request.get(
-        `/products/admin?category=${category}&keyword=${keyword}&page=${pageNumber - 1}&limit=12`,
+        `/products/admin?category=${category}&keyword=${keyword}&page=${pageNumber - 1}&limit=12&status=${status}`,
       );
       dispatch({ type: PRODUCT_LIST_SUCCESS, payload: response?.data?.data || {} });
     } catch (error) {
@@ -49,10 +49,59 @@ export const deleteProduct = (id) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_DELETE_REQUEST });
     await request.delete(`/products/${id}`);
-    toast.success('Product was deleted', ToastObjects);
+    toast.success('Đã xóa sản phẩm', ToastObjects);
     dispatch({ type: PRODUCT_DELETE_SUCCESS });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+    toast.error(message || 'Có lỗi trong quá trình xử lý', ToastObjects);
+    dispatch({
+      type: PRODUCT_DELETE_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const restoreProduct = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: PRODUCT_DELETE_REQUEST });
+    await request.patch(`/products/${id}/restore`);
+    toast.success('Đã khôi phục sản phẩm', ToastObjects);
+    dispatch({ type: PRODUCT_DELETE_SUCCESS });
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+    toast.error(message || 'Có lỗi trong quá trình xử lý', ToastObjects);
+    dispatch({
+      type: PRODUCT_DELETE_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const disableProduct = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: PRODUCT_DELETE_REQUEST });
+    await request.patch(`/products/${id}/hide`);
+    toast.success('Đã ẩn sản phẩm', ToastObjects);
+    dispatch({ type: PRODUCT_DELETE_SUCCESS });
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+    toast.error(message || 'Có lỗi trong quá trình xử lý', ToastObjects);
+    dispatch({
+      type: PRODUCT_DELETE_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const visibleProduct = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: PRODUCT_DELETE_REQUEST });
+    await request.patch(`/products/${id}/unhide`);
+    toast.success('Đã hiển thị sản phẩm', ToastObjects);
+    dispatch({ type: PRODUCT_DELETE_SUCCESS });
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+    toast.error(message || 'Có lỗi trong quá trình xử lý', ToastObjects);
     dispatch({
       type: PRODUCT_DELETE_FAIL,
       payload: message,

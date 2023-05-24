@@ -8,6 +8,7 @@ import styles from './TodayProduct.module.scss';
 import Product from '~/components/Product/Product';
 import { Message } from '@mui/icons-material';
 import { Card } from 'react-bootstrap';
+import useSearchParamsCustom from '~/hooks/useSearchParamCustom';
 const NotFound = ({ children, empty }) => {
     if (empty) return children;
     return <Fragment />;
@@ -32,18 +33,19 @@ const MainSection = ({ children }) => {
 const TodayProduct = () => {
     const dispatch = useDispatch();
     const productList = useSelector((state) => state.productList);
-    const { loading, error, products, page, pages = 2 } = productList;
-    const [pageNumber, setpageNumber] = useState('');
+    const { loading, error, products, page, pages } = productList;
 
-    const pageSize = 24;
+    const { replaceParams, getParamValue } = useSearchParamsCustom();
+    const pageWantToMove = Number(getParamValue('page')) || 1;
+    const pageSize = 40;
     let SkeletonOption = window.innerWidth > 540 ? [1, 2, 3, 4, 5, 6] : [1];
 
     const handleChangePage = (e, value) => {
-        setpageNumber(value);
+        replaceParams([{ key: 'page', value }]);
     };
     useEffect(() => {
-        dispatch(listProduct({ pageNumber: pageNumber, pageSize }));
-    }, [dispatch, pageNumber]);
+        dispatch(listProduct({ page: pageWantToMove - 1, limit: pageSize }));
+    }, [dispatch, pageWantToMove]);
 
     if (loading)
         return (
@@ -87,14 +89,18 @@ const TodayProduct = () => {
         <MainSection>
             <>
                 {products?.map((product) => (
-                    <div className="col-lg-2 col-md-6 col-sm-6 mb-3" key={product._id}>
+                    <div
+                        className="col-lg-2 col-md-3 col-sm-6 mb-3"
+                        style={{ paddingLeft: 4, paddingRight: 4 }}
+                        key={product._id}
+                    >
                         <Product product={product} />
                     </div>
                 ))}
             </>
-            {products?.length > 16 ? (
-                <Box className="col-12 d-flex justify-content-end">
-                    {<Pagination color="primary" count={pages} page={page} onChange={handleChangePage} />}
+            {pages > 1 ? (
+                <Box className="col-12 d-flex justify-content-end mb-5">
+                    {<Pagination color="primary" count={pages} page={page + 1} onChange={handleChangePage} />}
                 </Box>
             ) : null}
         </MainSection>

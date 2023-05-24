@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Rating, Tooltip, Typography, Card, Chip } from '@mui/material';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,7 @@ import Message from '~/components/LoadingError/Error';
 import Loading from '~/components/LoadingError/Loading';
 import styles from './Review.module.scss';
 import { LoadingButton } from '@mui/lab';
+import useSearchParamsCustom from '~/hooks/useSearchParamCustom';
 
 const OPTION_SELECT_RATING = [
     { value: 1, label: 'Tệ', color: 'red' },
@@ -38,6 +39,9 @@ export default function Review() {
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
     const [filterRating, setFilterRating] = useState('');
+    const refReview = useRef();
+    const { getParamValue } = useSearchParamsCustom();
+    const section = getParamValue('section');
 
     const reviewToShow = filterRating
         ? product.reviews.filter((review) => review?.rating === filterRating)
@@ -58,6 +62,16 @@ export default function Review() {
         if (!rating) return product?.reviews?.length;
         return product?.reviews?.filter((review) => review.rating === rating)?.length;
     };
+    useEffect(() => {
+        if (section === 'review') {
+            refReview?.current?.focus();
+            window.scrollTo({
+                top: refReview.current.offsetTop - 300,
+                left: 100,
+                behavior: 'smooth',
+            });
+        }
+    }, []);
     return (
         <div className="col-md-12 product-rating" style={{ paddingTop: '20px' }}>
             <div className="row ">
@@ -171,6 +185,7 @@ export default function Review() {
                                 <div className="mt-1">
                                     <Typography sx={{ fontWeight: '400' }}>Chi tiết đánh giá:</Typography>
                                     <textarea
+                                        ref={refReview}
                                         maxLength={250}
                                         row="3"
                                         value={comment}

@@ -183,7 +183,7 @@ const PlaceOrderScreen = ({ history }) => {
                             className="col-9"
                             variant="outlined"
                             size="small"
-                            placeholder="Lưu ý cho người bán"
+                            placeholder="Lưu ý cho shipper"
                             inputProps={{ maxLength: 200 }}
                         ></TextField>
                     </Box>

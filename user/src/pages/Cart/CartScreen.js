@@ -113,161 +113,178 @@ const CartScreen = () => {
                         {/* cartiterm */}
 
                         <div className="cart-scroll">
-                            {cartItems?.map((item, index) => (
-                                <div
-                                    key={item?.id}
-                                    className="cart-iterm row d-flex"
-                                    ref={refItem}
-                                    style={{
-                                        height: '100%',
-
-                                        alignItems: 'center',
-                                        display: 'flex',
-                                    }}
-                                >
-                                    {item?.quantity > 0 ? (
-                                        <div
-                                            className="col-1 cart-check d-flex
-                                        "
-                                            style={{
-                                                height: '100%',
-
-                                                alignItems: 'center',
-                                                display: 'flex',
-                                            }}
-                                        >
-                                            <label
-                                                for={item?.id}
-                                                style={{ width: '100%', height: '100%', cursor: 'pointer' }}
-                                            >
-                                                {item.variant.quantity > 0 ? (
-                                                    item.quantity <= item.variant.quantity ? (
-                                                        <input
-                                                            id={item?.id}
-                                                            style={{ height: '100%' }}
-                                                            type="checkbox"
-                                                            checked={cartChoise[item?.variant?._id] != undefined}
-                                                            onChange={(e) => {
-                                                                setCartChoise((pre) => {
-                                                                    if (pre[item?.variant?._id] === undefined)
-                                                                        pre[item?.variant?._id] = item;
-                                                                    else delete pre[item?.variant?._id];
-                                                                    return { ...pre };
-                                                                });
-                                                                refItem.current.focus();
-                                                            }}
-                                                        ></input>
-                                                    ) : (
-                                                        <span className="text-danger col-12">
-                                                            {`Không có sẵn
-                                                        ${item?.quantity} sản phẩm`}
-                                                        </span>
-                                                    )
-                                                ) : (
-                                                    <span className="text-danger col-12">Hết hàng</span>
-                                                )}
-                                            </label>
-                                        </div>
-                                    ) : (
-                                        <div className="col-1 cart-check">
-                                            <span className="span" style={{ fontSize: '12px', color: 'red' }}>
-                                                Hết hàng
-                                            </span>
-                                        </div>
-                                    )}
-                                    <div
-                                        className="cart-image col-md-3 col-sm-5 col-lg-2 col-2"
-                                        style={isMobile ? { width: 300 } : null}
-                                    >
-                                        <img src={item?.variant?.product?.images[0]} alt={item.product?.name} />
-                                    </div>
-                                    <div
-                                        className="cart-text col-4 col-md-8 col-sm-7 col-lg-4 d-flex align-items-center"
-                                        style={isMobile ? { width: '100%', marginBottom: 15 } : null}
-                                    >
-                                        <Link to={`/product/${item?.variant?.product?._id}`}>
-                                            <Typography
-                                                component="div"
-                                                variant="body1"
-                                                fontWeight={600}
-                                                color="text.primary"
-                                            >
-                                                {item?.variant?.product?.name}
-                                            </Typography>
-                                        </Link>
-                                    </div>
-                                    <div
-                                        className="cart-text col-sm-3 col-lg-2 col-5 col-md-3 col-xl-2 d-flex align-items-start flex-column"
-                                        style={isMobile ? { width: '100%', marginBottom: 15 } : null}
-                                    >
-                                        <Typography component="div" variant="body2" color="text.primary">
-                                            Phân loại hàng:
-                                        </Typography>
-                                        <RenderAttributes attributes={item?.attributes} />
-                                    </div>
-
-                                    <div
-                                        className="cart-qty col-sm-3 col-lg-1 col-5 col-md-3 col-xl-1 flex-column justify-content-center align-content-center d-flex quantity-css"
-                                        style={{ position: 'relative', width: '90' }}
-                                    >
-                                        <select
-                                            className="form-select select-quantity col-12"
-                                            disabled={
-                                                item?.variant?.quantity <= 0 ||
-                                                // loadingCreate === true ||
-                                                loadingIndices === index
-                                            }
-                                            value={item?.quantity <= item?.variant?.quantity ? item.quantity : ''}
-                                            // defaultValue=""
+                            {cartItems?.map((item, index) => {
+                                const notEnough =
+                                    item.quantity <= item.variant.quantity ? (
+                                        <input
+                                            id={item?.id}
+                                            style={{ height: '100%' }}
+                                            type="checkbox"
+                                            checked={cartChoise[item?.variant?._id] != undefined}
                                             onChange={(e) => {
-                                                e.preventDefault();
-                                                setLoadingIndices(index);
-                                                dispatch(
-                                                    updateCart({
-                                                        variantId: item?.variant?._id,
-                                                        qty: e.target.value,
-                                                        setCartChoise,
-                                                        setLoadingIndices,
-                                                        updateCart: true,
-                                                    }),
-                                                );
+                                                setCartChoise((pre) => {
+                                                    if (pre[item?.variant?._id] === undefined)
+                                                        pre[item?.variant?._id] = item;
+                                                    else delete pre[item?.variant?._id];
+                                                    return { ...pre };
+                                                });
+                                                refItem.current.focus();
                                             }}
-                                        >
-                                            {[...Array(item?.variant?.quantity).keys()].map((x) => (
-                                                <option key={x + 1} value={x + 1}>
-                                                    {x + 1}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div
-                                        className="cart-price col-12 col-sm-3 col-lg-1 align-items-sm-end align-items-start  d-flex flex-column justify-content-center quantity-css"
-                                        style={isMobile ? { width: 90, marginRight: '20%' } : null}
-                                    >
-                                        <Typography component="div" variant="body2" color="red">
-                                            {formatMoney(item?.variant?.priceSale || item?.variant?.price)}
-                                        </Typography>
-                                    </div>
+                                        ></input>
+                                    ) : (
+                                        <span className="text-danger col-12">
+                                            {`Không có sẵn
+                                                        ${item?.quantity} sản phẩm`}
+                                        </span>
+                                    );
 
+                                const notHaveProduct =
+                                    item.variant.quantity > 0 ? (
+                                        notEnough
+                                    ) : (
+                                        <span className="text-danger col-12">Hết hàng</span>
+                                    );
+                                const isVisible = item.variant?.deleted || item.variant?.disabled;
+                                return (
                                     <div
-                                        className=" col-3 delete-cart col-sm-3 col-lg-1"
+                                        key={item?.id}
+                                        className="cart-iterm row d-flex"
+                                        ref={refItem}
                                         style={{
-                                            display: 'flex',
-                                            justifyContent: 'right',
-                                            cursor: 'pointer',
+                                            height: '100%',
+                                            opacity: isVisible ? '0.5' : 1,
                                             alignItems: 'center',
+                                            display: 'flex',
                                         }}
                                     >
-                                        <SlideDialogConfirm
-                                            handleConfirm={{
-                                                handleSubmit: removeFromCartHandle,
-                                                key: item.variant._id,
-                                                setCartChoise: setCartChoise,
+                                        {item?.quantity > 0 ? (
+                                            <div
+                                                className="col-1 cart-check d-flex
+                                        "
+                                                style={{
+                                                    height: '100%',
+
+                                                    alignItems: 'center',
+                                                    display: 'flex',
+                                                }}
+                                            >
+                                                <label
+                                                    for={item?.id}
+                                                    style={{
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        cursor: isVisible ? 'default' : 'pointer',
+                                                    }}
+                                                >
+                                                    {isVisible ? (
+                                                        <Typography className="text-danger">
+                                                            Sản phẩm đã ngừng bán
+                                                        </Typography>
+                                                    ) : (
+                                                        notHaveProduct
+                                                    )}
+                                                </label>
+                                            </div>
+                                        ) : (
+                                            <div className="col-1 cart-check">
+                                                <Typography className="text-danger">Hết hàng</Typography>
+                                            </div>
+                                        )}
+                                        <div
+                                            className="cart-image col-md-3 col-sm-5 col-lg-2 col-2"
+                                            style={isMobile ? { width: 300 } : null}
+                                        >
+                                            <img src={item?.variant?.product?.images[0]} alt={item.product?.name} />
+                                        </div>
+                                        <div
+                                            className="cart-text col-4 col-md-8 col-sm-7 col-lg-4 d-flex align-items-center"
+                                            style={isMobile ? { width: '100%', marginBottom: 15 } : null}
+                                        >
+                                            <Link to={`/product/${item?.variant?.product?._id}`}>
+                                                <Typography
+                                                    component="div"
+                                                    variant="body1"
+                                                    fontWeight={600}
+                                                    color="text.primary"
+                                                >
+                                                    {item?.variant?.product?.name}
+                                                </Typography>
+                                            </Link>
+                                        </div>
+                                        <div
+                                            className="cart-text col-sm-3 col-lg-2 col-5 col-md-3 col-xl-2 d-flex align-items-start flex-column"
+                                            style={isMobile ? { width: '100%', marginBottom: 15 } : null}
+                                        >
+                                            <Typography component="div" variant="body2" color="text.primary">
+                                                Phân loại hàng:
+                                            </Typography>
+                                            <RenderAttributes attributes={item?.attributes} />
+                                        </div>
+
+                                        <div
+                                            className="cart-qty col-sm-3 col-lg-1 col-5 col-md-3 col-xl-1 flex-column justify-content-center align-content-center d-flex quantity-css"
+                                            style={{ position: 'relative', width: '90' }}
+                                        >
+                                            <select
+                                                className="form-select select-quantity col-12"
+                                                disabled={
+                                                    item?.variant?.quantity <= 0 ||
+                                                    // loadingCreate === true ||
+                                                    loadingIndices === index ||
+                                                    isVisible
+                                                }
+                                                value={item?.quantity <= item?.variant?.quantity ? item.quantity : ''}
+                                                // defaultValue=""
+                                                onChange={(e) => {
+                                                    e.preventDefault();
+                                                    setLoadingIndices(index);
+                                                    dispatch(
+                                                        updateCart({
+                                                            variantId: item?.variant?._id,
+                                                            qty: e.target.value,
+                                                            setCartChoise,
+                                                            setLoadingIndices,
+                                                            updateCart: true,
+                                                        }),
+                                                    );
+                                                }}
+                                            >
+                                                {[...Array(item?.variant?.quantity).keys()].map((x) => (
+                                                    <option key={x + 1} value={x + 1}>
+                                                        {x + 1}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div
+                                            className="cart-price col-12 col-sm-3 col-lg-1 align-items-sm-end align-items-start  d-flex flex-column justify-content-center quantity-css"
+                                            style={isMobile ? { width: 90, marginRight: '20%' } : null}
+                                        >
+                                            <Typography component="div" variant="body2" color="red">
+                                                {formatMoney(item?.variant?.priceSale || item?.variant?.price)}
+                                            </Typography>
+                                        </div>
+
+                                        <div
+                                            className=" col-3 delete-cart col-sm-3 col-lg-1"
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'right',
+                                                cursor: 'pointer',
+                                                alignItems: 'center',
                                             }}
-                                        />
+                                        >
+                                            <SlideDialogConfirm
+                                                handleConfirm={{
+                                                    handleSubmit: removeFromCartHandle,
+                                                    key: item.variant._id,
+                                                    setCartChoise: setCartChoise,
+                                                }}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
 
                         {/* End of cart iterms */}
