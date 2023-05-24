@@ -37,23 +37,14 @@ export const ListProductAll = () => async (dispatch) => {
 };
 // PRODUCT LIST
 export const listProduct =
-    ({
-        category = '',
-        keyword = '',
-        pageNumber = '',
-        rating = '',
-        minPrice = '',
-        maxPrice = '',
-        sortBy = '',
-        limit = 24,
-    }) =>
+    ({ category = '', keyword = '', page = 0, rating = '', minPrice = '', maxPrice = '', sortBy = '', limit = 24 }) =>
     async (dispatch) => {
         try {
             dispatch({ type: PRODUCT_LIST_REQUEST });
             const { data } = await getProducts({
                 category,
                 keyword,
-                pageNumber,
+                page,
                 rating,
                 minPrice,
                 maxPrice,

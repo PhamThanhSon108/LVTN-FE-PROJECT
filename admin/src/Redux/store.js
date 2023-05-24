@@ -17,6 +17,7 @@ import {
   orderUpdateStatusReducer,
   orderPreviewReducer,
   billOfLandingReducer,
+  updateCODReducer,
 } from './Reducers/OrderReducres';
 import { sliderCreateReducer, sliderDeleteReducer, sliderListReducer } from './Reducers/SliderListReducers';
 import {
@@ -44,6 +45,7 @@ const reducer = combineReducers({
   orderCancel: orderCancelReducer,
   orderPreview: orderPreviewReducer,
   billOfLanding: billOfLandingReducer,
+  updateCOD: updateCODReducer,
 
   sliderList: sliderListReducer,
   deleteSlider: sliderDeleteReducer,

@@ -13,7 +13,13 @@ import Product from './components/Product';
 import { listProducts } from '../../Redux/Actions/ProductActions';
 import { ListCategory } from '../../Redux/Actions/CategoryActions';
 import { inputPropsConstants } from '../../constants/variants';
-
+import useSearchParamCustom from '../../hooks/useSearchParamCustom';
+const statusProduct = [
+  { value: 'not_disabled', label: 'Đang bán' },
+  { value: 'all', label: 'Tất cả' },
+  { value: 'deleted', label: 'Đã xóa' },
+  { value: ' disabled', label: 'Đã ẩn' },
+];
 const RenderProducts = ({ loading, error, products = [] }) => {
   if (error && !loading) return <Message variant="alert-danger">{error}</Message>;
 
@@ -59,7 +65,7 @@ const Products = () => {
   const dispatch = useDispatch();
   let history = useHistory();
   const location = useLocation();
-
+  const { getParamValue, replaceParams } = useSearchParamCustom();
   const searchParams = new URLSearchParams(location.search);
 
   const [keyword] = useState(searchParams.get('search') || '');
@@ -99,9 +105,13 @@ const Products = () => {
   async function handleChangeSearch(e) {
     debouncedSearch(e.target.value);
   }
+  const handleChangeStatus = (e) => {
+    replaceParams([{ key: 'status', value: e.target.value }], 'changeAll');
+  };
+  const status = getParamValue('status') || '';
   useEffect(() => {
-    dispatch(listProducts(category, keyword, pageNumber));
-  }, [dispatch, successDelete, category, keyword, pageNumber]);
+    dispatch(listProducts(category, keyword, pageNumber, status));
+  }, [dispatch, successDelete, category, keyword, pageNumber, status]);
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -152,9 +162,26 @@ const Products = () => {
                 </div>
                 {/* </form> */}
               </div>
-              <div className="col-lg-2 col-6 col-md-3">
+              <div className="col-lg-2">
                 <select
-                  className="form-select pr-0"
+                  className=" form-select col-6 pr-0"
+                  value={status}
+                  onChange={(e) => {
+                    handleChangeStatus(e);
+                  }}
+                  disabled={loading}
+                  defaultValue={status}
+                >
+                  {statusProduct?.map((status) => (
+                    <option key={status.value} value={status.value}>
+                      {status.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-lg-2 col-6 col-md-3 d-flex">
+                <select
+                  className="form-select col-6 pr-0"
                   value={category}
                   onChange={(e) => {
                     handleCategory(e);

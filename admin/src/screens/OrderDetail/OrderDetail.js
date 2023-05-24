@@ -13,6 +13,7 @@ import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
 import ModalCancelOrder from './components/ModalCancelOrder/ModalCancelOrder';
 import ModalPreviewOrder from './components/ModalPreviewOrder/ModalPreviewOrder';
 import ModalPrintBillOfLanding from './components/ModalPrintBillOfLanding/ModalPrintBillOfLanding';
+import ModalUpdateCOD from './components/ModalUpdateCOD/ModalUpdateCOD';
 
 const RenderButtonUpdateStatus = ({ children, canChange }) => {
   if (canChange) return children;
@@ -41,12 +42,6 @@ const OrderDetail = () => {
     }
   };
 
-  const findCompeletedStatus = (status) => {
-    return order?.statusHistory?.find((step) => step?.status === status);
-  };
-
-  const printBillOfLanding = () => {};
-
   useEffect(() => {
     dispatch(getOrderDetails(orderId));
   }, [dispatch, orderId, successDelivered, successUpdateStatus, successCancel]);
@@ -63,6 +58,13 @@ const OrderDetail = () => {
                 <div className="col-3">
                   <RenderButtonUpdateStatus canChange={order?.status === 'delivering'}>
                     <ModalPrintBillOfLanding orderCode={order?.delivery?.deliveryCode} />
+                  </RenderButtonUpdateStatus>
+                </div>
+                <div>
+                  <RenderButtonUpdateStatus
+                    canChange={order?.paymentInformation?.paymentMethod === '1' && order?.status === 'delivering'}
+                  >
+                    <ModalUpdateCOD />
                   </RenderButtonUpdateStatus>
                 </div>
               </div>

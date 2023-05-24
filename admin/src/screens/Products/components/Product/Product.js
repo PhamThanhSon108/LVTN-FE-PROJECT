@@ -16,9 +16,16 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteProduct } from '../../../../Redux/Actions/ProductActions';
+import {
+  deleteProduct,
+  disableProduct,
+  restoreProduct,
+  visibleProduct,
+} from '../../../../Redux/Actions/ProductActions';
 import { formatMoney } from '../../../../utils/formatMoney';
-
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 const Product = (props) => {
   const { product } = props;
   const dispatch = useDispatch();
@@ -29,6 +36,25 @@ const Product = (props) => {
     }
   };
 
+  const restoreHandler = (id) => {
+    if (window.confirm('Bạn có chắc muốn khôi phục sản phẩm??')) {
+      dispatch(restoreProduct(id));
+    }
+  };
+
+  const disableHandler = (id) => {
+    if (window.confirm('Bạn có chắc muốn ẩn sản phẩm??')) {
+      dispatch(disableProduct(id));
+    }
+  };
+
+  const visibleHandler = (id) => {
+    if (window.confirm('Bạn có chắc muốn hiện sản phẩm??')) {
+      dispatch(visibleProduct(id));
+    }
+  };
+  const isDeleted = product?.deleted;
+  const isDisabled = product?.disabled;
   return (
     <tr>
       <td>
@@ -57,19 +83,43 @@ const Product = (props) => {
       <td>
         <Typography>{`x${product?.quantity || 0}`}</Typography>
       </td>
-      <td>
-        <Link to={`/products/${product._id}/edit`}>
-          <IconButton>
-            <Tooltip title="Chỉnh sửa sản phẩm">
-              <EditIcon />
-            </Tooltip>
-          </IconButton>
-        </Link>
-        <IconButton onClick={() => deletehandler(product._id)}>
-          <Tooltip title="Xóa sản phẩm">
-            <DeleteIcon color="error" />
+      <td style={{ display: 'flex', justifyContent: 'end' }}>
+        {isDeleted ? (
+          <Tooltip title="Khôi phục sản phẩm">
+            <IconButton onClick={() => restoreHandler(product?._id)}>
+              <RestartAltIcon color="primary" />
+            </IconButton>
           </Tooltip>
-        </IconButton>
+        ) : (
+          <Fragment>
+            {isDisabled ? (
+              <Tooltip title="Hiện sản phẩm">
+                <IconButton onClick={() => visibleHandler(product?._id)}>
+                  <VisibilityOffIcon />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Ẩn sản phẩm">
+                <IconButton onClick={() => disableHandler(product?._id)}>
+                  <VisibilityIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+
+            <Link to={`/products/${product._id}/edit`}>
+              <IconButton>
+                <Tooltip title="Chỉnh sửa sản phẩm">
+                  <EditIcon />
+                </Tooltip>
+              </IconButton>
+            </Link>
+            <IconButton onClick={() => deletehandler(product._id)}>
+              <Tooltip title="Xóa sản phẩm">
+                <DeleteIcon color="error" />
+              </Tooltip>
+            </IconButton>
+          </Fragment>
+        )}
       </td>
     </tr>
 

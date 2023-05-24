@@ -303,7 +303,7 @@ export default function AddProductToVoucher({ field }) {
               <ListItemText
                 className="col-2"
                 id={labelId}
-                primary={value?.priceSale || value?.price + ' VNĐ' || 'Giá sản phẩm'}
+                primary={value?.priceSale || value?.price || 0 + ' VNĐ' || 'Giá sản phẩm'}
               />
               <ListItemIcon>
                 <Button onClick={() => handleDeleteSelectedProduct(value)}>

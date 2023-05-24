@@ -409,7 +409,7 @@ const DetailOrder = () => {
                     <Box>
                         <Stepper orientation="vertical">
                             {order?.statusHistory.map((step, index) => (
-                                <Step key={step?._id}>
+                                <Step active key={step?._id}>
                                     <StepLabel
                                         sx={{ svg: { color: 'green' } }}
                                         StepIconComponent={() => stepShipping?.[step?.status]?.icon}
@@ -436,7 +436,7 @@ const DetailOrder = () => {
                     ) : (
                         <>
                             {order?.orderItems.map((item, index) => (
-                                <ProductInOrder product={item} />
+                                <ProductInOrder key={item?._id} product={item} />
                             ))}
                         </>
                     )}

@@ -21,7 +21,7 @@ export default function Voucher({ voucher, size = 'small', myVoucher = false }) 
     const dispatch = useDispatch();
     const startDate = moment(voucher?.startDate);
     const effectiveLater = startDate > moment();
-    const endOfUse = voucher.usageLimit <= voucher.used;
+    const endOfUse = voucher?.isUsageLimit && voucher.usageLimit <= voucher.used;
     const handleAfterFetch = {
         success: () => {
             if (myVoucher) dispatch(getMyVouchers());
@@ -41,10 +41,20 @@ export default function Voucher({ voucher, size = 'small', myVoucher = false }) 
             history.push('/login');
         }
     };
-
+    const { userInfo } = useSelector((state) => state.userLogin);
+    const canNotUsed =
+        voucher?.usedBy?.filter((userId) => userId === userInfo?._id)?.length >= voucher?.userUseMaximum || endOfUse;
+    const renderCanAdd =
+        !myVoucher && !voucher?.isAdd ? (
+            <LoadingButton loading={saveVoucher} onClick={handleSaveVoucher}>
+                Lưu
+            </LoadingButton>
+        ) : (
+            <Chip label={'Đã lưu'} color="primary" variant="outlined"></Chip>
+        );
     return (
         <div className="col-12 pl-2 pr-2" style={{ paddingLeft: '4px', paddingRight: '4px' }}>
-            <Card className={`${styles.container} col-12`}>
+            <Card className={`${styles.container} col-12`} style={{ opacity: canNotUsed ? '0.5' : 1 }}>
                 <ListItem sx={{ pr: 0 }}>
                     <div className={styles.voucherTemplate}>
                         <div className={styles.voucherImageWrapper}>
@@ -81,12 +91,10 @@ export default function Voucher({ voucher, size = 'small', myVoucher = false }) 
                                         </Typography>
                                     ) : null}
                                 </div>
-                                {!myVoucher && !voucher?.isAdd ? (
-                                    <LoadingButton loading={saveVoucher} onClick={handleSaveVoucher}>
-                                        Lưu
-                                    </LoadingButton>
+                                {canNotUsed ? (
+                                    <Chip label={'Đã hết lượt sử dụng'} color="primary" variant="outlined"></Chip>
                                 ) : (
-                                    <Chip label={'Đã lưu'} color="primary" variant="outlined"></Chip>
+                                    renderCanAdd
                                 )}
                             </div>
                         }
