@@ -95,6 +95,7 @@ const ModalVouchers = ({ voucherToApply, isOpenModal, handleClose, handleApplyVo
                                     const startDate = moment(voucher?.startDate);
                                     const endDate = moment(voucher?.endDate);
                                     const effectiveLater = startDate <= moment() && endDate >= moment();
+                                    const endOfUse = voucher?.isUsageLimit && voucher.usageLimit <= voucher.used;
                                     const used =
                                         voucher?.usedBy?.filter((userId) => userId === userInfo?._id)?.length >=
                                         voucher?.userUseMaximum;
@@ -106,7 +107,7 @@ const ModalVouchers = ({ voucherToApply, isOpenModal, handleClose, handleApplyVo
                                             ),
                                         );
 
-                                    if (!used && applyForProduct && effectiveLater)
+                                    if (!used && applyForProduct && effectiveLater && !endOfUse)
                                         return (
                                             <label
                                                 onClick={(e) => {

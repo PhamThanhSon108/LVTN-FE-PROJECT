@@ -5,7 +5,7 @@ export const ListCategory = () => async (dispatch) => {
     try {
         dispatch({ type: CATEGORY_REQUEST });
         const { data } = await getCategories();
-        dispatch({ type: CATEGORY_SUCCESS, payload: data.data.categories });
+        dispatch({ type: CATEGORY_SUCCESS, payload: data?.data?.categories });
     } catch (error) {
         dispatch({
             type: CATEGORY_FAIL,

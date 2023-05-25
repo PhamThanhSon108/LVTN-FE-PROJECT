@@ -92,7 +92,7 @@ export default function Voucher({ voucher, size = 'small', myVoucher = false }) 
                                     ) : null}
                                 </div>
                                 {canNotUsed ? (
-                                    <Chip label={'Đã hết lượt sử dụng'} color="primary" variant="outlined"></Chip>
+                                    <Chip label={'Đã hết'} color="primary" variant="outlined"></Chip>
                                 ) : (
                                     renderCanAdd
                                 )}

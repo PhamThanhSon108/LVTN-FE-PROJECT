@@ -37,7 +37,7 @@ const TodayProduct = () => {
 
     const { replaceParams, getParamValue } = useSearchParamsCustom();
     const pageWantToMove = Number(getParamValue('page')) || 1;
-    const pageSize = 40;
+    const pageSize = 42;
     let SkeletonOption = window.innerWidth > 540 ? [1, 2, 3, 4, 5, 6] : [1];
 
     const handleChangePage = (e, value) => {
@@ -99,7 +99,7 @@ const TodayProduct = () => {
                 ))}
             </>
             {pages > 1 ? (
-                <Box className="col-12 d-flex justify-content-end mb-5">
+                <Box className="col-12 d-flex justify-content-center mb-5">
                     {<Pagination color="primary" count={pages} page={page + 1} onChange={handleChangePage} />}
                 </Box>
             ) : null}

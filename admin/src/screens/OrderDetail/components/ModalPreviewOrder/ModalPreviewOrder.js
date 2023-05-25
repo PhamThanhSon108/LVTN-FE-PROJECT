@@ -145,6 +145,13 @@ export default function ModalPreviewOrder() {
                         )}
                       </td>
                     </tr>
+
+                    <tr>
+                      <td>
+                        <strong>Tổng tiền hàng</strong>
+                      </td>
+                      <td>{loading ? <CircularProgress size={15} /> : formatMoney(order?.totalProductPrice || 0)}</td>
+                    </tr>
                     <tr>
                       <td>
                         <strong>Phí vận chuyển</strong>
@@ -159,9 +166,9 @@ export default function ModalPreviewOrder() {
                     </tr>
                     <tr>
                       <td>
-                        <strong>Tổng tiền hàng</strong>
+                        <strong>Giảm giá</strong>
                       </td>
-                      <td>{loading ? <CircularProgress size={15} /> : formatMoney(order?.totalProductPrice || 0)}</td>
+                      <td>{loading ? <CircularProgress size={15} /> : formatMoney(order?.totalDiscount || 0)}</td>
                     </tr>
                     <tr>
                       <td>

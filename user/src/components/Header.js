@@ -67,7 +67,7 @@ const Header = () => {
                     <div className="container" style={{ width: 'var(--default-width-screen)' }}>
                         <div className="row">
                             <div className="wrap-hotline-in-header col-md-6 d-flex align-items-center display-none">
-                                <p>Hostline: 0123456789</p>
+                                <p>Hotline: 0353681548</p>
                             </div>
                             <div className="wrap-media-icon col-12 col-lg-6 justify-content-center justify-content-lg-end d-flex align-items-center">
                                 <Link to="">

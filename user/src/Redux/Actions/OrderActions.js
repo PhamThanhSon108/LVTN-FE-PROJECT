@@ -60,7 +60,7 @@ export const getOrderDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: ORDER_DETAILS_REQUEST });
         const { data } = await getOrder(id);
-        dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data.data.order || {} });
+        dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data?.data?.order || {} });
     } catch (error) {
         const message = error.response && error.response.data.message ? error.response.data.message : error.message;
 
