@@ -4,7 +4,7 @@ import useDebounce from '~/hooks/useDebounce';
 import request from '~/utils/request';
 import { useHistory } from 'react-router-dom';
 import useSearchParamsCustom from '~/hooks/useSearchParamCustom';
-import { CircularProgress, Typography } from '@mui/material';
+import { CircularProgress, Tooltip, Typography } from '@mui/material';
 
 const handleSaveOldKey = (keyword) => {
     if (keyword) {
@@ -57,6 +57,21 @@ const Search = ({ value, keyword, width }) => {
     const handleHideResult = () => {
         setShowResult(false);
     };
+
+    const keywordCount = {};
+
+    JSON.parse(localStorage?.getItem('search'))?.forEach((keyword) => {
+        if (keyword.length < 20) {
+            if (keywordCount[keyword?.toLowerCase()]) {
+                keywordCount[keyword?.toLowerCase()]++;
+            } else {
+                keywordCount[keyword?.toLowerCase()] = 1;
+            }
+        }
+    });
+    const sortedKeywords = Object.keys(keywordCount)?.sort((a, b) => keywordCount[b] - keywordCount[a]);
+    const topKeywords = sortedKeywords?.slice(0, 4);
+
     useEffect(() => {
         if (!debounce?.trim()) {
             setSearchResult([]);
@@ -107,6 +122,7 @@ const Search = ({ value, keyword, width }) => {
                               ?.slice(0, 7)
                               ?.map((item) => (
                                   <div
+                                      key={item}
                                       className="search-item"
                                       // to={`/search/${item.name}`}
                                       onClick={() => {
@@ -134,6 +150,7 @@ const Search = ({ value, keyword, width }) => {
                     ) : null}
                     {searchResult?.slice(0, 9)?.map((item) => (
                         <div
+                            key={item?._id}
                             className="search-item"
                             // to={`/search/${item.name}`}
                             onClick={() => {
@@ -182,6 +199,26 @@ const Search = ({ value, keyword, width }) => {
                         >
                             <i className="fas fa-search submit-search"></i>
                         </button>
+                    </div>
+                    <div className="d-flex" style={{ marginTop: '6px' }}>
+                        {topKeywords.map((key) => (
+                            <Tooltip key={key} title={`Tìm kiếm ${key}`}>
+                                <Typography
+                                    onClick={() => {
+                                        value.setSearchValue(key);
+                                        keyword?.setKeyword(key);
+                                        history.push(`/search?keyword=${key}`);
+                                        handleSaveOldKey(key);
+                                        setShowResult(false);
+                                    }}
+                                    color="primary"
+                                    variant="caption"
+                                    sx={{ mr: 1, cursor: 'pointer' }}
+                                >
+                                    {key}
+                                </Typography>
+                            </Tooltip>
+                        ))}
                     </div>
                 </div>
             </form>

@@ -96,6 +96,7 @@ export default function FilterSection({ setToggleLoad }) {
         replaceParams([
             { key: 'min', value: curentMinPrice },
             { key: 'max', value: curentMaxPrice },
+            { key: 'page', value: 1 },
         ]);
         setToggleLoad((toggle) => !toggle);
     };
@@ -127,7 +128,10 @@ export default function FilterSection({ setToggleLoad }) {
                         <StyledTreeItemRoot
                             onClick={() => {
                                 if (getParamValue('category') !== category?.slug) {
-                                    replaceParams([{ key: 'category', value: category?.slug }]);
+                                    replaceParams([
+                                        { key: 'category', value: category?.slug },
+                                        { key: 'page', value: 1 },
+                                    ]);
                                     setToggleLoad((toggle) => !toggle);
                                 }
                             }}
@@ -148,7 +152,10 @@ export default function FilterSection({ setToggleLoad }) {
                                           }}
                                           onClick={() => {
                                               if (getParamValue('category') !== childrenCategory?.slug) {
-                                                  replaceParams([{ key: 'category', value: childrenCategory?.slug }]);
+                                                  replaceParams([
+                                                      { key: 'category', value: childrenCategory?.slug },
+                                                      { key: 'page', value: 1 },
+                                                  ]);
                                                   setToggleLoad((toggle) => !toggle);
                                               }
                                           }}
@@ -209,7 +216,10 @@ export default function FilterSection({ setToggleLoad }) {
                                     value={star}
                                     onClick={(e) => {
                                         setToggleLoad((toggle) => !toggle);
-                                        replaceParams([{ key: 'rating', value: e.target.value }]);
+                                        replaceParams([
+                                            { key: 'rating', value: e.target.value },
+                                            { key: 'page', value: 1 },
+                                        ]);
                                     }}
                                 ></input>
                                 <label

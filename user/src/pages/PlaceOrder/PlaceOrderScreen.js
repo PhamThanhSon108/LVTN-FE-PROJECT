@@ -140,6 +140,13 @@ const PlaceOrderScreen = ({ history }) => {
                     <List className="row" sx={{ width: '100%', bgcolor: 'background.paper', pr: 0 }}>
                         {cartOrder.cartOrderItems?.map((product) => (
                             <ListItem key={product?._id} sx={{ width: '100%', pr: 0 }}>
+                                {product?.variant?.deleted || product?.variant?.disabled ? (
+                                    <ListItemText className="col-1">
+                                        <Typography color={'error'} variant="body1">
+                                            Sản phẩm tạm ngưng bán
+                                        </Typography>
+                                    </ListItemText>
+                                ) : null}
                                 <ListItemAvatar>
                                     <Avatar
                                         src={product.variant.product.images?.[0]}
@@ -376,6 +383,12 @@ const PlaceOrderScreen = ({ history }) => {
                     variant="contained"
                     loading={loading}
                     onClick={placeOrderHandler}
+                    disabled={
+                        !address ||
+                        cartOrder.cartOrderItems?.find(
+                            (product) => product?.variant?.disabled || product?.variant?.deleted,
+                        )
+                    }
                 >
                     ĐẶT HÀNG
                 </LoadingButton>

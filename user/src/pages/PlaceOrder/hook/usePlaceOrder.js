@@ -13,6 +13,8 @@ import { ORDER_CREATE_RESET } from '~/Redux/Constants/OrderConstants';
 import { clearLocalStorage } from '~/utils/localStorage';
 const compareAddress = (address1, address2) => {
     if (address1?._id !== address2?._id) return false;
+    if (address1?.name !== address2?.name) return false;
+    if (address1?.phone !== address2?.phone) return false;
     if (address1?.province?.id !== address2?.province?.id) return false;
     if (address1?.district?.id !== address2?.district?.id) return false;
     if (address1?.ward?.id !== address2?.ward?.id) return false;
@@ -155,30 +157,32 @@ export default function usePlaceOrder() {
     };
 
     const placeOrderHandler = () => {
-        setLoading(true);
-        dispatch(
-            createOrder(
-                {
-                    note: noteRef.current,
-                    shippingAddress: {
-                        to_name: addressToShipping.name,
-                        to_phone: addressToShipping.phone,
-                        to_province_id: addressToShipping.province.id,
-                        to_district_id: addressToShipping.district.id,
-                        to_ward_code: addressToShipping.ward.id,
-                        to_address: addressToShipping.specificAddress,
-                        service_id: service?.service_id || shippingFee?.[0]?.service_id,
+        if (window.confirm('Bạn có chắc muốn mua hàng?')) {
+            setLoading(true);
+            dispatch(
+                createOrder(
+                    {
+                        note: noteRef.current,
+                        shippingAddress: {
+                            to_name: addressToShipping.name || userInfo?.name,
+                            to_phone: addressToShipping.phone || userInfo?.phone,
+                            to_province_id: addressToShipping.province.id,
+                            to_district_id: addressToShipping.district.id,
+                            to_ward_code: addressToShipping.ward.id,
+                            to_address: addressToShipping.specificAddress,
+                            service_id: service?.service_id || shippingFee?.[0]?.service_id,
+                        },
+                        orderItems: cartOrder.cartOrderItems.map((variant) => ({
+                            variant: variant.variant._id,
+                            quantity: variant.quantity,
+                        })),
+                        paymentMethod: Number(paymentMethod),
+                        discountCode: priceIsReduced?.discountCode,
                     },
-                    orderItems: cartOrder.cartOrderItems.map((variant) => ({
-                        variant: variant.variant._id,
-                        quantity: variant.quantity,
-                    })),
-                    paymentMethod: Number(paymentMethod),
-                    discountCode: priceIsReduced?.discountCode,
-                },
-                handleAfterFetch,
-            ),
-        );
+                    handleAfterFetch,
+                ),
+            );
+        }
     };
 
     const handleAfterFetchAddress = {
