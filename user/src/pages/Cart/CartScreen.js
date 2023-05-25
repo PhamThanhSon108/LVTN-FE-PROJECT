@@ -144,6 +144,7 @@ const CartScreen = () => {
                                     ) : (
                                         <span className="text-danger col-12">Hết hàng</span>
                                     );
+
                                 const isVisible = item.variant?.deleted || item.variant?.disabled;
                                 return (
                                     <div

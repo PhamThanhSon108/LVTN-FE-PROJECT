@@ -48,7 +48,7 @@ const ShopSection = (props) => {
     const category = getParamValue('category') || '';
     const maxPrice = getParamValue('max') || '';
     const keyword = getParamValue('keyword') ? getParamValue('keyword')?.replace(/%20/g, ' ') : '';
-    const pageNumber = getParamValue('page') || '';
+    const pageWantToLeave = getParamValue('page') || 1;
     const rating = getParamValue('rating') || '';
     const sortBy = getParamValue('sort-by') || '';
 
@@ -56,8 +56,10 @@ const ShopSection = (props) => {
     let SkeletonOption =
         window.innerWidth > 540 ? (keyword || category ? [1, 2, 3, 4, 5] : [1, 2, 3, 4, 5, 6]) : [1, 2];
     useEffect(() => {
-        dispatch(listProduct({ sortBy, category, keyword, pageNumber, rating, minPrice, maxPrice }));
-    }, [toggleLoad, sortBy, keyword]);
+        dispatch(
+            listProduct({ sortBy, category, keyword, page: Number(pageWantToLeave) - 1, rating, minPrice, maxPrice }),
+        );
+    }, [toggleLoad, sortBy, keyword, pageWantToLeave]);
     return (
         <>
             <div className={styles.shopSectionContainer}>
@@ -110,7 +112,10 @@ const ShopSection = (props) => {
                                             </Typography>
                                             <Button
                                                 onClick={(e) => {
-                                                    replaceParams([{ key: 'sort-by', value: 'newest' }]);
+                                                    replaceParams([
+                                                        { key: 'sort-by', value: 'newest' },
+                                                        { key: 'page', value: 1 },
+                                                    ]);
                                                 }}
                                                 type="ghost"
                                                 sx={{ mr: 1 }}
@@ -120,7 +125,10 @@ const ShopSection = (props) => {
                                             <div className="" style={{ cursor: 'pointer', zIndex: '2' }}>
                                                 <select
                                                     onChange={(e) => {
-                                                        replaceParams([{ key: 'sort-by', value: e.target.value }]);
+                                                        replaceParams([
+                                                            { key: 'sort-by', value: e.target.value },
+                                                            { key: 'page', value: 1 },
+                                                        ]);
                                                     }}
                                                     value={sortBy}
                                                     class="form-select"
@@ -133,7 +141,10 @@ const ShopSection = (props) => {
                                             </div>
                                             <Button
                                                 onClick={(e) => {
-                                                    replaceParams([{ key: 'sort-by', value: 'total_sales' }]);
+                                                    replaceParams([
+                                                        { key: 'sort-by', value: 'total_sales' },
+                                                        { key: 'page', value: 1 },
+                                                    ]);
                                                 }}
                                                 type="ghost"
                                                 sx={{ mr: 1 }}
@@ -176,13 +187,19 @@ const ShopSection = (props) => {
                                 >
                                     {keyword || category
                                         ? pages > 1 && (
-                                              <Pagination
-                                                  pages={pages}
-                                                  page={page}
-                                                  // category={category ? category : ''}
-                                                  keyword={keyword ? keyword : ''}
-                                                  category={category || ''}
-                                              />
+                                              <div className="col-12 d-flex justify-content-center">
+                                                  <Pagination
+                                                      color="primary"
+                                                      count={pages}
+                                                      page={page + 1}
+                                                      // category={category ? category : ''}
+                                                      onChange={(e, page) => {
+                                                          replaceParams([{ key: 'page', value: page }]);
+                                                      }}
+                                                      keyword={keyword ? keyword : ''}
+                                                      category={category || ''}
+                                                  />
+                                              </div>
                                           )
                                         : pages > 1 && (
                                               <Link to={'today-product'} style={{ width: '30%' }}>

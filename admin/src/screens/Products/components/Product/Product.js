@@ -26,6 +26,7 @@ import { formatMoney } from '../../../../utils/formatMoney';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import zIndex from '@mui/material/styles/zIndex';
 const Product = (props) => {
   const { product } = props;
   const dispatch = useDispatch();
@@ -56,7 +57,7 @@ const Product = (props) => {
   const isDeleted = product?.deleted;
   const isDisabled = product?.disabled;
   return (
-    <tr>
+    <tr style={{ opacity: isDisabled ? '0.5' : 1 }}>
       <td>
         <Avatar alt={product?.name} src={product?.images?.[0]} />
       </td>
@@ -71,7 +72,7 @@ const Product = (props) => {
         <Typography>{product?.category?.name || 'Thể loại sản phẩm'} </Typography>
       </td>
       <td>
-        <div className="d-flex align-content-center">
+        <div className="d-flex align-content-center align-items-center" style={{ height: '100%' }}>
           <Typography sx={{ textDecoration: 'line-through' }} color="black">
             {formatMoney(product?.price || 0)}
           </Typography>

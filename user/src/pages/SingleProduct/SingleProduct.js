@@ -295,49 +295,57 @@ const SingleProduct = () => {
                                                 className="d-flex mt-4"
                                                 style={{ marginTop: '10px', marginLeft: '25px' }}
                                             >
-                                                <Tooltip
-                                                    title={
-                                                        !(haveQuantityOfCurrentVariant > 0)
-                                                            ? 'Bạn cần chọn màu sắc và kích cỡ trước'
-                                                            : ''
-                                                    }
-                                                >
-                                                    <div className="col-4" style={{ marginRight: '15px' }}>
-                                                        <LoadingButton
-                                                            disabled={
-                                                                !(haveQuantityOfCurrentVariant > 0) || quantity < qty
+                                                {product?.deleted || product?.disabled ? (
+                                                    <Typography color="error">Sản phẩm tạm thời ngưng bán</Typography>
+                                                ) : (
+                                                    <Fragment>
+                                                        <Tooltip
+                                                            title={
+                                                                !(haveQuantityOfCurrentVariant > 0)
+                                                                    ? 'Bạn cần chọn màu sắc và kích cỡ trước'
+                                                                    : ''
                                                             }
-                                                            variant="outlined"
-                                                            loading={loadingAddtoCart}
-                                                            onClick={AddToCartHandle}
-                                                            className="col-12 btn text-primary"
-                                                            loadingPosition="start"
                                                         >
-                                                            Thêm vào giỏ hàng
-                                                        </LoadingButton>
-                                                    </div>
-                                                </Tooltip>
-                                                <Tooltip
-                                                    title={
-                                                        !(haveQuantityOfCurrentVariant > 0)
-                                                            ? 'Bạn cần chọn màu sắc và kích cỡ trước'
-                                                            : ''
-                                                    }
-                                                >
-                                                    <div className="col-4">
-                                                        <Button
-                                                            disabled={
-                                                                !(haveQuantityOfCurrentVariant > 0) || quantity < qty
+                                                            <div className="col-4" style={{ marginRight: '15px' }}>
+                                                                <LoadingButton
+                                                                    disabled={
+                                                                        !(haveQuantityOfCurrentVariant > 0) ||
+                                                                        quantity < qty
+                                                                    }
+                                                                    variant="outlined"
+                                                                    loading={loadingAddtoCart}
+                                                                    onClick={AddToCartHandle}
+                                                                    className="col-12 btn text-primary"
+                                                                    loadingPosition="start"
+                                                                >
+                                                                    Thêm vào giỏ hàng
+                                                                </LoadingButton>
+                                                            </div>
+                                                        </Tooltip>
+                                                        <Tooltip
+                                                            title={
+                                                                !(haveQuantityOfCurrentVariant > 0)
+                                                                    ? 'Bạn cần chọn màu sắc và kích cỡ trước'
+                                                                    : ''
                                                             }
-                                                            variant="contained"
-                                                            style={{ minWidth: 120 }}
-                                                            onClick={buyProductHandle}
-                                                            className="col-2 btn btn-primary btn-buy-single-product"
                                                         >
-                                                            Mua ngay
-                                                        </Button>
-                                                    </div>
-                                                </Tooltip>
+                                                            <div className="col-4">
+                                                                <Button
+                                                                    disabled={
+                                                                        !(haveQuantityOfCurrentVariant > 0) ||
+                                                                        quantity < qty
+                                                                    }
+                                                                    variant="contained"
+                                                                    style={{ minWidth: 120 }}
+                                                                    onClick={buyProductHandle}
+                                                                    className="col-2 btn btn-primary btn-buy-single-product"
+                                                                >
+                                                                    Mua ngay
+                                                                </Button>
+                                                            </div>
+                                                        </Tooltip>
+                                                    </Fragment>
+                                                )}
                                             </div>
                                         </>
                                     }
