@@ -121,7 +121,12 @@ const OrderDetail = () => {
                           </td>
                           <td>{formatMoney(order?.shippingPrice || 0)}</td>
                         </tr>
-
+                        <tr>
+                          <td>
+                            <strong>Giảm giá</strong>
+                          </td>
+                          <td>{formatMoney(order?.totalDiscount || 0)}</td>
+                        </tr>
                         <tr>
                           <td>
                             <strong>Tổng thanh toán</strong>
