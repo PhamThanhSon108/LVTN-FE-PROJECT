@@ -2,6 +2,8 @@ import React, { useEffect, Fragment, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
+    Alert,
+    AlertTitle,
     Badge,
     Box,
     Button,
@@ -62,14 +64,16 @@ const ModalAddress = ({ addressOld, isOpenModal, handleClose, handleChangeAddres
             <Card sx={style}>
                 <div>
                     <Fragment>
-                        <ModalUpdateAddress
-                            isOpenModal={!!openModalUpdate}
-                            handleOpenModal={setOpenModalUpdate}
-                            address={addressWantToUpdate}
-                            variant={openModalUpdate}
-                            //cập nhật địa chỉ giao hàng mới
-                            setCurrentAddress={setCurrentAddress}
-                        />
+                        {!!openModalUpdate ? (
+                            <ModalUpdateAddress
+                                isOpenModal={!!openModalUpdate}
+                                handleOpenModal={setOpenModalUpdate}
+                                address={addressWantToUpdate}
+                                variant={openModalUpdate}
+                                //cập nhật địa chỉ giao hàng mới
+                                setCurrentAddress={setCurrentAddress}
+                            />
+                        ) : null}
                         <List sx={{ width: '100%', bgcolor: 'background.paper', pt: 0 }}>
                             <Box className="d-flex justify-content-between align-items-center" sx={{ boxShadow: 1 }}>
                                 <Typography sx={{ ml: '16px' }} component="div" variant="h6" color="text.primary">
@@ -89,7 +93,26 @@ const ModalAddress = ({ addressOld, isOpenModal, handleClose, handleChangeAddres
                                 ) : null}
                             </div>
                             <div className={stylesProfile.addressListWrapper}>
-                                {listAddress.map((address) => (
+                                {!(listAddress?.length > 0) ? (
+                                    <Alert
+                                        className="col-12"
+                                        sx={{ mt: 2, mb: 2, display: 'flex', flexDirection: 'row', width: '100%' }}
+                                        severity="warning"
+                                    >
+                                        <div sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Typography>Bạn chưa có địa chỉ giao hàng nào</Typography>
+                                            <Typography
+                                                sx={{ cursor: 'pointer' }}
+                                                variant="body2"
+                                                color="primary"
+                                                onClick={() => handleClickOpenModalUpdate('add')}
+                                            >
+                                                Thêm ngay
+                                            </Typography>
+                                        </div>
+                                    </Alert>
+                                ) : null}
+                                {listAddress?.map((address) => (
                                     <label
                                         onClick={() => setCurrentAddress(address)}
                                         key={address?._id}
@@ -158,7 +181,11 @@ const ModalAddress = ({ addressOld, isOpenModal, handleClose, handleChangeAddres
                                 ))}
                             </div>
                             <Box className="col-12 d-flex justify-content-end pt-2">
-                                <Button variant="contained" onClick={handleConfirmChangeAddress}>
+                                <Button
+                                    disabled={!currentAddress}
+                                    variant="contained"
+                                    onClick={handleConfirmChangeAddress}
+                                >
                                     Xác nhận
                                 </Button>
                             </Box>

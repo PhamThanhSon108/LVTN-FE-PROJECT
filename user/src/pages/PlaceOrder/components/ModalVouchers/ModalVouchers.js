@@ -2,6 +2,7 @@ import React, { useEffect, Fragment, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
+    Alert,
     Badge,
     Box,
     Button,
@@ -32,6 +33,7 @@ import { toast } from 'react-toastify';
 import { getMyVouchers } from '~/Redux/Actions/voucherAction';
 import Voucher from '../Voucher/Voucher';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 const style = {
     position: 'absolute',
@@ -82,6 +84,17 @@ const ModalVouchers = ({ voucherToApply, isOpenModal, handleClose, handleApplyVo
                                 <Typography sx={{ ml: '16px' }} component="div" variant="h6" color="text.primary">
                                     Chọn voucher
                                 </Typography>
+                                <Link
+                                    sx={{ cursor: 'pointer' }}
+                                    to={'/voucher'}
+                                    variant="body2"
+                                    color="primary"
+                                    onClick={() => handleClickOpenModalUpdate('add')}
+                                >
+                                    <Typography sx={{ mr: 2 }} color={'primary'}>
+                                        Thêm ngay
+                                    </Typography>
+                                </Link>
                             </Box>
                             <div style={{ height: 2.5 }}>
                                 {loading ? (
@@ -91,7 +104,7 @@ const ModalVouchers = ({ voucherToApply, isOpenModal, handleClose, handleApplyVo
                                 ) : null}
                             </div>
                             <div className={stylesProfile.addressListWrapper}>
-                                {vouchers.map((voucher) => {
+                                {vouchers?.map((voucher) => {
                                     const startDate = moment(voucher?.startDate);
                                     const endDate = moment(voucher?.endDate);
                                     const effectiveLater = startDate <= moment() && endDate >= moment();
@@ -121,7 +134,27 @@ const ModalVouchers = ({ voucherToApply, isOpenModal, handleClose, handleApplyVo
                                             </label>
                                         );
                                     return <Fragment />;
-                                })}
+                                })}{' '}
+                                {!(vouchers?.length > 0) ? (
+                                    <Alert
+                                        className="col-12"
+                                        sx={{ mt: 2, mb: 2, display: 'flex', flexDirection: 'row', width: '100%' }}
+                                        severity="warning"
+                                    >
+                                        <div sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Typography>Bạn chưa có voucher nào</Typography>
+                                            <Link
+                                                sx={{ cursor: 'pointer' }}
+                                                to={'/voucher'}
+                                                variant="body2"
+                                                color="primary"
+                                                onClick={() => handleClickOpenModalUpdate('add')}
+                                            >
+                                                Thêm ngay
+                                            </Link>
+                                        </div>
+                                    </Alert>
+                                ) : null}
                             </div>
                             <Box className="col-12 d-flex justify-content-end pt-2">
                                 <Button variant="contained" onClick={handleConfirmChangeAddress}>

@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getMyOrders } from '~/Redux/Actions/orderActions';
 import Loading from '~/components/LoadingError/Loading';
 import Message from '~/components/LoadingError/Error';
-import { Card, Chip, CircularProgress, Pagination, Typography } from '@mui/material';
+import { Button, Card, Chip, CircularProgress, Pagination, Typography } from '@mui/material';
 import { stepShipping } from '~/pages/DetailOrder/DetailOrder';
 import { getUserDetails } from '~/Redux/Actions/userActions';
 import useSearchParamsCustom from '~/hooks/useSearchParamCustom';
@@ -71,18 +71,20 @@ const MyOrders = () => {
     return (
         <div className=" d-flex justify-content-center align-items-center flex-column">
             <Fragment>
-                {(!orders || orders?.length === 0) && userInfo?._id ? (
-                    <div className="col-12 alert alert-info text-center mt-3">
+                {orders?.orders?.length === 0 && userInfo?._id ? (
+                    <div className="col-12  text-center mt-3">
                         <Typography>Bạn chưa có đơn hàng nào</Typography>
                         <Link
-                            className="btn btn-success mx-2 px-3 py-2"
+                            className="btn mx-2 px-3 py-2"
                             to="/"
                             style={{
                                 fontSize: '12px',
                                 marginTop: '4px',
                             }}
                         >
-                            <Typography>SHOPPING NGAY!</Typography>
+                            <Button variant="contained" sx={{ width: '100%' }} color="primary">
+                                SHOPPING NGAY!
+                            </Button>
                         </Link>
                     </div>
                 ) : (

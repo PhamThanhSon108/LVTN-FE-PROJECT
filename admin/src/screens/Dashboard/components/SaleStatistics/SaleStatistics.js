@@ -27,7 +27,7 @@ const SaleStatistics = () => {
               width: '100%',
               height: '350px',
             }}
-            src="https://charts.mongodb.com/charts-fashionshop-soddq/embed/charts?id=646984bc-a471-4053-8faa-ad936c8895ae&maxDataAge=1800&theme=light&autoRefresh=true"
+            src="https://charts.mongodb.com/charts-fashionshop-soddq/embed/charts?id=646984bc-a471-4053-8faa-ad936c8895ae&maxDataAge=300&theme=light&autoRefresh=true"
           ></iframe>
         </article>
       </div>

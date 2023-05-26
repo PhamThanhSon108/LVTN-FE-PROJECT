@@ -15,7 +15,7 @@ const OrdersStatistics = () => {
               width: '100%',
               height: '350px',
             }}
-            src="https://charts.mongodb.com/charts-fashionshop-soddq/embed/charts?id=727925e8-9815-49b5-9ce2-a628f9c0eff0&maxDataAge=1800&theme=light&autoRefresh=true"
+            src="https://charts.mongodb.com/charts-fashionshop-soddq/embed/charts?id=727925e8-9815-49b5-9ce2-a628f9c0eff0&maxDataAge=300&theme=light&autoRefresh=true"
           ></iframe>
         </article>
       </div>

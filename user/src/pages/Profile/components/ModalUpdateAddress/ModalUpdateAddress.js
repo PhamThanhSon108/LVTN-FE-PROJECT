@@ -42,7 +42,7 @@ export default function ModalUpdateAddress({
     handleOpenModal,
     address,
     variant = 'update',
-    setCurrentAddress,
+    setCurrentAddress = () => {},
 }) {
     const handleClose = () => {
         reset(defaultFormAddress);
@@ -105,14 +105,16 @@ export default function ModalUpdateAddress({
 
     useEffect(() => {
         if (address) {
-            reset({
-                address: {
-                    ...address,
-                    province: { ProvinceName: address?.province.name, ProvinceID: address?.province.id },
-                    district: { DistrictName: address?.district.name, DistrictID: address?.district.id },
-                    ward: { WardName: address?.ward.name, WardCode: address?.ward?.id },
-                },
-            });
+            if (variant === 'update') {
+                reset({
+                    address: {
+                        ...address,
+                        province: { ProvinceName: address?.province.name, ProvinceID: address?.province.id },
+                        district: { DistrictName: address?.district.name, DistrictID: address?.district.id },
+                        ward: { WardName: address?.ward.name, WardCode: address?.ward?.id },
+                    },
+                });
+            }
             if (address?.province?.id) dispatch(getDistricts(address.province.id));
             if (address?.district?.id) dispatch(getWards(address.district.id));
         }

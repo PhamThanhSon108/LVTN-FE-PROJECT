@@ -2,6 +2,7 @@ import React, { useEffect, Fragment, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
+    Alert,
     Badge,
     Box,
     Chip,
@@ -66,12 +67,14 @@ const AddressTab = () => {
     };
     return (
         <Fragment>
-            <ModalUpdateAddress
-                isOpenModal={!!openModalUpdate}
-                handleOpenModal={setOpenModalUpdate}
-                address={addressWantToUpdate}
-                variant={openModalUpdate}
-            />
+            {!!openModalUpdate ? (
+                <ModalUpdateAddress
+                    isOpenModal={!!openModalUpdate}
+                    handleOpenModal={setOpenModalUpdate}
+                    address={addressWantToUpdate}
+                    variant={openModalUpdate}
+                />
+            ) : null}
             <List sx={{ width: '100%', bgcolor: 'background.paper', pt: 0 }}>
                 <Box className="d-flex justify-content-between align-items-center" sx={{ boxShadow: 1 }}>
                     <Typography sx={{ ml: '16px' }} component="div" variant="h6" color="text.primary">
@@ -89,6 +92,24 @@ const AddressTab = () => {
                     ) : null}
                 </div>
                 <div className={styles.addressListWrapper}>
+                    {!(listAddress?.length > 0) ? (
+                        <Alert
+                            sx={{ mt: 2, mb: 2, display: 'flex', flexDirection: 'row', width: '100%' }}
+                            severity="warning"
+                        >
+                            <div sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                <Typography>Bạn chưa có địa chỉ giao hàng nào</Typography>
+                                <Typography
+                                    sx={{ cursor: 'pointer' }}
+                                    variant="body2"
+                                    color="primary"
+                                    onClick={() => handleClickOpenModalUpdate('add')}
+                                >
+                                    Thêm ngay
+                                </Typography>
+                            </div>
+                        </Alert>
+                    ) : null}
                     {listAddress.map((address) => (
                         <Fragment key={address?._id}>
                             <ListItem
