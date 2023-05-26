@@ -31,6 +31,12 @@ const ProfileTab = () => {
 
     const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
     const { loading: updateLoading } = userUpdateProfile;
+    const validateAge = (value) => {
+        const currentDate = moment();
+        const selectedDate = moment(value);
+        const age = currentDate.diff(selectedDate, 'years');
+        return age >= 16; // Tuổi phải lớn hơn hoặc bằng 16
+    };
     const handleAfterFetch = {
         success: () => {
             dispatch(getUserDetails('profile'));
@@ -182,7 +188,7 @@ const ProfileTab = () => {
                             <Controller
                                 name="birthday"
                                 control={control}
-                                rules={{ required: true }}
+                                rules={{ required: true, validate: validateAge }}
                                 render={({ field, fieldState }) => (
                                     <Fragment>
                                         <TextField
@@ -201,6 +207,10 @@ const ProfileTab = () => {
                                                 {
                                                     error: fieldState?.error?.type === 'required',
                                                     message: 'Bạn chưa nhập trường này',
+                                                },
+                                                {
+                                                    error: fieldState?.error?.type === 'validate',
+                                                    message: 'Bạn phải đủ 16 tuổi',
                                                 },
                                             ])}
                                         </p>
@@ -229,6 +239,11 @@ const ProfileTab = () => {
                                         value={'female'}
                                         control={<Radio size={inputPropsConstants.smallSize} />}
                                         label="Nữ"
+                                    />
+                                    <FormControlLabel
+                                        value={'other'}
+                                        control={<Radio size={inputPropsConstants.smallSize} />}
+                                        label="Khác"
                                     />
                                 </RadioGroup>
                             )}

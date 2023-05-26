@@ -78,7 +78,7 @@ const OrdersScreen = (props) => {
                 <CircularProgress />
               </div>
             ) : error ? (
-              <Message variant="alert-danger">{error}</Message>
+              <Message variant="alert-danger mt-2">Không tìm thấy đơn hàng nào</Message>
             ) : (
               <Orders orders={orders} />
             )}

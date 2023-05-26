@@ -1,4 +1,5 @@
 import {
+    Button,
     CardContent,
     CardHeader,
     CircularProgress,
@@ -116,6 +117,17 @@ export default function WareVouchers() {
                 <Divider />
 
                 <StyledCardContent sx={{ flexWrap: 'wrap', display: 'flex', width: '100%' }} className="row">
+                    {!(vouchers?.length > 0) ? (
+                        <div className="col-12 d-flex justify-content-center flex-column align-items-center">
+                            <div className="d-flex justify-content-center flex-column">
+                                <Typography>Bạn chưa có voucher nào</Typography>
+                                <Button sx={{ mt: 1 }} variant="contained" color="primary">
+                                    Săn ngay
+                                </Button>
+                            </div>
+                        </div>
+                    ) : null}
+
                     {vouchers?.map((voucher) => {
                         return (
                             <div key={voucher?._id} className="col-lg-6 col-md-12 col-sm-12">

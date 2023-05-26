@@ -19,6 +19,7 @@ import {
     Radio,
     RadioGroup,
     TextField,
+    Tooltip,
     Typography,
 } from '@mui/material';
 import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
@@ -98,10 +99,12 @@ const PlaceOrderScreen = ({ history }) => {
                     <Typography variant="body1" color={'InfoText'} className="col-3" sx={{ fontWeight: 600, pl: 1 }}>
                         {loadingGetList ? (
                             <CircularProgress size={15} />
+                        ) : !address?.phone ? (
+                            <Typography color={'error'}>Bạn chưa có địa chỉ giao hàng</Typography>
                         ) : (
-                            `${address?.name || userInfo?.name || 'Bạn chưa có địa chỉ giao hàng vui lòng chọn'} | ${
-                                address?.phone || userInfo?.phone
-                            }`
+                            <Typography>
+                                {address?.name || 'Bạn chưa có địa chỉ giao hàng vui lòng chọn'} |{address?.phone || ''}
+                            </Typography>
                         )}
                     </Typography>
 
@@ -375,23 +378,26 @@ const PlaceOrderScreen = ({ history }) => {
                 style={{ padding: '24px 0', backgroundColor: '#fff', marginTop: '10px', justifyContent: 'end' }}
             >
                 {/* total */}
-
-                <LoadingButton
-                    sx={{ width: '30%' }}
-                    type="submit"
-                    color="primary"
-                    variant="contained"
-                    loading={loading}
-                    onClick={placeOrderHandler}
-                    disabled={
-                        !address ||
-                        cartOrder.cartOrderItems?.find(
-                            (product) => product?.variant?.disabled || product?.variant?.deleted,
-                        )
-                    }
-                >
-                    ĐẶT HÀNG
-                </LoadingButton>
+                <Tooltip title={!address ? 'Bạn chưa chọn địa chỉ giao hàng' : ''}>
+                    <div style={{ width: '30%' }}>
+                        <LoadingButton
+                            sx={{ width: '100%' }}
+                            type="submit"
+                            color="primary"
+                            variant="contained"
+                            loading={loading}
+                            onClick={placeOrderHandler}
+                            disabled={
+                                !address ||
+                                cartOrder.cartOrderItems?.find(
+                                    (product) => product?.variant?.disabled || product?.variant?.deleted,
+                                )
+                            }
+                        >
+                            ĐẶT HÀNG
+                        </LoadingButton>
+                    </div>
+                </Tooltip>
             </div>
         </div>
     );

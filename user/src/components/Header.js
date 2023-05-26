@@ -30,7 +30,6 @@ const Header = () => {
     const [keyword, setKeyword] = useState('');
     const logoutHandler = () => {
         dispatch(logout());
-        window.location.assign('/');
     };
 
     function avatarUser() {

@@ -17,7 +17,8 @@ const Orders = (props) => {
             <th scope="col">Thanh toán</th>
             <th scope="col">Tổng thanh toán</th>
             <th scope="col">Ngày đặt</th>
-            <th>Trạng thái</th>
+            <th>Trạng thái thanh toán</th>
+            <th>Trạng thái đơn hàng</th>
             <th scope="col" className="text-end"></th>
           </tr>
         </thead>
@@ -28,7 +29,7 @@ const Orders = (props) => {
             </tr>
           )}
           {orders?.orders?.map((order) => {
-            const status = order?.statusHistory?.at(-1)?.status || order?.status;
+            const status = order?.status;
             return (
               <tr key={order._id}>
                 <td className="col-2">
@@ -47,6 +48,14 @@ const Orders = (props) => {
                     {moment(order.createdAt).format('hh:mm MM/DD/YYYY')}
                   </Typography>
                 </td>
+                <td style={{ position: 'relative' }}>
+                  {order?.paymentInformation?.paid ? (
+                    <Chip size="small" color={'success'} variant="outlined" label="Đã thanh toán" />
+                  ) : (
+                    <Chip size="small" color={'primary'} variant="outlined" label="Chưa thanh toán" />
+                  )}
+                </td>
+
                 <td style={{ position: 'relative' }}>
                   <Badge badgeContent={order?.status === 'placed' ? 'Mới' : null} color="error">
                     <Chip

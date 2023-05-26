@@ -42,6 +42,11 @@ const Register = () => {
             msg.borderRed1 = 'border-red';
             msg.colorRed1 = 'color-red';
         }
+        if (name && name?.length >= 50) {
+            msg.name = 'Họ và tên quá dài, vui lòng nhập dưới 50 ký tự';
+            msg.borderRed1 = 'border-red';
+            msg.colorRed1 = 'color-red';
+        }
 
         if (isEmpty(email)) {
             msg.email = 'Bạn chưa nhập email';

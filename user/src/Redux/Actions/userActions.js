@@ -296,7 +296,9 @@ export const AddShippingAddress =
         try {
             dispatch({ type: SHIPPING_ADDRESS_REQUEST });
             const { data } = await request.post(`/users/address/add-user-address`, address);
-            handleAfterFetch.success('Thêm địa chỉ giao hàng thành công');
+            const newAddress = data?.data?.addressList?.at(-1);
+
+            handleAfterFetch.success('Thêm địa chỉ giao hàng thành công', newAddress);
             dispatch({ type: SHIPPING_ADDRESS_SUCCESS, payload: data?.data?.addressList || [] });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;

@@ -60,8 +60,8 @@ export const stepShipping = {
   placed: {
     icon: <StickyNote2OutlinedIcon />,
     label: 'Đặt hàng',
-    labelActive: 'Đã đặt đơn hàng',
-    color: 'info',
+    labelActive: 'Đang chờ xác nhận',
+    color: 'warning',
   },
   confirm: {
     icon: <CheckOutlinedIcon />,
