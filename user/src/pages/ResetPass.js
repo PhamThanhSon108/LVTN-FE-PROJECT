@@ -29,13 +29,7 @@ export default function ResetPass() {
     } = useForm();
     // password.current = watch('password', '');
     const submitResetPassword = async (data) => {
-        dispatch(
-            resetPassWord(
-                resetPasswordToken,
-                { ...data, email: data.emailReset, confirmPassword: data.newPassConfirm },
-                history,
-            ),
-        );
+        dispatch(resetPassWord(resetPasswordToken, { ...data, confirmPassword: data.newPassConfirm }, history));
     };
 
     return (
@@ -52,30 +46,6 @@ export default function ResetPass() {
                 <Typography variant="h5" className="mb-3 mt-1">
                     Tạo mật khẩu mới
                 </Typography>
-                <Controller
-                    name="emailReset"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                        required: 'Bạn chưa nhập email',
-                        pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                    }}
-                    render={({ field }) => (
-                        <TextField {...field} sx={{ width: '100%', mb: 0.5 }} size="small" label="Email" />
-                    )}
-                />
-
-                {/* <ErrorMessage errors={errors} name="emailReset" render={({ message }) => <p>{message}</p>} /> */}
-                {errors.emailReset && errors.emailReset.type === 'required' && (
-                    <p className="text-danger m-0" style={{ textAlign: 'start' }}>
-                        {errors.emailReset.message}
-                    </p>
-                )}
-                {errors.emailReset && errors.emailReset.type === 'pattern' ? (
-                    <p style={{ textAlign: 'start' }} className="text-danger m-0">
-                        Email không hợp lệ
-                    </p>
-                ) : null}
 
                 <Controller
                     name="newPassword"
