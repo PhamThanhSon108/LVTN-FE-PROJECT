@@ -68,6 +68,7 @@ const ModalVouchers = ({ voucherToApply, isOpenModal, handleClose, handleApplyVo
     useEffect(() => {
         dispatch(getMyVouchers());
     }, []);
+    let numberVoucher = 0;
     return (
         <Modal open={isOpenModal} onClose={() => handleClose(false)}>
             <Card sx={style}>
@@ -103,7 +104,7 @@ const ModalVouchers = ({ voucherToApply, isOpenModal, handleClose, handleApplyVo
                                     />
                                 ) : null}
                             </div>
-                            <div className={stylesProfile.addressListWrapper}>
+                            <div className={stylesProfile.addressListWrapper} style={{ minHeight: '100px' }}>
                                 {vouchers?.map((voucher) => {
                                     const startDate = moment(voucher?.startDate);
                                     const endDate = moment(voucher?.endDate);
@@ -120,7 +121,8 @@ const ModalVouchers = ({ voucherToApply, isOpenModal, handleClose, handleApplyVo
                                             ),
                                         );
 
-                                    if (!used && applyForProduct && effectiveLater && !endOfUse)
+                                    if (!used && applyForProduct && effectiveLater && !endOfUse) {
+                                        numberVoucher = numberVoucher + 1;
                                         return (
                                             <label
                                                 onClick={(e) => {
@@ -133,9 +135,10 @@ const ModalVouchers = ({ voucherToApply, isOpenModal, handleClose, handleApplyVo
                                                 <Voucher voucher={voucher} voucherToApply={voucherToApply} />
                                             </label>
                                         );
+                                    }
                                     return <Fragment />;
                                 })}{' '}
-                                {!(vouchers?.length > 0) ? (
+                                {(!(vouchers?.length > 0) || numberVoucher === 0) && !loading ? (
                                     <Alert
                                         className="col-12"
                                         sx={{ mt: 2, mb: 2, display: 'flex', flexDirection: 'row', width: '100%' }}
@@ -150,14 +153,20 @@ const ModalVouchers = ({ voucherToApply, isOpenModal, handleClose, handleApplyVo
                                                 color="primary"
                                                 onClick={() => handleClickOpenModalUpdate('add')}
                                             >
-                                                Thêm ngay
+                                                <Typography variant="caption" color="primary">
+                                                    Thêm ngay
+                                                </Typography>
                                             </Link>
                                         </div>
                                     </Alert>
                                 ) : null}
                             </div>
                             <Box className="col-12 d-flex justify-content-end pt-2">
-                                <Button variant="contained" onClick={handleConfirmChangeAddress}>
+                                <Button
+                                    disabled={!currentVoucher}
+                                    variant="contained"
+                                    onClick={handleConfirmChangeAddress}
+                                >
                                     Áp dụng
                                 </Button>
                             </Box>

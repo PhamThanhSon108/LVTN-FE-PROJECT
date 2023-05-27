@@ -49,7 +49,7 @@ const OrderDetail = () => {
   return (
     <section>
       <Breadcrumbs aria-label="breadcrumb" className="mb-1">
-        <Link underline="hover" color="inherit" href="/orders">
+        <Link underline="hover" color="inherit" to="/orders">
           Danh sách đơn hàng
         </Link>
 
