@@ -66,7 +66,7 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 // LOGOUT
-export const logout = () => (dispatch) => {
+export const logout = (history) => (dispatch) => {
     try {
         dispatch({ type: USER_LOGIN_REQUEST });
 
@@ -75,6 +75,7 @@ export const logout = () => (dispatch) => {
         dispatch({ type: USER_DETAILS_RESET });
         dispatch({ type: ORDER_LIST_MY_RESET });
         dispatch({ type: CART_CONST?.CART_LIST_MY_RESET });
+        window?.location.assign('/login');
     } catch (error) {
         toast.error(
             error.response && error.response.data.message ? error.response.data.message : error.message,

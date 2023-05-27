@@ -17,7 +17,7 @@ import { fetchProductToEdit, updateProduct } from '../../../../Redux/Actions/Pro
 import Toast from '../../../../components/LoadingError/Toast';
 import { UploadImageProduct } from '../UploadImageProduct/UploadImageProduct';
 import { inputPropsConstants } from '../../../../constants/variants';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import { toolbarOptions } from '../../../../constants/productsConstants';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -54,7 +54,7 @@ const EditProduct = () => {
   const [newImages, setNewImages] = useState('');
   const [description, setDescription] = useState('');
   const [classifyValue, setClassifyValue] = useState();
-
+  const history = useHistory();
   const dispatch = useDispatch();
   const productEdit = useSelector((state) => state.productEdit);
   const { loading, product } = productEdit;
@@ -137,7 +137,8 @@ const EditProduct = () => {
   const handleAfterUpdate = {
     success: () => {
       toast.success('Cập nhật sản phẩm thành công', ToastObjects);
-      dispatch(fetchProductToEdit(productId, fetchProduct));
+      // dispatch(fetchProductToEdit(productId, fetchProduct));
+      history.push('/products');
     },
   };
 
@@ -634,9 +635,9 @@ const EditProduct = () => {
                                       <input
                                         type="number"
                                         className=""
-                                        placeholder="Enter price"
+                                        placeholder="Nhập giá"
                                         {...register(`variants.${iClass1}.field.${iClass2}.price`, {
-                                          required: 'This is required',
+                                          required: 'Trường này gồm thông tin bắt buộc',
                                           validate: {
                                             positive: (value) => value >= 0 && value < 100000000000,
                                           },
@@ -647,7 +648,7 @@ const EditProduct = () => {
                                       <input
                                         type="number"
                                         className=""
-                                        placeholder="Enter price"
+                                        placeholder="Nhập giá đặc biệt"
                                         {...register(`variants.${iClass1}.field.${iClass2}.priceSale`, {
                                           validate: {
                                             positive: (value) =>
@@ -657,16 +658,16 @@ const EditProduct = () => {
                                                   Number(getValues(`variants.${iClass1}.field.${iClass2}.price`))),
                                           },
                                         })}
-                                        max={getValues(`variants.${iClass1}.field.${iClass2}.price`)}
+                                        // max={getValues(`variants.${iClass1}.field.${iClass2}.price`)}
                                       ></input>
                                     </td>
                                     <td className="col-2">
                                       <input
                                         type="number"
                                         className="flex-grow-1"
-                                        placeholder="Enter quantity"
+                                        placeholder="Nhập số lượng"
                                         {...register(`variants.${iClass1}.field.${iClass2}.quantity`, {
-                                          required: 'This is required',
+                                          required: 'Trường này gồm thông tin bắt buộc',
                                           validate: {
                                             positive: (value) => value >= 0 && value < 10000,
                                           },
