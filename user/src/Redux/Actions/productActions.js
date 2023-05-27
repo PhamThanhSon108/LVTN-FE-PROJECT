@@ -20,6 +20,7 @@ import request from '../../utils/request';
 import { toast } from 'react-toastify';
 import { Toastobjects } from '~/components/LoadingError/Toast';
 import { getProducts } from '~/services/productService';
+import axios from 'axios';
 // PRODUCT LIST ALL
 export const ListProductAll = () => async (dispatch) => {
     try {
@@ -64,11 +65,12 @@ export const getSimilarProduct =
     async (dispatch) => {
         try {
             dispatch({ type: PRODUCT_SIMILAR_REQUEST });
-            const { data } = await getProducts({
-                category,
-                pageNumber,
-                pageSize,
-            });
+            // const { data } = await getProducts({
+            //     category,
+            //     pageNumber,
+            //     pageSize,
+            // });
+            const { data } = await request.get('products/recommend', { params: { id, limit: 50, page: 0 } });
             const productsObject = {
                 ...data?.data,
                 products: data?.data?.products?.filter((product) => product?._id !== id),
