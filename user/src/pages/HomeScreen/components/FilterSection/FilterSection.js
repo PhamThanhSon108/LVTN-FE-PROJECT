@@ -144,7 +144,7 @@ export default function FilterSection({ setToggleLoad }) {
                                 ? category.children.map((childrenCategory) => (
                                       <StyledTreeItemRoot
                                           key={childrenCategory._id}
-                                          nodeId={childrenCategory._id}
+                                          nodeId={childrenCategory?.slug}
                                           label={childrenCategory.name}
                                           sx={{
                                               color:

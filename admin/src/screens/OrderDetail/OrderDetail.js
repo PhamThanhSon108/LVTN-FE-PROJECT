@@ -8,7 +8,7 @@ import moment from 'moment';
 import OrderDetailProducts from './components/OrderDetailProducts/OrderDetailProducts';
 import OrderDetailInfo from './components/OrderDetailInfo/OrderDetailInfo';
 import { formatMoney } from '../../utils/formatMoney';
-import { Alert, Chip, Tooltip, Typography } from '@mui/material';
+import { Alert, Chip, LinearProgress, Tooltip, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
 import ModalCancelOrder from './components/ModalCancelOrder/ModalCancelOrder';
 import ModalPreviewOrder from './components/ModalPreviewOrder/ModalPreviewOrder';
@@ -48,6 +48,11 @@ const OrderDetail = () => {
 
   return (
     <section>
+      <div style={{ height: 2.5 }}>
+        {loading ? (
+          <LinearProgress sx={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, height: '2.5px' }} />
+        ) : null}
+      </div>
       <div className="card">
         <header className="card-header p-3 Header-white">
           <div className="row align-items-center ">

@@ -49,7 +49,9 @@ const Orders = (props) => {
                   </Typography>
                 </td>
                 <td style={{ position: 'relative' }}>
-                  {order?.paymentInformation?.paid ? (
+                  {order?.paymentInformation?.paid ||
+                  (order?.statusHistory?.find((step) => step?.status === 'delivered') &&
+                    order?.statusHistory?.length > 2) ? (
                     <Chip size="small" color={'success'} variant="outlined" label="Đã thanh toán" />
                   ) : (
                     <Chip size="small" color={'primary'} variant="outlined" label="Chưa thanh toán" />
