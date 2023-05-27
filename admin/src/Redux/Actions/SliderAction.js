@@ -38,7 +38,7 @@ export const deleteSlider = (id) => async (dispatch, getState) => {
     dispatch({ type: SLIDER_DELETE_REQUEST });
 
     await request.delete(`/banners/${id}`);
-    toast.success('Delete banner success', ToastObjects);
+    toast.success('Xóa banner thành công', ToastObjects);
     dispatch({ type: SLIDER_DELETE_SUCCESS });
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message;

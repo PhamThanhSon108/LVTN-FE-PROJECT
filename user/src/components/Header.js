@@ -29,7 +29,7 @@ const Header = () => {
     const [searchValue, setSearchValue] = useState(getParamValue('keyword'));
     const [keyword, setKeyword] = useState('');
     const logoutHandler = () => {
-        dispatch(logout());
+        dispatch(logout(history));
     };
 
     function avatarUser() {
