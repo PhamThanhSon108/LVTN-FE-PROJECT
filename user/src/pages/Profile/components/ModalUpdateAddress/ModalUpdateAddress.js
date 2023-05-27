@@ -220,16 +220,18 @@ export default function ModalUpdateAddress({
                                     }}
                                     render={({ field, fieldState }) => (
                                         <Autocomplete
+                                            noOptionsText="Không tìm thấy kết quả"
+                                            loadingText="Đang tải"
                                             loading={loadingProvinces}
                                             {...field}
                                             onChange={(e, value) => {
                                                 setValue('address.district', { DistrictName: '' });
                                                 setValue('address.ward', { WardName: '' });
                                                 field.onChange(value);
-                                                dispatch(getDistricts(value.ProvinceID));
+                                                dispatch(getDistricts(value?.ProvinceID));
                                             }}
                                             getOptionSelected={(option, value) =>
-                                                option.ProvinceName === value.ProvinceName
+                                                option?.ProvinceName === value?.ProvinceName
                                             }
                                             size="small"
                                             sx={{ width: '100%' }}
@@ -275,12 +277,14 @@ export default function ModalUpdateAddress({
                                     }}
                                     render={({ field, fieldState }) => (
                                         <Autocomplete
+                                            noOptionsText="Không tìm thấy kết quả"
+                                            loadingText="Đang tải"
                                             loading={loadingDistricts}
                                             {...field}
                                             onChange={(e, value) => {
                                                 setValue('address.ward', { WardName: '' });
                                                 field.onChange(value);
-                                                dispatch(getWards(value.DistrictID));
+                                                dispatch(getWards(value?.DistrictID));
                                             }}
                                             getOptionSelected={(option, value) =>
                                                 option?.DistrictName === value?.DistrictName
@@ -290,7 +294,7 @@ export default function ModalUpdateAddress({
                                             fullWidth={true}
                                             disabled={!watch('address.province')?.ProvinceName}
                                             options={districts}
-                                            getOptionLabel={(option) => option.DistrictName}
+                                            getOptionLabel={(option) => option?.DistrictName}
                                             renderInput={(params) => (
                                                 <Fragment>
                                                     <TextField
@@ -329,6 +333,8 @@ export default function ModalUpdateAddress({
                                     render={({ field, fieldState }) => (
                                         <Autocomplete
                                             {...field}
+                                            noOptionsText="Không tìm thấy kết quả"
+                                            loadingText="Đang tải"
                                             loading={loadingWards}
                                             onChange={(e, value) => field.onChange(value)}
                                             size="small"

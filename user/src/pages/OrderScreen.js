@@ -95,7 +95,7 @@ const OrderScreen = ({ match }) => {
             {loading ? (
                 <Loading />
             ) : error ? (
-                <Message variant="alert-danger">{error}</Message>
+                <Message variant="alert-danger"></Message>
             ) : (
                 <>
                     <div className="content-header"></div>

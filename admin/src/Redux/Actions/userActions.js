@@ -11,6 +11,7 @@ import {
 import request, { API_FASHIONSHOP } from '../../utils/request';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { hashPassword } from '../../utils/hashPassword';
 
 // LOGIN
 export const login = (email, password, handleLogin) => async (dispatch) => {
@@ -22,7 +23,8 @@ export const login = (email, password, handleLogin) => async (dispatch) => {
   };
   try {
     dispatch({ type: USER_LOGIN_REQUEST });
-    const { data } = await axios.post(`${API_FASHIONSHOP}users/login`, { email, password });
+    const newPassword = await hashPassword(password);
+    const { data } = await axios.post(`${API_FASHIONSHOP}users/login`, { email, password: newPassword });
     if (data?.data?.user?.role !== 'admin') {
       toast.error('Bạn không có quyền truy cập', ToastObjects);
       dispatch({

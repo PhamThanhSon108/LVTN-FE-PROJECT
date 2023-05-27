@@ -79,8 +79,8 @@ export default function CategorySlider() {
                                     alt={category?.name}
                                 />
 
-                                <div className={styles.categoryCardContent}>
-                                    <Typography noWrap variant="body2" color="text.secondary">
+                                <div className={styles.categoryCardContent + ' col-12'}>
+                                    <Typography className="col-12" noWrap variant="body2" color="text.secondary">
                                         {category?.name}
                                     </Typography>
                                 </div>

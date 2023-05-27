@@ -119,9 +119,11 @@ export default function WareVouchers() {
                         <div className="col-12 d-flex justify-content-center flex-column align-items-center">
                             <div className="d-flex justify-content-center flex-column">
                                 <Typography>Bạn chưa có voucher nào</Typography>
-                                <Button sx={{ mt: 1 }} variant="contained" color="primary">
-                                    Săn ngay
-                                </Button>
+                                <Link to={'/voucher'}>
+                                    <Button sx={{ mt: 1 }} variant="contained" color="primary">
+                                        Săn ngay
+                                    </Button>
+                                </Link>
                             </div>
                         </div>
                     ) : null}

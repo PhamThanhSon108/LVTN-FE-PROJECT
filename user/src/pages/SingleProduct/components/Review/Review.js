@@ -33,7 +33,7 @@ export default function Review() {
     const { loading, error, product } = productDetails;
     const productReviewCreate = useSelector((state) => state.productReviewCreate);
     const [loadingAddtoCart, setLoadingAddtoCart] = useState(false);
-    const [rating, setRating] = useState(4);
+    const [rating, setRating] = useState(5);
     const [comment, setComment] = useState('');
     const { loading: loadingCreateReview, success: successCreateReview } = productReviewCreate;
     const userLogin = useSelector((state) => state.userLogin);

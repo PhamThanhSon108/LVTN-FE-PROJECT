@@ -107,7 +107,7 @@ export default function FilterSection({ setToggleLoad }) {
         }
     }, [dispatch]);
     return (
-        <div className="section-div col-lg-2 col-md-3">
+        <div className="section-div col-lg-2 col-md-2 col-sm-0">
             <div className="Category-section">
                 <div className="section-flex">
                     <Typography noWrap variant="button" color="primary">

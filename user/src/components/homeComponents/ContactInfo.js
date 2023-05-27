@@ -19,7 +19,7 @@ const ContactInfo = () => {
                             <i className="fas fa-map-marker-alt"></i>
                         </div>
                         <h5 className="infor-area-text">Trụ sở</h5>
-                        <p>Gò Vấp - Tp HCM</p>
+                        <p>Quận 12 - Tp HCM</p>
                     </div>
                 </div>
                 <div className="col-12 col-md-4 contact-Box">

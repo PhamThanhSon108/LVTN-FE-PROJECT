@@ -8,7 +8,7 @@ import moment from 'moment';
 import OrderDetailProducts from './components/OrderDetailProducts/OrderDetailProducts';
 import OrderDetailInfo from './components/OrderDetailInfo/OrderDetailInfo';
 import { formatMoney } from '../../utils/formatMoney';
-import { Alert, Chip, LinearProgress, Tooltip, Typography } from '@mui/material';
+import { Alert, Breadcrumbs, Chip, LinearProgress, Tooltip, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton/LoadingButton';
 import ModalCancelOrder from './components/ModalCancelOrder/ModalCancelOrder';
 import ModalPreviewOrder from './components/ModalPreviewOrder/ModalPreviewOrder';
@@ -48,6 +48,13 @@ const OrderDetail = () => {
 
   return (
     <section>
+      <Breadcrumbs aria-label="breadcrumb" className="mb-1">
+        <Link underline="hover" color="inherit" href="/orders">
+          Danh sách đơn hàng
+        </Link>
+
+        <Typography color="text.primary">Chi tiết đơn hàng</Typography>
+      </Breadcrumbs>
       <div style={{ height: 2.5 }}>
         {loading ? (
           <LinearProgress sx={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, height: '2.5px' }} />
