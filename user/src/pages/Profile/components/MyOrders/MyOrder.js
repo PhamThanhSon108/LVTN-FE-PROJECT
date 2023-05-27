@@ -140,7 +140,7 @@ const MyOrders = () => {
                             </table>
                         </div>
                         {!loading && !loadingGetUserInfo && orders?.pages > 1 && pageWantTochange <= orders?.pages ? (
-                            <div className="d-flex col-12 justify-content-end mb-2">
+                            <div className="d-flex col-12 justify-content-end mb-3">
                                 <Pagination
                                     onChange={(e, page) => {
                                         replaceParams([{ key: 'page', value: page }]);

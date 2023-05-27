@@ -68,7 +68,9 @@ const ShopSection = (props) => {
                         {keyword || category ? <FilterSection setToggleLoad={setToggleLoad}></FilterSection> : null}
                         <div
                             style={{ paddingLeft: 0, paddingRight: 0 }}
-                            className={` ${keyword || category ? 'col-10' : 'col-12'}  article`}
+                            className={` ${
+                                keyword || category ? 'col-lg-10 col-md-10' : 'col-lg-12'
+                            }  article col-sm-12`}
                         >
                             <div className="row">
                                 <RenderProduct

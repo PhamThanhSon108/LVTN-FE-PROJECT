@@ -92,7 +92,7 @@ const AddressTab = () => {
                     ) : null}
                 </div>
                 <div className={styles.addressListWrapper}>
-                    {!(listAddress?.length > 0) ? (
+                    {!(listAddress?.length > 0) && !loading ? (
                         <Alert
                             sx={{ mt: 2, mb: 2, display: 'flex', flexDirection: 'row', width: '100%' }}
                             severity="warning"

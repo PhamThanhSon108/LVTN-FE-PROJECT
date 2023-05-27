@@ -10,7 +10,7 @@ import MyAccount from './components/MyAccount/MyAccount';
 import MyOrders from './components/MyOrders/MyOrder';
 import useSearchParamsCustom from '~/hooks/useSearchParamCustom';
 import VoucherWallet from './components/VoucherWallet/VoucherWallet';
-import { Badge, Typography } from '@mui/material';
+import { Avatar, Badge, Typography } from '@mui/material';
 import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import DiscountOutlinedIcon from '@mui/icons-material/DiscountOutlined';
@@ -46,18 +46,17 @@ const ProfileScreen = () => {
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
+                                justifyContent: 'center',
                             }}
                         >
-                            <div className="col-md-4" style={{ marginTop: '12px' }}>
-                                <img
-                                    src="./images/user.png"
-                                    alt="userprofileimage"
-                                    style={{ height: '100%', width: '100%' }}
-                                    className="fix-none"
-                                />
+                            <div className="col-md-2">
+                                <Avatar sx={{ height: '50px', width: '50px', mr: 1 }}>
+                                    {' '}
+                                    {userInfo?.name?.[0].toUpperCase()}{' '}
+                                </Avatar>
                             </div>
                             <div className="col-md-8">
-                                <h5 className="author-card-name mb-1">
+                                <h5 className="author-card-name ">
                                     <Typography variant="h6" fontWeight={600} noWrap>
                                         {userInfo?.name || 'alias'}
                                     </Typography>

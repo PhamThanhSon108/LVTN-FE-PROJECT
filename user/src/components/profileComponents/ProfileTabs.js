@@ -316,14 +316,15 @@ const ProfileTabs = () => {
                                     size="small"
                                     sx={{ width: '100%' }}
                                     value={
-                                        tempAddress?.provinces?.find((item) => item.name === province) || { name: '' }
+                                        tempAddress?.provinces?.find((item) => item?.name === province) || { name: '' }
                                     }
                                     fullWidth={true}
                                     options={provinces}
-                                    getOptionLabel={(option) => option.ProvinceName}
+                                    getOptionLabel={(option) => option?.ProvinceName}
                                     onChange={(e, value) => {
-                                        changeProvince({ province: value.name });
+                                        changeProvince({ province: value?.name });
                                     }}
+                                    loadingText="Đang tải"
                                     renderInput={(params) => (
                                         <TextField
                                             required
@@ -345,12 +346,13 @@ const ProfileTabs = () => {
                                     value={
                                         tempAddress?.districts?.find((item) => item.name === district) || { name: '' }
                                     }
+                                    loadingText="Đang tải"
                                     fullWidth={true}
                                     disabled={!province}
-                                    options={tempAddress.districts}
-                                    getOptionLabel={(option) => option.name}
+                                    options={tempAddress?.districts}
+                                    getOptionLabel={(option) => option?.name}
                                     onChange={(e, value) => {
-                                        changeDistrict({ district: value.name });
+                                        changeDistrict({ district: value?.name });
                                     }}
                                     renderInput={(params) => (
                                         <TextField
@@ -367,6 +369,7 @@ const ProfileTabs = () => {
                             </div>
                             <div className="wrap-input-inline col-3-item">
                                 <Autocomplete
+                                    loadingText="Đang tải"
                                     size="small"
                                     sx={{ width: '100%' }}
                                     value={tempAddress?.wards?.find((item) => item.name === ward) || { name: '' }}

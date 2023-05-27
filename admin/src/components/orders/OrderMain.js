@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import Message from '../LoadingError/Error';
 import Loading from '../LoadingError/Loading';
 import Orders from './Orders';
@@ -77,13 +77,7 @@ const OrderMain = (props) => {
         </header> */}
         <div className="card-body">
           <div className="table-responsive">
-            {loading ? (
-              <Loading />
-            ) : error ? (
-              <Message variant="alert-danger">{error}</Message>
-            ) : (
-              <Orders orders={orders} />
-            )}
+            {loading ? <Loading /> : error ? <Fragment /> : <Orders orders={orders} />}
           </div>
         </div>
       </div>

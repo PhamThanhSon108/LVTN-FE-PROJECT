@@ -65,7 +65,15 @@ export default function ForgotPass() {
                 <Controller
                     name="emailReset"
                     control={control}
-                    render={({ field }) => <TextField {...field} sx={{ width: '100%' }} size="small" label="Email" />}
+                    render={({ field }) => (
+                        <TextField
+                            disabled={successSendMail}
+                            {...field}
+                            sx={{ width: '100%' }}
+                            size="small"
+                            label="Email"
+                        />
+                    )}
                     rules={{
                         required: true,
                         pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,

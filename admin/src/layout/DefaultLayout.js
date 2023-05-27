@@ -5,7 +5,13 @@ import { LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import BreadcrumbsCustom from '../components/BreadcrumbsCustom/BreadcrumbsCustom';
 
-export default function DefaultLayout({ children = <Fragment />, header = true, sidebar = true, name }) {
+export default function DefaultLayout({
+  children = <Fragment />,
+  header = true,
+  sidebar = true,
+  name,
+  breadcrumbs = true,
+}) {
   document.title = name;
   return (
     <Fragment>
@@ -14,9 +20,11 @@ export default function DefaultLayout({ children = <Fragment />, header = true, 
         <main className="main-wrap">
           {header ? <Header /> : null}
           <section className="content-main">
-            <div className="breadcrumbs-custom">
-              <BreadcrumbsCustom />
-            </div>
+            {breadcrumbs ? (
+              <div className="breadcrumbs-custom">
+                <BreadcrumbsCustom />
+              </div>
+            ) : null}
             {children}
           </section>
         </main>

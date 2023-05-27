@@ -93,7 +93,7 @@ const ModalAddress = ({ addressOld, isOpenModal, handleClose, handleChangeAddres
                                 ) : null}
                             </div>
                             <div className={stylesProfile.addressListWrapper}>
-                                {!(listAddress?.length > 0) ? (
+                                {!(listAddress?.length > 0) && !loading ? (
                                     <Alert
                                         className="col-12"
                                         sx={{ mt: 2, mb: 2, display: 'flex', flexDirection: 'row', width: '100%' }}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -58,13 +58,13 @@ export const stepShipping = {
         icon: <LocalShippingOutlinedIcon />,
         label: 'Giao hàng',
         labelActive: 'Đang giao hàng',
-        color: 'primary',
+        color: 'warning',
     },
     delivered: {
         icon: <LocalShippingOutlinedIcon />,
         label: 'Đã giao hàng',
         labelActive: 'Giao hàng thành công',
-        color: 'primary',
+        color: 'success',
     },
     cancelled: {
         icon: <CancelOutlinedIcon />,
@@ -318,7 +318,12 @@ const DetailOrder = () => {
 
                                 const resonCancelOrder =
                                     currentStatus?.status === 'cancelled' ? (
-                                        <Typography variant="body1">{currentStatus?.description}</Typography>
+                                        <Fragment>
+                                            <Typography variant="body1">{currentStatus?.description}</Typography>
+                                            {order?.statusHistory?.find((step) => step?.status === 'paid') ? (
+                                                <Typography>Liên hệ admin (0353667125) để yêu cầu hoàn tiền</Typography>
+                                            ) : null}
+                                        </Fragment>
                                     ) : null;
 
                                 return (
