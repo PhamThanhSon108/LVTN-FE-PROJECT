@@ -48,6 +48,7 @@ const MyOrders = () => {
                         <tr className="col-12">
                             <th>ID</th>
                             <th>Trạng thái</th>
+                            <th>Trạng thái thanh toán</th>
                             <th>Thời gian</th>
                             <th>Tổng thanh toán</th>
                         </tr>
@@ -94,6 +95,8 @@ const MyOrders = () => {
                                 <thead>
                                     <tr>
                                         <th>ID</th>
+                                        <th>Trạng thái thanh toán</th>
+
                                         <th>Trạng thái</th>
                                         <th>Thời gian</th>
                                         <th>Tổng thanh toán</th>
@@ -113,6 +116,25 @@ const MyOrders = () => {
                                                 <a href={`/order/${order._id}`} className="link">
                                                     {order._id}
                                                 </a>
+                                            </td>
+                                            <td style={{ position: 'relative' }}>
+                                                {order?.paymentInformation?.paid ||
+                                                (order?.statusHistory?.find((step) => step?.status === 'delivered') &&
+                                                    order?.statusHistory?.length > 2) ? (
+                                                    <Chip
+                                                        size="small"
+                                                        color={'success'}
+                                                        variant="outlined"
+                                                        label="Đã thanh toán"
+                                                    />
+                                                ) : (
+                                                    <Chip
+                                                        size="small"
+                                                        color={'primary'}
+                                                        variant="outlined"
+                                                        label="Chưa thanh toán"
+                                                    />
+                                                )}
                                             </td>
                                             <td>
                                                 <Chip
